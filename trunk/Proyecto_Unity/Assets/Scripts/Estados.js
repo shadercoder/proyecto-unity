@@ -63,7 +63,6 @@ class Casilla {
 function ruido_Turbulence(coords : Vector2, nOctavas : int, lacunarity : float, gain : float) {
 	var ruidoTotal : float = 0.0;
 	var amplitud : float = gain;
-	var sumaAmplitud : float = 0;
 	for (var i : int = 0; i < nOctavas; i++) {
 		ruidoTotal += amplitud * Mathf.Abs(perlin.Noise(coords.x, coords.y));
 		amplitud *= gain;
@@ -73,9 +72,11 @@ function ruido_Turbulence(coords : Vector2, nOctavas : int, lacunarity : float, 
 }
 
 function esperaSegundos(segs : float) {
-	var tiempo : float = Time.time;
-	while (Time.time);
-	***;
+	yield WaitForSeconds(segs);
+}
+
+function pausaJuegoSegs(segs : float) {
+	yield StartCoroutine(esperaSegundos(segs));
 }
 
 //Funciones sobre el terreno y el tablero ---------------------------------------------------------------------------------------------------
@@ -121,6 +122,53 @@ function ponPlayas(pix : Color[], media : float) {
 	return pixels;
 }
 
+function mascaraReflejoAgua(pix : Color[], media : float) {
+	var pixels : Color[] = pix;
+	for (var l : int = 0; l < pixels.Length; l++) {
+		if (pixels[l].r > media)
+			pixels[l] = Color(0,0,0);
+		else
+			pixels[l] = Color(1,1,1);			
+	}
+	return pixels;
+}
+
+function suavizaBordeTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam : int) {
+	var pixels : Color[] = pix;
+	var pixelsBump : Color[] = tex2.GetPixels();
+	var lado : int = tam;
+	for (var i : int = 0; i < tex.height; i++) {
+		var mediaIzq : float = 0;
+		var mediaDer : float = 0;
+		var limiteIzq : float = pixelsBump[(i + 1)*tex.width - 1].r;
+		var limiteDer : float = pixelsBump[(i + 1)*tex.width].r;
+		var diff : float = Mathf.Abs(limiteIzq - limiteDer);
+		//Si la diferencia es pequeña, pasamos a la siguiente fila directamente
+		if (diff < 0.01) {
+			continue;
+		}
+		//Calculo de la media de altura a los dos lados del punto de unión
+		for (var j : int = tex.width - lado; j < tex.width; j++) {
+			mediaIzq += pixelsBump[j + i*tex.width].r;
+		}
+		for (j = 0; j < lado; j++) {
+			mediaDer += pixelsBump[j + i*tex.width].r;
+		}
+		//Calculos para el suavizado
+		var mediaCentro : float = (mediaIzq + mediaDer) / 2.0;
+		if (mediaIzq > mediaDer) {
+			
+		}
+		else {
+			
+		}
+		
+	}
+	
+	return pixels;
+	//Color(0.25+0.5*valor,0.2+0.4*valor,valor);
+}
+
 
 function creacionInicial() {
 	
@@ -158,26 +206,20 @@ function creacionInicial() {
 		
 	var media : float = 0;
 	var pixels : Color[] = new Color[texturaNorm.width*texturaNorm.height];
-	pixels = ruidoTextura(texturaNorm, texturaBump);
-	media = calcularMedia(texturaBump.GetPixels());
-
-	//Poner agua en el mundo a partir de la media de "altura"
-	pixels = ponPlayas(pixels, media);
 	
-	//Hay que eliminar la fila superior e inferior de la textura para evitar problemas con el toroide
-	//también hacer algo al respecto donde se juntan los bordes derecho e izquierdo
+	pixels = ruidoTextura(texturaNorm, texturaBump);								//Se crea el ruido para la textura normal y bump...
+	pixels = suavizaBordeTex(pixels, texturaNorm, texturaBump, relTexTabAncho / 2);	//Se suaviza el borde lateral...
+	media = calcularMedia(texturaBump.GetPixels());									//Se calcula la media de altura...	
+	pixels = ponPlayas(pixels, media);												//Poner agua en el mundo a partir de la media de "altura"
+	
+	//TODO Hay que eliminar la fila superior e inferior de la textura para evitar problemas con el toroide
 	
 	texturaNorm.SetPixels(pixels);
 	texturaNorm.Apply();
 	
 	//crea la mascara de reflejo del mar: las zonas menores de la altura media (donde hay agua) reflejan luz azul
-	for (var l : int = 0; l < pixels.Length; l++) {
-		if (pixels[l].r > media)
-			pixels[l] = Color(0,0,0);
-		else
-			pixels[l] = Color(1,1,1);
-			
-	}
+	pixels = mascaraReflejoAgua(pixels, media);
+	
 	texturaMask.SetPixels(pixels);
 	texturaMask.Apply();
 	
@@ -195,9 +237,8 @@ function Update () {
 			//Algoritmo!
 			break;
 		case T_estados.regenerar:
-			
-			if (esperaSegundos(1))
-				estado = T_estados.inicial;
+			pausaJuegoSegs(0.5);
+			estado = T_estados.inicial;
 			break;
 		case T_estados.filtros:
 			break;
@@ -221,10 +262,10 @@ function OnGUI() {
 	
 	switch (estado) {
 		case T_estados.inicial:
-			GUI.Label (Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
+			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
 			break;
 		case T_estados.regenerar:
-			GUI.Label (Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
+			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
 			break;	
 		default:
 			menuGridInt = GUI.SelectionGrid(Rect (5, Screen.height / 2 - 100, 70, 200), menuGridInt, menuGridStrings, 1);
@@ -237,7 +278,7 @@ function OnGUI() {
 			{		
 				if (menuGridInt == 0) //Opcion re-generar
 				{
-					GUI.Label (Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
+					GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
 					nuevoTerreno = true;
 					estado = T_estados.regenerar;
 				}
