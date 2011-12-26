@@ -126,12 +126,13 @@ function mascaraReflejoAgua(pix : Color[], media : float) {
 	var pixels : Color[] = pix;
 	for (var l : int = 0; l < pixels.Length; l++) {
 		if (pixels[l].r > media)
-			pixels[l] = Color(0,0,0);
+			pixels[l] = Color(1,1,1);
 		else
-			pixels[l] = Color(1,1,1);			
+			pixels[l] = Color(0,0,0);			
 	}
 	return pixels;
 }
+
 
 function suavizaBordeTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam : int) {
 	var pixels : Color[] = pix;
@@ -175,12 +176,12 @@ function creacionInicial() {
 	//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
 	var planeta : GameObject = GameObject.FindWithTag("Planeta");
 	var renderer : MeshRenderer = planeta.GetComponent(MeshRenderer);
-	var texturaNorm : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
-	var texturaBump : Texture2D = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
+	var texturaBase : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
+	var texturaNorm : Texture2D = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
 	var texturaMask : Texture2D = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 	//Crear el tablero lógico a la vez!
-	anchoTextura = texturaNorm.width;
-	altoTextura = texturaNorm.height;
+	anchoTextura = texturaBase.width;
+	altoTextura = texturaBase.height;
 	relTexTabAncho = anchoTextura / anchoTablero;
 	relTexTabAlto = altoTextura / altoTablero;
 	
@@ -188,10 +189,10 @@ function creacionInicial() {
 	if (relTexTabAncho < 1 || relTexTabAlto < 1) {
 		Debug.LogError("La textura no tiene tamaño suficiente para ese tablero lógico. Deben estar como minimo en relacion 1:1!");
 	}
-	if (texturaNorm == null || texturaBump == null || texturaMask == null) {
+	if (texturaBase == null || texturaNorm == null || texturaMask == null) {
 		Debug.LogError("Una de las texturas con las que debemos trabajar (superficie, bump o mascara) es nula!");
 	}
-	if (texturaBump.width != texturaNorm.width || texturaBump.height != texturaNorm.height) {
+	if (texturaNorm.width != texturaBase.width || texturaNorm.height != texturaBase.height) {
 		Debug.LogError("Las texturas del plaeta y el mapa de relieve deben tener la misma superficie!");
 	}
 	
@@ -205,17 +206,20 @@ function creacionInicial() {
 	}
 		
 	var media : float = 0;
-	var pixels : Color[] = new Color[texturaNorm.width*texturaNorm.height];
+	var pixels : Color[] = new Color[texturaBase.width*texturaBase.height];
 	
-	pixels = ruidoTextura(texturaNorm, texturaBump);								//Se crea el ruido para la textura normal y bump...
-	pixels = suavizaBordeTex(pixels, texturaNorm, texturaBump, relTexTabAncho / 2);	//Se suaviza el borde lateral...
-	media = calcularMedia(texturaBump.GetPixels());									//Se calcula la media de altura...	
+	pixels = ruidoTextura(texturaBase, texturaNorm);								//Se crea el ruido para la textura base y normales...
+	pixels = suavizaBordeTex(pixels, texturaBase, texturaNorm, relTexTabAncho / 2);	//Se suaviza el borde lateral...
+	media = calcularMedia(texturaNorm.GetPixels());									//Se calcula la media de altura...	
 	pixels = ponPlayas(pixels, media);												//Poner agua en el mundo a partir de la media de "altura"
 	
-	//TODO Hay que eliminar la fila superior e inferior de la textura para evitar problemas con el toroide
+	//TODO: Hay que eliminar la fila superior e inferior de la textura para evitar problemas con el toroide
 	
-	texturaNorm.SetPixels(pixels);
-	texturaNorm.Apply();
+	texturaBase.SetPixels(pixels);
+	texturaBase.Apply();
+	
+	//TODO: Hay que caracterizar a texturaNorm (el bumpMap) como tal! (una vez creada, establecer como tipo Normal Map)
+	//texturaABumpMap(texturaNorm);
 	
 	//crea la mascara de reflejo del mar: las zonas menores de la altura media (donde hay agua) reflejan luz azul
 	pixels = mascaraReflejoAgua(pixels, media);
