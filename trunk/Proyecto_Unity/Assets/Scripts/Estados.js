@@ -139,35 +139,23 @@ function suavizaBordeTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam :
 	var pixelsBump : Color[] = tex2.GetPixels();
 	var lado : int = tam;
 	for (var i : int = 0; i < tex.height; i++) {
-		var mediaIzq : float = 0;
-		var mediaDer : float = 0;
-		var limiteIzq : float = pixelsBump[(i + 1)*tex.width - 1].r;
-		var limiteDer : float = pixelsBump[(i + 1)*tex.width].r;
-		var diff : float = Mathf.Abs(limiteIzq - limiteDer);
-		//Si la diferencia es pequeña, pasamos a la siguiente fila directamente
-		if (diff < 0.01) {
-			continue;
+		var j : int = tex.width;
+		var pesoRuido : float = 1.0;
+		var pesoTextura : float = 0.0;
+		var iteraciones : float = pesoRuido / lado;
+		while (pesoTextura < 1.0) {
+			pesoTextura += iteraciones;
+			pesoRuido -= iteraciones;
+			var valorRuido : float = ruido_Turbulence(Vector2(j, i)*escala, octavas, lacunaridad, ganancia);
+			var valorBump : float = valorRuido*pesoRuido + (pixelsBump[(i - 1)*tex.width + j].r)*pesoTextura;
+			pixelsBump[(i - 1)*tex.width + j] = Color(valorBump, valorBump, valorBump);
+			pixels[(i - 1)*tex.width + j] = Color(0.25+0.5*valorBump,0.2+0.4*valorBump,valorBump);
+			j++;
 		}
-		//Calculo de la media de altura a los dos lados del punto de unión
-		for (var j : int = tex.width - lado; j < tex.width; j++) {
-			mediaIzq += pixelsBump[j + i*tex.width].r;
-		}
-		for (j = 0; j < lado; j++) {
-			mediaDer += pixelsBump[j + i*tex.width].r;
-		}
-		//Calculos para el suavizado
-		var mediaCentro : float = (mediaIzq + mediaDer) / 2.0;
-		if (mediaIzq > mediaDer) {
-			
-		}
-		else {
-			
-		}
-		
 	}
-	
+	tex2.SetPixels(pixelsBump);
+	tex2.Apply();
 	return pixels;
-	//Color(0.25+0.5*valor,0.2+0.4*valor,valor);
 }
 
 
@@ -209,7 +197,7 @@ function creacionInicial() {
 	var pixels : Color[] = new Color[texturaBase.width*texturaBase.height];
 	
 	pixels = ruidoTextura(texturaBase, texturaNorm);								//Se crea el ruido para la textura base y normales...
-	pixels = suavizaBordeTex(pixels, texturaBase, texturaNorm, relTexTabAncho / 2);	//Se suaviza el borde lateral...
+	pixels = suavizaBordeTex(pixels, texturaBase, texturaNorm, relTexTabAncho * 3);	//Se suaviza el borde lateral...
 	media = calcularMedia(texturaNorm.GetPixels());									//Se calcula la media de altura...	
 	pixels = ponPlayas(pixels, media);												//Poner agua en el mundo a partir de la media de "altura"
 	
