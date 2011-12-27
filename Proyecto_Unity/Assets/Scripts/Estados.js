@@ -22,6 +22,7 @@ private var menuGridStrings		: String[] 	= ["Re-generar", "Opciones", "Principal
 private var menuOpcionesInt		: int		= 0;
 private var menuOpcionesStrings	: String[] 	= ["Opción 1", "Opción 2", "Opción 3"];
 private var menuDerecha			: boolean[]	= [false, false, false];
+var estiloGUI					: GUISkin;
 
 //Privadas del script
 private var estado 				: T_estados = T_estados.inicial;	//Los estados por los que pasa el juego
@@ -251,7 +252,7 @@ function Update () {
 
 //Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
 function OnGUI() {
-	
+	GUI.skin = estiloGUI;
 	switch (estado) {
 		case T_estados.inicial:
 			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
