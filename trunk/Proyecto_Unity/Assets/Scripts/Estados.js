@@ -12,17 +12,12 @@ var octavas						: float		= 6;					//Octavas para la funcion de ruido fBm
 var lacunaridad					: float		= 2.5;					//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
 var tamanoPlaya 				: float		= 0.01;
 var ganancia					: float		= 0.8;					//El peso que se le da a cada nueva octava
-//var offset 					: float		= 0.75;					//Valor para determinados algoritmos de ruido
-var escala						: float		= 0.005;					//Lo mismo
-//var agua						: float		= 0.4;					//Entre 0 y 1, en que punto aparece agua
+var escala						: float		= 0.005;				//El nivel de zoom sobre el ruido
+var nivelAgua					: float		= 0.1;					//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.1
 
 //Para la funcion GUI durante la creación del planeta
-private var menuGridInt			: int		= 0;
-private var menuGridStrings		: String[] 	= ["Re-generar", "Opciones", "Principal"];
-private var menuOpcionesInt		: int		= 0;
-private var menuOpcionesStrings	: String[] 	= ["Opción 1", "Opción 2", "Opción 3"];
-private var menuDerecha			: boolean[]	= [false, false, false];
-var estiloGUI					: GUISkin;
+var estiloGUI					: GUISkin;							//Los estilos diferentes para la GUI, configurables desde el editor
+private var menuOpcionesInt		: int		= 0;					//Variable de control sobre el menu lateral derecho
 
 //Privadas del script
 private var estado 				: T_estados = T_estados.inicial;	//Los estados por los que pasa el juego
@@ -37,8 +32,8 @@ private var tablero				: Casilla[,];						//Tablero lógico del algoritmo
 
 //Tipos especiales ----------------------------------------------------------------------------------------------------------------------
 
-enum T_estados {inicial, principal, laboratorio, filtros, camaras, opciones, salir, regenerar};	//Añadir los que hagan falta mas tarde
-enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};								//Tipos de orografía
+enum T_estados {inicial, principal, laboratorio, filtros, camaras, opciones, salir, regenerar};						//Añadir los que hagan falta mas tarde
+enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};												//Tipos de orografía
 enum T_elementos {hidrogeno, helio, oxigeno, carbono, boro, nitrogeno, litio, silicio, magnesio, argon, potasio};	//Se pueden añadir mas mas adelante
 
 class Especie {
@@ -60,7 +55,9 @@ class Casilla {
 		coordsTex = coord;
 	}
 }
+
 //Funciones auxiliares --------------------------------------------------------------------------------------------------------------------
+
 function ruido_Turbulence(coords : Vector2, nOctavas : int, lacunarity : float, gain : float) {
 	var ruidoTotal : float = 0.0;
 	var amplitud : float = gain;
@@ -81,6 +78,7 @@ function pausaJuegoSegs(segs : float) {
 }
 
 //Funciones sobre el terreno y el tablero ---------------------------------------------------------------------------------------------------
+
 function ruidoTextura(tex : Texture2D, tex2 : Texture2D) {
 	var pixels : Color[] = new Color[tex.width*tex.height];
 	var pixelsBump : Color[] = new Color[tex.width*tex.height];
@@ -108,6 +106,7 @@ function calcularMedia(pix : Color[]) {
 function ponPlayas(pix : Color[], media : float) {
 	var pixels : Color[] = pix;
 	for (var k : int = 0; k < pixels.Length; k++) {
+		//TODO Mejorar la visualización de playas, montañas y mares para que se note mas el relieve!
 		//esto es una ñapa, pero queria probar a ver como quedaba :D
 		//hace playas
 		if ((pixels[k].b > media) &&  (pixels[k].b < media+tamanoPlaya))
@@ -134,7 +133,6 @@ function mascaraReflejoAgua(pix : Color[], media : float) {
 	return pixels;
 }
 
-
 function suavizaBordeTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam : int) {
 	var pixels : Color[] = pix;
 	var pixelsBump : Color[] = tex2.GetPixels();
@@ -159,6 +157,51 @@ function suavizaBordeTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam :
 	return pixels;
 }
 
+function suavizaPoloTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam : int) {
+	//TODO Adaptar el suavizado del borde a los polos y el margen correspondiente
+	var pixels : Color[] = pix;
+	var pixelsBump : Color[] = tex2.GetPixels();
+	var lado : int = tam;
+	//Se ponen los polos desde el origen hasta el margen (en pixeles) con la orografía deseada
+	for (var i : int = 0; i < margen; i++) {
+		for (var j : int = 0; j < tex.width; j++) {			
+			pixelsBump[j + tex.width*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
+			pixels[j + tex.width*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
+		}
+	}
+	for (i = tex.height - margen; i < tex.height; i++) {
+		for (j = 0; j < tex.width; j++) {			
+			pixelsBump[j + tex.width*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
+			pixels[j + tex.width*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
+		}
+	}
+	
+	//Ahora se suaviza desde y hacia el margen
+	for (i = margen; i < margen + tam; i++) {
+		for (j = 0; j < tex.width; j++) {
+			var punto : Color = pixelsBump[j + tex.width*i];
+			var valor : float = punto.r * ((i + 1.0 - margen) / tam);  
+			
+			pixelsBump[j + tex.width*i] = Color(valor, valor, valor); 				//El valor nuevo de los polos
+			pixels[j + tex.width*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor);	//El valor nuevo de los polos con pintura
+		}
+	}
+	var comienzo : float = tex.height - (margen + tam);
+	for (i = comienzo; i < tex.height - margen; i++) {
+		for (j = 0; j < tex.width; j++) {	
+			punto = pixelsBump[j + tex.width*i];
+			valor = punto.r * ((tam - (i - comienzo)) / tam);  
+					
+			pixelsBump[j + tex.width*i] = Color(valor, valor, valor); 					//El valor nuevo de los polos
+			pixels[j + tex.width*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor); 		//El valor nuevo de los polos con pintura
+		}
+	}
+	
+	tex2.SetPixels(pixelsBump);
+	tex2.Apply();
+	return pixels;
+}
+
 
 function creacionInicial() {
 	
@@ -168,7 +211,7 @@ function creacionInicial() {
 	var texturaBase : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
 	var texturaNorm : Texture2D = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
 	var texturaMask : Texture2D = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
-	//Crear el tablero lógico a la vez!
+
 	anchoTextura = texturaBase.width;
 	altoTextura = texturaBase.height;
 	relTexTabAncho = anchoTextura / anchoTablero;
@@ -194,13 +237,14 @@ function creacionInicial() {
 		nuevoTerreno = false;
 	}
 		
-	var media : float = 0;
+//	var media : float = 0;
 	var pixels : Color[] = new Color[texturaBase.width*texturaBase.height];
 	
-	pixels = ruidoTextura(texturaBase, texturaNorm);								//Se crea el ruido para la textura base y normales...
-	pixels = suavizaBordeTex(pixels, texturaBase, texturaNorm, relTexTabAncho * 3);	//Se suaviza el borde lateral...
-	media = calcularMedia(texturaNorm.GetPixels());									//Se calcula la media de altura...	
-	pixels = ponPlayas(pixels, media);												//Poner agua en el mundo a partir de la media de "altura"
+	pixels = ruidoTextura(texturaBase, texturaNorm);									//Se crea el ruido para la textura base y normales...
+	pixels = suavizaBordeTex(pixels, texturaBase, texturaNorm, texturaBase.width / 20);	//Se suaviza el borde lateral...
+	pixels = suavizaPoloTex(pixels, texturaBase, texturaNorm, texturaBase.height / 20);	//Se suavizan los polos...
+//	media = calcularMedia(texturaNorm.GetPixels());										//Se calcula la media de altura...	
+	pixels = ponPlayas(pixels, nivelAgua);												//Poner agua en el mundo a partir de la media de "altura"
 	
 	//TODO: Hay que eliminar la fila superior e inferior de la textura para evitar problemas con el toroide
 	
@@ -211,7 +255,7 @@ function creacionInicial() {
 	//texturaABumpMap(texturaNorm);
 	
 	//crea la mascara de reflejo del mar: las zonas menores de la altura media (donde hay agua) reflejan luz azul
-	pixels = mascaraReflejoAgua(pixels, media);
+	pixels = mascaraReflejoAgua(pixels, nivelAgua);
 	
 	texturaMask.SetPixels(pixels);
 	texturaMask.Apply();
@@ -220,6 +264,7 @@ function creacionInicial() {
 }
 
 //Update y transiciones de estados -------------------------------------------------------------------------------------------------------
+
 function Update () {
 
 	switch (estado) {
@@ -227,10 +272,8 @@ function Update () {
 			creacionInicial();
 			break;
 		case T_estados.principal:
-			//Algoritmo!
 			break;
 		case T_estados.regenerar:
-			pausaJuegoSegs(0.5);
 			estado = T_estados.inicial;
 			break;
 		case T_estados.filtros:
@@ -245,49 +288,59 @@ function Update () {
 			break;
 		default:
 			//Error!
+			Debug.LogError("Estado del juego desconocido! La variable contiene: " + estado);
 			break;
 	}
 
 }
 
 //Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
+
 function OnGUI() {
 	GUI.skin = estiloGUI;
+	grupoIzquierda();
+	grupoDerecha(menuOpcionesInt);
 	switch (estado) {
 		case T_estados.inicial:
-			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
+			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generando!");
 			break;
-		case T_estados.regenerar:
-			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
-			break;	
-		default:
-			menuGridInt = GUI.SelectionGrid(Rect (5, Screen.height / 2 - 100, 70, 200), menuGridInt, menuGridStrings, 1);
-			if (menuDerecha[0])
-				menuOpcionesInt = GUI.SelectionGrid(Rect (Screen.width - 75, Screen.height / 2 - 100, 70, 200), menuOpcionesInt, menuOpcionesStrings, 1);
-			if (menuDerecha[1])
-				;
-			
-			if (GUI.changed)
-			{		
-				if (menuGridInt == 0) //Opcion re-generar
-				{
-					GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generating!");
-					nuevoTerreno = true;
-					estado = T_estados.regenerar;
-				}
-				if (menuGridInt == 1) //Opcion opciones
-				{
-					menuDerecha = [false, false, false];
-					menuDerecha[0] = true;
-					estado = T_estados.opciones;
-				}
-				if (menuGridInt == 2) //Opcion principal
-				{
-					menuDerecha = [false, false, false];
-					estado = T_estados.principal;
-				}
-			}			
+		default:						
 			break;
 	}
 	
 }
+
+function grupoIzquierda() {
+	GUI.BeginGroup(Rect(5, Screen.height / 2 - 53, 128, 106));
+	if (GUI.Button(Rect(0, 0, 64, 32), "", "botonPlaneta")) {
+		nuevoTerreno = true;
+		estado = T_estados.regenerar;
+	}
+	if (GUI.Button(Rect(0, 37, 64, 32), "", "botonOpciones")) {
+		menuOpcionesInt = 1;
+		estado = T_estados.opciones;
+	}
+	if (GUI.Button(Rect(0, 74, 64, 32), "", "botonVacio")) {
+		menuOpcionesInt = 0;
+		estado = T_estados.principal;
+	}
+	GUI.EndGroup();
+}
+
+function grupoDerecha(opcion : int) {
+	//TODO Dependiendo de que opción este pulsada, poner un menú u otro!
+	if (opcion == 1) {
+		GUI.BeginGroup(Rect(Screen.width - 69, Screen.height / 2 - 53, 128, 106));
+		if (GUI.Button(Rect(0, 0, 64, 32), "1", "botonVacio")) {
+			
+		}
+		if (GUI.Button(Rect(0, 37, 64, 32), "2", "botonVacio")) {
+			
+		}
+		if (GUI.Button(Rect(0, 74, 64, 32), "3", "botonVacio")) {
+			
+		}
+		GUI.EndGroup();
+	}
+}
+
