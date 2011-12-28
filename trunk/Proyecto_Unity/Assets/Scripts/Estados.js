@@ -5,15 +5,21 @@
 //Para el tablero
 var anchoTablero				: int 		= 128;					//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
 var altoTablero					: int 		= 128;					//El alto del tablero lógico (debe ser potencia de 2 tambien)
-var margen 						: int 		= 2;					//El numero de filas que habrá en los polos intransitables
+var casillasPolos				: int		= 3;					//El numero de casillas que serán intransitables en los polos
+private var altoTableroUtil		: int;								//El alto del tablero una vez eliminadas las casillas de los polos
+private var margen 				: int 		= 50;					//El numero de pixeles que habrá en los polos intransitables
+var numMaxEspeciesCasilla		: int		= 5;					//Numero maximo de especies que puede haber por casilla a la vez
+var numMaxEspecies				: int		= 20;					//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
 //Para el ruido
-var octavas						: float		= 6;					//Octavas para la funcion de ruido fBm
+var octavas						: float		= 6;					//Octavas para la funcion de ruido de turbulencias
 var lacunaridad					: float		= 2.5;					//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
-var tamanoPlaya 				: float		= 0.01;
 var ganancia					: float		= 0.8;					//El peso que se le da a cada nueva octava
 var escala						: float		= 0.005;				//El nivel de zoom sobre el ruido
 var nivelAgua					: float		= 0.1;					//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.1
+var tamanoPlaya 				: float		= 0.01;					//El tamaño de las playas
+var alturaColinas				: float		= 0.15;					//La altura a partir de la cual se considera colina
+var alturaMontana				: float		= 0.2;					//La altura a partir de la cual se considera montaña
 
 //Para la funcion GUI durante la creación del planeta
 var estiloGUI					: GUISkin;							//Los estilos diferentes para la GUI, configurables desde el editor
@@ -79,18 +85,18 @@ function pausaJuegoSegs(segs : float) {
 
 //Funciones sobre el terreno y el tablero ---------------------------------------------------------------------------------------------------
 
-function ruidoTextura(tex : Texture2D, tex2 : Texture2D) {
-	var pixels : Color[] = new Color[tex.width*tex.height];
-	var pixelsBump : Color[] = new Color[tex.width*tex.height];
-	for (var i : int = 0; i < tex.height; i++) {
-		for (var j : int = 0; j < tex.width; j++) {
+function ruidoTextura(tex : Texture2D) {
+	var pixels : Color[] = new Color[anchoTextura*altoTextura];
+	var pixelsBump : Color[] = new Color[anchoTextura*altoTextura];
+	for (var i : int = 0; i < altoTextura; i++) {
+		for (var j : int = 0; j < anchoTextura; j++) {
 			var valor : float = ruido_Turbulence(Vector2(j, i)*escala, octavas, lacunaridad, ganancia);
-			pixels[j + i*tex.width] = Color(0.25+0.5*valor,0.2+0.4*valor,valor);
-			pixelsBump[j + i*tex.width] = Color(valor, valor, valor);
+			pixels[j + i*anchoTextura] = Color(0.25+0.5*valor,0.2+0.4*valor,valor);
+			pixelsBump[j + i*anchoTextura] = Color(valor, valor, valor);
 		}
 	}
-	tex2.SetPixels(pixelsBump);
-	tex2.Apply();
+	tex.SetPixels(pixelsBump);
+	tex.Apply();
 	return pixels;
 }
 
@@ -133,12 +139,12 @@ function mascaraReflejoAgua(pix : Color[], media : float) {
 	return pixels;
 }
 
-function suavizaBordeTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam : int) {
+function suavizaBordeTex(pix : Color[], tex : Texture2D, tam : int) {
 	var pixels : Color[] = pix;
-	var pixelsBump : Color[] = tex2.GetPixels();
+	var pixelsBump : Color[] = tex.GetPixels();
 	var lado : int = tam;
-	for (var i : int = 0; i < tex.height; i++) {
-		var j : int = tex.width;
+	for (var i : int = 0; i < altoTextura; i++) {
+		var j : int = anchoTextura;
 		var pesoRuido : float = 1.0;
 		var pesoTextura : float = 0.0;
 		var iteraciones : float = pesoRuido / lado;
@@ -146,63 +152,74 @@ function suavizaBordeTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam :
 			pesoTextura += iteraciones;
 			pesoRuido -= iteraciones;
 			var valorRuido : float = ruido_Turbulence(Vector2(j, i)*escala, octavas, lacunaridad, ganancia);
-			var valorBump : float = valorRuido*pesoRuido + (pixelsBump[(i - 1)*tex.width + j].r)*pesoTextura;
-			pixelsBump[(i - 1)*tex.width + j] = Color(valorBump, valorBump, valorBump);
-			pixels[(i - 1)*tex.width + j] = Color(0.25+0.5*valorBump,0.2+0.4*valorBump,valorBump);
+			var valorBump : float = valorRuido*pesoRuido + (pixelsBump[(i - 1)*anchoTextura + j].r)*pesoTextura;
+			pixelsBump[(i - 1)*anchoTextura + j] = Color(valorBump, valorBump, valorBump);
+			pixels[(i - 1)*anchoTextura + j] = Color(0.25+0.5*valorBump,0.2+0.4*valorBump,valorBump);
 			j++;
 		}
 	}
-	tex2.SetPixels(pixelsBump);
-	tex2.Apply();
+	tex.SetPixels(pixelsBump);
+	tex.Apply();
 	return pixels;
 }
 
-function suavizaPoloTex(pix : Color[], tex : Texture2D, tex2 : Texture2D, tam : int) {
-	//TODO Adaptar el suavizado del borde a los polos y el margen correspondiente
+function suavizaPoloTex(pix : Color[], tex : Texture2D, tam : int) {
 	var pixels : Color[] = pix;
-	var pixelsBump : Color[] = tex2.GetPixels();
+	var pixelsBump : Color[] = tex.GetPixels();
 	var lado : int = tam;
 	//Se ponen los polos desde el origen hasta el margen (en pixeles) con la orografía deseada
 	for (var i : int = 0; i < margen; i++) {
-		for (var j : int = 0; j < tex.width; j++) {			
-			pixelsBump[j + tex.width*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
-			pixels[j + tex.width*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
+		for (var j : int = 0; j < anchoTextura; j++) {			
+			pixelsBump[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
+			pixels[j + anchoTextura*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
 		}
 	}
-	for (i = tex.height - margen; i < tex.height; i++) {
-		for (j = 0; j < tex.width; j++) {			
-			pixelsBump[j + tex.width*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
-			pixels[j + tex.width*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
+	for (i = altoTextura - margen; i < altoTextura; i++) {
+		for (j = 0; j < anchoTextura; j++) {			
+			pixelsBump[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
+			pixels[j + anchoTextura*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
 		}
 	}
 	
 	//Ahora se suaviza desde y hacia el margen
 	for (i = margen; i < margen + tam; i++) {
-		for (j = 0; j < tex.width; j++) {
-			var punto : Color = pixelsBump[j + tex.width*i];
+		for (j = 0; j < anchoTextura; j++) {
+			var punto : Color = pixelsBump[j + anchoTextura*i];
 			var valor : float = punto.r * ((i + 1.0 - margen) / tam);  
 			
-			pixelsBump[j + tex.width*i] = Color(valor, valor, valor); 				//El valor nuevo de los polos
-			pixels[j + tex.width*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor);	//El valor nuevo de los polos con pintura
+			pixelsBump[j + anchoTextura*i] = Color(valor, valor, valor); 				//El valor nuevo de los polos
+			pixels[j + anchoTextura*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor);	//El valor nuevo de los polos con pintura
 		}
 	}
-	var comienzo : float = tex.height - (margen + tam);
-	for (i = comienzo; i < tex.height - margen; i++) {
-		for (j = 0; j < tex.width; j++) {	
-			punto = pixelsBump[j + tex.width*i];
+	var comienzo : float = altoTextura - (margen + tam);
+	for (i = comienzo; i < altoTextura - margen; i++) {
+		for (j = 0; j < anchoTextura; j++) {	
+			punto = pixelsBump[j + anchoTextura*i];
 			valor = punto.r * ((tam - (i - comienzo)) / tam);  
 					
-			pixelsBump[j + tex.width*i] = Color(valor, valor, valor); 					//El valor nuevo de los polos
-			pixels[j + tex.width*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor); 		//El valor nuevo de los polos con pintura
+			pixelsBump[j + anchoTextura*i] = Color(valor, valor, valor); 					//El valor nuevo de los polos
+			pixels[j + anchoTextura*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor); 		//El valor nuevo de los polos con pintura
 		}
 	}
 	
-	tex2.SetPixels(pixelsBump);
-	tex2.Apply();
+	tex.SetPixels(pixelsBump);
+	tex.Apply();
 	return pixels;
 }
 
+function realzarRelieve(tex : Texture2D) {
+	var pixels : Color[] = tex.GetPixels();
+	for (var i : int = 0; i < pixels.Length; i++) {
+		var valor : float = pixels[i].r;
+		valor += Mathf.Lerp(-0.2, 0.6, valor/0.3);			//Los valores bajos bajarán y los valores altos subirán		
+		valor = Mathf.Clamp01(valor);
+		pixels[i] = Color(valor, valor, valor);
+	}
+	tex.SetPixels(pixels);
+	tex.Apply();
+}
 
+//Funciones principales ----------------------------------------------------------------------------------------------------------------------
 function creacionInicial() {
 	
 	//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
@@ -214,8 +231,10 @@ function creacionInicial() {
 
 	anchoTextura = texturaBase.width;
 	altoTextura = texturaBase.height;
+	altoTableroUtil = altoTablero - casillasPolos*2;
 	relTexTabAncho = anchoTextura / anchoTablero;
 	relTexTabAlto = altoTextura / altoTablero;
+	margen = relTexTabAlto * casillasPolos;
 	
 	//Comprobacion de errores
 	if (relTexTabAncho < 1 || relTexTabAlto < 1) {
@@ -228,8 +247,8 @@ function creacionInicial() {
 		Debug.LogError("Las texturas del plaeta y el mapa de relieve deben tener la misma superficie!");
 	}
 	
-	//Inicializacion del tablero
-	tablero = new Casilla[altoTablero,anchoTablero];
+	//TODO Inicializacion del tablero
+	iniciaTablero(texturaNorm);
 	
 	//Crear una seed inicial para que no todos los mapas generados sean iguales!
 	if (perlin == null || nuevoTerreno) {
@@ -237,17 +256,16 @@ function creacionInicial() {
 		nuevoTerreno = false;
 	}
 		
-//	var media : float = 0;
+	var media : float = 0;
 	var pixels : Color[] = new Color[texturaBase.width*texturaBase.height];
 	
-	pixels = ruidoTextura(texturaBase, texturaNorm);									//Se crea el ruido para la textura base y normales...
-	pixels = suavizaBordeTex(pixels, texturaBase, texturaNorm, texturaBase.width / 20);	//Se suaviza el borde lateral...
-	pixels = suavizaPoloTex(pixels, texturaBase, texturaNorm, texturaBase.height / 20);	//Se suavizan los polos...
-//	media = calcularMedia(texturaNorm.GetPixels());										//Se calcula la media de altura...	
-	pixels = ponPlayas(pixels, nivelAgua);												//Poner agua en el mundo a partir de la media de "altura"
-	
-	//TODO: Hay que eliminar la fila superior e inferior de la textura para evitar problemas con el toroide
-	
+	pixels = ruidoTextura(texturaNorm);											//Se crea el ruido para la textura base y normales...
+	pixels = suavizaBordeTex(pixels, texturaNorm, texturaBase.width / 20);		//Se suaviza el borde lateral...
+	pixels = suavizaPoloTex(pixels, texturaNorm, texturaBase.height / 20);		//Se suavizan los polos...
+	media = calcularMedia(texturaNorm.GetPixels());								//Se calcula la media de altura...	
+	realzarRelieve(texturaNorm);												//Se realza el relieve
+	pixels = ponPlayas(pixels, nivelAgua);										//Poner agua en el mundo a partir de la media de "altura"
+		
 	texturaBase.SetPixels(pixels);
 	texturaBase.Apply();
 	
@@ -261,6 +279,51 @@ function creacionInicial() {
 	texturaMask.Apply();
 	
 	estado = T_estados.principal;
+}
+
+function iniciaTablero(tex : Texture2D) {
+	var pixels : Color[] = tex.GetPixels();
+	tablero = new Casilla[altoTableroUtil,anchoTablero];
+	for (var i : int = 0; i < altoTableroUtil; i++) {
+		for (var j : int = 0; j < anchoTablero; j++) {
+			//Las coordenadas de la casilla actual en la textura
+			var cord : Vector2 = Vector2(j , (i + casillasPolos)*relTexTabAlto);
+			
+			//Se calcula la media de altura de la casilla
+			var media : float = 0;
+			for (var x : int = 0; x < relTexTabAlto; x++) {
+				for (var y : int = 0; y < relTexTabAncho; y++) {
+					media += pixels[(i + x)*anchoTextura + (j*relTexTabAncho) + y].r;
+				}
+			}
+			media = media / (relTexTabAncho * relTexTabAlto);
+			
+			//Se calcula el habitat en el que va a estar la casilla y los elementos que tendrá
+			var elems : T_elementos[] = new T_elementos[5];
+			var habitat : T_habitats;
+			if (media < (nivelAgua - (tamanoPlaya * 1.2))) {
+				habitat = T_habitats.sea;
+			} 
+			else if (((nivelAgua - (tamanoPlaya * 1.2)) < media) && (media < (nivelAgua + (tamanoPlaya * 1.2)))) {
+				habitat = T_habitats.coast;
+			}
+			else if (((nivelAgua + (tamanoPlaya * 1.2)) < media) && (media < alturaColinas)) {
+				habitat = T_habitats.plain;
+			}
+			else if ((alturaColinas < media) && (media < alturaMontana)) {
+				habitat = T_habitats.hill;
+			}
+			else if (alturaMontana < media) {
+				habitat = T_habitats.mountain;
+			}
+			
+			//TODO Se coge una o varias especies aleatorias de las iniciales
+			var esp : Especie[] = new Especie[numMaxEspeciesCasilla];
+			//TODO Calculos para ver la especie/s a meter
+			
+			tablero[i,j] = new Casilla(media, habitat, elems, esp, cord);
+		}
+	}
 }
 
 //Update y transiciones de estados -------------------------------------------------------------------------------------------------------
@@ -299,7 +362,7 @@ function Update () {
 function OnGUI() {
 	GUI.skin = estiloGUI;
 	grupoIzquierda();
-	grupoDerecha(menuOpcionesInt);
+	grupoDerecha();
 	switch (estado) {
 		case T_estados.inicial:
 			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generando!");
@@ -327,9 +390,9 @@ function grupoIzquierda() {
 	GUI.EndGroup();
 }
 
-function grupoDerecha(opcion : int) {
+function grupoDerecha() {
 	//TODO Dependiendo de que opción este pulsada, poner un menú u otro!
-	if (opcion == 1) {
+	if (menuOpcionesInt == 1) {
 		GUI.BeginGroup(Rect(Screen.width - 100, Screen.height / 2 - 140, 300, 300));
 		if (GUI.Button(Rect(0, 0, 79, 96), "", "botonCamRot")) {
 			
