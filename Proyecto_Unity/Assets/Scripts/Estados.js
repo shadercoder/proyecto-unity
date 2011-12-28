@@ -311,16 +311,16 @@ function OnGUI() {
 }
 
 function grupoIzquierda() {
-	GUI.BeginGroup(Rect(5, Screen.height / 2 - 53, 128, 106));
-	if (GUI.Button(Rect(0, 0, 64, 32), "", "botonPlaneta")) {
+	GUI.BeginGroup(Rect(5, Screen.height / 2 - 140, 300, 300));
+	if (GUI.Button(Rect(0, 0, 79, 96), "", "botonPlaneta")) {
 		nuevoTerreno = true;
 		estado = T_estados.regenerar;
 	}
-	if (GUI.Button(Rect(0, 37, 64, 32), "", "botonOpciones")) {
+	if (GUI.Button(Rect(0, 100, 79, 96), "", "botonOpciones")) {
 		menuOpcionesInt = 1;
 		estado = T_estados.opciones;
 	}
-	if (GUI.Button(Rect(0, 74, 64, 32), "", "botonVacio")) {
+	if (GUI.Button(Rect(0, 200, 79, 96), "", "botonIz")) {
 		menuOpcionesInt = 0;
 		estado = T_estados.principal;
 	}
@@ -330,14 +330,14 @@ function grupoIzquierda() {
 function grupoDerecha(opcion : int) {
 	//TODO Dependiendo de que opción este pulsada, poner un menú u otro!
 	if (opcion == 1) {
-		GUI.BeginGroup(Rect(Screen.width - 69, Screen.height / 2 - 53, 128, 106));
-		if (GUI.Button(Rect(0, 0, 64, 32), "1", "botonVacio")) {
+		GUI.BeginGroup(Rect(Screen.width - 100, Screen.height / 2 - 140, 300, 300));
+		if (GUI.Button(Rect(0, 0, 79, 96), "", "botonCamRot")) {
 			
 		}
-		if (GUI.Button(Rect(0, 37, 64, 32), "2", "botonVacio")) {
+		if (GUI.Button(Rect(0, 100, 79, 96), "Opcion 2", "botonDer")) {
 			
 		}
-		if (GUI.Button(Rect(0, 74, 64, 32), "3", "botonVacio")) {
+		if (GUI.Button(Rect(0, 200, 79, 96), "Opcion 3", "botonDer")) {
 			
 		}
 		GUI.EndGroup();
