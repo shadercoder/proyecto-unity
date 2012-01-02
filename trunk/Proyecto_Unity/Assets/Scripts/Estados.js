@@ -26,7 +26,7 @@ var estiloGUI					: GUISkin;							//Los estilos diferentes para la GUI, configu
 private var menuOpcionesInt		: int		= 0;					//Variable de control sobre el menu lateral derecho
 
 //Privadas del script
-private var estado 				: T_estados = T_estados.inicial;	//Los estados por los que pasa el juego
+private var estado 				: T_estados = T_estados.principal;	//Los estados por los que pasa el juego
 private var anchoTextura 		: int;
 private var altoTextura 		: int;
 private var relTexTabAncho		: float; 							//Que relación hay entre el ancho de la textura y el ancho del tablero lógico
@@ -278,6 +278,9 @@ function creacionInicial() {
 	texturaMask.SetPixels(pixels);
 	texturaMask.Apply();
 	
+	//Inicializa el tablero adecuadamente
+	iniciaTablero(texturaBase);
+	
 	estado = T_estados.principal;
 }
 
@@ -299,6 +302,7 @@ function iniciaTablero(tex : Texture2D) {
 			media = media / (relTexTabAncho * relTexTabAlto);
 			
 			//Se calcula el habitat en el que va a estar la casilla y los elementos que tendrá
+			//TODO Esto es un ejemplo a refinar...
 			var elems : T_elementos[] = new T_elementos[5];
 			var habitat : T_habitats;
 			if (media < (nivelAgua - (tamanoPlaya * 1.2))) {
@@ -327,6 +331,9 @@ function iniciaTablero(tex : Texture2D) {
 }
 
 //Update y transiciones de estados -------------------------------------------------------------------------------------------------------
+function Awake() {
+	creacionInicial();
+}
 
 function Update () {
 
@@ -395,13 +402,19 @@ function grupoDerecha() {
 	if (menuOpcionesInt == 1) {
 		GUI.BeginGroup(Rect(Screen.width - 100, Screen.height / 2 - 140, 300, 300));
 		if (GUI.Button(Rect(0, 0, 79, 96), "", "botonCamRot")) {
-			
+			var script : SmoothMouseOrbit = transform.GetComponent(SmoothMouseOrbit);
+			var objetivo : Transform = GameObject.Find("Planeta").GetComponent(Transform);
+			script.cambiarTarget(objetivo, false);
 		}
-		if (GUI.Button(Rect(0, 100, 79, 96), "Opcion 2", "botonDer")) {
-			
+		if (GUI.Button(Rect(0, 100, 79, 96), "Rot nave", "botonDer")) {
+			script = transform.GetComponent(SmoothMouseOrbit);
+			objetivo = GameObject.Find("Moon").GetComponent(Transform);
+			script.cambiarTarget(objetivo, false);
 		}
-		if (GUI.Button(Rect(0, 200, 79, 96), "Opcion 3", "botonDer")) {
-			
+		if (GUI.Button(Rect(0, 200, 79, 96), "Pin tierra", "botonDer")) {
+			script = transform.GetComponent(SmoothMouseOrbit);
+			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
+			script.cambiarTarget(objetivo, true);
 		}
 		GUI.EndGroup();
 	}

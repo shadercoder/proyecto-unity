@@ -15,6 +15,8 @@ var yMaxLimit = 80;
 private var x = 0.0;
 private var y = 0.0;
 
+//private var xPin = 0.0;
+//private var yPin = 0.0;
 
 var smoothTime = 0.3;
 
@@ -23,15 +25,25 @@ private var ySmooth = 0.0;
 private var xVelocity = 0.0;
 private var yVelocity = 0.0;
 
+//private var xSmoothPin = 0.0;
+//private var ySmoothPin = 0.0; 
+//private var xVelocityPin = 0.0;
+//private var yVelocityPin = 0.0;
+
 private var posSmooth = Vector3.zero;
 private var posVelocity = Vector3.zero;
+
+//private var posSmoothPin = Vector3.zero;
+//private var posVelocityPin = Vector3.zero;
+
+//private var pinTarget = false;
 
 
 @script AddComponentMenu("Camera-Control/Mouse Orbit smoothed")
 
 function Start () {
    
-    Screen.showCursor = false;
+//    Screen.showCursor = false;
 
     var angles = transform.eulerAngles;
     x = angles.y;
@@ -58,7 +70,22 @@ function LateUpdate () {
        // posSmooth = Vector3.SmoothDamp(posSmooth,target.position,posVelocity,smoothTime);
 
         posSmooth = target.position; // no follow smoothing
-
+		
+//		if (pinTarget) {
+//			var rotaScript : Rotacion = target.GetComponent(Rotacion);
+//			
+//			xPin += rotaScript.eje.x * xSpeed * 0.02;
+//	        yPin -= rotaScript.eje.y * ySpeed * 0.02;
+//	
+//	        xSmoothPin = Mathf.SmoothDamp(xSmoothPin, xPin, xVelocityPin, smoothTime);
+//	        ySmoothPin = Mathf.SmoothDamp(ySmoothPin, yPin, yVelocityPin, smoothTime);
+//	
+//	        ySmoothPin = ClampAngle(ySmoothPin, yMinLimit, yMaxLimit);
+//			
+//			var rotacionInv : Quaternion = Quaternion.Euler(ySmoothPin, xSmoothPin, 0); 
+//			rotacionInv = Quaternion.Inverse(rotacionInv);
+//			rotation = rotation * rotacionInv;
+//		}
         transform.rotation = rotation;
         transform.position = rotation * Vector3(0.0, 0.0, -distance) + posSmooth;
     }
@@ -91,4 +118,10 @@ static function ClampAngle (angle : float, min : float, max : float) {
     if (angle > 360)
         angle -= 360;
     return Mathf.Clamp (angle, min, max);
+}
+
+function cambiarTarget (objetivo : Transform, pin : boolean) {
+	this.target = objetivo;
+	this.distance = 20.0;
+//	this.pinTarget = pin;
 }
