@@ -18,6 +18,7 @@ var ganancia					: float		= 0.8;					//El peso que se le da a cada nueva octava
 var escala						: float		= 0.005;				//El nivel de zoom sobre el ruido
 var nivelAgua					: float		= 0.1;					//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.1
 var tamanoPlaya 				: float		= 0.01;					//El tamaño de las playas
+var atenuacionRelieve			: float 	= 90;					//Suaviza o acentua el efecto de sombreado
 var alturaColinas				: float		= 0.15;					//La altura a partir de la cual se considera colina
 var alturaMontana				: float		= 0.2;					//La altura a partir de la cual se considera montaña
 
@@ -91,8 +92,8 @@ function ruidoTextura(tex : Texture2D) {
 	for (var i : int = 0; i < altoTextura; i++) {
 		for (var j : int = 0; j < anchoTextura; j++) {
 			var valor : float = ruido_Turbulence(Vector2(j, i)*escala, octavas, lacunaridad, ganancia);
-			pixels[j + i*anchoTextura] = Color(0.25+0.5*valor,0.2+0.4*valor,valor);
 			pixelsBump[j + i*anchoTextura] = Color(valor, valor, valor);
+			pixels[j + i*anchoTextura] = Color(valor, valor, valor);
 		}
 	}
 	tex.SetPixels(pixelsBump);
@@ -107,25 +108,6 @@ function calcularMedia(pix : Color[]) {
 	}
 	med /= pix.Length;
 	return med;
-}
-
-function ponPlayas(pix : Color[], media : float) {
-	var pixels : Color[] = pix;
-	for (var k : int = 0; k < pixels.Length; k++) {
-		//TODO Mejorar la visualización de playas, montañas y mares para que se note mas el relieve!
-		//esto es una ñapa, pero queria probar a ver como quedaba :D
-		//hace playas
-		if ((pixels[k].b > media) &&  (pixels[k].b < media+tamanoPlaya))
-			pixels[k] = Color(pixels[k].r*1.2,pixels[k].g*1.2,pixels[k].b+0.075);
-		if ((pixels[k].b < media) &&  (pixels[k].b > media-tamanoPlaya/2))
-			pixels[k] = Color(pixels[k].r*0.2,pixels[k].g+0.15,pixels[k].b+0.5);
-		if ((pixels[k].b < media-tamanoPlaya/2) &&  (pixels[k].b > media-tamanoPlaya))
-			pixels[k] = Color(pixels[k].r*0.2,pixels[k].g+0.025,pixels[k].b+0.3);
-		//hace el mar
-		else if (pixels[k].b < media)
-			pixels[k] = Color(0,pixels[k].g*0.8,pixels[k].b+0.25);
-	}
-	return pixels;
 }
 
 function mascaraReflejoAgua(pix : Color[], media : float) {
@@ -154,7 +136,7 @@ function suavizaBordeTex(pix : Color[], tex : Texture2D, tam : int) {
 			var valorRuido : float = ruido_Turbulence(Vector2(j, i)*escala, octavas, lacunaridad, ganancia);
 			var valorBump : float = valorRuido*pesoRuido + (pixelsBump[(i - 1)*anchoTextura + j].r)*pesoTextura;
 			pixelsBump[(i - 1)*anchoTextura + j] = Color(valorBump, valorBump, valorBump);
-			pixels[(i - 1)*anchoTextura + j] = Color(0.25+0.5*valorBump,0.2+0.4*valorBump,valorBump);
+			pixels[(i - 1)*anchoTextura + j] = Color(valorBump, valorBump, valorBump);
 			j++;
 		}
 	}
@@ -171,13 +153,13 @@ function suavizaPoloTex(pix : Color[], tex : Texture2D, tam : int) {
 	for (var i : int = 0; i < margen; i++) {
 		for (var j : int = 0; j < anchoTextura; j++) {			
 			pixelsBump[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
+			pixels[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos con pintura
 		}
 	}
 	for (i = altoTextura - margen; i < altoTextura; i++) {
 		for (j = 0; j < anchoTextura; j++) {			
 			pixelsBump[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(0.25, 0.2, 0); 		//El valor nuevo de los polos con pintura
+			pixels[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos con pintura
 		}
 	}
 	
@@ -188,7 +170,7 @@ function suavizaPoloTex(pix : Color[], tex : Texture2D, tam : int) {
 			var valor : float = punto.r * ((i + 1.0 - margen) / tam);  
 			
 			pixelsBump[j + anchoTextura*i] = Color(valor, valor, valor); 				//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor);	//El valor nuevo de los polos con pintura
+			pixels[j + anchoTextura*i] = Color(valor, valor, valor);					//El valor nuevo de los polos con pintura
 		}
 	}
 	var comienzo : float = altoTextura - (margen + tam);
@@ -198,7 +180,7 @@ function suavizaPoloTex(pix : Color[], tex : Texture2D, tam : int) {
 			valor = punto.r * ((tam - (i - comienzo)) / tam);  
 					
 			pixelsBump[j + anchoTextura*i] = Color(valor, valor, valor); 					//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(0.25+0.5*valor,0.2+0.4*valor,valor); 		//El valor nuevo de los polos con pintura
+			pixels[j + anchoTextura*i] = Color(valor, valor, valor); 						//El valor nuevo de los polos con pintura
 		}
 	}
 	
@@ -207,17 +189,70 @@ function suavizaPoloTex(pix : Color[], tex : Texture2D, tam : int) {
 	return pixels;
 }
 
-function realzarRelieve(tex : Texture2D) {
+function safex(x :int){
+	if (x >= anchoTextura)
+		return x - anchoTextura;
+	if (x < 0)
+		return anchoTextura + x;
+	return x;
+}
+
+function safey(y : int){
+	if (y >= altoTextura)
+		return y - altoTextura;
+	if (y < 0)
+		return altoTextura + y;
+	return y;
+}
+
+function realzarRelieve(tex : Texture2D, costa : float) {
 	var pixels : Color[] = tex.GetPixels();
 	for (var i : int = 0; i < pixels.Length; i++) {
-		var valor : float = pixels[i].r;
-		valor += Mathf.Lerp(-0.2, 0.6, valor/0.3);			//Los valores bajos bajarán y los valores altos subirán		
-		valor = Mathf.Clamp01(valor);
+		var valor : float = pixels[i].grayscale;
+		if (valor > costa){
+			valor += Mathf.Lerp(-0.4, 0.9, valor/0.5);			//Los valores bajos bajarán y los valores altos subirán		
+			valor = Mathf.Clamp01(valor);
+		} else
+			valor = 0.0;
 		pixels[i] = Color(valor, valor, valor);
 	}
 	tex.SetPixels(pixels);
+}
+
+function creaNormalMap(tex : Texture2D){
+	var pixels : Color32[] = tex.GetPixels32();
+	var pixelsN : Color32[] = new Color32[anchoTextura * altoTextura];
+	var c3 : Color;
+	
+	for (var y : int = 0; y < altoTextura; y++)
+            {
+                var offset : int  = y * anchoTextura;
+                for (var x : int = 0; x < anchoTextura; x++)
+                {
+ 
+                    var h0 : float = pixels[x + (anchoTextura * y)].r;
+                    var h1 : float = pixels[x + (anchoTextura * safey(y + 1))].r;
+                    var h2 : float = pixels[safex(x + 1) + (anchoTextura * y)].r;
+ 
+                    var Nx : float = h0 - h2;
+                    var Ny : float = h0 - h1;
+					var Nz : float = atenuacionRelieve;
+ 
+                    var Normal : Vector3 = new Vector3(Nx,Ny,Nz);
+					Normal.Normalize();
+                    Normal /= 2;
+					
+                    var cr : byte = (128 + (255 * Normal.x));
+                    var cg : byte = (128 + (255 * Normal.y));
+                    var cb : byte = (128 + (255 * Normal.z));
+					c3 = new Color32(cr, cg, cb, 128);
+                    pixelsN[x + (y * anchoTextura)] = c3;
+                }
+            }
+	tex.SetPixels32(pixelsN);
 	tex.Apply();
 }
+
 
 //Funciones principales ----------------------------------------------------------------------------------------------------------------------
 function creacionInicial() {
@@ -228,7 +263,7 @@ function creacionInicial() {
 	var texturaBase : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
 	var texturaNorm : Texture2D = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
 	var texturaMask : Texture2D = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
-
+	
 	anchoTextura = texturaBase.width;
 	altoTextura = texturaBase.height;
 	altoTableroUtil = altoTablero - casillasPolos*2;
@@ -259,18 +294,15 @@ function creacionInicial() {
 	var media : float = 0;
 	var pixels : Color[] = new Color[texturaBase.width*texturaBase.height];
 	
-	pixels = ruidoTextura(texturaNorm);											//Se crea el ruido para la textura base y normales...
-	pixels = suavizaBordeTex(pixels, texturaNorm, texturaBase.width / 20);		//Se suaviza el borde lateral...
-	pixels = suavizaPoloTex(pixels, texturaNorm, texturaBase.height / 20);		//Se suavizan los polos...
-	media = calcularMedia(texturaNorm.GetPixels());								//Se calcula la media de altura...	
-	realzarRelieve(texturaNorm);												//Se realza el relieve
-	pixels = ponPlayas(pixels, nivelAgua);										//Poner agua en el mundo a partir de la media de "altura"
+	pixels = ruidoTextura(texturaNorm);										//Se crea el ruido para la textura base y normales...
+	pixels = suavizaBordeTex(pixels, texturaNorm, texturaBase.width / 20);	//Se suaviza el borde lateral...
+	pixels = suavizaPoloTex(pixels, texturaNorm, texturaBase.height / 20);	//Se suavizan los polos...
+	media = calcularMedia(texturaNorm.GetPixels());							//Se calcula la media de altura...	
+	realzarRelieve(texturaNorm, nivelAgua);									//Se realza el relieve
+	creaNormalMap(texturaNorm);												//se transforma a NormalMap
 		
-	texturaBase.SetPixels(pixels);
+	texturaBase.SetPixels(pixels);	
 	texturaBase.Apply();
-	
-	//TODO: Hay que caracterizar a texturaNorm (el bumpMap) como tal! (una vez creada, establecer como tipo Normal Map)
-	//texturaABumpMap(texturaNorm);
 	
 	//crea la mascara de reflejo del mar: las zonas menores de la altura media (donde hay agua) reflejan luz azul
 	pixels = mascaraReflejoAgua(pixels, nivelAgua);
