@@ -86,27 +86,32 @@ function pausaJuegoSegs(segs : float) {
 
 //Funciones sobre el terreno y el tablero ---------------------------------------------------------------------------------------------------
 
-function ruidoTextura(tex : Texture2D) {
+function ruidoTextura() {
 	var pixels : Color[] = new Color[anchoTextura*altoTextura];
-	var pixelsBump : Color[] = new Color[anchoTextura*altoTextura];
 	for (var i : int = 0; i < altoTextura; i++) {
 		for (var j : int = 0; j < anchoTextura; j++) {
 			var valor : float = ruido_Turbulence(Vector2(j, i)*escala, octavas, lacunaridad, ganancia);
-			pixelsBump[j + i*anchoTextura] = Color(valor, valor, valor);
 			pixels[j + i*anchoTextura] = Color(valor, valor, valor);
 		}
 	}
-	tex.SetPixels(pixelsBump);
-	tex.Apply();
 	return pixels;
 }
 
 function calcularMedia(pix : Color[]) {
 	var med : float = 0;
+	var max : float = -1.0;
+	var min : float = 1.0;
 	for (var i : int = 0; i < pix.Length; i++) {
 		med += pix[i].r;
+		if (pix[i].r > max)
+			max = pix[i].r;
+		if (pix[i].r < min)
+			min = pix[i].r;
 	}
 	med /= pix.Length;
+	Debug.Log("Max = " + max);
+	Debug.Log("Min = " + min);
+	Debug.Log("Media = " + med);
 	return med;
 }
 
@@ -121,9 +126,8 @@ function mascaraReflejoAgua(pix : Color[], media : float) {
 	return pixels;
 }
 
-function suavizaBordeTex(pix : Color[], tex : Texture2D, tam : int) {
+function suavizaBordeTex(pix : Color[], tam : int) {
 	var pixels : Color[] = pix;
-	var pixelsBump : Color[] = tex.GetPixels();
 	var lado : int = tam;
 	for (var i : int = 0; i < altoTextura; i++) {
 		var j : int = anchoTextura;
@@ -134,58 +138,45 @@ function suavizaBordeTex(pix : Color[], tex : Texture2D, tam : int) {
 			pesoTextura += iteraciones;
 			pesoRuido -= iteraciones;
 			var valorRuido : float = ruido_Turbulence(Vector2(j, i)*escala, octavas, lacunaridad, ganancia);
-			var valorBump : float = valorRuido*pesoRuido + (pixelsBump[(i - 1)*anchoTextura + j].r)*pesoTextura;
-			pixelsBump[(i - 1)*anchoTextura + j] = Color(valorBump, valorBump, valorBump);
+			var valorBump : float = valorRuido * pesoRuido + (pixels[(i - 1) * anchoTextura + j].r) * pesoTextura;
 			pixels[(i - 1)*anchoTextura + j] = Color(valorBump, valorBump, valorBump);
 			j++;
 		}
 	}
-	tex.SetPixels(pixelsBump);
-	tex.Apply();
 	return pixels;
 }
 
-function suavizaPoloTex(pix : Color[], tex : Texture2D, tam : int) {
+function suavizaPoloTex(pix : Color[], tam : int) {
 	var pixels : Color[] = pix;
-	var pixelsBump : Color[] = tex.GetPixels();
 	var lado : int = tam;
 	//Se ponen los polos desde el origen hasta el margen (en pixeles) con la orografía deseada
 	for (var i : int = 0; i < margen; i++) {
 		for (var j : int = 0; j < anchoTextura; j++) {			
-			pixelsBump[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos con pintura
+			pixels[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
 		}
 	}
 	for (i = altoTextura - margen; i < altoTextura; i++) {
 		for (j = 0; j < anchoTextura; j++) {			
-			pixelsBump[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos con pintura
+			pixels[j + anchoTextura*i] = Color(0, 0, 0); 		//El valor nuevo de los polos 
 		}
 	}
 	
 	//Ahora se suaviza desde y hacia el margen
 	for (i = margen; i < margen + tam; i++) {
 		for (j = 0; j < anchoTextura; j++) {
-			var punto : Color = pixelsBump[j + anchoTextura*i];
-			var valor : float = punto.r * ((i + 1.0 - margen) / tam);  
-			
-			pixelsBump[j + anchoTextura*i] = Color(valor, valor, valor); 				//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(valor, valor, valor);					//El valor nuevo de los polos con pintura
+			var punto : Color = pixels[j + anchoTextura*i];
+			var valor : float = punto.r * ((i + 1.0 - margen) / tam);  			
+			pixels[j + anchoTextura*i] = Color(valor, valor, valor);					//El valor nuevo de los polos 
 		}
 	}
 	var comienzo : float = altoTextura - (margen + tam);
 	for (i = comienzo; i < altoTextura - margen; i++) {
 		for (j = 0; j < anchoTextura; j++) {	
-			punto = pixelsBump[j + anchoTextura*i];
+			punto = pixels[j + anchoTextura*i];
 			valor = punto.r * ((tam - (i - comienzo)) / tam);  
-					
-			pixelsBump[j + anchoTextura*i] = Color(valor, valor, valor); 					//El valor nuevo de los polos
-			pixels[j + anchoTextura*i] = Color(valor, valor, valor); 						//El valor nuevo de los polos con pintura
+			pixels[j + anchoTextura*i] = Color(valor, valor, valor); 						//El valor nuevo de los polos
 		}
 	}
-	
-	tex.SetPixels(pixelsBump);
-	tex.Apply();
 	return pixels;
 }
 
@@ -205,18 +196,16 @@ function safey(y : int){
 	return y;
 }
 
-function realzarRelieve(tex : Texture2D, costa : float) {
-	var pixels : Color[] = tex.GetPixels();
+function realzarRelieve(pix : Color[], media : float) {
+	var pixels : Color[] = pix;
 	for (var i : int = 0; i < pixels.Length; i++) {
-		var valor : float = pixels[i].grayscale;
-		if (valor > costa){
-			valor += Mathf.Lerp(-0.4, 0.9, valor/0.5);			//Los valores bajos bajarán y los valores altos subirán		
-			valor = Mathf.Clamp01(valor);
-		} else
-			valor = 0.0;
+		var valor : float = pixels[i].r;
+		//Los valores por encima de la media * 2 seran maximos (0.85 sobre 1)
+		//y de ahi hacia abajo linealmente descendentes (hasta 0)
+		valor = Mathf.Lerp(0, 0.85, valor / (media * 2));	
 		pixels[i] = Color(valor, valor, valor);
 	}
-	tex.SetPixels(pixels);
+	return pixels;
 }
 
 function creaNormalMap(tex : Texture2D){
@@ -224,31 +213,30 @@ function creaNormalMap(tex : Texture2D){
 	var pixelsN : Color32[] = new Color32[anchoTextura * altoTextura];
 	var c3 : Color;
 	
-	for (var y : int = 0; y < altoTextura; y++)
-            {
-                var offset : int  = y * anchoTextura;
-                for (var x : int = 0; x < anchoTextura; x++)
-                {
- 
-                    var h0 : float = pixels[x + (anchoTextura * y)].r;
-                    var h1 : float = pixels[x + (anchoTextura * safey(y + 1))].r;
-                    var h2 : float = pixels[safex(x + 1) + (anchoTextura * y)].r;
- 
-                    var Nx : float = h0 - h2;
-                    var Ny : float = h0 - h1;
-					var Nz : float = atenuacionRelieve;
- 
-                    var Normal : Vector3 = new Vector3(Nx,Ny,Nz);
-					Normal.Normalize();
-                    Normal /= 2;
-					
-                    var cr : byte = (128 + (255 * Normal.x));
-                    var cg : byte = (128 + (255 * Normal.y));
-                    var cb : byte = (128 + (255 * Normal.z));
-					c3 = new Color32(cr, cg, cb, 128);
-                    pixelsN[x + (y * anchoTextura)] = c3;
-                }
-            }
+	for (var y : int = 0; y < altoTextura; y++) {
+        var offset : int  = y * anchoTextura;
+        for (var x : int = 0; x < anchoTextura; x++)
+        {
+
+            var h0 : float = pixels[x + offset].r;
+            var h1 : float = pixels[x + (anchoTextura * safey(y + 1))].r;
+            var h2 : float = pixels[safex(x + 1) + offset].r;
+
+            var Nx : float = h0 - h2;
+            var Ny : float = h0 - h1;
+			var Nz : float = atenuacionRelieve;
+
+            var normal : Vector3 = new Vector3(Nx,Ny,Nz);
+			normal.Normalize();
+            normal /= 2;
+			
+            var cr : byte = (128 + (255 * normal.x));
+            var cg : byte = (128 + (255 * normal.y));
+            var cb : byte = (128 + (255 * normal.z));
+			c3 = new Color32(cr, cg, cb, 128);
+            pixelsN[x + offset] = c3;
+        }
+    }
 	tex.SetPixels32(pixelsN);
 	tex.Apply();
 }
@@ -294,12 +282,13 @@ function creacionInicial() {
 	var media : float = 0;
 	var pixels : Color[] = new Color[texturaBase.width*texturaBase.height];
 	
-	pixels = ruidoTextura(texturaNorm);										//Se crea el ruido para la textura base y normales...
-	pixels = suavizaBordeTex(pixels, texturaNorm, texturaBase.width / 20);	//Se suaviza el borde lateral...
-	pixels = suavizaPoloTex(pixels, texturaNorm, texturaBase.height / 20);	//Se suavizan los polos...
-	media = calcularMedia(texturaNorm.GetPixels());							//Se calcula la media de altura...	
-	realzarRelieve(texturaNorm, nivelAgua);									//Se realza el relieve
-	creaNormalMap(texturaNorm);												//se transforma a NormalMap
+	pixels = ruidoTextura();										//Se crea el ruido para la textura base y normales...
+	pixels = suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
+	pixels = suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
+	media = calcularMedia(pixels);									//Se calcula la media de altura...	
+	realzarRelieve(pixels, media);									//Se realza el relieve
+	texturaNorm.SetPixels(pixels);									//Se aplican los pixeles a la textura normal para duplicarlos
+	creaNormalMap(texturaNorm);										//se transforma a NormalMap
 		
 	texturaBase.SetPixels(pixels);	
 	texturaBase.Apply();
