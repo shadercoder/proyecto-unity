@@ -2,12 +2,33 @@
 
 var estiloGUI : GUISkin;				//Los estilos a usar para la escena de carga y menús
 private var estado : int = 0;			//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
+private var musicaOn : boolean = true;	//Está la música activada?
+private var musicaVol : float = 0.5;	//A que volumen?
+private var sfxOn : boolean = true;		//Estan los efectos de sonido activados?
+private var sfxVol : float = 0.5; 		//A que volumen?
+private var miObjeto : Transform;
+
+private var cadenaCreditos : String = "\t Hurricane son: \n Marcos Calleja Fernández\n Aris Goicoechea Lassaletta\n Pablo Pizarro Moleón\n" + 
+										"\n\t Música a cargo de:\n Easily Embarrased";
+
+function Awake() {
+	miObjeto = this.transform;
+}
 
 //function Start() {
 //	var async : AsyncOperation = Application.LoadLevelAsync ("Generador_Planeta");
 //    yield async;
 //    Debug.Log ("Loading complete");
 //}
+
+function FixedUpdate() {
+	var opSonido : AudioSource = miObjeto.GetComponent(AudioSource);
+	opSonido.volume = musicaVol;
+	if (!musicaOn && opSonido.isPlaying)
+		opSonido.Stop();
+	else if (musicaOn && !opSonido.isPlaying)
+		opSonido.Play();	
+}
 
 function OnGUI() {
 	GUI.skin = estiloGUI;
@@ -20,12 +41,10 @@ function OnGUI() {
 			Application.LoadLevel("Generador_Planeta");
 			break;
 		case 2:		//Opciones
-			//TODO Mostrar menu de opciones de manera similar al menu principal
-			//menuOpciones();
+			menuOpciones();
 			break;
 		case 3:		//Creditos
-			//TODO Mostrar los creditos junto con un boton "Saltar"
-			//creditos();
+			creditos();
 			break;
 		case 4:		//Salir
 			Application.Quit();
@@ -52,3 +71,25 @@ function menuPrincipal() {
 	GUILayout.EndVertical();
 	GUILayout.EndArea();
 }
+
+function creditos() {
+	GUI.TextArea(Rect(Screen.width / 2 - 200, Screen.height / 2 - 150, 400, 300), cadenaCreditos);
+	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), "Volver")) {
+		estado = 0;
+	}
+}
+
+function menuOpciones() {
+	GUILayout.BeginArea(Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
+	GUILayout.BeginVertical();
+	musicaOn = GUILayout.Toggle(musicaOn, "Activar música?");
+	musicaVol = GUILayout.HorizontalSlider(musicaVol, 0.0, 1.0);
+	sfxOn = GUILayout.Toggle(sfxOn, "Activar efectos?");
+	sfxVol = GUILayout.HorizontalSlider(sfxVol, 0.0, 1.0);
+	GUILayout.EndVertical();
+	GUILayout.EndArea();
+	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), "Volver")) {
+		estado = 0;
+	}
+}
+
