@@ -115,15 +115,17 @@ function calcularMedia(pix : Color[]) {
 	return med;
 }
 
-function mascaraReflejoAgua(pix : Color[], media : float) {
-	var pixels : Color[] = pix;
-	for (var l : int = 0; l < pixels.Length; l++) {
-		if (pixels[l].r > media)
-			pixels[l] = Color(1,1,1);
-		else
-			pixels[l] = Color(0,0,0);			
+function mascaraBumpAgua(pixBump : Color[], media : float) {
+	var pixAgua : Color[] = new Color[anchoTextura * altoTextura];
+	for (var l : int = 0; l < pixAgua.Length; l++) {
+		if (pixBump[l].r < media){
+			pixBump[l] = Color(media,media,media);
+			pixAgua[l] = Color(0,0,0);
+		}
+		else 
+			pixAgua[l] = Color(1,1,1);			
 	}
-	return pixels;
+	return pixAgua;
 }
 
 function suavizaBordeTex(pix : Color[], tam : int) {
@@ -234,7 +236,8 @@ function creaNormalMap(tex : Texture2D){
             var cg : byte = (128 + (255 * normal.y));
             var cb : byte = (128 + (255 * normal.z));
 			c3 = new Color32(cr, cg, cb, 128);
-            pixelsN[x + offset] = c3;
+            
+			pixelsN[x + offset] = c3;
         }
     }
 	tex.SetPixels32(pixelsN);
@@ -287,17 +290,22 @@ function creacionInicial() {
 	pixels = suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
 	media = calcularMedia(pixels);									//Se calcula la media de altura...	
 	realzarRelieve(pixels, media);									//Se realza el relieve
-	texturaNorm.SetPixels(pixels);									//Se aplican los pixeles a la textura normal para duplicarlos
-	creaNormalMap(texturaNorm);										//se transforma a NormalMap
+	media = calcularMedia(pixels);									//Se calcula la media de altura con el nuevo relieve
 		
 	texturaBase.SetPixels(pixels);	
 	texturaBase.Apply();
 	
-	//crea la mascara de reflejo del mar: las zonas menores de la altura media (donde hay agua) reflejan luz azul
-	pixels = mascaraReflejoAgua(pixels, nivelAgua);
-	
-	texturaMask.SetPixels(pixels);
+	//Transforma los pixeles y crea la mascara de reflejo del mar: 
+	//las zonas menores de la altura media (donde hay agua) reflejan luz azul.
+	//Devuelve tambien una mascara con los pixeles por encima del nivel del mar
+	//para normalizarlos (el relieve submarino no se ve desde el espacio)
+	var pixelsAgua : Color[] = mascaraBumpAgua(pixels, 0.5);		//se ignora el mar para el relieve
+	texturaNorm.SetPixels(pixels);									//Se aplican los pixeles a la textura normal para duplicarlos
+	creaNormalMap(texturaNorm);										//se transforma a NormalMap
+	texturaMask.SetPixels(pixelsAgua);
 	texturaMask.Apply();
+	
+	
 	
 	//Inicializa el tablero adecuadamente
 	iniciaTablero(texturaBase);

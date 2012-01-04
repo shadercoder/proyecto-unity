@@ -1,10 +1,11 @@
 #pragma strict
 
 var target : Transform;
-var orbitingBody : Transform;
 var speed : float;
 var orbitDir : Vector3;
 var direction : Vector3;
+
+private var orbitingBody : Transform;
 
 function Awake(){
 	orbitingBody = transform;

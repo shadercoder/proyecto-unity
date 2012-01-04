@@ -1,8 +1,9 @@
 #pragma strict
 
-var target : Transform;
 var velocidad : float;
 var eje : Vector3;
+
+private var target : Transform;
 	
 // Use this for initialization
 function Start() {
