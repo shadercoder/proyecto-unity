@@ -10,9 +10,9 @@ TextureImporter:
   isReadable: 1
   textureType: 5
   mipmaps:
-    generation: 1
-    correctGamma: 0
-    border: 0
+    generation: 0
+    correctGamma: 1
+    border: 1
     filter: 0
     fadeout: 1
     fadeoutStart: 1
@@ -20,10 +20,10 @@ TextureImporter:
   bumpmap:
     generation: 1
     external: 1
-    bumpyness: 0.0207213
+    bumpyness: 0.1
     filter: 1
   textureSettings:
-    filterMode: 0
+    filterMode: 2
     anisoLevel: 4
     mipmapBias: 0
     wrapMode: 1

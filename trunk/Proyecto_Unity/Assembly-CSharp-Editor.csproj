@@ -49,6 +49,7 @@
      <None Include="Assets\Shaders\Planeta.shader" />
      <None Include="Assets\StrumpyShaderEditor\Editor\Resources\Internal\Temp\TempShader.shader" />
      <None Include="Assets\Shaders\RampShader.shader" />
+     <None Include="Assets\Shaders\PlanetaSinRamp.shader" />
      <None Include="Assets\StrumpyShaderEditor\Editor\Resources\Internal\TextureCopy.shader" />
  <Reference Include="StrumpyShaderEditor">
  <HintPath>Assets\StrumpyShaderEditor\Editor\StrumpyShaderEditor.dll</HintPath>
