@@ -55,21 +55,28 @@ function Start () {
 }
 
 function LateUpdate () {
-	/*
+	
 	//clic y centrar camara a la distancia actual en direccion al origen de la esfera pasando por el punto señalado:
 	//(pointOnSurface - target.position).magnitude * (target.localScale + distance)
-	var ray : Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-	var hit : RaycastHit;
 	if(Input.GetMouseButton(0)){
-		if (Physics.Raycast (ray, hit, Mathf.Infinity))
-			target = hit.collider.gameObject.trasform;
-			var direccion : Vector3 = hit.normal - target.position;
-			transform.position = (hit.point - target.position) * (target.localScale.x + distance);
-			transform.LookAt(direccion);
+		var lastUpdateWasAHit : boolean;
+		var ray : Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		var hit : RaycastHit;
+		
+		if (Physics.Raycast (ray, hit, Mathf.Infinity)&& lastUpdateWasAHit != true){
+			var direccion : Vector3 = hit.point - target.position;
+			direccion.Normalize();
+			var position = (direccion)*(target.localScale.x+distance)+target.position;
+			//Debug.Log(position+ "," + hit.collider);
+			transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime*5);
+			transform.LookAt(target);
+			lastUpdateWasAHit = true;
 		}
-	*/
+		else lastUpdateWasAHit = false;
+	}/*
+	
 	//mouseorbit activado, desplazamiento onDrag
-    if (target && Input.GetMouseButton(0)) {
+    if (target && Input.GetMouseButton(1)) {
         x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
         y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
 
@@ -122,7 +129,7 @@ function LateUpdate () {
 
    transform.rotation = rotation;
    transform.position = position;   
-   
+   */
 }
 
 static function ClampAngle (angle : float, min : float, max : float) {
