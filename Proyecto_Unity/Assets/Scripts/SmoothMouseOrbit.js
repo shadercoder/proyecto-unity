@@ -15,9 +15,6 @@ var yMaxLimit = 80;
 private var x = 0.0;
 private var y = 0.0;
 
-//private var xPin = 0.0;
-//private var yPin = 0.0;
-
 var smoothTime = 0.3;
 
 private var xSmooth = 0.0;
@@ -25,19 +22,16 @@ private var ySmooth = 0.0;
 private var xVelocity = 0.0;
 private var yVelocity = 0.0;
 
-//private var xSmoothPin = 0.0;
-//private var ySmoothPin = 0.0; 
-//private var xVelocityPin = 0.0;
-//private var yVelocityPin = 0.0;
-
-private var posSmooth = Vector3.zero;
 private var posVelocity = Vector3.zero;
 
-//private var posSmoothPin = Vector3.zero;
-//private var posVelocityPin = Vector3.zero;
+//Raycast para la parte de pulsar y centrar
+private var hit : RaycastHit;
+private var temporizador : float = 0.0;
+private var rotacionClick : Quaternion = Quaternion.identity;
+private var rotacionObjetivo : Quaternion = Quaternion.identity;
 
-//private var pinTarget = false;
-
+//Estados de la camara
+private var estado : int = 0;				//0 para orbita normal, 1 para pulsar&centrar
 
 @script AddComponentMenu("Camera-Control/Mouse Orbit smoothed")
 
@@ -56,80 +50,56 @@ function Start () {
 
 function LateUpdate () {
 	
-	//clic y centrar camara a la distancia actual en direccion al origen de la esfera pasando por el punto señalado:
-	//(pointOnSurface - target.position).magnitude * (target.localScale + distance)
-	if(Input.GetMouseButton(0)){
-		var lastUpdateWasAHit : boolean;
-		var ray : Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		var hit : RaycastHit;
-		
-		if (Physics.Raycast (ray, hit, Mathf.Infinity)&& lastUpdateWasAHit != true){
-			var direccion : Vector3 = hit.point - target.position;
-			direccion.Normalize();
-			var position = (direccion)*(target.localScale.x+distance)+target.position;
-			//Debug.Log(position+ "," + hit.collider);
-			transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime*5);
-			transform.LookAt(target);
-			lastUpdateWasAHit = true;
-		}
-		else lastUpdateWasAHit = false;
-	}/*
+	var position : Vector3;
 	
+	//clic y centrar camara a la distancia actual en direccion al origen de la esfera pasando por el punto señalado:
+	if(Input.GetMouseButtonUp(0) && estado == 1){
+		if (temporizador < Time.time) {
+			var ray : Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if (Physics.Raycast (ray, hit, Mathf.Infinity) ) {
+				var direccion : Vector3 = target.position - hit.point;
+				rotacionClick = Quaternion.LookRotation(direccion);
+				rotacionObjetivo = rotacionClick;
+				temporizador = Time.time + 0.5;
+			}
+		}
+	}    
+    
+    //Al pinchar con el boton derecho, resetear las posiciones para que no haya saltos bruscos
+    if (target && Input.GetMouseButtonDown(1)) {
+    	y = transform.rotation.eulerAngles.x;
+    	x = transform.rotation.eulerAngles.y;
+    	xSmooth = x;
+    	ySmooth = y;
+    }
 	//mouseorbit activado, desplazamiento onDrag
     if (target && Input.GetMouseButton(1)) {
-        x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
-        y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
-
-        xSmooth = Mathf.SmoothDamp(xSmooth, x, xVelocity, smoothTime);
-        ySmooth = Mathf.SmoothDamp(ySmooth, y, yVelocity, smoothTime);
-
-        ySmooth = ClampAngle(ySmooth, yMinLimit, yMaxLimit);
-
+	    x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
+	    y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
+	    xSmooth = Mathf.SmoothDamp(xSmooth, x, xVelocity, smoothTime);
+	    ySmooth = Mathf.SmoothDamp(ySmooth, y, yVelocity, smoothTime);
+	    ySmooth = ClampAngle(ySmooth, yMinLimit, yMaxLimit);
         var rotation = Quaternion.Euler(ySmooth, xSmooth, 0);
-
-       // posSmooth = Vector3.SmoothDamp(posSmooth,target.position,posVelocity,smoothTime);
-
-        posSmooth = target.position; // no follow smoothing
-		
-//		if (pinTarget) {
-//			var rotaScript : Rotacion = target.GetComponent(Rotacion);
-//			
-//			xPin += rotaScript.eje.x * xSpeed * 0.02;
-//	        yPin -= rotaScript.eje.y * ySpeed * 0.02;
-//	
-//	        xSmoothPin = Mathf.SmoothDamp(xSmoothPin, xPin, xVelocityPin, smoothTime);
-//	        ySmoothPin = Mathf.SmoothDamp(ySmoothPin, yPin, yVelocityPin, smoothTime);
-//	
-//	        ySmoothPin = ClampAngle(ySmoothPin, yMinLimit, yMaxLimit);
-//			
-//			var rotacionInv : Quaternion = Quaternion.Euler(ySmoothPin, xSmoothPin, 0); 
-//			rotacionInv = Quaternion.Inverse(rotacionInv);
-//			rotation = rotation * rotacionInv;
-//		}
         transform.rotation = rotation;
-        transform.position = rotation * Vector3(0.0, 0.0, -distance) + posSmooth;
+        transform.position = rotation * Vector3(0.0, 0.0, -distance) + target.position;
+        rotacionObjetivo = Quaternion.Euler(y, x, 0);
     }
     
+    //Controlar la distancia al objeto con la rueda del raton
 	if (Input.GetAxis("Mouse ScrollWheel") != 0) {
+	    if (distance >= MouseZoomMin && distance <= MouseZoomMax){
+			distance -= Input.GetAxis("Mouse ScrollWheel") * MouseWheelSensitivity;		
+			if (distance < MouseZoomMin){distance = MouseZoomMin;}
+		    if (distance > MouseZoomMax){distance = MouseZoomMax;}
+	   	}
+   	}	
+   	
+	rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, Time.deltaTime * 3);
+	position = rotation * Vector3(0.0, 0.0, -distance) + target.position;
 
-    //Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
-    //Debug.Log(distance);
-    if (distance >= MouseZoomMin && distance <= MouseZoomMax){
-
-
-	distance -= Input.GetAxis("Mouse ScrollWheel") * MouseWheelSensitivity;
-	
-	if (distance < MouseZoomMin){distance = MouseZoomMin;}
-    if (distance > MouseZoomMax){distance = MouseZoomMax;}
-   }
-   }	
-   
-   rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(y, x, 0), Time.deltaTime * 3);
-   position = rotation * Vector3(0.0, 0.0, -distance) + target.position;
-
-   transform.rotation = rotation;
-   transform.position = position;   
-   */
+	transform.rotation = rotation;
+	transform.position = position;
+   	
 }
 
 static function ClampAngle (angle : float, min : float, max : float) {
@@ -140,8 +110,12 @@ static function ClampAngle (angle : float, min : float, max : float) {
     return Mathf.Clamp (angle, min, max);
 }
 
-function cambiarTarget (objetivo : Transform, pin : boolean) {
+function cambiarTarget (objetivo : Transform) {
 	this.target = objetivo;
 	this.distance = 20.0;
-//	this.pinTarget = pin;
+}
+
+function cambiarEstado(est : int) {
+	if (est >= 0 && est <= 1)
+		this.estado = est;
 }

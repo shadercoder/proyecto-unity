@@ -109,9 +109,9 @@ function calcularMedia(pix : Color[]) {
 			min = pix[i].r;
 	}
 	med /= pix.Length;
-	Debug.Log("Max = " + max);
-	Debug.Log("Min = " + min);
-	Debug.Log("Media = " + med);
+//	Debug.Log("Max = " + max);
+//	Debug.Log("Min = " + min);
+//	Debug.Log("Media = " + med);
 	return med;
 }
 
@@ -433,17 +433,20 @@ function grupoDerecha() {
 		if (GUI.Button(Rect(0, 0, 79, 96), "", "botonCamRot")) {
 			var script : SmoothMouseOrbit = transform.GetComponent(SmoothMouseOrbit);
 			var objetivo : Transform = GameObject.Find("Planeta").GetComponent(Transform);
-			script.cambiarTarget(objetivo, false);
+			script.cambiarTarget(objetivo);
+			script.cambiarEstado(0);
 		}
 		if (GUI.Button(Rect(0, 100, 79, 96), "Rot nave", "botonDer")) {
 			script = transform.GetComponent(SmoothMouseOrbit);
 			objetivo = GameObject.Find("Moon").GetComponent(Transform);
-			script.cambiarTarget(objetivo, false);
+			script.cambiarTarget(objetivo);
+			script.cambiarEstado(0);
 		}
 		if (GUI.Button(Rect(0, 200, 79, 96), "Pin tierra", "botonDer")) {
 			script = transform.GetComponent(SmoothMouseOrbit);
 			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
-			script.cambiarTarget(objetivo, true);
+			script.cambiarTarget(objetivo);
+			script.cambiarEstado(1);
 		}
 		GUI.EndGroup();
 	}
