@@ -56,16 +56,16 @@ function OnGUI() {
 function menuPrincipal() {
 	GUILayout.BeginArea(Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
 	GUILayout.BeginVertical();
-	if (GUILayout.Button("Comenzar juego")) {
+	if (GUILayout.Button("Comenzar juego", "boton_menu_1")) {
 		estado = 1;
 	}
-	if (GUILayout.Button("Opciones")) {
+	if (GUILayout.Button("Opciones", "boton_menu_2")) {
 		estado = 2;
 	}
-	if (GUILayout.Button("Créditos")) {
+	if (GUILayout.Button("Créditos", "boton_menu_4")) {
 		estado = 3;
 	}
-	if (GUILayout.Button("Salir")) {
+	if (GUILayout.Button("Salir", "boton_menu_5")) {
 		estado = 4;
 	}
 	GUILayout.EndVertical();
@@ -74,7 +74,7 @@ function menuPrincipal() {
 
 function creditos() {
 	GUI.TextArea(Rect(Screen.width / 2 - 200, Screen.height / 2 - 150, 400, 300), cadenaCreditos);
-	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), "Volver")) {
+	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), "Volver", "boton_atras")) {
 		estado = 0;
 	}
 }
