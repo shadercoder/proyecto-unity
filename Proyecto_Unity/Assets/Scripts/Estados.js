@@ -431,19 +431,19 @@ function grupoDerecha() {
 	if (menuOpcionesInt == 1) {
 		GUI.BeginGroup(Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
 		if (GUI.Button(Rect(0, 0, 127, 79), "", "i_c_fija")) {
-			var script : SmoothMouseOrbit = transform.GetComponent(SmoothMouseOrbit);
+			var script : Control_Raton = transform.GetComponent(Control_Raton);
 			var objetivo : Transform = GameObject.Find("Planeta").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
 			script.cambiarEstado(1);
 		}
 		if (GUI.Button(Rect(0, 79, 127, 70), "", "i_c_rot")) {
-			script = transform.GetComponent(SmoothMouseOrbit);
+			script = transform.GetComponent(Control_Raton);
 			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
 			script.cambiarEstado(0);
 		}
 		if (GUI.Button(Rect(0, 149, 127, 79), "", "i_c_3")) {
-			script = transform.GetComponent(SmoothMouseOrbit);
+			script = transform.GetComponent(Control_Raton);
 			objetivo = GameObject.Find("Moon").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
 			script.cambiarEstado(0);
