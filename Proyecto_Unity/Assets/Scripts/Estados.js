@@ -410,16 +410,16 @@ function OnGUI() {
 }
 
 function grupoIzquierda() {
-	GUI.BeginGroup(Rect(5, Screen.height / 2 - 110, 130, 220));
-	if (GUI.Button(Rect(0, 0, 126, 70), "", "boton_izq_1")) {
+	GUI.BeginGroup(Rect(5, Screen.height / 2 - 110, 125, 230));
+	if (GUI.Button(Rect(0, 0, 126, 79), "", "d_planeta")) {
 		nuevoTerreno = true;
 		estado = T_estados.regenerar;
 	}
-	if (GUI.Button(Rect(0, 73, 126, 70), "", "boton_izq_2")) {
+	if (GUI.Button(Rect(0, 79, 126, 70), "", "d_cam")) {
 		menuOpcionesInt = 1;
 		estado = T_estados.camaras;
 	}
-	if (GUI.Button(Rect(0, 146, 126, 70), "", "boton_izq_3")) {
+	if (GUI.Button(Rect(0, 149, 126, 79), "", "d_func")) {
 		menuOpcionesInt = 2;
 		estado = T_estados.opciones;
 	}
@@ -429,42 +429,42 @@ function grupoIzquierda() {
 function grupoDerecha() {
 	//TODO Dependiendo de que opción este pulsada, poner un menú u otro!
 	if (menuOpcionesInt == 1) {
-		GUI.BeginGroup(Rect(Screen.width - 130, Screen.height / 2 - 110, 130, 220));
-		if (GUI.Button(Rect(0, 0, 126, 70), "", "boton_der_cam_1")) {
+		GUI.BeginGroup(Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
+		if (GUI.Button(Rect(0, 0, 127, 79), "", "i_c_fija")) {
 			var script : SmoothMouseOrbit = transform.GetComponent(SmoothMouseOrbit);
 			var objetivo : Transform = GameObject.Find("Planeta").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
+			script.cambiarEstado(1);
+		}
+		if (GUI.Button(Rect(0, 79, 127, 70), "", "i_c_rot")) {
+			script = transform.GetComponent(SmoothMouseOrbit);
+			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
+			script.cambiarTarget(objetivo);
 			script.cambiarEstado(0);
 		}
-		if (GUI.Button(Rect(0, 73, 126, 70), "", "boton_der_cam_2")) {
+		if (GUI.Button(Rect(0, 149, 127, 79), "", "i_c_3")) {
 			script = transform.GetComponent(SmoothMouseOrbit);
 			objetivo = GameObject.Find("Moon").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
 			script.cambiarEstado(0);
 		}
-		if (GUI.Button(Rect(0, 146, 126, 70), "", "boton_der_cam_3")) {
-			script = transform.GetComponent(SmoothMouseOrbit);
-			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
-			script.cambiarTarget(objetivo);
-			script.cambiarEstado(1);
-		}
 		GUI.EndGroup();
 	}
 	if (menuOpcionesInt == 2) {
-		GUI.BeginGroup(Rect(Screen.width - 130, Screen.height / 2 - 110, 130, 220));
-		if (GUI.Button(Rect(0, 0, 126, 70), "", "boton_der_opc_1")) {
+		GUI.BeginGroup(Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
+		if (GUI.Button(Rect(0, 0, 126, 79), "", "i_lab")) {
 //			var script : SmoothMouseOrbit = transform.GetComponent(SmoothMouseOrbit);
 //			var objetivo : Transform = GameObject.Find("Planeta").GetComponent(Transform);
 //			script.cambiarTarget(objetivo);
 //			script.cambiarEstado(0);
 		}
-		if (GUI.Button(Rect(0, 73, 126, 70), "", "boton_der_opc_2")) {
+		if (GUI.Button(Rect(0, 79, 126, 70), "", "i_nav")) {
 //			script = transform.GetComponent(SmoothMouseOrbit);
 //			objetivo = GameObject.Find("Moon").GetComponent(Transform);
 //			script.cambiarTarget(objetivo);
 //			script.cambiarEstado(0);
 		}
-		if (GUI.Button(Rect(0, 146, 126, 70), "", "boton_der_opc_3")) {
+		if (GUI.Button(Rect(0, 149, 126, 79), "", "i_fil")) {
 //			script = transform.GetComponent(SmoothMouseOrbit);
 //			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
 //			script.cambiarTarget(objetivo);
