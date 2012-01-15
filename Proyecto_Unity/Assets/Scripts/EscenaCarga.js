@@ -1,6 +1,7 @@
 #pragma strict
 
 var estiloGUI : GUISkin;				//Los estilos a usar para la escena de carga y menús
+var texturaFondo : Texture;
 private var estado : int = 0;			//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
 private var musicaOn : boolean = true;	//Está la música activada?
 private var musicaVol : float = 0.5;	//A que volumen?
@@ -32,7 +33,8 @@ function FixedUpdate() {
 
 function OnGUI() {
 	GUI.skin = estiloGUI;
-	GUI.Label(Rect(Screen.width / 2 - 150, 15, 400, 50), "Juego Espacial!");
+	GUI.Box(Rect(0,0,Screen.width,Screen.height), "", "fondo_inicio_1");
+	GUI.Label(Rect(Screen.width / 2 - 100, 15, 200, 50), "Juego Espacial!");
 	switch (estado) {
 		case 0: 	//Menu principal
 			menuPrincipal();
