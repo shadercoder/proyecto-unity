@@ -64,7 +64,7 @@ function LateUpdate () {
 			}
 		}
 	}    
-    
+   
     //Al pinchar con el boton derecho, resetear las posiciones para que no haya saltos bruscos
     if (target && Input.GetMouseButtonDown(1)) {
     	y = transform.rotation.eulerAngles.x;
@@ -73,7 +73,7 @@ function LateUpdate () {
     	ySmooth = y;
     }
 	//mouseorbit activado, desplazamiento onDrag
-    if (target && Input.GetMouseButton(1)) {
+    if (target && Input.GetMouseButton(1)&& estado == 0) {
 	    x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
 	    y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
 	    xSmooth = Mathf.SmoothDamp(xSmooth, x, xVelocity, smoothTime);

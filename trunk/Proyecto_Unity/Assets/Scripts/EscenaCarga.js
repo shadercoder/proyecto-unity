@@ -64,10 +64,10 @@ function menuPrincipal() {
 	if (GUILayout.Button("Opciones", "boton_menu_2")) {
 		estado = 2;
 	}
-	if (GUILayout.Button("Créditos", "boton_menu_4")) {
+	if (GUILayout.Button("Créditos", "boton_menu_3")) {
 		estado = 3;
 	}
-	if (GUILayout.Button("Salir", "boton_menu_5")) {
+	if (GUILayout.Button("Salir", "boton_menu_4")) {
 		estado = 4;
 	}
 	GUILayout.EndVertical();
