@@ -37,9 +37,25 @@ private var nuevoTerreno		: boolean	= false;				//Si se quiere re-generar el ter
 
 private var tablero				: Casilla[,];						//Tablero lógico del algoritmo
 
+//Opciones
+var contenedorSonido			: GameObject;						//El objeto que va a contener la fuente del audio
+private var sonido				: AudioSource;						//La fuente del audio
+private var opcionesPerdurables	: Opciones;							//El objeto del que se van a sacar los valores de las opciones
+
+private var musicaOn 			: boolean 	= true;					//Está la música activada?
+private var musicaVol 			: float		= 0.5;					//A que volumen?
+private var sfxOn 				: boolean 	= true;					//Estan los efectos de sonido activados?
+private var sfxVol 				: float 	= 0.5; 					//A que volumen?
+
+//Tooltips
+private var posicionMouse : Vector3 = Vector3.zero;		//Guarda la ultima posicion del mouse		
+private var activarTooltip : boolean = false;			//Controla si se muestra o no el tooltip	
+private var ultimoMov : float = 0;						//Ultima vez que se movio el mouse		
+var tiempoTooltip : float = 0.75;						//Tiempo que tarda en aparecer el tooltip	
+
 //Tipos especiales ----------------------------------------------------------------------------------------------------------------------
 
-enum T_estados {inicial, principal, laboratorio, filtros, camaras, opciones, salir, regenerar};						//Añadir los que hagan falta mas tarde
+enum T_estados {inicial, principal, laboratorio, filtros, guardar, opciones, salir, regenerar};						//Añadir los que hagan falta mas tarde
 enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};												//Tipos de orografía
 enum T_elementos {hidrogeno, helio, oxigeno, carbono, boro, nitrogeno, litio, silicio, magnesio, argon, potasio};	//Se pueden añadir mas mas adelante
 
@@ -360,8 +376,20 @@ function iniciaTablero(tex : Texture2D) {
 }
 
 //Update y transiciones de estados -------------------------------------------------------------------------------------------------------
+
 function Awake() {
 	creacionInicial();
+	var opcTemp : GameObject = GameObject.FindWithTag("Opciones");
+	if (opcTemp != null) {
+		opcionesPerdurables = opcTemp.GetComponent(Opciones);
+		musicaOn = opcionesPerdurables.getMusicaOn();
+		musicaVol = opcionesPerdurables.getMusicaVol();
+		sfxOn = opcionesPerdurables.getSfxOn();
+		sfxVol = opcionesPerdurables.getSfxVol();
+	}
+	sonido = contenedorSonido.GetComponent(AudioSource);
+	sonido.mute = !musicaOn;
+	sonido.volume = musicaVol;
 }
 
 function Update () {
@@ -380,15 +408,30 @@ function Update () {
 		case T_estados.laboratorio:
 			break;
 		case T_estados.opciones:
+			Time.timeScale = 0;
 			break;
-		case T_estados.camaras:
+		case T_estados.guardar:
+			Time.timeScale = 0;
 			break;
 		case T_estados.salir:
+			Application.LoadLevel("Escena_Inicial");
 			break;
 		default:
 			//Error!
 			Debug.LogError("Estado del juego desconocido! La variable contiene: " + estado);
 			break;
+	}
+	
+	//Control del tooltip
+	if (Input.mousePosition != posicionMouse) {
+		posicionMouse = Input.mousePosition;
+		activarTooltip = false;
+		ultimoMov = Time.time;
+	}
+	else {
+		if (Time.time >= ultimoMov + tiempoTooltip) {
+			activarTooltip = true;
+		}
 	}
 
 }
@@ -397,31 +440,59 @@ function Update () {
 
 function OnGUI() {
 	GUI.skin = estiloGUI;
-	grupoIzquierda();
-	grupoDerecha();
 	switch (estado) {
 		case T_estados.inicial:
 			GUI.Box(Rect (Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 60), "Re-Generando!");
 			break;
+		case T_estados.opciones:
+			menuOpciones();
+			break;
+		case T_estados.principal:
+			grupoIzquierda();
+			grupoDerecha();
+			break;
 		default:						
 			break;
+	}
+	
+	//Tooltip
+	if (activarTooltip) {
+		var longitud : int = GUI.tooltip.Length;
+		if (longitud == 0) {
+			return;
+		}
+		else {
+			longitud *= 9;
+		}
+		var posx : float = Input.mousePosition.x;
+		var posy : float = Input.mousePosition.y;
+		if (posx > (Screen.width / 2)) {
+			posx -= 215;
+		}
+		else {
+			posx += 15;
+		}
+		if (posy > (Screen.height / 2)) {
+			posy += 20;
+		}		
+		var pos : Rect = Rect(posx, Screen.height - posy, longitud, 25);
+		GUI.Box(pos, "");
+		GUI.Label(pos, GUI.tooltip);
 	}
 	
 }
 
 function grupoIzquierda() {
 	GUI.BeginGroup(Rect(5, Screen.height / 2 - 110, 125, 230));
-	if (GUI.Button(Rect(0, 0, 126, 79), "", "d_planeta")) {
+	if (GUI.Button(Rect(0, 0, 126, 79), GUIContent("", "Generar otro planeta") , "d_planeta")) {
 		nuevoTerreno = true;
 		estado = T_estados.regenerar;
 	}
-	if (GUI.Button(Rect(0, 79, 126, 70), "", "d_cam")) {
+	if (GUI.Button(Rect(0, 79, 126, 70), GUIContent("", "Opciones de cámara"), "d_cam")) {
 		menuOpcionesInt = 1;
-		estado = T_estados.camaras;
 	}
-	if (GUI.Button(Rect(0, 149, 126, 79), "", "d_func")) {
+	if (GUI.Button(Rect(0, 149, 126, 79), GUIContent("", "Opciones generales"), "d_func")) {
 		menuOpcionesInt = 2;
-		estado = T_estados.opciones;
 	}
 	GUI.EndGroup();
 }
@@ -430,19 +501,19 @@ function grupoDerecha() {
 	//TODO Dependiendo de que opción este pulsada, poner un menú u otro!
 	if (menuOpcionesInt == 1) {
 		GUI.BeginGroup(Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
-		if (GUI.Button(Rect(0, 0, 127, 79), "", "i_c_fija")) {
+		if (GUI.Button(Rect(0, 0, 127, 79), GUIContent("", "Click izq. para centrar"), "i_c_fija")) {
 			var script : Control_Raton = transform.GetComponent(Control_Raton);
 			var objetivo : Transform = GameObject.Find("Planeta").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
 			script.cambiarEstado(1);
 		}
-		if (GUI.Button(Rect(0, 79, 127, 70), "", "i_c_rot")) {
+		if (GUI.Button(Rect(0, 79, 127, 70), GUIContent("", "Rotar con click der."), "i_c_rot")) {
 			script = transform.GetComponent(Control_Raton);
 			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
 			script.cambiarEstado(0);
 		}
-		if (GUI.Button(Rect(0, 149, 127, 79), "", "i_c_3")) {
+		if (GUI.Button(Rect(0, 149, 127, 79), GUIContent("", "Centrar en la luna"), "i_c_3")) {
 			script = transform.GetComponent(Control_Raton);
 			objetivo = GameObject.Find("Moon").GetComponent(Transform);
 			script.cambiarTarget(objetivo);
@@ -452,25 +523,41 @@ function grupoDerecha() {
 	}
 	if (menuOpcionesInt == 2) {
 		GUI.BeginGroup(Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
-		if (GUI.Button(Rect(0, 0, 126, 79), "", "i_lab")) {
-//			var script : SmoothMouseOrbit = transform.GetComponent(SmoothMouseOrbit);
-//			var objetivo : Transform = GameObject.Find("Planeta").GetComponent(Transform);
-//			script.cambiarTarget(objetivo);
-//			script.cambiarEstado(0);
+		if (GUI.Button(Rect(0, 0, 126, 79), GUIContent("", "Laboratorio genético"), "i_lab")) {
+
 		}
-		if (GUI.Button(Rect(0, 79, 126, 70), "", "i_nav")) {
-//			script = transform.GetComponent(SmoothMouseOrbit);
-//			objetivo = GameObject.Find("Moon").GetComponent(Transform);
-//			script.cambiarTarget(objetivo);
-//			script.cambiarEstado(0);
+		if (GUI.Button(Rect(0, 79, 126, 70), GUIContent("", "Visión de la nave"), "i_nav")) {
+;
 		}
-		if (GUI.Button(Rect(0, 149, 126, 79), "", "i_fil")) {
-//			script = transform.GetComponent(SmoothMouseOrbit);
-//			objetivo = GameObject.Find("Planeta").GetComponent(Transform);
-//			script.cambiarTarget(objetivo);
-//			script.cambiarEstado(1);
+		if (GUI.Button(Rect(0, 149, 126, 79), GUIContent("", "Opciones del juego"), "i_fil")) {
+			script = transform.GetComponent(Control_Raton);
+			script.setInteraccion(false);
+			estado = T_estados.opciones;
 		}
 		GUI.EndGroup();
 	}
+}
+
+function menuOpciones() {
+	GUILayout.BeginArea(Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
+	GUILayout.BeginVertical();
+	if (GUILayout.Button(GUIContent("Salir", "Salir del juego"), "boton_menu_1")) {
+		Time.timeScale = 1.0;
+		var script : Control_Raton = transform.GetComponent(Control_Raton);
+		script.setInteraccion(true);
+		estado = T_estados.salir;
+	}
+	if (GUILayout.Button(GUIContent("Guardar", "Guardar la partida"), "boton_menu_2")) {
+		Time.timeScale = 1.0;
+		estado = T_estados.guardar;
+	}
+	if (GUILayout.Button(GUIContent("Volver", "Volver al juego"), "boton_menu_4")) {
+		Time.timeScale = 1.0;
+		script = transform.GetComponent(Control_Raton);
+		script.setInteraccion(true);
+		estado = T_estados.principal;
+	}
+	GUILayout.EndVertical();
+	GUILayout.EndArea();
 }
 
