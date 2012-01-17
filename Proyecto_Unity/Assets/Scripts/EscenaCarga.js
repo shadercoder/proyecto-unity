@@ -2,6 +2,7 @@
 
 var estiloGUI : GUISkin;				//Los estilos a usar para la escena de carga y menús
 var texturaFondo : Texture;
+var opcionesPerdurables : GameObject;
 private var estado : int = 0;			//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
 private var musicaOn : boolean = true;	//Está la música activada?
 private var musicaVol : float = 0.5;	//A que volumen?
@@ -12,8 +13,19 @@ private var miObjeto : Transform;
 private var cadenaCreditos : String = "\t Hurricane son: \n Marcos Calleja Fernández\n Aris Goicoechea Lassaletta\n Pablo Pizarro Moleón\n" + 
 										"\n\t Música a cargo de:\n Easily Embarrased";
 
+//Tooltips
+private var posicionMouse : Vector3 = Vector3.zero;		//Guarda la ultima posicion del mouse		
+private var activarTooltip : boolean = false;			//Controla si se muestra o no el tooltip	
+private var ultimoMov : float = 0;						//Ultima vez que se movio el mouse		
+var tiempoTooltip : float = 0.75;						//Tiempo que tarda en aparecer el tooltip	
+
+			
+									
+//Funciones basicas ----------------------------------------------------------------------------------------------------------------------
+
 function Awake() {
 	miObjeto = this.transform;
+	DontDestroyOnLoad(opcionesPerdurables);
 }
 
 //function Start() {
@@ -22,11 +34,24 @@ function Awake() {
 //    Debug.Log ("Loading complete");
 //}
 
+function Update() {
+	if (Input.mousePosition != posicionMouse) {
+		posicionMouse = Input.mousePosition;
+		activarTooltip = false;
+		ultimoMov = Time.time;
+	}
+	else {
+		if (Time.time >= ultimoMov + tiempoTooltip) {
+			activarTooltip = true;
+		}
+	}
+}
+
 function FixedUpdate() {
 	var opSonido : AudioSource = miObjeto.GetComponent(AudioSource);
 	opSonido.volume = musicaVol;
 	if (!musicaOn && opSonido.isPlaying)
-		opSonido.Stop();
+		opSonido.Pause();
 	else if (musicaOn && !opSonido.isPlaying)
 		opSonido.Play();	
 }
@@ -44,6 +69,9 @@ function OnGUI() {
 			break;
 		case 2:		//Opciones
 			menuOpciones();
+			if (GUI.changed) {
+				actualizarOpciones();
+			}
 			break;
 		case 3:		//Creditos
 			creditos();
@@ -53,21 +81,48 @@ function OnGUI() {
 			break;
 	
 	}
+	
+	//Tooltip
+	if (activarTooltip) {
+		var longitud : int = GUI.tooltip.Length;
+		if (longitud == 0) {
+			return;
+		}
+		else {
+			longitud *= 9;
+		}
+		var posx : float = Input.mousePosition.x;
+		var posy : float = Input.mousePosition.y;
+		if (posx > (Screen.width / 2)) {
+			posx -= 215;
+		}
+		else {
+			posx += 15;
+		}
+		if (posy > (Screen.height / 2)) {
+			posy += 20;
+		}		
+		var pos : Rect = Rect(posx, Screen.height - posy, longitud, 25);
+		GUI.Box(pos, "");
+		GUI.Label(pos, GUI.tooltip);
+	}
 }
+
+//Menus personalizados --------------------------------------------------------------------------------------------------------------------
 
 function menuPrincipal() {
 	GUILayout.BeginArea(Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
 	GUILayout.BeginVertical();
-	if (GUILayout.Button("Comenzar juego", "boton_menu_1")) {
+	if (GUILayout.Button(GUIContent("Comenzar juego", "Comenzar un juego nuevo"), "boton_menu_1")) {
 		estado = 1;
 	}
-	if (GUILayout.Button("Opciones", "boton_menu_2")) {
+	if (GUILayout.Button(GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_2")) {
 		estado = 2;
 	}
-	if (GUILayout.Button("Créditos", "boton_menu_3")) {
+	if (GUILayout.Button(GUIContent("Créditos", "Visualiza los créditos"), "boton_menu_3")) {
 		estado = 3;
 	}
-	if (GUILayout.Button("Salir", "boton_menu_4")) {
+	if (GUILayout.Button(GUIContent("Salir", "Salir de este juego"), "boton_menu_4")) {
 		estado = 4;
 	}
 	GUILayout.EndVertical();
@@ -76,22 +131,43 @@ function menuPrincipal() {
 
 function creditos() {
 	GUI.TextArea(Rect(Screen.width / 2 - 200, Screen.height / 2 - 150, 400, 300), cadenaCreditos);
-	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), "Volver", "boton_atras")) {
+	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30),GUIContent("Volver", "Volver al menú"), "boton_atras")) {
 		estado = 0;
 	}
 }
 
 function menuOpciones() {
+	GUI.Box(Rect(Screen.width / 2 - 105, Screen.height / 2 - 105, 210, 210),"");
 	GUILayout.BeginArea(Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
 	GUILayout.BeginVertical();
-	musicaOn = GUILayout.Toggle(musicaOn, "Activar música?");
+	musicaOn = customToggle(musicaOn, "Musica", "Apagar/Encender música");
 	musicaVol = GUILayout.HorizontalSlider(musicaVol, 0.0, 1.0);
-	sfxOn = GUILayout.Toggle(sfxOn, "Activar efectos?");
+	sfxOn = customToggle(sfxOn, "SFX", "Apagar/Encender efectos");
 	sfxVol = GUILayout.HorizontalSlider(sfxVol, 0.0, 1.0);
 	GUILayout.EndVertical();
 	GUILayout.EndArea();
-	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), "Volver")) {
+	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), GUIContent("Volver", "Volver al menú"), "boton_atras")) {
 		estado = 0;
 	}
 }
 
+function actualizarOpciones() {
+	var opc : Opciones = opcionesPerdurables.GetComponent(Opciones);
+	opc.setMusicaOn(musicaOn);
+	opc.setMusicaVol(musicaVol);
+	opc.setSfxOn(sfxOn);
+	opc.setSfxVol(sfxVol);
+}
+
+//Controles personalizados -----------------------------------------------------------------------------------------------------------------
+
+function customToggle(bool : boolean, str : String, tool : String) {
+	var valor : boolean;
+	GUILayout.BeginVertical();
+	GUILayout.BeginHorizontal();
+	GUILayout.Label(GUIContent(str, tool));
+	valor = GUILayout.Toggle(bool, GUIContent("", tool));
+	GUILayout.EndHorizontal();
+	GUILayout.EndVertical();
+	return valor;
+}

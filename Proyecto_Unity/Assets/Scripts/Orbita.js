@@ -22,4 +22,3 @@ function Start() {
 function Update () {
 	transform.RotateAround (target.position, orbitDir, speed * Time.deltaTime);
 }
-	

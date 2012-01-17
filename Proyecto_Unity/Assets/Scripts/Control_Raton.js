@@ -32,6 +32,7 @@ private var rotacionObjetivo : Quaternion = Quaternion.identity;
 
 //Estados de la camara
 private var estado : int = 0;				//0 para orbita normal, 1 para pulsar&centrar
+private var interaccion : boolean = true;	//Si el ratón puede interactuar con el mundo o no
 
 @script AddComponentMenu("Camera-Control/Mouse Orbit smoothed")
 
@@ -51,6 +52,10 @@ function Start () {
 function LateUpdate () {
 	
 	var position : Vector3;
+	//Si el estado es 2, no permitir ningún movimiento
+	if (!interaccion) {
+		return;
+	}
 	
 	//clic y centrar camara a la distancia actual en direccion al origen de la esfera pasando por el punto señalado:
 	if(Input.GetMouseButtonUp(0) && estado == 1){
@@ -66,14 +71,14 @@ function LateUpdate () {
 	}    
    
     //Al pinchar con el boton derecho, resetear las posiciones para que no haya saltos bruscos
-    if (target && Input.GetMouseButtonDown(1)) {
+    if (target && Input.GetMouseButtonDown(1) && estado == 0) {
     	y = transform.rotation.eulerAngles.x;
     	x = transform.rotation.eulerAngles.y;
     	xSmooth = x;
     	ySmooth = y;
     }
 	//mouseorbit activado, desplazamiento onDrag
-    if (target && Input.GetMouseButton(1)&& estado == 0) {
+    if (target && Input.GetMouseButton(1) && estado == 0) {
 	    x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
 	    y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
 	    xSmooth = Mathf.SmoothDamp(xSmooth, x, xVelocity, smoothTime);
@@ -115,7 +120,12 @@ function cambiarTarget (objetivo : Transform) {
 	this.distance = 20.0;
 }
 
+//Estados en los que puede encontrarse el script de control: 0 para arrastre y 1 para click & go
 function cambiarEstado(est : int) {
 	if (est >= 0 && est <= 1)
 		this.estado = est;
+}
+
+function setInteraccion(bol : boolean) {
+	interaccion = bol;
 }
