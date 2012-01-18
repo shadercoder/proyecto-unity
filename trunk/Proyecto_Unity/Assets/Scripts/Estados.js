@@ -135,7 +135,7 @@ function mascaraBumpAgua(pixBump : Color[], media : float) {
 	var pixAgua : Color[] = new Color[anchoTextura * altoTextura];
 	for (var l : int = 0; l < pixAgua.Length; l++) {
 		if (pixBump[l].r < media){
-			pixBump[l] = Color(media,media,media);
+//			pixBump[l] = Color(media,media,media);
 			pixAgua[l] = Color(0,0,0);
 		}
 		else 
@@ -256,8 +256,9 @@ function creaNormalMap(tex : Texture2D){
 			pixelsN[x + offset] = c3;
         }
     }
-	tex.SetPixels32(pixelsN);
-	tex.Apply();
+    return pixelsN;
+//	tex.SetPixels32(pixelsN);
+//	tex.Apply();
 }
 
 
@@ -305,26 +306,23 @@ function creacionInicial() {
 	pixels = suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 	pixels = suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
 	media = calcularMedia(pixels);									//Se calcula la media de altura...	
-	realzarRelieve(pixels, media);									//Se realza el relieve
-	media = calcularMedia(pixels);									//Se calcula la media de altura con el nuevo relieve
+	pixels = realzarRelieve(pixels, media);							//Se realza el relieve
+//	media = calcularMedia(pixels);									//Se calcula la media de altura con el nuevo relieve
 		
 	texturaBase.SetPixels(pixels);	
 	texturaBase.Apply();
+	
+	texturaNorm.SetPixels(pixels);									//Se aplican los pixeles a la textura normal para duplicarlos
+	texturaNorm.SetPixels32(creaNormalMap(texturaNorm));			//se transforma a NormalMap
+	texturaNorm.Apply();
 	
 	//Transforma los pixeles y crea la mascara de reflejo del mar: 
 	//las zonas menores de la altura media (donde hay agua) reflejan luz azul.
 	//Devuelve tambien una mascara con los pixeles por encima del nivel del mar
 	//para normalizarlos (el relieve submarino no se ve desde el espacio)
 	var pixelsAgua : Color[] = mascaraBumpAgua(pixels, 0.5);		//se ignora el mar para el relieve
-	texturaNorm.SetPixels(pixels);									//Se aplican los pixeles a la textura normal para duplicarlos
-	creaNormalMap(texturaNorm);										//se transforma a NormalMap
 	texturaMask.SetPixels(pixelsAgua);
 	texturaMask.Apply();
-	
-	
-	
-	//Inicializa el tablero adecuadamente
-	iniciaTablero(texturaBase);
 	
 	estado = T_estados.principal;
 }
@@ -335,13 +333,13 @@ function iniciaTablero(tex : Texture2D) {
 	for (var i : int = 0; i < altoTableroUtil; i++) {
 		for (var j : int = 0; j < anchoTablero; j++) {
 			//Las coordenadas de la casilla actual en la textura
-			var cord : Vector2 = Vector2(j , (i + casillasPolos)*relTexTabAlto);
+			var cord : Vector2 = Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
 			
 			//Se calcula la media de altura de la casilla
 			var media : float = 0;
 			for (var x : int = 0; x < relTexTabAlto; x++) {
 				for (var y : int = 0; y < relTexTabAncho; y++) {
-					media += pixels[(i + x)*anchoTextura + (j*relTexTabAncho) + y].r;
+					media += pixels[(cord.y + x)*anchoTextura + cord.x + y].r;
 				}
 			}
 			media = media / (relTexTabAncho * relTexTabAlto);
