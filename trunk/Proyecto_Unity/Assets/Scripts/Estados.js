@@ -135,7 +135,7 @@ function mascaraBumpAgua(pixBump : Color[], media : float) {
 	var pixAgua : Color[] = new Color[anchoTextura * altoTextura];
 	for (var l : int = 0; l < pixAgua.Length; l++) {
 		if (pixBump[l].r < media){
-//			pixBump[l] = Color(media,media,media);
+			pixBump[l] = Color(media,media,media);
 			pixAgua[l] = Color(0,0,0);
 		}
 		else 
@@ -312,15 +312,16 @@ function creacionInicial() {
 	texturaBase.SetPixels(pixels);	
 	texturaBase.Apply();
 	
-	texturaNorm.SetPixels(pixels);									//Se aplican los pixeles a la textura normal para duplicarlos
-	texturaNorm.SetPixels32(creaNormalMap(texturaNorm));			//se transforma a NormalMap
-	texturaNorm.Apply();
+	
 	
 	//Transforma los pixeles y crea la mascara de reflejo del mar: 
 	//las zonas menores de la altura media (donde hay agua) reflejan luz azul.
 	//Devuelve tambien una mascara con los pixeles por encima del nivel del mar
 	//para normalizarlos (el relieve submarino no se ve desde el espacio)
 	var pixelsAgua : Color[] = mascaraBumpAgua(pixels, 0.5);		//se ignora el mar para el relieve
+	texturaNorm.SetPixels(pixels);									//Se aplican los pixeles a la textura normal para duplicarlos
+	texturaNorm.SetPixels32(creaNormalMap(texturaNorm));			//se transforma a NormalMap
+	texturaNorm.Apply();
 	texturaMask.SetPixels(pixelsAgua);
 	texturaMask.Apply();
 	
