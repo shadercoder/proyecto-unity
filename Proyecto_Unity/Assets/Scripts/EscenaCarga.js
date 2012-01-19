@@ -2,7 +2,7 @@
 
 var estiloGUI : GUISkin;				//Los estilos a usar para la escena de carga y menús
 var texturaFondo : Texture;
-var opcionesPerdurables : GameObject;
+//var opcionesPerdurables : GameObject;
 private var estado : int = 0;			//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
 private var musicaOn : boolean = true;	//Está la música activada?
 private var musicaVol : float = 0.5;	//A que volumen?
@@ -25,7 +25,25 @@ var tiempoTooltip : float = 0.75;						//Tiempo que tarda en aparecer el tooltip
 
 function Awake() {
 	miObjeto = this.transform;
-	DontDestroyOnLoad(opcionesPerdurables);
+//	DontDestroyOnLoad(opcionesPerdurables);
+	if (PlayerPrefs.HasKey("MusicaOn")) {
+		if (PlayerPrefs.GetInt("MusicaOn") == 1)
+			musicaOn = true;
+		else
+			musicaOn = false;
+	}
+	if (PlayerPrefs.HasKey("MusicaVol")) {
+		musicaVol = PlayerPrefs.GetFloat("MusicaVol");
+	}
+	if (PlayerPrefs.HasKey("SfxOn")) {
+		if (PlayerPrefs.GetInt("SfxOn") == 1)
+			sfxOn = true;
+		else
+			sfxOn = false;
+	}
+	if (PlayerPrefs.HasKey("SfxVol")) {
+		sfxVol = PlayerPrefs.GetFloat("SfxVol");
+	}
 }
 
 //function Start() {
@@ -65,6 +83,7 @@ function OnGUI() {
 			menuPrincipal();
 			break;
 		case 1:		//Comenzar
+			PlayerPrefs.Save();
 			Application.LoadLevel("Generador_Planeta");
 			break;
 		case 2:		//Opciones
@@ -77,6 +96,7 @@ function OnGUI() {
 			creditos();
 			break;
 		case 4:		//Salir
+			PlayerPrefs.Save();
 			Application.Quit();
 			break;
 	
@@ -152,11 +172,22 @@ function menuOpciones() {
 }
 
 function actualizarOpciones() {
-	var opc : Opciones = opcionesPerdurables.GetComponent(Opciones);
-	opc.setMusicaOn(musicaOn);
-	opc.setMusicaVol(musicaVol);
-	opc.setSfxOn(sfxOn);
-	opc.setSfxVol(sfxVol);
+//	var opc : Opciones = opcionesPerdurables.GetComponent(Opciones);
+	if (musicaOn)
+		PlayerPrefs.SetInt("MusicaOn", 1);
+	else
+		PlayerPrefs.SetInt("MusicaOn", 0); 
+//	var opc : Opciones = new Opciones();
+//	opc.setMusicaOn(musicaOn);
+	PlayerPrefs.SetFloat("MusicaVol", musicaVol);
+//	opc.setMusicaVol(musicaVol);
+	if (sfxOn)
+		PlayerPrefs.SetInt("SfxOn", 1);
+	else
+		PlayerPrefs.SetInt("SfxOn", 0);
+//	opc.setSfxOn(sfxOn);
+	PlayerPrefs.SetFloat("SfxVol", sfxVol);
+//	opc.setSfxVol(sfxVol);
 }
 
 //Controles personalizados -----------------------------------------------------------------------------------------------------------------

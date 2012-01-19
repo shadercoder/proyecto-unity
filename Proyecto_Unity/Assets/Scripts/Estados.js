@@ -1,5 +1,6 @@
 #pragma strict
 
+
 //Variables ---------------------------------------------------------------------------------------------------------------------------
 
 //Para el tablero
@@ -48,10 +49,16 @@ private var sfxOn 				: boolean 	= true;					//Estan los efectos de sonido activ
 private var sfxVol 				: float 	= 0.5; 					//A que volumen?
 
 //Tooltips
-private var posicionMouse : Vector3 = Vector3.zero;		//Guarda la ultima posicion del mouse		
-private var activarTooltip : boolean = false;			//Controla si se muestra o no el tooltip	
-private var ultimoMov : float = 0;						//Ultima vez que se movio el mouse		
-var tiempoTooltip : float = 0.75;						//Tiempo que tarda en aparecer el tooltip	
+private var posicionMouse 		: Vector3 	= Vector3.zero;			//Guarda la ultima posicion del mouse		
+private var activarTooltip 		: boolean 	= false;				//Controla si se muestra o no el tooltip	
+private var ultimoMov 			: float 	= 0;					//Ultima vez que se movio el mouse		
+var tiempoTooltip 				: float 	= 0.75;					//Tiempo que tarda en aparecer el tooltip	
+
+//Menus para guardar
+private var posicionScroll		: Vector2	= Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
+private var numSaves			: int		= 0;					//El numero de saves diferentes que hay en el directorio respectivo
+private var numSavesExtra		: int		= 0;					//Numero de saves que hay que no se ven al primer vistazo en la scrollview
+private var nombresSaves		: String[];							//Los nombres de los ficheros de savegames guardados
 
 //Tipos especiales ----------------------------------------------------------------------------------------------------------------------
 
@@ -310,9 +317,7 @@ function creacionInicial() {
 //	media = calcularMedia(pixels);									//Se calcula la media de altura con el nuevo relieve
 		
 	texturaBase.SetPixels(pixels);	
-	texturaBase.Apply();
-	
-	
+	texturaBase.Apply();	
 	
 	//Transforma los pixeles y crea la mascara de reflejo del mar: 
 	//las zonas menores de la altura media (donde hay agua) reflejan luz azul.
@@ -378,17 +383,25 @@ function iniciaTablero(tex : Texture2D) {
 
 function Awake() {
 	creacionInicial();
-	var opcTemp : GameObject = GameObject.FindWithTag("Opciones");
-	if (opcTemp != null) {
-		opcionesPerdurables = opcTemp.GetComponent(Opciones);
-		musicaOn = opcionesPerdurables.getMusicaOn();
-		musicaVol = opcionesPerdurables.getMusicaVol();
-		sfxOn = opcionesPerdurables.getSfxOn();
-		sfxVol = opcionesPerdurables.getSfxVol();
-	}
+	if (PlayerPrefs.GetInt("MusicaOn") == 1)
+		musicaOn = true;
+	else
+		musicaOn = false;
+	musicaVol = PlayerPrefs.GetFloat("MusicaVol");
+	if (PlayerPrefs.GetInt("SfxOn") == 1)
+		sfxOn = true;
+	else
+		sfxOn = false;
+	sfxVol = PlayerPrefs.GetFloat("SfxVol");
 	sonido = contenedorSonido.GetComponent(AudioSource);
 	sonido.mute = !musicaOn;
 	sonido.volume = musicaVol;
+	numSaves = SaveLoad.FileCount();
+	nombresSaves = new String[numSaves];
+	nombresSaves = SaveLoad.getFileNames();
+	numSavesExtra = numSaves - 3;
+	if (numSavesExtra < 0)
+		numSavesExtra = 0;
 }
 
 function Update () {
@@ -449,6 +462,9 @@ function OnGUI() {
 		case T_estados.principal:
 			grupoIzquierda();
 			grupoDerecha();
+			break;
+		case T_estados.guardar:
+			menuGuardar();
 			break;
 		default:						
 			break;
@@ -558,5 +574,43 @@ function menuOpciones() {
 	}
 	GUILayout.EndVertical();
 	GUILayout.EndArea();
+}
+
+function menuGuardar() {
+	GUI.Box(Rect(Screen.width / 2 - 126, Screen.height / 2 - 151, 252, 302), "");
+	posicionScroll = GUI.BeginScrollView(Rect(Screen.width / 2 - 125, Screen.height / 2 - 150, 250, 300), posicionScroll, Rect(0, 0, 250, 75 * numSavesExtra));
+	if (GUI.Button(Rect(5, 0, 240, 75), GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
+//		var planeta : GameObject = GameObject.FindWithTag("Planeta");
+//		var renderer : MeshRenderer = planeta.GetComponent(MeshRenderer);
+//		var texturaBase : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
+//		SaveLoad.Save(texturaBase, opcionesPerdurables);
+		//Recuperar estado normal
+		Time.timeScale = 1.0;
+		var script : Control_Raton = transform.GetComponent(Control_Raton);
+		script.setInteraccion(true);
+		estado = T_estados.principal;
+	}
+	for (var i : int = 0; i < numSaves; i++) {
+		if (GUI.Button(Rect(5, (i + 1) * 75, 240, 75), GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
+//			planeta = GameObject.FindWithTag("Planeta");
+//			renderer = planeta.GetComponent(MeshRenderer);
+//			texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+//			SaveLoad.Save(nombresSaves[i], texturaBase, opcionesPerdurables);
+			//Recuperar estado normal
+			Time.timeScale = 1.0;
+			script = transform.GetComponent(Control_Raton);
+			script.setInteraccion(true);
+			estado = T_estados.principal;
+		}
+	}
+	GUI.EndScrollView();
+	if (GUI.Button(Rect(Screen.width / 2 -30, Screen.height / 2 + 160, 60, 20), GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
+		//Recuperar estado normal
+		Time.timeScale = 1.0;
+		script = transform.GetComponent(Control_Raton);
+		script.setInteraccion(true);
+		estado = T_estados.principal;
+	}
+	
 }
 
