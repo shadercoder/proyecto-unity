@@ -11,7 +11,7 @@ private var sfxVol : float = 0.5; 		//A que volumen?
 private var miObjeto : Transform;
 
 private var cadenaCreditos : String = "\t Hurricane son: \n Marcos Calleja Fernández\n Aris Goicoechea Lassaletta\n Pablo Pizarro Moleón\n" + 
-										"\n\t Música a cargo de:\n Easily Embarrased";
+										"\n\t Música a cargo de:\n Easily Embarrased\n Frost-RAVEN";
 
 //Tooltips
 private var posicionMouse : Vector3 = Vector3.zero;		//Guarda la ultima posicion del mouse		
@@ -77,7 +77,7 @@ function FixedUpdate() {
 function OnGUI() {
 	GUI.skin = estiloGUI;
 	GUI.Box(Rect(0,0,Screen.width,Screen.height), "", "fondo_inicio_1");
-	GUI.Label(Rect(Screen.width / 2 - 100, 15, 200, 50), "Juego Espacial!");
+	GUI.Box(Rect(Screen.width / 2 - 250, 15, 500, 100), "", "header_titulo");
 	switch (estado) {
 		case 0: 	//Menu principal
 			menuPrincipal();
