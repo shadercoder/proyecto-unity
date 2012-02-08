@@ -1,25 +1,29 @@
 #pragma strict
 
-var estiloGUI : GUISkin;				//Los estilos a usar para la escena de carga y menús
-var texturaFondo : Texture;
+var estiloGUI 				: GUISkin;				//Los estilos a usar para la escena de carga y menús
+var texturaFondo 			: Texture;
 //var opcionesPerdurables : GameObject;
-private var estado : int = 0;			//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
-private var musicaOn : boolean = true;	//Está la música activada?
-private var musicaVol : float = 0.5;	//A que volumen?
-private var sfxOn : boolean = true;		//Estan los efectos de sonido activados?
-private var sfxVol : float = 0.5; 		//A que volumen?
-private var miObjeto : Transform;
+private var estado 			: int = 0;				//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
+private var faseCreacion 	: int = 0;				//Fases de la creacion del planeta
+private var musicaOn 		: boolean = true;		//Está la música activada?
+private var musicaVol 		: float = 0.5;			//A que volumen?
+private var sfxOn 			: boolean = true;		//Estan los efectos de sonido activados?
+private var sfxVol 			: float = 0.5; 			//A que volumen?
+private var miObjeto 		: Transform;
 
-private var cadenaCreditos : String = "\t Hurricane son: \n Marcos Calleja Fernández\n Aris Goicoechea Lassaletta\n Pablo Pizarro Moleón\n" + 
+private var cadenaCreditos 	: String = "\t Hurricane son: \n Marcos Calleja Fernández\n Aris Goicoechea Lassaletta\n Pablo Pizarro Moleón\n" + 
 										"\n\t Música a cargo de:\n Easily Embarrased\n Frost-RAVEN";
 
 //Tooltips
-private var posicionMouse : Vector3 = Vector3.zero;		//Guarda la ultima posicion del mouse		
-private var activarTooltip : boolean = false;			//Controla si se muestra o no el tooltip	
-private var ultimoMov : float = 0;						//Ultima vez que se movio el mouse		
-var tiempoTooltip : float = 0.75;						//Tiempo que tarda en aparecer el tooltip	
+private var posicionMouse 	: Vector3 = Vector3.zero;	//Guarda la ultima posicion del mouse		
+private var activarTooltip 	: boolean = false;			//Controla si se muestra o no el tooltip	
+private var ultimoMov 		: float = 0;				//Ultima vez que se movio el mouse		
+var tiempoTooltip 			: float = 0.75;				//Tiempo que tarda en aparecer el tooltip	
 
-			
+//Interfaz
+private var cuantoW			: int = Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
+private var cuantoH			: int = Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
+
 									
 //Funciones basicas ----------------------------------------------------------------------------------------------------------------------
 
@@ -77,13 +81,12 @@ function FixedUpdate() {
 function OnGUI() {
 	GUI.skin = estiloGUI;
 	GUI.Box(Rect(0,0,Screen.width,Screen.height), "", "fondo_inicio_1");
-	GUI.Box(Rect(Screen.width / 2 - 250, 15, 500, 100), "", "header_titulo");
+	GUI.Box(Rect(cuantoW * 16, cuantoH, cuantoW * 16, cuantoH * 5), "", "header_titulo"); //Header es 500x100px
 	switch (estado) {
 		case 0: 	//Menu principal
 			menuPrincipal();
 			break;
-		case 1:		//Comenzar
-			PlayerPrefs.Save();
+		case 1:		//Comenzar 
 			Application.LoadLevel("Generador_Planeta");
 			break;
 		case 2:		//Opciones
@@ -99,10 +102,24 @@ function OnGUI() {
 			PlayerPrefs.Save();
 			Application.Quit();
 			break;
+		case 5:		//Creacion
+			if (faseCreacion == 0)
+				creacionParte1();
+			else if (faseCreacion == 1)
+				creacionParte2();
+			else if (faseCreacion == 2)
+				creacionParte3();
+			break;
 	
 	}
 	
 	//Tooltip
+	mostrarTooltip();
+}
+
+//Funciones auxiliares --------------------------------------------------------------------------------------------------------------------
+
+function mostrarTooltip() {
 	if (activarTooltip) {
 		var longitud : int = GUI.tooltip.Length;
 		if (longitud == 0) {
@@ -117,11 +134,14 @@ function OnGUI() {
 			posx -= 215;
 		}
 		else {
-			posx += 15;
+			posx += 20;
 		}
 		if (posy > (Screen.height / 2)) {
-			posy += 20;
-		}		
+			posy -= 25;
+		}
+		else {
+			posy += 30;
+		}	
 		var pos : Rect = Rect(posx, Screen.height - posy, longitud, 25);
 		GUI.Box(pos, "");
 		GUI.Label(pos, GUI.tooltip);
@@ -131,10 +151,10 @@ function OnGUI() {
 //Menus personalizados --------------------------------------------------------------------------------------------------------------------
 
 function menuPrincipal() {
-	GUILayout.BeginArea(Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
+	GUILayout.BeginArea(Rect(cuantoW * 17, cuantoH * 10, cuantoW * 14, cuantoH * 10));
 	GUILayout.BeginVertical();
 	if (GUILayout.Button(GUIContent("Comenzar juego", "Comenzar un juego nuevo"), "boton_menu_1")) {
-		estado = 1;
+		estado = 5;
 	}
 	if (GUILayout.Button(GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_2")) {
 		estado = 2;
@@ -150,49 +170,109 @@ function menuPrincipal() {
 }
 
 function creditos() {
-	GUI.TextArea(Rect(Screen.width / 2 - 200, Screen.height / 2 - 150, 400, 300), cadenaCreditos);
-	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30),GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+	GUI.TextArea(Rect(cuantoW * 16, cuantoH * 8, cuantoW * 16, cuantoH * 14), cadenaCreditos);
+	if (GUI.Button(Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2),GUIContent("Volver", "Volver al menú"), "boton_atras")) {
 		estado = 0;
 	}
 }
 
 function menuOpciones() {
-	GUI.Box(Rect(Screen.width / 2 - 105, Screen.height / 2 - 105, 210, 210),"");
-	GUILayout.BeginArea(Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
+	GUI.Box(Rect(cuantoW * 17, cuantoH * 8, cuantoW * 14, cuantoH * 14),"");
+	GUILayout.BeginArea(Rect(cuantoW * 19, cuantoH * 9, cuantoW * 11, cuantoH * 12));
 	GUILayout.BeginVertical();
-	musicaOn = customToggle(musicaOn, "Musica", "Apagar/Encender música");
+	musicaOn = customToggleLayout(musicaOn, "Musica", "Apagar/Encender música");
 	musicaVol = GUILayout.HorizontalSlider(musicaVol, 0.0, 1.0);
-	sfxOn = customToggle(sfxOn, "SFX", "Apagar/Encender efectos");
+	GUILayout.Space(cuantoH * 2); 		//Dejar un espacio de 2 cuantos entre opcion y opcion
+	sfxOn = customToggleLayout(sfxOn, "SFX", "Apagar/Encender efectos");
 	sfxVol = GUILayout.HorizontalSlider(sfxVol, 0.0, 1.0);
 	GUILayout.EndVertical();
 	GUILayout.EndArea();
-	if (GUI.Button(Rect(Screen.width - 100, Screen.height - 50, 80, 30), GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+	if (GUI.Button(Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2),GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+		PlayerPrefs.Save();
 		estado = 0;
 	}
 }
 
 function actualizarOpciones() {
-//	var opc : Opciones = opcionesPerdurables.GetComponent(Opciones);
 	if (musicaOn)
 		PlayerPrefs.SetInt("MusicaOn", 1);
 	else
 		PlayerPrefs.SetInt("MusicaOn", 0); 
-//	var opc : Opciones = new Opciones();
-//	opc.setMusicaOn(musicaOn);
 	PlayerPrefs.SetFloat("MusicaVol", musicaVol);
-//	opc.setMusicaVol(musicaVol);
 	if (sfxOn)
 		PlayerPrefs.SetInt("SfxOn", 1);
 	else
 		PlayerPrefs.SetInt("SfxOn", 0);
-//	opc.setSfxOn(sfxOn);
 	PlayerPrefs.SetFloat("SfxVol", sfxVol);
-//	opc.setSfxVol(sfxVol);
+}
+
+function creacionParte1() {
+	GUI.Box(Rect(cuantoW * 8, cuantoH * 7, cuantoW * 39, cuantoH * 20), "Primera fase de creacion del planeta.");
+	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 10, cuantoW * 6, cuantoH * 15));
+	GUILayout.BeginVertical();
+	//Controles para alterar el tipo de terreno a crear aleatoriamente: cosas que no influyan mucho, nombre, etc. o cosas que 
+	//influyan en la creacion del ruido, por ejemplo el numero de octavas a usar podemos llamarlo "factor de erosion" o cosas asi.
+	//Despues de este paso se crea el mapa aleatorio con ruido.
+	
+	//Temporal!
+	GUILayout.Space(cuantoH * 11);	//Para dejar espacio para los botones que faltan
+	if (GUILayout.Button(GUIContent("Siguiente", "Pasar a la segunda fase"))) {
+		faseCreacion = 1;	
+	}
+	GUILayout.Space(cuantoH);
+	if (GUILayout.Button(GUIContent("Volver", "Volver al menú principal"))) {
+		faseCreacion = 0;
+		estado = 0;	
+	}
+	GUILayout.EndVertical();
+	GUILayout.EndArea();
+}
+
+function creacionParte2() {
+	GUI.Box(Rect(cuantoW * 8, cuantoH * 7, cuantoW * 39, cuantoH * 20), "Segunda fase de creacion del planeta.");
+	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 10, cuantoW * 6, cuantoH * 15));
+	GUILayout.BeginVertical();
+	//Controles para alterar el tipo de terreno ya creado: tipo de planeta a escoger con la "rampa" adecuada, altura de las montañas, 
+	//cantidad de agua, etc.
+	//Despues de este paso se colorea el mapa creado.
+	
+	//Temporal!
+	GUILayout.Space(cuantoH * 11);	//Para dejar espacio para los botones que faltan
+	if (GUILayout.Button(GUIContent("Siguiente", "Pasar a la tercera fase"))) {
+		faseCreacion = 2;	
+	}
+	GUILayout.Space(cuantoH);
+	if (GUILayout.Button(GUIContent("Volver", "Volver a la primera fase"))) {
+		faseCreacion = 0;	
+	}
+	GUILayout.EndVertical();
+	GUILayout.EndArea();
+}
+
+function creacionParte3() {
+	GUI.Box(Rect(cuantoW * 8, cuantoH * 7, cuantoW * 39, cuantoH * 20), "Tercera fase de creacion del planeta.");
+	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 10, cuantoW * 6, cuantoH * 15));
+	GUILayout.BeginVertical();
+	//Controles para alterar el tipo de terreno ya creado: ultimos retoques como por ejemplo los rios, montañas, cráteres, etc.
+	//Despues de este paso se acepta todo lo anterior y se pasa al juego.
+	
+	//Temporal!
+	GUILayout.Space(cuantoH * 11);	//Para dejar espacio para los botones que faltan
+	if (GUILayout.Button(GUIContent("Comenzar", "Empezar el juego"))) {
+		faseCreacion = 0;
+		estado = 1;	
+	}
+	GUILayout.Space(cuantoH);
+	if (GUILayout.Button(GUIContent("Volver", "Volver a la segunda fase"))) {
+		faseCreacion = 1;	
+	}
+	GUILayout.EndVertical();
+	GUILayout.EndArea();
 }
 
 //Controles personalizados -----------------------------------------------------------------------------------------------------------------
 
-function customToggle(bool : boolean, str : String, tool : String) {
+function customToggleLayout(bool : boolean, str : String, tool : String) {
 	var valor : boolean;
 	GUILayout.BeginVertical();
 	GUILayout.BeginHorizontal();
@@ -201,4 +281,13 @@ function customToggle(bool : boolean, str : String, tool : String) {
 	GUILayout.EndHorizontal();
 	GUILayout.EndVertical();
 	return valor;
+}
+
+function customSliderLayout(valor : float, izq : float, der : float, str : String, tool : String) {
+	var valorOut : float;
+	GUILayout.BeginVertical();
+	GUILayout.Label(GUIContent(str, tool));
+	valorOut = GUILayout.HorizontalSlider(valor, izq, der);
+	GUILayout.EndVertical();
+	return valorOut;
 }
