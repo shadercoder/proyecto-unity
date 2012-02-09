@@ -41,7 +41,7 @@ private var tablero				: Casilla[,];						//Tablero lógico del algoritmo
 //Opciones
 var contenedorSonido			: GameObject;						//El objeto que va a contener la fuente del audio
 private var sonido				: AudioSource;						//La fuente del audio
-private var opcionesPerdurables	: Opciones;							//El objeto del que se van a sacar los valores de las opciones
+//private var opcionesPerdurables	: Opciones;							//El objeto del que se van a sacar los valores de las opciones
 
 private var musicaOn 			: boolean 	= true;					//Está la música activada?
 private var musicaVol 			: float		= 0.5;					//A que volumen?
@@ -564,6 +564,7 @@ function menuOpciones() {
 	}
 	if (GUILayout.Button(GUIContent("Guardar", "Guardar la partida"), "boton_menu_2")) {
 		Time.timeScale = 1.0;
+		nombresSaves = SaveLoad.getFileNames();
 		estado = T_estados.guardar;
 	}
 	if (GUILayout.Button(GUIContent("Volver", "Volver al juego"), "boton_menu_4")) {
@@ -580,10 +581,12 @@ function menuGuardar() {
 	GUI.Box(Rect(Screen.width / 2 - 126, Screen.height / 2 - 151, 252, 302), "");
 	posicionScroll = GUI.BeginScrollView(Rect(Screen.width / 2 - 125, Screen.height / 2 - 150, 250, 300), posicionScroll, Rect(0, 0, 250, 75 * numSavesExtra));
 	if (GUI.Button(Rect(5, 0, 240, 75), GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
-//		var planeta : GameObject = GameObject.FindWithTag("Planeta");
-//		var renderer : MeshRenderer = planeta.GetComponent(MeshRenderer);
-//		var texturaBase : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
-//		SaveLoad.Save(texturaBase, opcionesPerdurables);
+		var planeta : GameObject = GameObject.FindWithTag("Planeta");
+		var renderer : MeshRenderer = planeta.GetComponent(MeshRenderer);
+		var texturaBase : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
+		var fecha : String = System.DateTime.Now.ToString().Replace('\\','').Replace('/','').Replace(' ', '').Replace(':','');
+		SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
+		SaveLoad.Save(texturaBase);
 		//Recuperar estado normal
 		Time.timeScale = 1.0;
 		var script : Control_Raton = transform.GetComponent(Control_Raton);
@@ -592,10 +595,11 @@ function menuGuardar() {
 	}
 	for (var i : int = 0; i < numSaves; i++) {
 		if (GUI.Button(Rect(5, (i + 1) * 75, 240, 75), GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
-//			planeta = GameObject.FindWithTag("Planeta");
-//			renderer = planeta.GetComponent(MeshRenderer);
-//			texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
-//			SaveLoad.Save(nombresSaves[i], texturaBase, opcionesPerdurables);
+			planeta = GameObject.FindWithTag("Planeta");
+			renderer = planeta.GetComponent(MeshRenderer);
+			texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+			SaveLoad.cambiaFileName(nombresSaves[i]);
+			SaveLoad.Save(texturaBase);
 			//Recuperar estado normal
 			Time.timeScale = 1.0;
 			script = transform.GetComponent(Control_Raton);
