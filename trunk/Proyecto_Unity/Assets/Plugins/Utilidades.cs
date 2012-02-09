@@ -8,47 +8,6 @@ using System;
 using System.Runtime.Serialization;
 using System.Reflection;
 
-//Clase en la que guardar las preferencias --------------------------------------------------------------------------------------------
-public class Opciones {
-	private bool musicaOn = true;		//Está la música activada?
-	private float musicaVol = 0.5f;		//A que volumen?
-	private bool sfxOn = true;			//Estan los efectos de sonido activados?
-	private float sfxVol = 0.5f; 		//A que volumen?
-
-	//Getters y setters para las variables
-	public void setMusicaOn(bool sel) {
-		musicaOn = sel;
-	}
-	
-	public void setMusicaVol(float sel) {
-		musicaVol = Mathf.Clamp01(sel);
-	}
-	
-	public void setSfxOn(bool sel) {
-		sfxOn = sel;
-	}
-	
-	public void setSfxVol(float sel) {
-		sfxVol = Mathf.Clamp01(sel);
-	}
-	
-	public bool getMusicaOn() {
-		return musicaOn;
-	}
-	
-	public float getMusicaVol() {
-		return musicaVol;
-	}
-	
-	public bool getSfxOn() {
-		return sfxOn;
-	}
-	
-	public float getSfxVol() {
-		return sfxVol;
-	}
-}
-
 
 //Clase contenedora del savegame ------------------------------------------------------------------------------------------------------
 [Serializable ()]
@@ -57,7 +16,6 @@ public class SaveData : ISerializable {
   // === Values ===
   // Edit these during gameplay
   public Texture2D normalMap;
-  public Opciones opcionesPerdurables;
   // === /Values ===
 
   // The default constructor. Included for when we call it during Save() and Load()
@@ -70,7 +28,6 @@ public class SaveData : ISerializable {
     // Get the values from info and assign them to the appropriate properties. Make sure to cast each variable.
     // Do this for each var defined in the Values section above
     normalMap = (Texture2D)info.GetValue("normalMap", typeof(Texture2D));
-    opcionesPerdurables = (Opciones)info.GetValue("opcionesPerdurables", typeof(Opciones));
   }
 
   // Required by the ISerializable class to be properly serialized. This is called automatically
@@ -78,7 +35,6 @@ public class SaveData : ISerializable {
   {
     // Repeat this for each var defined in the Values section
     info.AddValue("normalMap", normalMap);
-    info.AddValue("opcionesPerdurables", opcionesPerdurables);
   }
 }
 
@@ -86,20 +42,18 @@ public class SaveData : ISerializable {
 public class SaveLoad {
 	
 	public static string currentFileName = "SaveGame.hur";						// Edit this for different save files
-	public static string currentFilePath = Application.dataPath + "/Saves/";
-  	public static string completeFilePath =  currentFilePath + currentFileName;    
+	public static string currentFilePath = Application.persistentDataPath + "/Saves/";
+//  	public static string completeFilePath =  currentFilePath + currentFileName;    
 
   	// Call this to write data
-  	public static void Save (Texture2D norm, Opciones opc)  // Overloaded
+  	public static void Save (Texture2D norm)  // Overloaded
   	{
-    	Save (completeFilePath, norm, opc);
+    	Save (currentFilePath + currentFileName, norm);
   	}
-  	public static void Save (string filePath, Texture2D norm, Opciones opc)
+  	public static void Save (string filePath, Texture2D norm)
   	{
 	    SaveData data = new SaveData ();
-		data.normalMap = norm;
-		data.opcionesPerdurables = opc;
-	
+		data.normalMap = norm;	
 	    Stream stream = File.Open(filePath, FileMode.Create);
 	    BinaryFormatter bformatter = new BinaryFormatter();
 	    bformatter.Binder = new VersionDeserializationBinder(); 
@@ -108,10 +62,10 @@ public class SaveLoad {
   	}
 
   	// Call this to load from a file into "data"
-  	public static void Load ()  {			// Overloaded
-		Load(completeFilePath);
+  	public static SaveData Load ()  {			// Overloaded
+		return Load(currentFilePath + currentFileName);
 	}   
-  	public static void Load (string filePath) 
+  	public static SaveData Load(string filePath) 
   	{
 	    SaveData data = new SaveData ();
 	    Stream stream = File.Open(filePath, FileMode.Open);
@@ -119,8 +73,9 @@ public class SaveLoad {
 	    bformatter.Binder = new VersionDeserializationBinder(); 
 	    data = (SaveData)bformatter.Deserialize(stream);
 	    stream.Close();
-
-    // Now use "data" to access your Values
+		
+		// Now use "data" to access your Values
+		return data;
 	}
 	
 	public static int FileCount () {

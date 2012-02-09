@@ -1,19 +1,22 @@
 #pragma strict
 
-var estiloGUI 				: GUISkin;				//Los estilos a usar para la escena de carga y menús
-var texturaFondo 			: Texture;
-//var opcionesPerdurables : GameObject;
-private var estado 			: int = 0;				//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
-private var faseCreacion 	: int = 0;				//Fases de la creacion del planeta
-private var musicaOn 		: boolean = true;		//Está la música activada?
-private var musicaVol 		: float = 0.5;			//A que volumen?
-private var sfxOn 			: boolean = true;		//Estan los efectos de sonido activados?
-private var sfxVol 			: float = 0.5; 			//A que volumen?
-private var miObjeto 		: Transform;
+//Variables del script
+var contenedorTexturas 		: GameObject;				//Aqui se guardan las texturas que luego se usarán en el planeta
+private var estado 			: int = 0;					//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
+private var faseCreacion 	: int = 0;					//Fases de la creacion del planeta
+
+//Opciones
+private var musicaOn 		: boolean = true;			//Está la música activada?
+private var musicaVol 		: float = 0.5;				//A que volumen?
+private var sfxOn 			: boolean = true;			//Estan los efectos de sonido activados?
+private var sfxVol 			: float = 0.5; 				//A que volumen?
+
+//Variables de conveniencia
+private var miObjeto 		: Transform;				//Guarda la posicion del objeto para ahorrar calculos
 
 private var cadenaCreditos 	: String = "\t Hurricane son: \n Marcos Calleja Fernández\n Aris Goicoechea Lassaletta\n Pablo Pizarro Moleón\n" + 
 										"\n\t Música a cargo de:\n Easily Embarrased\n Frost-RAVEN";
-
+														//Cadena con los créditos a mostrar
 //Tooltips
 private var posicionMouse 	: Vector3 = Vector3.zero;	//Guarda la ultima posicion del mouse		
 private var activarTooltip 	: boolean = false;			//Controla si se muestra o no el tooltip	
@@ -21,15 +24,23 @@ private var ultimoMov 		: float = 0;				//Ultima vez que se movio el mouse
 var tiempoTooltip 			: float = 0.75;				//Tiempo que tarda en aparecer el tooltip	
 
 //Interfaz
+var estiloGUI 				: GUISkin;					//Los estilos a usar para la escena de carga y menús
 private var cuantoW			: int = Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
 private var cuantoH			: int = Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 
-									
+//Menus para guardar
+private var posicionScroll	: Vector2 = Vector2.zero;	//La posicion en la que se encuentra la ventana con scroll
+private var numSaves		: int = 0;					//El numero de saves diferentes que hay en el directorio respectivo
+private var numSavesExtra	: int = 0;					//Numero de saves que hay que no se ven al primer vistazo en la scrollview
+private var nombresSaves	: String[];					//Los nombres de los ficheros de savegames guardados
+private var saveGame		: SaveData;					//El contenido de la partida salvada cargada
+
+																		
 //Funciones basicas ----------------------------------------------------------------------------------------------------------------------
 
 function Awake() {
 	miObjeto = this.transform;
-//	DontDestroyOnLoad(opcionesPerdurables);
+	DontDestroyOnLoad(contenedorTexturas);
 	if (PlayerPrefs.HasKey("MusicaOn")) {
 		if (PlayerPrefs.GetInt("MusicaOn") == 1)
 			musicaOn = true;
@@ -48,6 +59,12 @@ function Awake() {
 	if (PlayerPrefs.HasKey("SfxVol")) {
 		sfxVol = PlayerPrefs.GetFloat("SfxVol");
 	}
+	numSaves = SaveLoad.FileCount();
+	nombresSaves = new String[numSaves];
+	nombresSaves = SaveLoad.getFileNames();
+	numSavesExtra = numSaves - 3;
+	if (numSavesExtra < 0)
+		numSavesExtra = 0;
 }
 
 //function Start() {
@@ -57,6 +74,7 @@ function Awake() {
 //}
 
 function Update() {
+	//Tooltip
 	if (Input.mousePosition != posicionMouse) {
 		posicionMouse = Input.mousePosition;
 		activarTooltip = false;
@@ -67,6 +85,9 @@ function Update() {
 			activarTooltip = true;
 		}
 	}
+	//Debug
+//	Debug.Log("Persistent Data path: " + Application.persistentDataPath);
+//	Debug.Log("Data path: " + Application.dataPath);
 }
 
 function FixedUpdate() {
@@ -110,6 +131,9 @@ function OnGUI() {
 			else if (faseCreacion == 2)
 				creacionParte3();
 			break;
+		case 6:		//Cargar
+			menuCargar();
+			break;
 	
 	}
 	
@@ -148,6 +172,20 @@ function mostrarTooltip() {
 	}
 }
 
+function actualizarOpciones() {
+	if (musicaOn)
+		PlayerPrefs.SetInt("MusicaOn", 1);
+	else
+		PlayerPrefs.SetInt("MusicaOn", 0); 
+	PlayerPrefs.SetFloat("MusicaVol", musicaVol);
+	if (sfxOn)
+		PlayerPrefs.SetInt("SfxOn", 1);
+	else
+		PlayerPrefs.SetInt("SfxOn", 0);
+	PlayerPrefs.SetFloat("SfxVol", sfxVol);
+}
+
+
 //Menus personalizados --------------------------------------------------------------------------------------------------------------------
 
 function menuPrincipal() {
@@ -156,7 +194,10 @@ function menuPrincipal() {
 	if (GUILayout.Button(GUIContent("Comenzar juego", "Comenzar un juego nuevo"), "boton_menu_1")) {
 		estado = 5;
 	}
-	if (GUILayout.Button(GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_2")) {
+	if (GUILayout.Button(GUIContent("Cargar", "Cargar un juego guardado"), "boton_menu_2")) {
+		estado = 6;
+	}
+	if (GUILayout.Button(GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_3")) {
 		estado = 2;
 	}
 	if (GUILayout.Button(GUIContent("Créditos", "Visualiza los créditos"), "boton_menu_3")) {
@@ -169,9 +210,22 @@ function menuPrincipal() {
 	GUILayout.EndArea();
 }
 
-function creditos() {
-	GUI.TextArea(Rect(cuantoW * 16, cuantoH * 8, cuantoW * 16, cuantoH * 14), cadenaCreditos);
-	if (GUI.Button(Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2),GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+function menuCargar() {
+	var caja : Rect = new Rect(cuantoW * 14, cuantoH * 7, cuantoW * 20, cuantoH * 16);
+	GUI.Box(caja, "");
+	caja = new Rect(cuantoW * 14, cuantoH * 8, cuantoW * 20, cuantoH * 14);
+	posicionScroll = GUI.BeginScrollView(caja, posicionScroll, Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSaves));
+	if (numSaves == 0) {
+		GUI.Label(Rect(cuantoW * 20, cuantoH * 14, cuantoW * 8, cuantoH * 2), "No hay ninguna partida guardada");
+	}
+	for (var i : int = 0; i < numSaves; i++) {
+		if (GUI.Button(Rect(cuantoW, i * cuantoH * 4, cuantoW * 18, cuantoH * 4), GUIContent(nombresSaves[i], "Cargar partida num. " + i))) {
+			SaveLoad.cambiaFileName(nombresSaves[i]);
+			saveGame = SaveLoad.Load();
+		}
+	}
+	GUI.EndScrollView();
+	if (GUI.Button(Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), GUIContent("Volver", "Volver al menú"), "boton_atras")) {
 		estado = 0;
 	}
 }
@@ -193,17 +247,11 @@ function menuOpciones() {
 	}
 }
 
-function actualizarOpciones() {
-	if (musicaOn)
-		PlayerPrefs.SetInt("MusicaOn", 1);
-	else
-		PlayerPrefs.SetInt("MusicaOn", 0); 
-	PlayerPrefs.SetFloat("MusicaVol", musicaVol);
-	if (sfxOn)
-		PlayerPrefs.SetInt("SfxOn", 1);
-	else
-		PlayerPrefs.SetInt("SfxOn", 0);
-	PlayerPrefs.SetFloat("SfxVol", sfxVol);
+function creditos() {
+	GUI.TextArea(Rect(cuantoW * 16, cuantoH * 8, cuantoW * 16, cuantoH * 14), cadenaCreditos);
+	if (GUI.Button(Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2),GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+		estado = 0;
+	}
 }
 
 function creacionParte1() {
