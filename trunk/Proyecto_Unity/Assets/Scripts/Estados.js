@@ -23,7 +23,7 @@ var atenuacionRelieve			: float 	= 90;					//Suaviza o acentua el efecto de somb
 var alturaColinas				: float		= 0.15;					//La altura a partir de la cual se considera colina
 var alturaMontana				: float		= 0.2;					//La altura a partir de la cual se considera montaña
 
-//Para la funcion GUI durante la creación del planeta
+//GUI
 var estiloGUI					: GUISkin;							//Los estilos diferentes para la GUI, configurables desde el editor
 private var menuOpcionesInt		: int		= 0;					//Variable de control sobre el menu lateral derecho
 
@@ -37,6 +37,8 @@ private var perlin				: Perlin;							//Semilla
 private var nuevoTerreno		: boolean	= false;				//Si se quiere re-generar el terreno, se hace poniendo esto a true
 
 private var tablero				: Casilla[,];						//Tablero lógico del algoritmo
+
+private var contenedorTexturas	: GameObject;						//El contenedor de las texturas de la primera escena
 
 //Opciones
 var contenedorSonido			: GameObject;						//El objeto que va a contener la fuente del audio
@@ -298,7 +300,7 @@ function creacionInicial() {
 	}
 	
 	//TODO Inicializacion del tablero
-	iniciaTablero(texturaNorm);
+//	iniciaTablero(texturaNorm);
 	
 	//Crear una seed inicial para que no todos los mapas generados sean iguales!
 	if (perlin == null || nuevoTerreno) {
@@ -382,7 +384,26 @@ function iniciaTablero(tex : Texture2D) {
 //Update y transiciones de estados -------------------------------------------------------------------------------------------------------
 
 function Awake() {
-	creacionInicial();
+//	creacionInicial();
+	contenedorTexturas = GameObject.FindGameObjectWithTag("Carga");
+	if (contenedorTexturas == null) {
+		creacionInicial();
+	}
+	else {
+		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
+		var planeta : GameObject = GameObject.FindWithTag("Planeta");
+		var renderer : MeshRenderer = planeta.GetComponent(MeshRenderer);
+		var texturaBase : Texture2D = renderer.sharedMaterial.mainTexture as Texture2D;
+		var texturaNorm : Texture2D = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
+		var texturaMask : Texture2D = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
+		var temp = contenedorTexturas.GetComponent("ValoresCarga") as ValoresCarga;
+		texturaBase = temp.texturaBase;
+		texturaNorm = temp.texturaNorm;
+		texturaMask = temp.texturaMask;
+		texturaBase.Apply();
+		texturaNorm.Apply();
+		texturaMask.Apply();
+	}
 	if (PlayerPrefs.GetInt("MusicaOn") == 1)
 		musicaOn = true;
 	else
