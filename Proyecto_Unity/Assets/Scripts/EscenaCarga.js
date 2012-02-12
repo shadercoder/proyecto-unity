@@ -1,9 +1,25 @@
 #pragma strict
 
 //Variables del script
-var contenedorTexturas 		: GameObject;				//Aqui se guardan las texturas que luego se usarán en el planeta
 private var estado 			: int = 0;					//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
+
+//Variables de la creacion
+var contenedorTexturas 		: GameObject;				//Aqui se guardan las texturas que luego se usarán en el planeta
+var texturaBase				: Texture2D;				//La textura visible que vamos a inicializar durante la creacion de un planeta nuevo
+var texturaNorm				: Texture2D;				//La textura normal con el mapa de altura
+var texturaMask 			: Texture2D;				//La textura con la mascara de reflejo para el agua
+private var texturaPantalla	: Texture2D = null;			//La textura a enseñar durante la creacion
+private var pixels			: Color[];					//Los pixeles sobre los que realizar operaciones
+private var media			: float = 0;				//La media de altura de la textura
 private var faseCreacion 	: int = 0;					//Fases de la creacion del planeta
+private var trabajando		: boolean = false;			//Para saber si está haciendo algo por debajo el script
+private var paso1Completado	: boolean = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
+private var paso2Completado	: boolean = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
+private var paso3Completado	: boolean = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
+private var gananciaInit	: float = 0.8;				//La ganancia a pasar al script de creación del ruido
+private var escalaInit		: float = 0.005;			//La escala a pasar al script de creación del ruido
+private var nivelAguaInit	: float = 0.5;				//El punto a partir del cual deja de haber mar en la orografía del planeta
+private var temperaturaInit	: float = 0.5;				//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 
 //Opciones
 private var musicaOn 		: boolean = true;			//Está la música activada?
@@ -31,7 +47,6 @@ private var cuantoH			: int = Screen.height / 30;	//Minima unidad de medida de l
 //Menus para guardar
 private var posicionScroll	: Vector2 = Vector2.zero;	//La posicion en la que se encuentra la ventana con scroll
 private var numSaves		: int = 0;					//El numero de saves diferentes que hay en el directorio respectivo
-private var numSavesExtra	: int = 0;					//Numero de saves que hay que no se ven al primer vistazo en la scrollview
 private var nombresSaves	: String[];					//Los nombres de los ficheros de savegames guardados
 private var saveGame		: SaveData;					//El contenido de la partida salvada cargada
 
@@ -62,9 +77,6 @@ function Awake() {
 	numSaves = SaveLoad.FileCount();
 	nombresSaves = new String[numSaves];
 	nombresSaves = SaveLoad.getFileNames();
-	numSavesExtra = numSaves - 3;
-	if (numSavesExtra < 0)
-		numSavesExtra = 0;
 }
 
 //function Start() {
@@ -85,7 +97,7 @@ function Update() {
 			activarTooltip = true;
 		}
 	}
-	//Debug
+	//---- Debug ----
 //	Debug.Log("Persistent Data path: " + Application.persistentDataPath);
 //	Debug.Log("Data path: " + Application.dataPath);
 }
@@ -107,8 +119,17 @@ function OnGUI() {
 		case 0: 	//Menu principal
 			menuPrincipal();
 			break;
-		case 1:		//Comenzar 
-			Application.LoadLevel("Generador_Planeta");
+		case 1:		//Comenzar
+			if (paso3Completado) {
+				var temp : ValoresCarga = contenedorTexturas.GetComponent("ValoresCarga") as ValoresCarga;
+				temp.texturaBase = texturaBase;
+				temp.texturaNorm = texturaNorm;
+				temp.texturaMask = texturaMask;
+				temp.texturaBase.Apply();
+				temp.texturaNorm.Apply();
+				temp.texturaMask.Apply();
+				Application.LoadLevel("Generador_Planeta");
+			}
 			break;
 		case 2:		//Opciones
 			menuOpciones();
@@ -125,16 +146,19 @@ function OnGUI() {
 			break;
 		case 5:		//Creacion
 			if (faseCreacion == 0)
-				creacionParte1();
+				creacionParte1Interfaz();
 			else if (faseCreacion == 1)
-				creacionParte2();
+				creacionParte2Interfaz();
 			else if (faseCreacion == 2)
-				creacionParte3();
+				creacionParte3Interfaz();
 			break;
 		case 6:		//Cargar
 			menuCargar();
 			break;
 	
+	}
+	if (trabajando) {
+		GUI.Box(Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
 	}
 	
 	//Tooltip
@@ -185,6 +209,55 @@ function actualizarOpciones() {
 	PlayerPrefs.SetFloat("SfxVol", sfxVol);
 }
 
+function creacionParte1() {
+	yield WaitForSeconds(0.1);
+	pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
+	yield WaitForEndOfFrame();
+	pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
+	yield WaitForEndOfFrame();
+	pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
+	yield WaitForEndOfFrame();
+	texturaPantalla = new Texture2D(texturaBase.width, texturaBase.height);
+	texturaPantalla.SetPixels(pixels);
+	texturaPantalla.Apply();
+	yield WaitForEndOfFrame();
+	trabajando = false;
+}
+
+function creacionParte2() {
+	yield WaitForSeconds(0.1);
+	media = FuncTablero.calcularMedia(pixels);
+	yield WaitForEndOfFrame();
+	pixels = FuncTablero.realzarRelieve(pixels, media);
+	yield WaitForEndOfFrame();
+	texturaBase.SetPixels(pixels);
+	texturaBase.Apply();
+	yield WaitForEndOfFrame();
+	trabajando = false;
+}
+
+function creacionParte3() {
+	yield WaitForSeconds(0.1);
+	var pixelsAgua : Color[] = FuncTablero.mascaraBumpAgua(pixels, nivelAguaInit);	//se ignora el mar para el relieve
+	yield WaitForEndOfFrame();
+	texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
+	texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
+	yield WaitForEndOfFrame();
+	texturaNorm.Apply();
+	texturaMask.SetPixels(pixelsAgua);
+	texturaMask.Apply();
+	yield WaitForEndOfFrame();
+	trabajando = false;
+}
+
+function creacionRestante() {
+	yield creacionParte2();
+	paso2Completado = true;
+	trabajando = true;
+	yield creacionParte3();
+	paso3Completado = true;
+}
+
 
 //Menus personalizados --------------------------------------------------------------------------------------------------------------------
 
@@ -192,6 +265,13 @@ function menuPrincipal() {
 	GUILayout.BeginArea(Rect(cuantoW * 17, cuantoH * 10, cuantoW * 14, cuantoH * 10));
 	GUILayout.BeginVertical();
 	if (GUILayout.Button(GUIContent("Comenzar juego", "Comenzar un juego nuevo"), "boton_menu_1")) {
+		pixels = new Color[texturaBase.width * texturaBase.height];
+		FuncTablero.inicializa(texturaBase);
+		texturaPantalla = null;
+		faseCreacion = 0;
+		paso1Completado = false;
+		paso2Completado = false;
+		paso3Completado = false;
 		estado = 5;
 	}
 	if (GUILayout.Button(GUIContent("Cargar", "Cargar un juego guardado"), "boton_menu_2")) {
@@ -254,67 +334,164 @@ function creditos() {
 	}
 }
 
-function creacionParte1() {
-	GUI.Box(Rect(cuantoW * 8, cuantoH * 7, cuantoW * 39, cuantoH * 20), "Primera fase de creacion del planeta.");
-	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 10, cuantoW * 6, cuantoH * 15));
+function creacionParte1Interfaz() {
+	
+	if (texturaPantalla == null) {
+		GUI.Box(Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), "\n\n\n Debe generar una vista del planeta para poder avanzar.");
+	}
+	else {
+		GUI.Box(Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), texturaPantalla);
+	}
+	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
 	GUILayout.BeginVertical();
 	//Controles para alterar el tipo de terreno a crear aleatoriamente: cosas que no influyan mucho, nombre, etc. o cosas que 
 	//influyan en la creacion del ruido, por ejemplo el numero de octavas a usar podemos llamarlo "factor de erosion" o cosas asi.
 	//Despues de este paso se crea el mapa aleatorio con ruido.
 	
-	//Temporal!
-	GUILayout.Space(cuantoH * 11);	//Para dejar espacio para los botones que faltan
-	if (GUILayout.Button(GUIContent("Siguiente", "Pasar a la segunda fase"))) {
-		faseCreacion = 1;	
+	GUILayout.Space(cuantoH * 2);
+	
+	GUILayout.Label("Edad del planeta", "label_centrada");
+	GUILayout.BeginHorizontal();
+	GUILayout.Label("Plano");
+	gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.6, 0.85);
+	GUILayout.Label("Escarpado");
+	GUILayout.EndHorizontal();
+	
+	GUILayout.Space(cuantoH * 2);
+	
+	GUILayout.Label("Tamaño de los continentes", "label_centrada");
+	GUILayout.BeginHorizontal();
+	GUILayout.Label("Pequeños");
+	escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.009, 0.001);
+	GUILayout.Label("Grandes");
+	GUILayout.EndHorizontal();
+	
+	GUILayout.Space(cuantoH * 2);
+	
+	if (GUILayout.Button(GUIContent("Generar", "Genera un nuevo planeta"))) {	
+		FuncTablero.setEscala(escalaInit);
+		FuncTablero.setGanancia(gananciaInit);
+		trabajando = true;
+		GUI.Box(Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
+		FuncTablero.reiniciaPerlin();
+		creacionParte1();
+		paso1Completado = true;
 	}
-	GUILayout.Space(cuantoH);
+	
+	GUILayout.EndVertical();
+	GUILayout.EndArea();
+	GUILayout.BeginArea(Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
+	GUILayout.BeginHorizontal();
 	if (GUILayout.Button(GUIContent("Volver", "Volver al menú principal"))) {
 		faseCreacion = 0;
 		estado = 0;	
 	}
-	GUILayout.EndVertical();
+	GUILayout.Space(cuantoW * 28);
+	if (paso1Completado) {
+		if (GUILayout.Button(GUIContent("Siguiente", "Pasar a la segunda fase"))) {
+//			faseCreacion = 1;	
+			faseCreacion = 0;
+			creacionRestante();		//Porque dejamos las cosas a medias... Medida temporal
+			estado = 1;
+		}
+	}
+	else {
+		if (GUILayout.Button(GUIContent("Siguiente", "Generar un planeta primero"))) {
+			//Sonido de error, el boton con estilo diferente para estar en gris, etc.
+		}
+	}
+	
+	GUILayout.EndHorizontal();
 	GUILayout.EndArea();
 }
 
-function creacionParte2() {
-	GUI.Box(Rect(cuantoW * 8, cuantoH * 7, cuantoW * 39, cuantoH * 20), "Segunda fase de creacion del planeta.");
-	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 10, cuantoW * 6, cuantoH * 15));
+function creacionParte2Interfaz() {
+	GUI.Box(Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), texturaPantalla);
+	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
 	GUILayout.BeginVertical();
 	//Controles para alterar el tipo de terreno ya creado: tipo de planeta a escoger con la "rampa" adecuada, altura de las montañas, 
 	//cantidad de agua, etc.
 	//Despues de este paso se colorea el mapa creado.
 	
-	//Temporal!
-	GUILayout.Space(cuantoH * 11);	//Para dejar espacio para los botones que faltan
-	if (GUILayout.Button(GUIContent("Siguiente", "Pasar a la tercera fase"))) {
-		faseCreacion = 2;	
+	GUILayout.Space(cuantoH * 2);
+	
+	GUILayout.Label("Cantidad de líquido", "label_centrada");
+	GUILayout.BeginHorizontal();
+	GUILayout.Label("Bajo");
+	nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.0, 1.0);
+	GUILayout.Label("Alto");
+	GUILayout.EndHorizontal();
+	
+	GUILayout.Space(cuantoH * 2);
+	
+	GUILayout.Label("Temperatura del planeta", "label_centrada");
+	GUILayout.BeginHorizontal();
+	GUILayout.Label("Frío");
+	temperaturaInit = GUILayout.HorizontalSlider(temperaturaInit, 0.0, 1.0);
+	GUILayout.Label("Cálido");
+	GUILayout.EndHorizontal();
+	
+	GUILayout.Space(cuantoH * 2);
+	
+	if (GUILayout.Button(GUIContent("Generar", "Genera un nuevo planeta"))) {	
+		FuncTablero.setNivelAgua(nivelAguaInit);
+//		FuncTablero.setTemperatura(temperaturaInit);
+		trabajando = true;
+		GUI.Box(Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
+		creacionParte2();
+		paso2Completado = true;
 	}
-	GUILayout.Space(cuantoH);
-	if (GUILayout.Button(GUIContent("Volver", "Volver a la primera fase"))) {
-		faseCreacion = 0;	
-	}
+	
 	GUILayout.EndVertical();
+	GUILayout.EndArea();
+	GUILayout.BeginArea(Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
+	GUILayout.BeginHorizontal();
+	if (GUILayout.Button(GUIContent("Volver", "Volver a la primera fase"))) {
+		faseCreacion = 0;
+	}
+	GUILayout.Space(cuantoW * 28);
+	if (paso2Completado) {
+		if (GUILayout.Button(GUIContent("Siguiente", "Pasar a la tercera fase"))) {
+			faseCreacion = 2;
+		}
+	}
+	else {
+		if (GUILayout.Button(GUIContent("Siguiente", "Generar la orografía primero"))) {
+			//Sonido de error, el boton con estilo diferente para estar en gris, etc.
+		}
+	}
+	GUILayout.EndHorizontal();
 	GUILayout.EndArea();
 }
 
-function creacionParte3() {
-	GUI.Box(Rect(cuantoW * 8, cuantoH * 7, cuantoW * 39, cuantoH * 20), "Tercera fase de creacion del planeta.");
-	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 10, cuantoW * 6, cuantoH * 15));
+function creacionParte3Interfaz() {
+	GUI.Box(Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), texturaPantalla);
+	GUILayout.BeginArea(Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
 	GUILayout.BeginVertical();
 	//Controles para alterar el tipo de terreno ya creado: ultimos retoques como por ejemplo los rios, montañas, cráteres, etc.
 	//Despues de este paso se acepta todo lo anterior y se pasa al juego.
 	
-	//Temporal!
-	GUILayout.Space(cuantoH * 11);	//Para dejar espacio para los botones que faltan
-	if (GUILayout.Button(GUIContent("Comenzar", "Empezar el juego"))) {
-		faseCreacion = 0;
-		estado = 1;	
-	}
-	GUILayout.Space(cuantoH);
-	if (GUILayout.Button(GUIContent("Volver", "Volver a la segunda fase"))) {
-		faseCreacion = 1;	
-	}
+	
 	GUILayout.EndVertical();
+	GUILayout.EndArea();
+	GUILayout.BeginArea(Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
+	GUILayout.BeginHorizontal();
+	if (GUILayout.Button(GUIContent("Volver", "Volver a la segunda fase"))) {
+		faseCreacion = 1;
+	}
+	GUILayout.Space(cuantoW * 28);
+	if (paso3Completado) {
+		if (GUILayout.Button(GUIContent("Comenzar", "Empezar el juego"))) {
+			faseCreacion = 0;
+			estado = 1;	
+		}
+	}
+	else {
+		if (GUILayout.Button(GUIContent("Comenzar", "Completar el paso primero"))) {
+			//Sonido de error, el boton con estilo diferente para estar en gris, etc.
+		}
+	}
+	GUILayout.EndHorizontal();
 	GUILayout.EndArea();
 }
 

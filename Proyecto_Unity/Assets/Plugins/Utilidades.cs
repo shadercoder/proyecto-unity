@@ -43,10 +43,9 @@ public class SaveLoad {
 	
 	public static string currentFileName = "SaveGame.hur";						// Edit this for different save files
 	public static string currentFilePath = Application.persistentDataPath + "/Saves/";
-//  	public static string completeFilePath =  currentFilePath + currentFileName;    
 
   	// Call this to write data
-  	public static void Save (Texture2D norm)  // Overloaded
+  	public static void Save (Texture2D norm)  		// Overloaded
   	{
     	Save (currentFilePath + currentFileName, norm);
   	}
@@ -62,7 +61,7 @@ public class SaveLoad {
   	}
 
   	// Call this to load from a file into "data"
-  	public static SaveData Load ()  {			// Overloaded
+  	public static SaveData Load ()  {				// Overloaded
 		return Load(currentFilePath + currentFileName);
 	}   
   	public static SaveData Load(string filePath) 
@@ -74,7 +73,6 @@ public class SaveLoad {
 	    data = (SaveData)bformatter.Deserialize(stream);
 	    stream.Close();
 		
-		// Now use "data" to access your Values
 		return data;
 	}
 	
@@ -122,4 +120,345 @@ public sealed class VersionDeserializationBinder : SerializationBinder
 
         return null; 
     } 
+}
+
+//Clase para tratar la textura y el tablero -----------------------------------------------------------------------------------------
+public enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};													//Tipos de orografía
+public enum T_elementos {hidrogeno, helio, oxigeno, carbono, boro, nitrogeno, litio, silicio, magnesio, argon, potasio};	//Se pueden añadir mas mas adelante
+
+public class Especie {
+	//A rellenar
+}
+
+public class Casilla {
+	public float altura;
+	public T_habitats habitat;
+	public T_elementos[] elementos;
+	public Especie[] especies;
+	public Vector2 coordsTex;
+	
+	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Especie[] esp, Vector2 coord) {
+		habitat = hab;
+		altura = alt;
+		elementos = elems;
+		especies = esp;
+		coordsTex = coord;
+	}
+}
+
+public class FuncTablero {
+	
+	//Variables ----------------------------------------------------------------------------------------------------------------------
+	//Privadas para uso del script
+	private static int anchoTextura = 0;			//A cero inicialmente para detectar errores
+	private static int altoTextura = 0;				//A cero inicialmente para detectar errores
+	private static int relTexTabAncho;				//Que relación hay entre el ancho de la textura y el ancho del tablero lógico
+	private static int relTexTabAlto;				//Lo mismo pero para el alto
+	private static Perlin perlin;					//Semilla
+	
+	//Ruido
+	public static int octavas	= 6;				//Octavas para la funcion de ruido de turbulencias
+	public static float lacunaridad	= 2.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
+	public static float ganancia = 0.8f;			//El peso que se le da a cada nueva octava
+	public static float escala = 0.005f;			//El nivel de zoom sobre el ruido
+	public static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.1
+	public static float tamanoPlaya = 0.01f;		//El tamaño de las playas
+	public static float atenuacionRelieve = 90f;	//Suaviza o acentua el efecto de sombreado
+	public static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
+	public static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
+	
+	//Para el tablero
+	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
+	public static int altoTablero = 128;			//El alto del tablero lógico (debe ser potencia de 2 tambien)
+	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
+	public static int numMaxEspeciesCasilla	= 5;	//Numero maximo de especies que puede haber por casilla a la vez
+	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
+	public static int margen = 50;					//El numero de pixeles que habrá en los polos intransitables
+
+	private static int altoTableroUtil;				//El alto del tablero una vez eliminadas las casillas de los polos
+	
+	
+	//Funciones --------------------------------------------------------------------------------------------------------------------
+	
+	public static float ruido_Turbulence(Vector2 coordsIn, int nOctavas, float lacunarity, float gain) {
+		float ruidoTotal = 0.0f;
+		float amplitud = gain;
+		Vector2 coords = coordsIn;
+		for (int i = 0; i < nOctavas; i++) {
+			ruidoTotal += amplitud * Mathf.Abs(perlin.Noise(coords.x, coords.y));
+			amplitud *= gain;
+			coords *= lacunarity;
+		}
+		return ruidoTotal;
+	}
+	
+	public static Color[] ruidoTextura() {
+		Color[] pixels = new Color[anchoTextura*altoTextura];
+		for (int i = 0; i < altoTextura; i++) {
+			for (int j = 0; j < anchoTextura; j++) {
+				float valor = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
+				pixels[j + i*anchoTextura] = new Color(valor, valor, valor);
+			}
+		}
+		return pixels;
+	}
+	
+	public static float calcularMedia(Color[] pix) {
+		float med = 0f;
+		float max = -1.0f;
+		float min = 1.0f;
+		for (int i = 0; i < pix.Length; i++) {
+			med += pix[i].r;
+			if (pix[i].r > max)
+				max = pix[i].r;
+			if (pix[i].r < min)
+				min = pix[i].r;
+		}
+		med /= pix.Length;
+	//	Debug.Log("Max = " + max);
+	//	Debug.Log("Min = " + min);
+	//	Debug.Log("Media = " + med);
+		return med;
+	}
+	
+	public static Color[] mascaraBumpAgua(Color[] pixBump, float media) {
+		Color[] pixAgua = new Color[anchoTextura * altoTextura];
+		for (int l = 0; l < pixAgua.Length; l++) {
+			if (pixBump[l].r < media){
+				pixBump[l] = new Color(media,media,media);
+				pixAgua[l] = new Color(0,0,0);
+			}
+			else 
+				pixAgua[l] = new Color(1,1,1);			
+		}
+		return pixAgua;
+	}
+	
+	public static Color[] suavizaBordeTex(Color[] pix, int tam) {
+		Color[] pixels = pix;
+		int lado = tam;
+		for (int i = 0; i < altoTextura; i++) {
+			int j = anchoTextura;
+			float pesoRuido = 1.0f;
+			float pesoTextura = 0.0f;
+			float iteraciones = pesoRuido / lado;
+			while (pesoTextura < 1.0) {
+				pesoTextura += iteraciones;
+				pesoRuido -= iteraciones;
+				float valorRuido = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
+				float valorBump = valorRuido * pesoRuido + (pixels[(i - 1) * anchoTextura + j].r) * pesoTextura;
+				pixels[(i - 1)*anchoTextura + j] = new Color(valorBump, valorBump, valorBump);
+				j++;
+			}
+		}
+		return pixels;
+	}
+	
+	public static Color[] suavizaPoloTex(Color[] pix, int tam) {
+		Color[] pixels = pix;
+		int lado = tam;
+		//Se ponen los polos desde el origen hasta el margen (en pixeles) con la orografía deseada
+		for (int i = 0; i < margen; i++) {
+			for (int j = 0; j < anchoTextura; j++) {			
+				pixels[j + anchoTextura*i] = new Color(0, 0, 0); 		//El valor nuevo de los polos
+			}
+		}
+		for (int i = altoTextura - margen; i < altoTextura; i++) {
+			for (int j = 0; j < anchoTextura; j++) {			
+				pixels[j + anchoTextura*i] = new Color(0, 0, 0); 		//El valor nuevo de los polos 
+			}
+		}
+		
+		//Ahora se suaviza desde y hacia el margen
+		for (int i = margen; i < margen + lado; i++) {
+			for (int j = 0; j < anchoTextura; j++) {
+				Color punto = pixels[j + anchoTextura*i];
+				float valor = punto.r * ((i + 1.0f - margen) / lado);  			
+				pixels[j + anchoTextura*i] = new Color(valor, valor, valor);					//El valor nuevo de los polos 
+			}
+		}
+		int comienzo = altoTextura - (margen + lado);
+		for (int i = comienzo; i < altoTextura - margen; i++) {
+			for (int j = 0; j < anchoTextura; j++) {	
+				Color punto = pixels[j + anchoTextura*i];
+				float valor = punto.r * ((lado - (i - comienzo)) / lado);  
+				pixels[j + anchoTextura*i] = new Color(valor, valor, valor); 						//El valor nuevo de los polos
+			}
+		}
+		return pixels;
+	}
+	
+	public static int safex(int x){
+		if (x >= anchoTextura)
+			return x - anchoTextura;
+		if (x < 0)
+			return anchoTextura + x;
+		return x;
+	}
+	
+	public static int safey(int y){
+		if (y >= altoTextura)
+			return y - altoTextura;
+		if (y < 0)
+			return altoTextura + y;
+		return y;
+	}
+	
+	public static Color[] realzarRelieve(Color[] pix, float media) {
+		Color[] pixels = pix;
+		for (int i = 0; i < pixels.Length; i++) {
+			float valor = pixels[i].r;
+			//Los valores por encima de la media * 2 seran maximos (0.85 sobre 1)
+			//y de ahi hacia abajo linealmente descendentes (hasta 0)
+			valor = Mathf.Lerp(0.0f, 0.85f, valor / (media * 2.0f));	
+			pixels[i] = new Color(valor, valor, valor);
+		}
+		return pixels;
+	}
+	
+	public static Color32[] creaNormalMap(Texture2D tex){
+		Color32[] pixels = tex.GetPixels32();
+		Color32[] pixelsN = new Color32[anchoTextura * altoTextura];
+		Color c3;
+		
+		for (int y = 0; y < altoTextura; y++) {
+	        int offset  = y * anchoTextura;
+	        for (int x = 0; x < anchoTextura; x++)
+	        {
+	
+	            float h0 = pixels[x + offset].r;
+	            float h1 = pixels[x + (anchoTextura * safey(y + 1))].r;
+	            float h2  = pixels[safex(x + 1) + offset].r;
+	
+	            float Nx = h0 - h2;
+	            float Ny = h0 - h1;
+				float Nz = atenuacionRelieve;
+	
+	            Vector3 normal = new Vector3(Nx,Ny,Nz);
+				normal.Normalize();
+	            normal /= 2;
+				
+	            byte cr = (byte)(128 + (255 * normal.x));
+	            byte cg = (byte)(128 + (255 * normal.y));
+	            byte cb = (byte)(128 + (255 * normal.z));
+				c3 = new Color32(cr, cg, cb, 128);
+	            
+				pixelsN[x + offset] = c3;
+	        }
+	    }
+	    return pixelsN;
+	//	tex.SetPixels32(pixelsN);
+	//	tex.Apply();
+	}
+	
+	public static Casilla[,] iniciaTablero(Texture2D tex) {
+		Color[] pixels = tex.GetPixels();
+		Casilla[,] tablero = new Casilla[altoTableroUtil,anchoTablero];
+		for (int i = 0; i < altoTableroUtil; i++) {
+			for (int j = 0; j < anchoTablero; j++) {
+				//Las coordenadas de la casilla actual en la textura
+				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
+				
+				//Se calcula la media de altura de la casilla
+				float media = 0;
+				for (int x = 0; x < relTexTabAlto; x++) {
+					for (int y = 0; y < relTexTabAncho; y++) {
+						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+					}
+				}
+				media = media / (relTexTabAncho * relTexTabAlto);
+				
+				//Se calcula el habitat en el que va a estar la casilla y los elementos que tendrá
+				//TODO Esto es un ejemplo a refinar...
+				T_elementos[] elems = new T_elementos[5];
+				T_habitats habitat;
+				if (media < (nivelAgua - (tamanoPlaya * 1.2))) {
+					habitat = T_habitats.sea;
+				} 
+				else if (((nivelAgua - (tamanoPlaya * 1.2)) <= media) && (media < (nivelAgua + (tamanoPlaya * 1.2)))) {
+					habitat = T_habitats.coast;
+				}
+				else if (((nivelAgua + (tamanoPlaya * 1.2)) <= media) && (media < alturaColinas)) {
+					habitat = T_habitats.plain;
+				}
+				else if ((alturaColinas <= media) && (media < alturaMontana)) {
+					habitat = T_habitats.hill;
+				}
+				else /*if (alturaMontana < media)*/ {
+					habitat = T_habitats.mountain;
+				}
+				
+				//TODO Se coge una o varias especies aleatorias de las iniciales
+				Especie[] esp = new Especie[numMaxEspeciesCasilla];
+				//TODO Calculos para ver la especie/s a meter
+				
+				tablero[i,j] = new Casilla(media, habitat, elems, esp, cord);
+			}
+		}
+		return tablero;
+	}
+	
+	public static void inicializa(Texture2D tex) {
+		anchoTextura = tex.width;
+		altoTextura = tex.height;
+		altoTableroUtil = altoTablero - casillasPolos * 2;
+		relTexTabAncho = anchoTextura / anchoTablero;
+		relTexTabAlto = altoTextura / altoTablero;
+		margen = relTexTabAlto * casillasPolos;	
+		
+//		if (perlin == null) {
+			perlin = new Perlin();
+//		}
+	}
+	
+	public static void reiniciaPerlin() {
+		perlin = new Perlin();
+	}
+	
+	//Getters y setters -------------------------------------
+	
+	public static void setOctavas(int entrada) {
+		if (entrada >= 0)
+			octavas = entrada;
+	}
+	
+	public static void setLacunaridad(float entrada) {
+		if (entrada >= 0)
+			lacunaridad = entrada;
+	}
+	
+	public static void setGanancia(float entrada) {
+		ganancia = entrada;
+	}
+	
+	public static void setEscala(float entrada) {
+		if (entrada >= 0)
+			escala = entrada;
+	}
+	
+	public static void setNivelAgua(float entrada) {
+		if (entrada >= 0)
+			nivelAgua = entrada;
+	}
+	
+	public static void setTamanoPlaya(float entrada) {
+		if (entrada >= 0)
+			tamanoPlaya = entrada;
+	}
+	
+	public static void setAlturaColinas(float entrada) {
+		if (entrada >= 0)
+			alturaColinas = entrada;
+	}
+	
+	public static void setAlturaMontana(float entrada) {
+		if (entrada >= 0)
+			alturaMontana = entrada;
+	}
+	
+	public static void setAtenuacionRelieve(float entrada) {
+		if (entrada >= 0)
+			atenuacionRelieve = entrada;
+	}
+	
 }
