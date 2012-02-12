@@ -1,0 +1,832 @@
+fileFormatVersion: 1
+guid: 76706589d17585d49827779a15da43fc
+ModelImporter:
+  importerVersion: 7
+  meshes:
+    scaleFactor: 1
+    useFileUnits: 1
+    meshCompression: 0
+    generateColliders: 0
+    swapUVs: 0
+  tangentSpace:
+    normalImportMode: 0
+    tangentImportMode: 1
+    smoothingAngle: 60
+    splitTangents: 1
+  materials:
+    generation: 1
+  animations:
+    generation: 3
+    bakeAnimations: 0
+    animationCompression: 1
+    animationWrapMode: 0
+    splitAnimations: 1
+  nodeInfo:
+    pasted__pasted__pasted__transform8:
+    - 100000
+    - 400000
+    pasted__pasted__pasted__polySurface1:
+    - 100002
+    - 400002
+    pasted__pasted__pasted__polySurface2:
+    - 100004
+    - 400004
+    pasted__pasted__pasted__pasted__pCylinder2 4:
+    - 100006
+    - 400006
+    pasted__pasted__pasted__transform7:
+    - 100008
+    - 400008
+    pasted__pasted__pasted__transform6:
+    - 100010
+    - 400010
+    pasted__pasted__pasted__pasted__group:
+    - 100012
+    - 400012
+    pasted__pasted__pasted__pCylinder2:
+    - 100014
+    - 400014
+    pasted__pasted__pasted__pCylinder2 2:
+    - 100016
+    - 400016
+    pasted__pasted__pasted__pCylinder2 1:
+    - 100018
+    - 400018
+    pasted__pasted__pasted__pasted__pPlane3:
+    - 100020
+    - 400020
+    pasted__pasted__pasted__pasted__pasted__pCylinder2:
+    - 100022
+    - 400022
+    pasted__transform7 2:
+    - 100024
+    - 400024
+    pasted__pasted__transform10:
+    - 100026
+    - 400026
+    pasted__transform6 2:
+    - 100028
+    - 400028
+    pasted__group3 1:
+    - 100030
+    - 400030
+    pasted__pCylinder2 2:
+    - 100032
+    - 400032
+    pasted__pasted__silla 10:
+    - 100034
+    - 400034
+    pasted__pasted__group1:
+    - 100036
+    - 400036
+    pasted__pasted__pCylinder2 3:
+    - 100038
+    - 400038
+    pasted__transform5:
+    - 100040
+    - 400040
+    pasted__pasted__transform5 1:
+    - 100042
+    - 400042
+    pasted__pasted__pPlane3:
+    - 100044
+    - 400044
+    pasted__transform3:
+    - 100046
+    - 400046
+    pasted__pasted__polySurface2 2:
+    - 100048
+    - 400048
+    pasted__group2 1:
+    - 100050
+    - 400050
+    pasted__pasted__silla 1:
+    - 100052
+    - 400052
+    pasted__pasted__pasted__group 3:
+    - 100054
+    - 400054
+    pasted__pasted__pasted__group 2:
+    - 100056
+    - 400056
+    pasted__pasted__pCylinder2 6:
+    - 100058
+    - 400058
+    pasted__pasted__silla 8:
+    - 100060
+    - 400060
+    pasted__transform8:
+    - 100062
+    - 400062
+    pasted__pasted__group2:
+    - 100064
+    - 400064
+    pasted__pasted__transform4:
+    - 100066
+    - 400066
+    pasted__pasted__polySurface1 2:
+    - 100068
+    - 400068
+    pasted__pasted__polySurface1:
+    - 100070
+    - 400070
+    pasted__polySurface3:
+    - 100072
+    - 400072
+    pasted__group15 1:
+    - 100074
+    - 400074
+    pasted__transform7:
+    - 100076
+    - 400076
+    pasted__pasted__pCylinder2 1:
+    - 100078
+    - 400078
+    pasted__transform9 1:
+    - 100080
+    - 400080
+    pasted__pasted__pasted__pPlane3:
+    - 100082
+    - 400082
+    pasted__pasted__polySurface1 1:
+    - 100084
+    - 400084
+    pasted__pasted__group 3:
+    - 100086
+    - 400086
+    pasted__pasted__pCylinder2 7:
+    - 100088
+    - 400088
+    pasted__polySurface1 1:
+    - 100090
+    - 400090
+    pasted__pasted__transform3:
+    - 100092
+    - 400092
+    pasted__pasted__transform6 2:
+    - 100094
+    - 400094
+    pasted__transform11 1:
+    - 100096
+    - 400096
+    pasted__pasted__silla 11:
+    - 100098
+    - 400098
+    pasted__pasted__transform12:
+    - 100100
+    - 400100
+    pasted__transform10 1:
+    - 100102
+    - 400102
+    pasted__pasted__pasted__silla 3:
+    - 100104
+    - 400104
+    pasted__group1 4:
+    - 100106
+    - 400106
+    pasted__pasted__transform8 2:
+    - 100108
+    - 400108
+    pasted__transform8 4:
+    - 100110
+    - 400110
+    pasted__pasted__transform8:
+    - 100112
+    - 400112
+    pasted__pasted__pPlane3 3:
+    - 100114
+    - 400114
+    pasted__polySurface2 3:
+    - 100116
+    - 400116
+    pasted__transform12 2:
+    - 100118
+    - 400118
+    pasted__transform12:
+    - 100120
+    - 400120
+    pasted__transform9 2:
+    - 100122
+    - 400122
+    pasted__pasted__transform11:
+    - 100124
+    - 400124
+    pasted__pasted__group 4:
+    - 100126
+    - 400126
+    pasted__pasted__silla 5:
+    - 100128
+    - 400128
+    pasted__pasted__transform4 1:
+    - 100130
+    - 400130
+    pasted__transform6 3:
+    - 100132
+    - 400132
+    pasted__pPlane3 2:
+    - 100134
+    - 400134
+    pasted__transform21:
+    - 100136
+    - 400136
+    pasted__pasted__pCylinder2 9:
+    - 100138
+    - 400138
+    pasted__pasted__transform7 2:
+    - 100140
+    - 400140
+    pasted__polySurface4:
+    - 100142
+    - 400142
+    pasted__pasted__pCylinder2 2:
+    - 100144
+    - 400144
+    pasted__pasted__silla 3:
+    - 100146
+    - 400146
+    pasted__pasted__pasted__group1:
+    - 100148
+    - 400148
+    pasted__pasted__group1 1:
+    - 100150
+    - 400150
+    pasted__pasted__silla 2:
+    - 100152
+    - 400152
+    pasted__pasted__pasted__group 1:
+    - 100154
+    - 400154
+    pasted__pasted__transform5 2:
+    - 100156
+    - 400156
+    pasted__transform10:
+    - 100158
+    - 400158
+    pasted__pasted__pPlane3 7:
+    - 100160
+    - 400160
+    pasted__pasted__pasted__silla:
+    - 100162
+    - 400162
+    pasted__pasted__pPlane3 1:
+    - 100164
+    - 400164
+    pasted__pasted__group:
+    - 100166
+    - 400166
+    pasted__pasted__silla 4:
+    - 100168
+    - 400168
+    pasted__group2 2:
+    - 100170
+    - 400170
+    pasted__pasted__group 5:
+    - 100172
+    - 400172
+    pasted__polySurface2:
+    - 100174
+    - 400174
+    pasted__pasted__silla 9:
+    - 100176
+    - 400176
+    pasted__pasted__transform6 1:
+    - 100178
+    - 400178
+    pasted__pasted__pasted__silla 1:
+    - 100180
+    - 400180
+    pasted__pasted__group3:
+    - 100182
+    - 400182
+    pasted__pasted__silla 6:
+    - 100184
+    - 400184
+    pasted__transform6 1:
+    - 100186
+    - 400186
+    pasted__pasted__pCylinder2 4:
+    - 100188
+    - 400188
+    pasted__group3 2:
+    - 100190
+    - 400190
+    pasted__transform5 1:
+    - 100192
+    - 400192
+    pasted__group4 1:
+    - 100194
+    - 400194
+    pasted__transform10 2:
+    - 100196
+    - 400196
+    pasted__transform7 3:
+    - 100198
+    - 400198
+    pasted__pasted__transform3 1:
+    - 100200
+    - 400200
+    pasted__group1 2:
+    - 100202
+    - 400202
+    pasted__pasted__silla:
+    - 100204
+    - 400204
+    pasted__pasted__pasted__silla 2:
+    - 100206
+    - 400206
+    pasted__pasted__pPlane3 4:
+    - 100208
+    - 400208
+    pasted__transform6:
+    - 100210
+    - 400210
+    pasted__transform8 1:
+    - 100212
+    - 400212
+    pasted__transform6 4:
+    - 100214
+    - 400214
+    pasted__polySurface2 2:
+    - 100216
+    - 400216
+    pasted__pasted__silla 7:
+    - 100218
+    - 400218
+    pasted__pasted__transform5:
+    - 100220
+    - 400220
+    pasted__polySurface5:
+    - 100222
+    - 400222
+    pasted__pasted__polySurface2 1:
+    - 100224
+    - 400224
+    pasted__pasted__pCylinder2 5:
+    - 100226
+    - 400226
+    pasted__pasted__transform7 1:
+    - 100228
+    - 400228
+    pasted__pasted__polySurface2:
+    - 100230
+    - 400230
+    pasted__transform11:
+    - 100232
+    - 400232
+    pasted__pasted__transform8 1:
+    - 100234
+    - 400234
+    pasted__pasted__pasted__silla 4:
+    - 100236
+    - 400236
+    pasted__pasted__pasted__silla 7:
+    - 100238
+    - 400238
+    pasted__transform7 1:
+    - 100240
+    - 400240
+    pasted__transform11 2:
+    - 100242
+    - 400242
+    pasted__transform20:
+    - 100244
+    - 400244
+    pasted__transform7 4:
+    - 100246
+    - 400246
+    pasted__pCylinder2:
+    - 100248
+    - 400248
+    pasted__transform3 1:
+    - 100250
+    - 400250
+    pasted__pasted__pPlane3 2:
+    - 100252
+    - 400252
+    pasted__pasted__transform9:
+    - 100254
+    - 400254
+    pasted__transform4 1:
+    - 100256
+    - 400256
+    pasted__transform8 2:
+    - 100258
+    - 400258
+    pasted__pasted__pasted__silla 6:
+    - 100260
+    - 400260
+    pasted__pasted__group 1:
+    - 100262
+    - 400262
+    pasted__pasted__pPlane3 6:
+    - 100264
+    - 400264
+    pasted__pasted__group 6:
+    - 100266
+    - 400266
+    pasted__pCylinder2 1:
+    - 100268
+    - 400268
+    pasted__pasted__transform6:
+    - 100270
+    - 400270
+    pasted__group1 1:
+    - 100272
+    - 400272
+    pasted__pasted__pCylinder2 8:
+    - 100274
+    - 400274
+    pasted__pasted__transform3 2:
+    - 100276
+    - 400276
+    pasted__pCylinder2 3:
+    - 100278
+    - 400278
+    pasted__transform8 3:
+    - 100280
+    - 400280
+    pasted__pasted__pasted__silla 5:
+    - 100282
+    - 400282
+    pasted__pasted__pasted__group:
+    - 100284
+    - 400284
+    pasted__group15 2:
+    - 100286
+    - 400286
+    pasted__polySurface1:
+    - 100288
+    - 400288
+    pasted__pasted__pCylinder2 10:
+    - 100290
+    - 400290
+    pasted__pasted__group 2:
+    - 100292
+    - 400292
+    pasted__transform12 1:
+    - 100294
+    - 400294
+    pasted__pPlane3 1:
+    - 100296
+    - 400296
+    pasted__group1 3:
+    - 100298
+    - 400298
+    //RootNode:
+    - 100300
+    - 400300
+    - 11100000
+    pasted__pasted__pPlane3 5:
+    - 100302
+    - 400302
+    pasted__pasted__pCylinder2:
+    - 100304
+    - 400304
+    pasted__pasted__group 7:
+    - 100306
+    - 400306
+    pasted__pasted__transform4 2:
+    - 100308
+    - 400308
+    pasted__pasted__group1 2:
+    - 100310
+    - 400310
+    pasted__transform4:
+    - 100312
+    - 400312
+    pasted__polySurface2 1:
+    - 100314
+    - 400314
+    pasted__pasted__transform7:
+    - 100316
+    - 400316
+    pasted__transform9:
+    - 100318
+    - 400318
+    pasted__pasted__pasted__pCylinder2 9:
+    - 100320
+    - 400320
+    pasted__pasted__pasted__pCylinder2 5:
+    - 100322
+    - 400322
+    pasted__pasted__pasted__pPlane3 1:
+    - 100324
+    - 400324
+    pasted__pasted__pasted__pCylinder2 7:
+    - 100326
+    - 400326
+    pasted__pasted__pasted__pasted__pCylinder2 1:
+    - 100328
+    - 400328
+    pasted__pasted__pasted__pCylinder2 6:
+    - 100330
+    - 400330
+    pasted__pasted__pasted__pCylinder2 8:
+    - 100332
+    - 400332
+    pasted__pasted__pasted__pPlane3 3:
+    - 100334
+    - 400334
+    pasted__pasted__pasted__pasted__silla 1:
+    - 100336
+    - 400336
+    pasted__pasted__pasted__pCylinder2 11:
+    - 100338
+    - 400338
+    pasted__pasted__pasted__transform3:
+    - 100340
+    - 400340
+    pasted__pasted__pasted__pCylinder2 10:
+    - 100342
+    - 400342
+    pasted__pasted__pasted__pCylinder2 4:
+    - 100344
+    - 400344
+    pasted__pasted__pasted__pasted__silla:
+    - 100346
+    - 400346
+    pasted__pasted__pasted__pPlane3 2:
+    - 100348
+    - 400348
+    pasted__pasted__pasted__pasted__pCylinder2 2:
+    - 100350
+    - 400350
+    pasted__pasted__pasted__transform5:
+    - 100352
+    - 400352
+    pasted__pasted__pasted__pCylinder2 3:
+    - 100354
+    - 400354
+    pasted__pasted__pasted__pasted__pCylinder2:
+    - 100356
+    - 400356
+    pasted__pasted__pasted__pasted__pCylinder2 3:
+    - 100358
+    - 400358
+    pasted__pasted__pasted__transform4:
+    - 100360
+    - 400360
+    pasted__group 1:
+    - 100362
+    - 400362
+    transform12:
+    - 100364
+    - 400364
+    group2:
+    - 100366
+    - 400366
+    pasted__silla 2:
+    - 100368
+    - 400368
+    pasted__silla 3:
+    - 100370
+    - 400370
+    group3:
+    - 100372
+    - 400372
+    polySurface9:
+    - 100374
+    - 400374
+    - 3300000
+    - 2300000
+    polySurface10:
+    - 100376
+    - 400376
+    - 3300002
+    - 2300002
+    transform25:
+    - 100378
+    - 400378
+    polySurface4:
+    - 100380
+    - 400380
+    - 3300004
+    - 2300004
+    transform23:
+    - 100382
+    - 400382
+    transform22:
+    - 100384
+    - 400384
+    pPlane4:
+    - 100386
+    - 400386
+    - 3300006
+    - 2300006
+    polySurface5:
+    - 100388
+    - 400388
+    - 3300008
+    - 2300008
+    polySurface6:
+    - 100390
+    - 400390
+    - 3300010
+    - 2300010
+    transform24:
+    - 100392
+    - 400392
+    polySurface7:
+    - 100394
+    - 400394
+    polySurface8:
+    - 100396
+    - 400396
+    group18:
+    - 100398
+    - 400398
+    polySurface3:
+    - 100400
+    - 400400
+    - 3300012
+    - 2300012
+    group17:
+    - 100402
+    - 400402
+    transform18:
+    - 100404
+    - 400404
+    transform19:
+    - 100406
+    - 400406
+    transform7:
+    - 100408
+    - 400408
+    pasted__group:
+    - 100410
+    - 400410
+    transform6:
+    - 100412
+    - 400412
+    transform8:
+    - 100414
+    - 400414
+    pasted__pPlane3:
+    - 100416
+    - 400416
+    pasted__silla:
+    - 100418
+    - 400418
+    group1:
+    - 100420
+    - 400420
+    transform4:
+    - 100422
+    - 400422
+    group:
+    - 100424
+    - 400424
+    transform3:
+    - 100426
+    - 400426
+    pCylinder2:
+    - 100428
+    - 400428
+    transform5:
+    - 100430
+    - 400430
+    pPlane3:
+    - 100432
+    - 400432
+    silla:
+    - 100434
+    - 400434
+    transform2:
+    - 100436
+    - 400436
+    pCylinder1:
+    - 100438
+    - 400438
+    transform1:
+    - 100440
+    - 400440
+    pPlane2:
+    - 100442
+    - 400442
+    pasted__group15:
+    - 100444
+    - 400444
+    pasted__group1:
+    - 100446
+    - 400446
+    group16:
+    - 100448
+    - 400448
+    transform20:
+    - 100450
+    - 400450
+    polySurface2:
+    - 100452
+    - 400452
+    transform21:
+    - 100454
+    - 400454
+    pasted__silla 1:
+    - 100456
+    - 400456
+    group15:
+    - 100458
+    - 400458
+    pasted__group13:
+    - 100460
+    - 400460
+    pasted__group8:
+    - 100462
+    - 400462
+    pasted__group9:
+    - 100464
+    - 400464
+    pasted__group12:
+    - 100466
+    - 400466
+    pasted__group11:
+    - 100468
+    - 400468
+    pasted__group10:
+    - 100470
+    - 400470
+    pasted__group2:
+    - 100472
+    - 400472
+    group14:
+    - 100474
+    - 400474
+    pasted__group3:
+    - 100476
+    - 400476
+    group13:
+    - 100478
+    - 400478
+    group8:
+    - 100480
+    - 400480
+    group10:
+    - 100482
+    - 400482
+    group12:
+    - 100484
+    - 400484
+    group9:
+    - 100486
+    - 400486
+    group11:
+    - 100488
+    - 400488
+    transform13:
+    - 100490
+    - 400490
+    pasted__group4:
+    - 100492
+    - 400492
+    transform14:
+    - 100494
+    - 400494
+    transform15:
+    - 100496
+    - 400496
+    transform16:
+    - 100498
+    - 400498
+    pasted__group 2:
+    - 100500
+    - 400500
+    transform17:
+    - 100502
+    - 400502
+    pasted__silla 5:
+    - 100504
+    - 400504
+    group5:
+    - 100506
+    - 400506
+    pasted__silla 4:
+    - 100508
+    - 400508
+    group7:
+    - 100510
+    - 400510
+    group6:
+    - 100512
+    - 400512
+    group4:
+    - 100514
+    - 400514
+    transform9:
+    - 100516
+    - 400516
+    transform10:
+    - 100518
+    - 400518
+    transform11:
+    - 100520
+    - 400520
+AssetImporter:
+  importerVersion: 1
+  fileIDToRecycleName:
+    4300000: polySurface3
+    4300002: polySurface4
+    4300004: polySurface5
+    4300006: polySurface6
+    4300008: polySurface9
+    4300010: polySurface10
+    4300012: pPlane4

@@ -113,7 +113,7 @@ function FixedUpdate() {
 
 function OnGUI() {
 	GUI.skin = estiloGUI;
-	GUI.Box(Rect(0,0,Screen.width,Screen.height), "", "fondo_inicio_1");
+	//GUI.Box(Rect(0,0,Screen.width,Screen.height), "", "fondo_inicio_1");
 	GUI.Box(Rect(cuantoW * 16, cuantoH, cuantoW * 16, cuantoH * 5), "", "header_titulo"); //Header es 500x100px
 	switch (estado) {
 		case 0: 	//Menu principal
