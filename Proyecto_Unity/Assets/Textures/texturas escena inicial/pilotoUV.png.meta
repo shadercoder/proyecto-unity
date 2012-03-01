@@ -1,14 +1,13 @@
 fileFormatVersion: 1
-guid: bcde419d0c816c8419356d13805014cf
+guid: 602a91c016e3ff245950a08037248364
 TextureImporter:
-  importerVersion: 2
+  importerVersion: 1
   maxTextureSize: 1024
   textureFormat: -1
-  grayscaleToAlpha: 1
+  grayscaleToAlpha: 0
   npotScale: 1
   generateCubemap: 0
   isReadable: 0
-  textureType: 0
   mipmaps:
     generation: 1
     correctGamma: 0
