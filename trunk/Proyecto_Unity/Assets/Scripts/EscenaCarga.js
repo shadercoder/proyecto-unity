@@ -262,7 +262,7 @@ function creacionRestante() {
 //Menus personalizados --------------------------------------------------------------------------------------------------------------------
 
 function menuPrincipal() {
-	GUILayout.BeginArea(Rect(cuantoW * 17, cuantoH * 10, cuantoW * 14, cuantoH * 10));
+	GUILayout.BeginArea(Rect(cuantoW * 20.5, cuantoH * 25, cuantoW * 7, cuantoH * 5));
 	GUILayout.BeginVertical();
 	if (GUILayout.Button(GUIContent("Comenzar juego", "Comenzar un juego nuevo"), "boton_menu_1")) {
 		pixels = new Color[texturaBase.width * texturaBase.height];
