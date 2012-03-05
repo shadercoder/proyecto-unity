@@ -10,32 +10,51 @@ using System.Reflection;
 
 
 //Clase contenedora del savegame ------------------------------------------------------------------------------------------------------
-[Serializable ()]
-public class SaveData : ISerializable { 
+[System.Serializable]
+public class SaveData {//: ISerializable { 
 
   // === Values ===
   // Edit these during gameplay
-  public Texture2D normalMap;
-  // === /Values ===
+  	public Texture2D normalMap;
+//	[SerializeField]
+//  	private Color[] normalMapPixels;
+  	// === /Values ===
 
-  // The default constructor. Included for when we call it during Save() and Load()
-  public SaveData () {}
+  	// The default constructor. Included for when we call it during Save() and Load()
+  	public SaveData () {}
 
-  // This constructor is called automatically by the parent class, ISerializable
-  // We get to custom-implement the serialization process here
-  public SaveData (SerializationInfo info, StreamingContext ctxt)
-  {
-    // Get the values from info and assign them to the appropriate properties. Make sure to cast each variable.
-    // Do this for each var defined in the Values section above
-    normalMap = (Texture2D)info.GetValue("normalMap", typeof(Texture2D));
-  }
-
-  // Required by the ISerializable class to be properly serialized. This is called automatically
-  public void GetObjectData (SerializationInfo info, StreamingContext ctxt)
-  {
-    // Repeat this for each var defined in the Values section
-    info.AddValue("normalMap", normalMap);
-  }
+  	// This constructor is called automatically by the parent class, ISerializable
+  	// We get to custom-implement the serialization process here
+//	[SecurityPermissionAttribute (SecurityAction.Demand, SerializationFormatter = true)]
+//  	public SaveData (SerializationInfo info, StreamingContext ctxt)
+//  	{
+//    	// Get the values from info and assign them to the appropriate properties. Make sure to cast each variable.
+//    	// Do this for each var defined in the Values section above
+//		try {
+////    		normalMap = (Texture2D)info.GetValue("normalMap", typeof(Texture2D));
+//    		normalMapPixels = (Color[])info.GetValue("normalMapPixels", typeof(Color[]));
+//		}
+//		catch (InvalidCastException e) {
+//			Debug.LogError("Excepcion de casting al recuperar el valor del savegame. Datos: " + e.Message);
+//		}
+//  	}
+//
+//  	// Required by the ISerializable class to be properly serialized. This is called automatically
+////	[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
+//	public void GetObjectData (SerializationInfo info, StreamingContext ctxt)
+//  	{
+//    	// Repeat this for each var defined in the Values section
+////    	info.AddValue("normalMap", normalMap, typeof(Texture2D));
+//    	info.AddValue("normalMapPixels", normalMapPixels, typeof(Color[]));
+//  	}
+	
+//	public void setNormalMapPixels(Color[] col) {
+//		normalMapPixels = col;	
+//	}
+//	
+//	public Color[] getNormalMapPixels() {
+//		return normalMapPixels;	
+//	}
 }
 
 //Clase con los métodos a llamar para crear el savegame -------------------------------------------------------------------------------
@@ -50,14 +69,26 @@ public class SaveLoad {
     	Save (currentFilePath + currentFileName, norm);
   	}
   	public static void Save (string filePath, Texture2D norm)
-  	{
+  	{ 
 	    SaveData data = new SaveData ();
-		data.normalMap = norm;	
-	    Stream stream = File.Open(filePath, FileMode.Create);
-	    BinaryFormatter bformatter = new BinaryFormatter();
-	    bformatter.Binder = new VersionDeserializationBinder(); 
-	    bformatter.Serialize(stream, data);
-	    stream.Close();
+		data.normalMap = new Texture2D(norm.width, norm.height);
+		data.normalMap.SetPixels(norm.GetPixels());
+		data.normalMap.Apply();
+//		data.normalMap = norm;
+//		data.setNormalMapPixels(norm.GetPixels());
+//		data.normalMapPixels = norm.GetPixels();
+	    FileStream stream = new FileStream(filePath, FileMode.Create);
+		try {
+		    BinaryFormatter bformatter = new BinaryFormatter();
+	//	    bformatter.Binder = new VersionDeserializationBinder(); 
+		    bformatter.Serialize(stream, data);
+		}
+		catch (SerializationException e) {
+			Debug.LogError("Excepcion al serializar el savegame. Datos: " + e.Message);
+		}
+		finally {
+	    	stream.Close();
+		}
   	}
 
   	// Call this to load from a file into "data"
@@ -67,12 +98,20 @@ public class SaveLoad {
   	public static SaveData Load(string filePath) 
   	{
 	    SaveData data = new SaveData ();
-	    Stream stream = File.Open(filePath, FileMode.Open);
-	    BinaryFormatter bformatter = new BinaryFormatter();
-	    bformatter.Binder = new VersionDeserializationBinder(); 
-	    data = (SaveData)bformatter.Deserialize(stream);
-	    stream.Close();
-		
+	    FileStream stream = new FileStream(filePath, FileMode.Open);
+		try {
+		    BinaryFormatter bformatter = new BinaryFormatter();
+//		    bformatter.Binder = new VersionDeserializationBinder(); 
+		    data = (SaveData)bformatter.Deserialize(stream);
+		}
+		catch (SerializationException e) {
+			Debug.LogError("Excepcion al deserializar el savegame. Datos: " + e.Message);
+		}
+		finally {
+			stream.Close();
+		}
+		Debug.Log("Type of object deserialized: " + data.GetType());
+        Debug.Log("normalMap = " + data.normalMap);
 		return data;
 	}
 	
@@ -94,6 +133,19 @@ public class SaveLoad {
 		return str;
 	}
 	
+	public static bool existeFile(string nombre) {
+		if (File.Exists(currentFilePath + nombre))
+            return true;
+		else 
+			return false;
+	}
+	
+	public static void compruebaRuta() {
+		if (!Directory.Exists(currentFilePath))	{
+			Directory.CreateDirectory(currentFilePath);	
+		}
+	}
+	
 	public static void cambiaFileName(string nuevo) {
 		currentFileName = nuevo;
 	}
@@ -102,25 +154,25 @@ public class SaveLoad {
 
 // === This is required to guarantee a fixed serialization assembly name, which Unity likes to randomize on each compile
 // Do not change this
-public sealed class VersionDeserializationBinder : SerializationBinder 
-{ 
-    public override Type BindToType( string assemblyName, string typeName )
-    { 
-        if ( !string.IsNullOrEmpty( assemblyName ) && !string.IsNullOrEmpty( typeName ) ) 
-        { 
-            Type typeToDeserialize = null; 
-
-            assemblyName = Assembly.GetExecutingAssembly().FullName; 
-
-            // The following line of code returns the type. 
-            typeToDeserialize = Type.GetType( String.Format( "{0}, {1}", typeName, assemblyName ) ); 
-
-            return typeToDeserialize; 
-        } 
-
-        return null; 
-    } 
-}
+//public sealed class VersionDeserializationBinder : SerializationBinder 
+//{ 
+//    public override Type BindToType( string assemblyName, string typeName )
+//    { 
+//        if ( !string.IsNullOrEmpty( assemblyName ) && !string.IsNullOrEmpty( typeName ) ) 
+//        { 
+//            Type typeToDeserialize = null; 
+//
+//            assemblyName = Assembly.GetExecutingAssembly().FullName; 
+//
+//            // The following line of code returns the type. 
+//            typeToDeserialize = Type.GetType( String.Format( "{0}, {1}", typeName, assemblyName ) ); 
+//
+//            return typeToDeserialize; 
+//        } 
+//
+//        return null; 
+//    } 
+//}
 
 //Clase para tratar la textura y el tablero -----------------------------------------------------------------------------------------
 public enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};													//Tipos de orografía
@@ -158,14 +210,17 @@ public class FuncTablero {
 	
 	//Ruido
 	public static int octavas	= 6;				//Octavas para la funcion de ruido de turbulencias
-	public static float lacunaridad	= 2.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
-	public static float ganancia = 0.8f;			//El peso que se le da a cada nueva octava
-	public static float escala = 0.005f;			//El nivel de zoom sobre el ruido
-	public static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.1
+	public static float lacunaridad	= 3.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
+	public static float ganancia = 0.35f;			//El peso que se le da a cada nueva octava
+	public static float escala = 0.004f;			//El nivel de zoom sobre el ruido
+	
+	//Terreno
+	public static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
 	public static float tamanoPlaya = 0.01f;		//El tamaño de las playas
-	public static float atenuacionRelieve = 90f;	//Suaviza o acentua el efecto de sombreado
+	public static float atenuacionRelieve = 40f;	//Suaviza o acentua el efecto de sombreado
 	public static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
 	public static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
+	public static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
@@ -187,7 +242,8 @@ public class FuncTablero {
 		for (int i = 0; i < nOctavas; i++) {
 			ruidoTotal += amplitud * Mathf.Abs(perlin.Noise(coords.x, coords.y));
 			amplitud *= gain;
-			coords *= lacunarity;
+			coords.x *= lacunarity;
+			coords.y *= lacunarity;
 		}
 		return ruidoTotal;
 	}
@@ -215,9 +271,9 @@ public class FuncTablero {
 				min = pix[i].r;
 		}
 		med /= pix.Length;
-	//	Debug.Log("Max = " + max);
-	//	Debug.Log("Min = " + min);
-	//	Debug.Log("Media = " + med);
+		Debug.Log("Max = " + max.ToString());
+		Debug.Log("Min = " + min.ToString());
+		Debug.Log("Media = " + med.ToString());
 		return med;
 	}
 	
@@ -241,7 +297,7 @@ public class FuncTablero {
 			int j = anchoTextura;
 			float pesoRuido = 1.0f;
 			float pesoTextura = 0.0f;
-			float iteraciones = pesoRuido / lado;
+			float iteraciones = pesoRuido / (float)lado;
 			while (pesoTextura < 1.0) {
 				pesoTextura += iteraciones;
 				pesoRuido -= iteraciones;
@@ -257,6 +313,7 @@ public class FuncTablero {
 	public static Color[] suavizaPoloTex(Color[] pix, int tam) {
 		Color[] pixels = pix;
 		int lado = tam;
+		
 		//Se ponen los polos desde el origen hasta el margen (en pixeles) con la orografía deseada
 		for (int i = 0; i < margen; i++) {
 			for (int j = 0; j < anchoTextura; j++) {			
@@ -273,15 +330,15 @@ public class FuncTablero {
 		for (int i = margen; i < margen + lado; i++) {
 			for (int j = 0; j < anchoTextura; j++) {
 				Color punto = pixels[j + anchoTextura*i];
-				float valor = punto.r * ((i + 1.0f - margen) / lado);  			
+				float valor = punto.r * (((float)i + 1.0f - (float)margen) / (float)lado);  			
 				pixels[j + anchoTextura*i] = new Color(valor, valor, valor);					//El valor nuevo de los polos 
 			}
 		}
 		int comienzo = altoTextura - (margen + lado);
-		for (int i = comienzo; i < altoTextura - margen; i++) {
+		for (int i = comienzo; i < (altoTextura - margen); i++) {
 			for (int j = 0; j < anchoTextura; j++) {	
 				Color punto = pixels[j + anchoTextura*i];
-				float valor = punto.r * ((lado - (i - comienzo)) / lado);  
+				float valor = punto.r * (((float)lado - ((float)i - (float)comienzo)) / (float)lado);  
 				pixels[j + anchoTextura*i] = new Color(valor, valor, valor); 						//El valor nuevo de los polos
 			}
 		}
@@ -310,7 +367,10 @@ public class FuncTablero {
 			float valor = pixels[i].r;
 			//Los valores por encima de la media * 2 seran maximos (0.85 sobre 1)
 			//y de ahi hacia abajo linealmente descendentes (hasta 0)
-			valor = Mathf.Lerp(0.0f, 0.85f, valor / (media * 2.0f));	
+			if (valor <= (media * 2.0f))
+				valor = Mathf.Lerp(0.0f, 0.85f, valor / (media * 2.0f));
+			else
+				valor = Mathf.Lerp(0.85f, 1.0f, valor / (media * 3.5f));
 			pixels[i] = new Color(valor, valor, valor);
 		}
 		return pixels;
@@ -369,8 +429,9 @@ public class FuncTablero {
 				media = media / (relTexTabAncho * relTexTabAlto);
 				
 				//Se calcula el habitat en el que va a estar la casilla y los elementos que tendrá
-				//TODO Esto es un ejemplo a refinar...
+				//TODO Esto es un ejemplo a refinar de los elementos a introducir...
 				T_elementos[] elems = new T_elementos[5];
+				//Calcular el habitat...
 				T_habitats habitat;
 				if (media < (nivelAgua - (tamanoPlaya * 1.2))) {
 					habitat = T_habitats.sea;
@@ -405,10 +466,7 @@ public class FuncTablero {
 		relTexTabAncho = anchoTextura / anchoTablero;
 		relTexTabAlto = altoTextura / altoTablero;
 		margen = relTexTabAlto * casillasPolos;	
-		
-//		if (perlin == null) {
-			perlin = new Perlin();
-//		}
+		perlin = new Perlin();
 	}
 	
 	public static void reiniciaPerlin() {
@@ -437,7 +495,7 @@ public class FuncTablero {
 	}
 	
 	public static void setNivelAgua(float entrada) {
-		if (entrada >= 0)
+		if (entrada >= 0.0f && entrada <= 1.0f)
 			nivelAgua = entrada;
 	}
 	
@@ -447,18 +505,23 @@ public class FuncTablero {
 	}
 	
 	public static void setAlturaColinas(float entrada) {
-		if (entrada >= 0)
+		if (entrada >= 0.0f && entrada <= 1.0f)
 			alturaColinas = entrada;
 	}
 	
 	public static void setAlturaMontana(float entrada) {
-		if (entrada >= 0)
+		if (entrada >= 0.0f && entrada <= 1.0f)
 			alturaMontana = entrada;
 	}
 	
 	public static void setAtenuacionRelieve(float entrada) {
 		if (entrada >= 0)
 			atenuacionRelieve = entrada;
+	}
+	
+	public static void setTemperatura(float entrada) {
+		if (entrada >= 0.0f && entrada <= 1.0f)
+			temperatura = entrada;
 	}
 	
 }
