@@ -11,13 +11,15 @@ var texturaMask 			: Texture2D;				//La textura con la mascara de reflejo para e
 private var texturaPantalla	: Texture2D = null;			//La textura a enseñar durante la creacion
 private var pixels			: Color[];					//Los pixeles sobre los que realizar operaciones
 private var media			: float = 0;				//La media de altura de la textura
+
 private var faseCreacion 	: int = 0;					//Fases de la creacion del planeta
 private var trabajando		: boolean = false;			//Para saber si está haciendo algo por debajo el script
 private var paso1Completado	: boolean = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 private var paso2Completado	: boolean = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 private var paso3Completado	: boolean = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
-private var gananciaInit	: float = 0.8;				//La ganancia a pasar al script de creación del ruido
-private var escalaInit		: float = 0.005;			//La escala a pasar al script de creación del ruido
+
+private var gananciaInit	: float = 0.35;				//La ganancia a pasar al script de creación del ruido
+private var escalaInit		: float = 0.004;			//La escala a pasar al script de creación del ruido
 private var nivelAguaInit	: float = 0.5;				//El punto a partir del cual deja de haber mar en la orografía del planeta
 private var temperaturaInit	: float = 0.5;				//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 
@@ -77,6 +79,13 @@ function Awake() {
 	numSaves = SaveLoad.FileCount();
 	nombresSaves = new String[numSaves];
 	nombresSaves = SaveLoad.getFileNames();
+	
+	//Inicializacion de las texturas
+	var planeta : GameObject = GameObject.FindWithTag("Planeta");
+	var renderer : MeshRenderer = planeta.GetComponent(MeshRenderer);
+	texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+	texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
+	texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 }
 
 //function Start() {
@@ -212,50 +221,34 @@ function actualizarOpciones() {
 function creacionParte1() {
 	yield WaitForSeconds(0.1);
 	pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
-	yield WaitForEndOfFrame();
 	pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
-	yield WaitForEndOfFrame();
 	pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
-	yield WaitForEndOfFrame();
 	texturaPantalla = new Texture2D(texturaBase.width, texturaBase.height);
 	texturaPantalla.SetPixels(pixels);
 	texturaPantalla.Apply();
-	yield WaitForEndOfFrame();
 	trabajando = false;
 }
 
 function creacionParte2() {
 	yield WaitForSeconds(0.1);
 	media = FuncTablero.calcularMedia(pixels);
-	yield WaitForEndOfFrame();
 	pixels = FuncTablero.realzarRelieve(pixels, media);
-	yield WaitForEndOfFrame();
 	texturaBase.SetPixels(pixels);
 	texturaBase.Apply();
-	yield WaitForEndOfFrame();
+	texturaPantalla.SetPixels(pixels);
+	texturaPantalla.Apply();
 	trabajando = false;
 }
 
 function creacionParte3() {
 	yield WaitForSeconds(0.1);
 	var pixelsAgua : Color[] = FuncTablero.mascaraBumpAgua(pixels, nivelAguaInit);	//se ignora el mar para el relieve
-	yield WaitForEndOfFrame();
 	texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
 	texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
-	yield WaitForEndOfFrame();
 	texturaNorm.Apply();
 	texturaMask.SetPixels(pixelsAgua);
 	texturaMask.Apply();
-	yield WaitForEndOfFrame();
 	trabajando = false;
-}
-
-function creacionRestante() {
-	yield creacionParte2();
-	paso2Completado = true;
-	trabajando = true;
-	yield creacionParte3();
-	paso3Completado = true;
 }
 
 
@@ -353,7 +346,7 @@ function creacionParte1Interfaz() {
 	GUILayout.Label("Edad del planeta", "label_centrada");
 	GUILayout.BeginHorizontal();
 	GUILayout.Label("Plano");
-	gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.6, 0.85);
+	gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.1, 0.6);
 	GUILayout.Label("Escarpado");
 	GUILayout.EndHorizontal();
 	
@@ -362,7 +355,7 @@ function creacionParte1Interfaz() {
 	GUILayout.Label("Tamaño de los continentes", "label_centrada");
 	GUILayout.BeginHorizontal();
 	GUILayout.Label("Pequeños");
-	escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.009, 0.001);
+	escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.007, 0.001);
 	GUILayout.Label("Grandes");
 	GUILayout.EndHorizontal();
 	
@@ -389,10 +382,7 @@ function creacionParte1Interfaz() {
 	GUILayout.Space(cuantoW * 28);
 	if (paso1Completado) {
 		if (GUILayout.Button(GUIContent("Siguiente", "Pasar a la segunda fase"))) {
-//			faseCreacion = 1;	
-			faseCreacion = 0;
-			creacionRestante();		//Porque dejamos las cosas a medias... Medida temporal
-			estado = 1;
+			faseCreacion = 1;	
 		}
 	}
 	else {
@@ -435,7 +425,7 @@ function creacionParte2Interfaz() {
 	
 	if (GUILayout.Button(GUIContent("Generar", "Genera un nuevo planeta"))) {	
 		FuncTablero.setNivelAgua(nivelAguaInit);
-//		FuncTablero.setTemperatura(temperaturaInit);
+		FuncTablero.setTemperatura(temperaturaInit);
 		trabajando = true;
 		GUI.Box(Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
 		creacionParte2();
@@ -471,6 +461,14 @@ function creacionParte3Interfaz() {
 	//Controles para alterar el tipo de terreno ya creado: ultimos retoques como por ejemplo los rios, montañas, cráteres, etc.
 	//Despues de este paso se acepta todo lo anterior y se pasa al juego.
 	
+	GUILayout.Space(cuantoH * 4);
+	
+	if (GUILayout.Button(GUIContent("Aceptar", "Aceptar el actual planeta"))) {
+		trabajando = true;
+		GUI.Box(Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
+		creacionParte3();
+		paso3Completado = true;
+	}
 	
 	GUILayout.EndVertical();
 	GUILayout.EndArea();
