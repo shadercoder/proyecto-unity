@@ -1,6 +1,7 @@
 var target : Transform;
 var distance = 10.0;
 
+var disable : boolean = false;
 // ZoomCameraMouse
 var MouseWheelSensitivity = 5;
 var MouseZoomMin = 1;
@@ -45,8 +46,8 @@ function Start () {
     y = angles.x;
 
     // Make the rigid body not change rotation
-    if (rigidbody)
-        rigidbody.freezeRotation = true;
+//    if (rigidbody)
+//        rigidbody.freezeRotation = true;
 }
 
 function LateUpdate () {
@@ -54,6 +55,12 @@ function LateUpdate () {
 	var position : Vector3;
 	//Si el estado es 2, no permitir ningún movimiento
 	if (!interaccion) {
+		return;
+	}
+	
+	if (disable) {
+		var dirTemp : Vector3 = target.position - Camera.main.transform.position;
+		transform.rotation = Quaternion.LookRotation(dirTemp);
 		return;
 	}
 	
