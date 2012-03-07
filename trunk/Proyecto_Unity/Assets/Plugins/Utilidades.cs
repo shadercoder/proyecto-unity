@@ -271,9 +271,9 @@ public class FuncTablero {
 				min = pix[i].r;
 		}
 		med /= pix.Length;
-		Debug.Log("Max = " + max.ToString());
-		Debug.Log("Min = " + min.ToString());
-		Debug.Log("Media = " + med.ToString());
+//		Debug.Log("Max = " + max.ToString());
+//		Debug.Log("Min = " + min.ToString());
+//		Debug.Log("Media = " + med.ToString());
 		return med;
 	}
 	
@@ -407,8 +407,6 @@ public class FuncTablero {
 	        }
 	    }
 	    return pixelsN;
-	//	tex.SetPixels32(pixelsN);
-	//	tex.Apply();
 	}
 	
 	public static Casilla[,] iniciaTablero(Texture2D tex) {
