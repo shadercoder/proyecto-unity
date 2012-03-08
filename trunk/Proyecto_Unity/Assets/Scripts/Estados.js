@@ -4,19 +4,23 @@
 //Variables ---------------------------------------------------------------------------------------------------------------------------
 
 //Para el tablero
-var anchoTablero				: int 		= 128;					//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
-var altoTablero					: int 		= 128;					//El alto del tablero lógico (debe ser potencia de 2 tambien)
-var casillasPolos				: int		= 3;					//El numero de casillas que serán intransitables en los polos
-private var altoTableroUtil		: int;								//El alto del tablero una vez eliminadas las casillas de los polos
-private var margen 				: int 		= 50;					//El numero de pixeles que habrá en los polos intransitables
-var numMaxEspeciesCasilla		: int		= 5;					//Numero maximo de especies que puede haber por casilla a la vez
-var numMaxEspecies				: int		= 20;					//Numero maximo de especies que puede haber en el tablero (juego) a la vez
+//var anchoTablero				: int 		= 128;					//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
+//var altoTablero					: int 		= 128;					//El alto del tablero lógico (debe ser potencia de 2 tambien)
+//var casillasPolos				: int		= 3;					//El numero de casillas que serán intransitables en los polos
+//private var altoTableroUtil		: int;								//El alto del tablero una vez eliminadas las casillas de los polos
+//private var margen 				: int 		= 50;					//El numero de pixeles que habrá en los polos intransitables
+//var numMaxEspeciesCasilla		: int		= 5;					//Numero maximo de especies que puede haber por casilla a la vez
+//var numMaxEspecies				: int		= 20;					//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
 
 
 //GUI
 var estiloGUI					: GUISkin;							//Los estilos diferentes para la GUI, configurables desde el editor
+var camaraReparaciones			: GameObject;						//Para mostrar las opciones de las reparaciones de la nave
+var camaraPrincipal				: GameObject;						//Para mostrar el mundo completo (menos escenas especiales)
 private var menuOpcionesInt		: int		= 0;					//Variable de control sobre el menu lateral derecho
+private var cuantoW				: int 		= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
+private var cuantoH				: int 		= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 
 //Privadas del script
 private var estado 				: T_estados = T_estados.principal;	//Los estados por los que pasa el juego
@@ -48,7 +52,8 @@ private var nombresSaves		: String[];							//Los nombres de los ficheros de sav
 
 //Tipos especiales ----------------------------------------------------------------------------------------------------------------------
 
-enum T_estados {inicial, principal, laboratorio, filtros, guardar, opciones, salir, regenerar};						//Añadir los que hagan falta mas tarde
+//Añadir los que hagan falta mas tarde
+enum T_estados {inicial, principal, laboratorio, reparaciones, filtros, guardar, opciones, salir, regenerar};
 
 //Funciones auxiliares --------------------------------------------------------------------------------------------------------------------
 
@@ -143,24 +148,35 @@ function Update () {
 		case T_estados.inicial:
 			creacionInicial();
 			break;
+			
 		case T_estados.principal:
 			break;
+			
 		case T_estados.regenerar:
 			estado = T_estados.inicial;
 			break;
+			
 		case T_estados.filtros:
 			break;
+			
 		case T_estados.laboratorio:
 			break;
+			
+		case T_estados.reparaciones:
+			break;
+			
 		case T_estados.opciones:
 			Time.timeScale = 0;
 			break;
+			
 		case T_estados.guardar:
 			Time.timeScale = 0;
 			break;
+			
 		case T_estados.salir:
 			Application.LoadLevel("Escena_Inicial");
 			break;
+			
 		default:
 			//Error!
 			Debug.LogError("Estado del juego desconocido! La variable contiene: " + estado);
@@ -198,6 +214,9 @@ function OnGUI() {
 			break;
 		case T_estados.guardar:
 			menuGuardar();
+			break;
+		case T_estados.reparaciones:
+			menuReparaciones();
 			break;
 		default:						
 			break;
@@ -275,7 +294,9 @@ function grupoDerecha() {
 
 		}
 		if (GUI.Button(Rect(0, 79, 126, 70), GUIContent("", "Visión de la nave"), "i_nav")) {
-;
+			camaraPrincipal.GetComponent(Camera).enabled = false;
+			camaraReparaciones.GetComponent(Camera).enabled = true;
+			estado = T_estados.reparaciones;
 		}
 		if (GUI.Button(Rect(0, 149, 126, 79), GUIContent("", "Opciones del juego"), "i_fil")) {
 			script = transform.GetComponent(Control_Raton);
@@ -349,5 +370,13 @@ function menuGuardar() {
 		estado = T_estados.principal;
 	}
 	
+}
+
+function menuReparaciones() {
+	if (GUI.Button(Rect(cuantoW, cuantoH * 20, cuantoW * 2, cuantoH), GUIContent("Volver", "boton_atras"))) {
+		camaraPrincipal.GetComponent(Camera).enabled = true;
+		camaraReparaciones.GetComponent(Camera).enabled = false;
+		estado = T_estados.principal;
+	}
 }
 
