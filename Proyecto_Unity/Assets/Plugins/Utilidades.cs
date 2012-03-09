@@ -368,9 +368,9 @@ public class FuncTablero {
 			//Los valores por encima de la media * 2 seran maximos (0.85 sobre 1)
 			//y de ahi hacia abajo linealmente descendentes (hasta 0)
 			if (valor <= (media * 2.0f))
-				valor = Mathf.Lerp(0.0f, 0.85f, valor / (media * 2.0f));
+				valor = Mathf.Lerp(0.0f, 0.65f, valor / (media * 2.0f));
 			else
-				valor = Mathf.Lerp(0.85f, 1.0f, valor / (media * 3.5f));
+				valor = Mathf.Lerp(0.65f, 1.0f, valor / (media * 6.5f));
 			pixels[i] = new Color(valor, valor, valor);
 		}
 		return pixels;
