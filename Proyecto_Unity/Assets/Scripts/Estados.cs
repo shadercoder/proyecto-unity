@@ -17,7 +17,7 @@ public class Estados : MonoBehaviour {
 	
 	//Privadas del script
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
-	private bool nuevoTerreno 					= false;				//Si se quiere re-generar el terreno, se hace poniendo esto a true
+//	private bool nuevoTerreno 					= false;				//Si se quiere re-generar el terreno, se hace poniendo esto a true
 	private Casilla[,] tablero;											//Tablero lógico del algoritmo
 	
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
@@ -119,6 +119,14 @@ public class Estados : MonoBehaviour {
 		sonido = contenedorSonido.GetComponent<AudioSource>();
 		sonido.mute = !musicaOn;
 		sonido.volume = musicaVol;
+		//esto para que no salgan warnings molestos
+		if (sfxOn) {
+			float a = sfxVol;
+			sfxVol = a;
+		}
+		else {
+		
+		}
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
@@ -237,7 +245,7 @@ public class Estados : MonoBehaviour {
 	private void grupoIzquierda() {
 		GUI.BeginGroup(new Rect(5, Screen.height / 2 - 110, 125, 230));
 		if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Generar otro planeta") , "d_planeta")) {
-			nuevoTerreno = true;
+//			nuevoTerreno = true;
 			estado = T_estados.regenerar;
 		}
 		if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Opciones de cámara"), "d_cam")) {
@@ -283,6 +291,8 @@ public class Estados : MonoBehaviour {
 			if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Visión de la nave"), "i_nav")) {
 				camaraPrincipal.GetComponent<Camera>().enabled = false;
 				camaraReparaciones.GetComponent<Camera>().enabled = true;
+				script = transform.GetComponent<Control_Raton>();
+				script.setInteraccion(false);
 				estado = T_estados.reparaciones;
 			}
 			if (GUI.Button(new Rect(0, 149, 126, 79), new GUIContent("", "Opciones del juego"), "i_fil")) {
@@ -368,6 +378,8 @@ public class Estados : MonoBehaviour {
 		if (GUI.Button(new Rect(cuantoW, cuantoH * 20, cuantoW * 2, cuantoH), new GUIContent("Volver", "boton_atras"))) {
 			camaraPrincipal.GetComponent<Camera>().enabled = true;
 			camaraReparaciones.GetComponent<Camera>().enabled = false;
+			Control_Raton script = transform.GetComponent<Control_Raton>();
+			script.setInteraccion(true);
 			estado = T_estados.principal;
 		}
 	}

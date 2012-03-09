@@ -4,56 +4,57 @@ using System.Collections;
 public class EscenaCarga : MonoBehaviour {
 
 	//Variables del script
-	private int estado = 0;					//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
+	private int estado 						= 0;				//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
 	
 	//Variables de la creacion
-	public GameObject contenedorTexturas;				//Aqui se guardan las texturas que luego se usarán en el planeta
-	public Texture2D texturaBase;				//La textura visible que vamos a inicializar durante la creacion de un planeta nuevo
-	public Texture2D texturaNorm;				//La textura normal con el mapa de altura
-	public Texture2D texturaMask;				//La textura con la mascara de reflejo para el agua
-	private Texture2D texturaPantalla = null;			//La textura a enseñar durante la creacion
-	private Color[] pixels;					//Los pixeles sobre los que realizar operaciones
-	private float media = 0.0f;				//La media de altura de la textura
+	public GameObject contenedorTexturas;						//Aqui se guardan las texturas que luego se usarán en el planeta
+	public Texture2D texturaBase;								//La textura visible que vamos a inicializar durante la creacion de un planeta nuevo
+	public Texture2D texturaNorm;								//La textura normal con el mapa de altura
+	public Texture2D texturaMask;								//La textura con la mascara de reflejo para el agua
+	private Texture2D texturaPantalla 		= null;				//La textura a enseñar durante la creacion
+	private Color[] pixels;										//Los pixeles sobre los que realizar operaciones
+	private float media 					= 0.0f;				//La media de altura de la textura
 	
-	private int faseCreacion = 0;					//Fases de la creacion del planeta
-	private bool trabajando = false;			//Para saber si está haciendo algo por debajo el script
-	private bool paso1Completado = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
-	private bool paso2Completado = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
-	private bool paso3Completado = false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
+	private int faseCreacion 				= 0;				//Fases de la creacion del planeta
+	private bool trabajando 				= false;			//Para saber si está haciendo algo por debajo el script
+	private bool paso1Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
+	private bool paso2Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
+	private bool paso3Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 	
-	private float gananciaInit = 0.35f;				//La ganancia a pasar al script de creación del ruido
-	private float escalaInit = 0.004f;			//La escala a pasar al script de creación del ruido
-	private float nivelAguaInit = 0.5f;				//El punto a partir del cual deja de haber mar en la orografía del planeta
-	private float temperaturaInit = 0.5f;				//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
+	private float gananciaInit 				= 0.35f;			//La ganancia a pasar al script de creación del ruido
+	private float escalaInit 				= 0.004f;			//La escala a pasar al script de creación del ruido
+	private float nivelAguaInit 			= 0.5f;				//El punto a partir del cual deja de haber mar en la orografía del planeta
+	private float temperaturaInit 			= 0.5f;				//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 	
 	//Opciones
-	private bool musicaOn = true;			//Está la música activada?
-	private float musicaVol = 0.5f;				//A que volumen?
-	private bool sfxOn = true;			//Estan los efectos de sonido activados?
-	private float sfxVol = 0.5f; 				//A que volumen?
+	private bool musicaOn 					= true;				//Está la música activada?
+	private float musicaVol 				= 0.5f;				//A que volumen?
+	private bool sfxOn 						= true;				//Estan los efectos de sonido activados?
+	private float sfxVol 					= 0.5f; 			//A que volumen?
 	
 	//Variables de conveniencia
-	private Transform miObjeto;				//Guarda la posicion del objeto para ahorrar calculos
+	private Transform miObjeto;									//Guarda la posicion del objeto para ahorrar calculos
 	
-	private string cadenaCreditos = "\t Hurricane son: \n Marcos Calleja Fernández\n Aris Goicoechea Lassaletta\n Pablo Pizarro Moleón\n" + 
-											"\n\t Música a cargo de:\n Easily Embarrased\n Frost-RAVEN";
-															//Cadena con los créditos a mostrar
+	private string cadenaCreditos = "\t Hurricane son: \n Marcos Calleja Fern\u00e1ndez\n Aris Goicoechea Lassaletta\n Pablo Pizarro Mole\u00f3n\n" + 
+											"\n\t M\u00fasica a cargo de:\n Easily Embarrased\n Frost-RAVEN";
+																//Cadena con los créditos a mostrar
+	
 	//Tooltips
-	private Vector3 posicionMouse = Vector3.zero;	//Guarda la ultima posicion del mouse		
-	private bool activarTooltip = false;			//Controla si se muestra o no el tooltip	
-	private float ultimoMov = 0.0f;				//Ultima vez que se movio el mouse		
-	public float tiempoTooltip = 0.75f;				//Tiempo que tarda en aparecer el tooltip	
+	private Vector3 posicionMouse 			= Vector3.zero;		//Guarda la ultima posicion del mouse		
+	private bool activarTooltip 			= false;			//Controla si se muestra o no el tooltip	
+	private float ultimoMov 				= 0.0f;				//Ultima vez que se movio el mouse		
+	public float tiempoTooltip 				= 0.75f;			//Tiempo que tarda en aparecer el tooltip	
 	
 	//Interfaz
-	public GUISkin estiloGUI;					//Los estilos a usar para la escena de carga y menús
-	private int cuantoW = Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
-	private int cuantoH = Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
+	public GUISkin estiloGUI;										//Los estilos a usar para la escena de carga y menús
+	private int cuantoW 					= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
+	private int cuantoH 					= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 	
 	//Menus para guardar
-	private Vector2 posicionScroll = Vector2.zero;	//La posicion en la que se encuentra la ventana con scroll
-	private int numSaves = 0;					//El numero de saves diferentes que hay en el directorio respectivo
-	private string[] nombresSaves;					//Los nombres de los ficheros de savegames guardados
-	private SaveData saveGame;					//El contenido de la partida salvada cargada
+	private Vector2 posicionScroll 			= Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
+	private int numSaves 					= 0;					//El numero de saves diferentes que hay en el directorio respectivo
+	private string[] nombresSaves;									//Los nombres de los ficheros de savegames guardados
+	private SaveData saveGame;										//El contenido de la partida salvada cargada
 	
 																			
 	//Funciones basicas ----------------------------------------------------------------------------------------------------------------------
@@ -155,10 +156,12 @@ public class EscenaCarga : MonoBehaviour {
 				else if (faseCreacion == 2)
 					creacionParte3Interfaz();
 				break;
-			case 6:		//Cargar
+			case 6:		//Cargar (seleccion)
 				menuCargar();
 				break;
-		
+			case 7:		//Cargar (el juego seleccionado)
+				cargarJuego();
+				break;		
 		}
 		if (trabajando) {
 			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
@@ -245,6 +248,9 @@ public class EscenaCarga : MonoBehaviour {
 		trabajando = false;
 	}
 	
+	private void cargarJuego() {
+		texturaBase = saveGame.normalMap;
+	}	
 	
 	//Menus personalizados --------------------------------------------------------------------------------------------------------------------
 	
@@ -267,7 +273,7 @@ public class EscenaCarga : MonoBehaviour {
 		if (GUILayout.Button(new GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_3")) {
 			estado = 2;
 		}
-		if (GUILayout.Button(new GUIContent("Créditos", "Visualiza los créditos"), "boton_menu_3")) {
+		if (GUILayout.Button(new GUIContent("Cr\u00e9ditos", "Visualiza los créditos"), "boton_menu_3")) { //U+00E9 es el caracter unicode 'é'
 			estado = 3;
 		}
 		if (GUILayout.Button(new GUIContent("Salir", "Salir de este juego"), "boton_menu_4")) {
