@@ -7,7 +7,7 @@ Shader "Planet/Roca"
 		_Lights("Mapa Luces", 2D) = "black" {}
 		_Lightscale("Intensidad de las luces", Float) = 1
 		_Normals("Mapa Relieve", 2D) = "bump" {}
-		_Amount("Escarpado,Extrusion", Float) = 0.5
+		_Amount("Escarpado,Extrusion", Range(0,1.5)) = 0.5
 		_Ilum("_Ilum", 2D) = "black" {}
 
 	}
