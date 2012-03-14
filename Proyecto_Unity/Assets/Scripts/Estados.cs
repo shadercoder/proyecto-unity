@@ -58,7 +58,7 @@ public class Estados : MonoBehaviour {
 		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
 		Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
 		Texture2D texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
-		Texture2D texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
+		//Texture2D texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 		
 		float media = 0.0f;
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
@@ -68,17 +68,17 @@ public class Estados : MonoBehaviour {
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
 		
-		media = FuncTablero.calcularMedia(pixels);
-		pixels = FuncTablero.realzarRelieve(pixels, media);
+		//media = FuncTablero.calcularMedia(pixels);
+		//pixels = FuncTablero.realzarRelieve(pixels, media);
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 	
-		Color[] pixelsAgua = FuncTablero.mascaraBumpAgua(pixels, 0.5f);					//se ignora el mar para el relieve
+		//Color[] pixelsAgua = FuncTablero.mascaraBumpAgua(pixels, 0.5f);					//se ignora el mar para el relieve
 		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
 		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
 		texturaNorm.Apply();
-		texturaMask.SetPixels(pixelsAgua);
-		texturaMask.Apply();	
+		//texturaMask.SetPixels(pixelsAgua);
+		//texturaMask.Apply();	
 		
 		estado = T_estados.principal;
 	}
@@ -97,14 +97,14 @@ public class Estados : MonoBehaviour {
 			MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
 			Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
 			Texture2D texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
-			Texture2D texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
+			//Texture2D texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			texturaBase = temp.texturaBase;
 			texturaNorm = temp.texturaNorm;
-			texturaMask = temp.texturaMask;
+			//texturaMask = temp.texturaMask;
 			texturaBase.Apply();
 			texturaNorm.Apply();
-			texturaMask.Apply();
+			//texturaMask.Apply();
 		}
 		if (PlayerPrefs.GetInt("MusicaOn") == 1)
 			musicaOn = true;
