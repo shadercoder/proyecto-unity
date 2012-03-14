@@ -8,6 +8,8 @@ _Velocidad("_Velocidad", Float) = 0.01
 _atmCerca("_atmCerca", Color) = (0.3706838,0.4156485,0.9552239,1)
 _atmLejos("_atmLejos", Color) = (0,0.9160838,1,1)
 _Espesura("_Espesura", Float) = 3
+_recorte("_recorte", Float) = 0.25
+_Ilum("_Ilum", 2D) = "black" {}
 
 	}
 	
@@ -17,7 +19,7 @@ _Espesura("_Espesura", Float) = 3
 		{
 "Queue"="Transparent"
 "IgnoreProjector"="False"
-"RenderType"="Transparent"
+"RenderType"="TransparentCutout"
 
 		}
 
@@ -43,6 +45,8 @@ float _Velocidad;
 float4 _atmCerca;
 float4 _atmLejos;
 float _Espesura;
+float _recorte;
+sampler2D _Ilum;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -56,11 +60,12 @@ float _Espesura;
 			
 			inline half4 LightingBlinnPhongEditor_PrePass (EditorSurfaceOutput s, half4 light)
 			{
-half3 spec = light.a * s.Gloss;
-half4 c;
-c.rgb = (s.Albedo * light.rgb + light.rgb * spec);
-c.a = s.Alpha;
-return c;
+float4 Luminance0= Luminance( light.xyz ).xxxx;
+float4 Assemble0=float4(Luminance0.x, float4( 0.0, 0.0, 0.0, 0.0 ).y, float4( 0.0, 0.0, 0.0, 0.0 ).z, float4( 0.0, 0.0, 0.0, 0.0 ).w);
+float4 Tex2D0=tex2D(_Ilum,Assemble0.xy);
+float4 Multiply0=float4( s.Albedo.x, s.Albedo.y, s.Albedo.z, 1.0 ) * Tex2D0;
+float4 Saturate0=saturate(Multiply0);
+return Saturate0;
 
 			}
 
@@ -115,16 +120,16 @@ float4 Multiply0=Lerp0 * Saturate0;
 float4 Multiply1=_Time * _Velocidad.xxxx;
 float4 UV_Pan0=float4((IN.uv_BaseNubes.xyxy).x + Multiply1.y,(IN.uv_BaseNubes.xyxy).y,(IN.uv_BaseNubes.xyxy).z,(IN.uv_BaseNubes.xyxy).w);
 float4 Tex2D1=tex2D(_BaseNubes,UV_Pan0.xy);
-float4 Tex2D0=tex2D(_Paleta,Tex2D1.xy);
-float4 Add1=Multiply0 + Tex2D0;
+float4 Add1=Multiply0 + Tex2D1;
+float4 Subtract0=Tex2D1 - _recorte.xxxx;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
+float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-float4 Master0_6_NoInput = float4(1,1,1,1);
+clip( Subtract0 );
 o.Albedo = Add1;
-o.Alpha = Tex2D0.aaaa;
 
 				o.Normal = normalize(o.Normal);
 			}
