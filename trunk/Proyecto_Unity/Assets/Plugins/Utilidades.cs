@@ -209,15 +209,16 @@ public class FuncTablero {
 	private static Perlin perlin;					//Semilla
 	
 	//Ruido
-	public static int octavas	= 6;				//Octavas para la funcion de ruido de turbulencias
-	public static float lacunaridad	= 3.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
-	public static float ganancia = 0.35f;			//El peso que se le da a cada nueva octava
+	public static int octavas	= 4;				//Octavas para la funcion de ruido de turbulencias
+	public static int octavas2	= 12;				//Octavas para la funcion de ruido de turbulencias
+	public static float lacunaridad	= 4.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
+	public static float ganancia = 0.45f;			//El peso que se le da a cada nueva octava
 	public static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
 	public static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
 	public static float tamanoPlaya = 0.01f;		//El tamaño de las playas
-	public static float atenuacionRelieve = 40f;	//Suaviza o acentua el efecto de sombreado
+	public static float atenuacionRelieve = 20f;	//Suaviza o acentua el efecto de sombreado
 	public static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
 	public static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
 	public static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color
@@ -250,13 +251,25 @@ public class FuncTablero {
 	
 	public static Color[] ruidoTextura() {
 		Color[] pixels = new Color[anchoTextura*altoTextura];
+		float valor;
 		for (int i = 0; i < altoTextura; i++) {
 			for (int j = 0; j < anchoTextura; j++) {
-				float valor = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
+				valor = calculaValorRuido(i,j);
 				pixels[j + i*anchoTextura] = new Color(valor, valor, valor);
 			}
 		}
 		return pixels;
+	}
+	
+	public static float calculaValorRuido(int i, int j){
+			float valor,valor1,valor2,valor3;
+			//el clasico
+			valor1 = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
+			//los añadidos para darle mas relieve. seria como si valor 1 fuera la base y valor 2 y 3 calcularan las montañas, y se suman ambos.
+			valor2 = ruido_Turbulence(new Vector2(i, j) * escala, octavas, lacunaridad, ganancia);
+			valor3 = ruido_Turbulence(new Vector2(j, i) * escala/(valor2+1), octavas2, lacunaridad+valor2*2, ganancia*valor2*6);
+			valor = valor1 + valor3;
+			return valor;
 	}
 	
 	public static float calcularMedia(Color[] pix) {
@@ -281,7 +294,7 @@ public class FuncTablero {
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		for (int l = 0; l < pixAgua.Length; l++) {
 			if (pixBump[l].r < media){
-				pixBump[l] = new Color(media,media,media);
+				//pixBump[l] = new Color(media,media,media);
 				pixAgua[l] = new Color(0,0,0);
 			}
 			else 
@@ -301,7 +314,8 @@ public class FuncTablero {
 			while (pesoTextura < 1.0) {
 				pesoTextura += iteraciones;
 				pesoRuido -= iteraciones;
-				float valorRuido = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
+				//float valorRuido = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
+				float valorRuido = calculaValorRuido(i,j);
 				float valorBump = valorRuido * pesoRuido + (pixels[(i - 1) * anchoTextura + j].r) * pesoTextura;
 				pixels[(i - 1)*anchoTextura + j] = new Color(valorBump, valorBump, valorBump);
 				j++;
