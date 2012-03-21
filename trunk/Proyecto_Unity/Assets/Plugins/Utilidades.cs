@@ -15,7 +15,10 @@ public class SaveData {//: ISerializable {
 
   // === Values ===
   // Edit these during gameplay
-  	public Texture2D normalMap;
+//  	public Texture2D normalMap;
+	public int width;
+	public int height;
+	public float[] data;
 //	[SerializeField]
 //  	private Color[] normalMapPixels;
   	// === /Values ===
@@ -71,9 +74,17 @@ public class SaveLoad {
   	public static void Save (string filePath, Texture2D norm)
   	{ 
 	    SaveData data = new SaveData ();
-		data.normalMap = new Texture2D(norm.width, norm.height);
-		data.normalMap.SetPixels(norm.GetPixels());
-		data.normalMap.Apply();
+		int tempLong = norm.width * norm.height;
+		data.data = new float[tempLong];
+		data.width = norm.width;
+		data.height = norm.height;
+		Color[] pixels = norm.GetPixels();
+		for (int i = 0; i < tempLong; i++) {
+			data.data[i] = pixels[i].r;
+		}		
+//		data.normalMap = new Texture2D(norm.width, norm.height);
+//		data.normalMap.SetPixels(norm.GetPixels());
+//		data.normalMap.Apply();
 //		data.normalMap = norm;
 //		data.setNormalMapPixels(norm.GetPixels());
 //		data.normalMapPixels = norm.GetPixels();
@@ -111,7 +122,9 @@ public class SaveLoad {
 			stream.Close();
 		}
 		Debug.Log("Type of object deserialized: " + data.GetType());
-        Debug.Log("normalMap = " + data.normalMap);
+//        Debug.Log("normalMap = " + data.normalMap);
+		Debug.Log("Width = " + data.width);
+		Debug.Log("Height = " + data.height);
 		return data;
 	}
 	
@@ -249,6 +262,17 @@ public class FuncTablero {
 		return ruidoTotal;
 	}
 	
+	public static float calculaValorRuido(int i, int j){
+			float valor,valor1,valor2,valor3;
+			//el clasico
+			valor1 = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
+			//los añadidos para darle mas relieve. seria como si valor 1 fuera la base y valor 2 y 3 calcularan las montañas, y se suman ambos.
+			valor2 = ruido_Turbulence(new Vector2(i, j) * escala, octavas, lacunaridad, ganancia);
+			valor3 = ruido_Turbulence(new Vector2(j, i) * escala/(valor2 + 1), octavas2, lacunaridad + valor2 * 2, ganancia * valor2 * 6);
+			valor = valor1 + valor3;
+			return valor;
+	}
+	
 	public static Color[] ruidoTextura() {
 		Color[] pixels = new Color[anchoTextura*altoTextura];
 		float valor;
@@ -259,17 +283,6 @@ public class FuncTablero {
 			}
 		}
 		return pixels;
-	}
-	
-	public static float calculaValorRuido(int i, int j){
-			float valor,valor1,valor2,valor3;
-			//el clasico
-			valor1 = ruido_Turbulence(new Vector2(j, i) * escala, octavas, lacunaridad, ganancia);
-			//los añadidos para darle mas relieve. seria como si valor 1 fuera la base y valor 2 y 3 calcularan las montañas, y se suman ambos.
-			valor2 = ruido_Turbulence(new Vector2(i, j) * escala, octavas, lacunaridad, ganancia);
-			valor3 = ruido_Turbulence(new Vector2(j, i) * escala/(valor2+1), octavas2, lacunaridad+valor2*2, ganancia*valor2*6);
-			valor = valor1 + valor3;
-			return valor;
 	}
 	
 	public static float calcularMedia(Color[] pix) {
@@ -284,9 +297,9 @@ public class FuncTablero {
 				min = pix[i].r;
 		}
 		med /= pix.Length;
-//		Debug.Log("Max = " + max.ToString());
-//		Debug.Log("Min = " + min.ToString());
-//		Debug.Log("Media = " + med.ToString());
+		Debug.Log("Max = " + max.ToString());
+		Debug.Log("Min = " + min.ToString());
+		Debug.Log("Media = " + med.ToString());
 		return med;
 	}
 	
@@ -490,6 +503,11 @@ public class FuncTablero {
 	public static void setOctavas(int entrada) {
 		if (entrada >= 0)
 			octavas = entrada;
+	}
+	
+	public static void setOctavas2(int entrada) {
+		if (entrada >= 0)
+			octavas2 = entrada;
 	}
 	
 	public static void setLacunaridad(float entrada) {

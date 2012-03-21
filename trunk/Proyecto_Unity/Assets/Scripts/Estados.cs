@@ -12,12 +12,11 @@ public class Estados : MonoBehaviour {
 	public GameObject camaraReparaciones;								//Para mostrar las opciones de las reparaciones de la nave
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
 	private int menuOpcionesInt					= 0;					//Variable de control sobre el menu lateral derecho
-	private int cuantoW	= Screen.width / 48;							//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
-	private int cuantoH	= Screen.height / 30;							//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
+	private int cuantoW							= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
+	private int cuantoH							= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 	
 	//Privadas del script
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
-//	private bool nuevoTerreno 					= false;				//Si se quiere re-generar el terreno, se hace poniendo esto a true
 	private Casilla[,] tablero;											//Tablero lógico del algoritmo
 	
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
@@ -58,9 +57,8 @@ public class Estados : MonoBehaviour {
 		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
 		Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
 		Texture2D texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
-		//Texture2D texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 		
-		float media = 0.0f;
+//		float media = 0.0f;
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
 		
@@ -68,17 +66,15 @@ public class Estados : MonoBehaviour {
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
 		
-		//media = FuncTablero.calcularMedia(pixels);
-		//pixels = FuncTablero.realzarRelieve(pixels, media);
+//		media = FuncTablero.calcularMedia(pixels);
+//		pixels = FuncTablero.realzarRelieve(pixels, media);
+//		media = FuncTablero.calcularMedia(pixels);
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 	
-		//Color[] pixelsAgua = FuncTablero.mascaraBumpAgua(pixels, 0.5f);					//se ignora el mar para el relieve
 		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
 		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
 		texturaNorm.Apply();
-		//texturaMask.SetPixels(pixelsAgua);
-		//texturaMask.Apply();	
 		
 		estado = T_estados.principal;
 	}
@@ -86,7 +82,6 @@ public class Estados : MonoBehaviour {
 	//Update y transiciones de estados -------------------------------------------------------------------------------------------------------
 	
 	void Awake() {
-	//	creacionInicial();
 		contenedorTexturas = GameObject.FindGameObjectWithTag("Carga");
 		if (contenedorTexturas == null) {
 			creacionInicial();
@@ -97,14 +92,11 @@ public class Estados : MonoBehaviour {
 			MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
 			Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
 			Texture2D texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
-			//Texture2D texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			texturaBase = temp.texturaBase;
 			texturaNorm = temp.texturaNorm;
-			//texturaMask = temp.texturaMask;
 			texturaBase.Apply();
 			texturaNorm.Apply();
-			//texturaMask.Apply();
 		}
 		if (PlayerPrefs.GetInt("MusicaOn") == 1)
 			musicaOn = true;
@@ -330,19 +322,20 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void menuGuardar() {
-		GameObject planeta;
-		MeshRenderer renderer;
-		Texture2D texturaBase;
+//		GameObject planeta;
+//		MeshRenderer renderer;
+//		Texture2D texturaBase;
 		Control_Raton script;
 		GUI.Box(new Rect(Screen.width / 2 - 126, Screen.height / 2 - 151, 252, 302), "");
 		posicionScroll = GUI.BeginScrollView(new Rect(Screen.width / 2 - 125, Screen.height / 2 - 150, 250, 300), posicionScroll, new Rect(0, 0, 250, 75 * numSavesExtra));
 		if (GUI.Button(new Rect(5, 0, 240, 75), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
-			planeta = GameObject.FindWithTag("Planeta");
-			renderer = planeta.GetComponent<MeshRenderer>();
-			texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+//			planeta = GameObject.FindWithTag("Planeta");
+//			renderer = planeta.GetComponent<MeshRenderer>();
+//			texturaBase = (Texture2D)renderer.sharedMaterial.mainTexture;// as Texture2D;
+			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
 			SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
-			SaveLoad.Save(texturaBase);
+			SaveLoad.Save(temp.texturaBase);
 			//Recuperar estado normal
 			Time.timeScale = 1.0f;
 			script = transform.GetComponent<Control_Raton>();
@@ -351,11 +344,13 @@ public class Estados : MonoBehaviour {
 		}
 		for (int i = 0; i < numSaves; i++) {
 			if (GUI.Button(new Rect(5, (i + 1) * 75, 240, 75), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
-				planeta = GameObject.FindWithTag("Planeta");
-				renderer = planeta.GetComponent<MeshRenderer>();
-				texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+//				planeta = GameObject.FindWithTag("Planeta");
+//				renderer = planeta.GetComponent<MeshRenderer>();
+//				texturaBase = (Texture2D)renderer.sharedMaterial.mainTexture;
+				ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
+//				Color[] tempPixels = temp.texturaBase.GetPixels();
 				SaveLoad.cambiaFileName(nombresSaves[i]);
-				SaveLoad.Save(texturaBase);
+				SaveLoad.Save(temp.texturaBase);
 				//Recuperar estado normal
 				Time.timeScale = 1.0f;
 				script = transform.GetComponent<Control_Raton>();
