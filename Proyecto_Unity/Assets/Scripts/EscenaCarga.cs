@@ -10,10 +10,9 @@ public class EscenaCarga : MonoBehaviour {
 	public GameObject contenedorTexturas;						//Aqui se guardan las texturas que luego se usarán en el planeta
 	public Texture2D texturaBase;								//La textura visible que vamos a inicializar durante la creacion de un planeta nuevo
 	public Texture2D texturaNorm;								//La textura normal con el mapa de altura
-	public Texture2D texturaMask;								//La textura con la mascara de reflejo para el agua
 	private Texture2D texturaPantalla 		= null;				//La textura a enseñar durante la creacion
 	private Color[] pixels;										//Los pixeles sobre los que realizar operaciones
-	private float media 					= 0.0f;				//La media de altura de la textura
+//	private float media 					= 0.0f;				//La media de altura de la textura
 	
 	private int faseCreacion 				= 0;				//Fases de la creacion del planeta
 	private bool trabajando 				= false;			//Para saber si está haciendo algo por debajo el script
@@ -23,6 +22,8 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private float gananciaInit 				= 0.35f;			//La ganancia a pasar al script de creación del ruido
 	private float escalaInit 				= 0.004f;			//La escala a pasar al script de creación del ruido
+	private float lacunaridadInit			= 3.5f;				//La lacunaridad a pasar al script de creacion del ruido
+	private float octavasFloat				= 12.0f;			//Las octavas a pasar al script de creacion del ruido
 	private float nivelAguaInit 			= 0.5f;				//El punto a partir del cual deja de haber mar en la orografía del planeta
 	private float temperaturaInit 			= 0.5f;				//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 	
@@ -85,11 +86,11 @@ public class EscenaCarga : MonoBehaviour {
 		nombresSaves = SaveLoad.getFileNames();
 		
 		//Inicializacion de las texturas
-		GameObject planeta = GameObject.FindWithTag("Planeta");
-		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
-		texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
-		texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
-		texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
+//		GameObject planeta = GameObject.FindWithTag("Planeta");
+//		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
+//		texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+//		texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
+//		texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 	}
 	
 	void Update() {
@@ -124,16 +125,16 @@ public class EscenaCarga : MonoBehaviour {
 				menuPrincipal();
 				break;
 			case 1:		//Comenzar
-				if (paso3Completado) {
+//				if (paso3Completado) {
 					ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 					temp.texturaBase = texturaBase;
 					temp.texturaNorm = texturaNorm;
-					temp.texturaMask = texturaMask;
+//					temp.texturaMask = texturaMask;
 					temp.texturaBase.Apply();
 					temp.texturaNorm.Apply();
-					temp.texturaMask.Apply();
-					Application.LoadLevel("Generador_Planeta");
-				}
+//					temp.texturaMask.Apply();
+					Application.LoadLevel("Escena_Principal");
+//				}
 				break;
 			case 2:		//Opciones
 				menuOpciones();
@@ -228,28 +229,43 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private void creacionParte2() {
 //		yield return new WaitForSeconds(0.1f);
-		media = FuncTablero.calcularMedia(pixels);
-		pixels = FuncTablero.realzarRelieve(pixels, media);
+//		media = FuncTablero.calcularMedia(pixels);
+//		pixels = FuncTablero.realzarRelieve(pixels, media);
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
-		texturaPantalla.SetPixels(pixels);
-		texturaPantalla.Apply();
+//		texturaPantalla.SetPixels(pixels);
+//		texturaPantalla.Apply();
 		trabajando = false;
 	}
 	
 	private void creacionParte3() {
 //		yield return new WaitForSeconds(0.1f);
-		Color[] pixelsAgua = FuncTablero.mascaraBumpAgua(pixels, nivelAguaInit);		//se ignora el mar para el relieve
+//		Color[] pixelsAgua = FuncTablero.mascaraBumpAgua(pixels, nivelAguaInit);		//se ignora el mar para el relieve
 		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
 		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
 		texturaNorm.Apply();
-		texturaMask.SetPixels(pixelsAgua);
-		texturaMask.Apply();
+//		texturaMask.SetPixels(pixelsAgua);
+//		texturaMask.Apply();
 		trabajando = false;
 	}
 	
-	private void cargarJuego() {
-		texturaBase = saveGame.normalMap;
+	private void cargarJuego() {		
+		int w = saveGame.width;
+		int h = saveGame.height;
+		Color[] pixels = new Color[w * h];
+		for (int i = 0; i < w * h; i++) {
+			float temp = saveGame.data[i];
+			pixels[i] = new Color(temp, temp, temp);
+		}	
+		if (texturaBase.width != w || texturaBase.height != h) {
+			Debug.LogError("Las dimensiones de las texturas no coinciden!");
+		}
+		texturaBase.SetPixels(pixels);
+		texturaBase.Apply();
+		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
+		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
+		texturaNorm.Apply();
+		estado = 1;
 	}	
 	
 	//Menus personalizados --------------------------------------------------------------------------------------------------------------------
@@ -295,6 +311,7 @@ public class EscenaCarga : MonoBehaviour {
 			if (GUI.Button(new Rect(cuantoW, i * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Cargar partida num. " + i))) {
 				SaveLoad.cambiaFileName(nombresSaves[i]);
 				saveGame = SaveLoad.Load();
+				estado = 7;
 			}
 		}
 		GUI.EndScrollView();
@@ -307,7 +324,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW * 17, cuantoH * 8, cuantoW * 14, cuantoH * 14),"");
 		GUILayout.BeginArea(new Rect(cuantoW * 19, cuantoH * 9, cuantoW * 11, cuantoH * 12));
 		GUILayout.BeginVertical();
-		musicaOn = customToggleLayout(musicaOn, "Musica", "Apagar/Encender música");
+		musicaOn = customToggleLayout(musicaOn, "M\u00fasica", "Apagar/Encender m\u00fasica");
 		musicaVol = GUILayout.HorizontalSlider(musicaVol, 0.0f, 1.0f);
 		GUILayout.Space(cuantoH * 2); 		//Dejar un espacio de 2 cuantos entre opcion y opcion
 		sfxOn = customToggleLayout(sfxOn, "SFX", "Apagar/Encender efectos");
@@ -341,29 +358,47 @@ public class EscenaCarga : MonoBehaviour {
 		//influyan en la creacion del ruido, por ejemplo el numero de octavas a usar podemos llamarlo "factor de erosion" o cosas asi.
 		//Despues de este paso se crea el mapa aleatorio con ruido.
 		
-		GUILayout.Space(cuantoH * 2);
-		
-		GUILayout.Label("Edad del planeta", "label_centrada");
+		GUILayout.Label("Ganancia", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Plano");
+		GUILayout.Label("Min");
 		gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.1f, 0.6f);
-		GUILayout.Label("Escarpado");
-		GUILayout.EndHorizontal();
+		GUILayout.Label("Max");
+		GUILayout.EndHorizontal();			
 		
-		GUILayout.Space(cuantoH * 2);
+		GUILayout.Space(cuantoH);
 		
-		GUILayout.Label("Tamaño de los continentes", "label_centrada");
+		GUILayout.Label("Escala", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Pequeños");
+		GUILayout.Label("Max");
 		escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.007f, 0.001f);
-		GUILayout.Label("Grandes");
+		GUILayout.Label("Min");
 		GUILayout.EndHorizontal();
 		
-		GUILayout.Space(cuantoH * 2);
+		GUILayout.Space(cuantoH);
+		
+		GUILayout.Label("Octavas", "label_centrada");
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Min");
+		octavasFloat = GUILayout.HorizontalSlider(octavasFloat, 4.0f, 16.0f);
+		GUILayout.Label("Max");
+		GUILayout.EndHorizontal();
+		
+		GUILayout.Space(cuantoH);
+		
+		GUILayout.Label("Lacunaridad", "label_centrada");
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Min");
+		lacunaridadInit = GUILayout.HorizontalSlider(lacunaridadInit, 2.0f, 6.5f);
+		GUILayout.Label("Max");
+		GUILayout.EndHorizontal();
+		
+		GUILayout.Space(cuantoH);
 		
 		if (GUILayout.Button(new GUIContent("Generar", "Genera un nuevo planeta"))) {	
 			FuncTablero.setEscala(escalaInit);
 			FuncTablero.setGanancia(gananciaInit);
+			FuncTablero.setLacunaridad(lacunaridadInit);
+			FuncTablero.setOctavas2((int)octavasFloat);
 			trabajando = true;
 			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
 			FuncTablero.reiniciaPerlin();
@@ -405,20 +440,20 @@ public class EscenaCarga : MonoBehaviour {
 		
 		GUILayout.Space(cuantoH * 2);
 		
-		GUILayout.Label("Cantidad de líquido", "label_centrada");
+		GUILayout.Label("Nivel del agua", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Bajo");
+		GUILayout.Label("Min");
 		nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.0f, 1.0f);
-		GUILayout.Label("Alto");
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
 		
 		GUILayout.Space(cuantoH * 2);
 		
 		GUILayout.Label("Temperatura del planeta", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Frío");
+		GUILayout.Label("Min");
 		temperaturaInit = GUILayout.HorizontalSlider(temperaturaInit, 0.0f, 1.0f);
-		GUILayout.Label("Cálido");
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
 		
 		GUILayout.Space(cuantoH * 2);
