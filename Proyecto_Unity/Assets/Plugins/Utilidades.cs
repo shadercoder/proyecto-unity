@@ -67,32 +67,20 @@ public class SaveLoad {
 	public static string currentFilePath = Application.persistentDataPath + "/Saves/";
 
   	// Call this to write data
-  	public static void Save (Texture2D norm)  		// Overloaded
+  	public static void Save (float[] data, int width, int height)  		// Overloaded
   	{
-    	Save (currentFilePath + currentFileName, norm);
+    	Save (currentFilePath + currentFileName, data, width, height);
   	}
-  	public static void Save (string filePath, Texture2D norm)
+  	public static void Save (string filePath, float[] data, int width, int height)
   	{ 
-	    SaveData data = new SaveData ();
-		int tempLong = norm.width * norm.height;
-		data.data = new float[tempLong];
-		data.width = norm.width;
-		data.height = norm.height;
-		Color[] pixels = norm.GetPixels();
-		for (int i = 0; i < tempLong; i++) {
-			data.data[i] = pixels[i].r;
-		}		
-//		data.normalMap = new Texture2D(norm.width, norm.height);
-//		data.normalMap.SetPixels(norm.GetPixels());
-//		data.normalMap.Apply();
-//		data.normalMap = norm;
-//		data.setNormalMapPixels(norm.GetPixels());
-//		data.normalMapPixels = norm.GetPixels();
+	    SaveData save = new SaveData ();
+		save.data = data;
+		save.width = width;
+		save.height = height;
 	    FileStream stream = new FileStream(filePath, FileMode.Create);
 		try {
 		    BinaryFormatter bformatter = new BinaryFormatter();
-	//	    bformatter.Binder = new VersionDeserializationBinder(); 
-		    bformatter.Serialize(stream, data);
+		    bformatter.Serialize(stream, save);
 		}
 		catch (SerializationException e) {
 			Debug.LogError("Excepcion al serializar el savegame. Datos: " + e.Message);
@@ -112,7 +100,6 @@ public class SaveLoad {
 	    FileStream stream = new FileStream(filePath, FileMode.Open);
 		try {
 		    BinaryFormatter bformatter = new BinaryFormatter();
-//		    bformatter.Binder = new VersionDeserializationBinder(); 
 		    data = (SaveData)bformatter.Deserialize(stream);
 		}
 		catch (SerializationException e) {

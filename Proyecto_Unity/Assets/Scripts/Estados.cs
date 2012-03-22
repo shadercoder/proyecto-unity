@@ -335,7 +335,13 @@ public class Estados : MonoBehaviour {
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
 			SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
-			SaveLoad.Save(temp.texturaBase);
+			int tempLong = temp.texturaBase.width * temp.texturaBase.height;
+			float[] data = new float[tempLong];
+			Color[] pixels = temp.texturaBase.GetPixels();
+			for (int i = 0; i < tempLong; i++) {
+				data[i] = pixels[i].r;
+			}			
+			SaveLoad.Save(data,temp.texturaBase.width, temp.texturaBase.height);
 			//Recuperar estado normal
 			Time.timeScale = 1.0f;
 			script = transform.GetComponent<Control_Raton>();
@@ -350,7 +356,13 @@ public class Estados : MonoBehaviour {
 				ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 //				Color[] tempPixels = temp.texturaBase.GetPixels();
 				SaveLoad.cambiaFileName(nombresSaves[i]);
-				SaveLoad.Save(temp.texturaBase);
+				int tempLong = temp.texturaBase.width * temp.texturaBase.height;
+				float[] data = new float[tempLong];
+				Color[] pixels = temp.texturaBase.GetPixels();
+				for (int j = 0; j < tempLong; j++) {
+					data[j] = pixels[j].r;
+				}			
+				SaveLoad.Save(data,temp.texturaBase.width, temp.texturaBase.height);
 				//Recuperar estado normal
 				Time.timeScale = 1.0f;
 				script = transform.GetComponent<Control_Raton>();
