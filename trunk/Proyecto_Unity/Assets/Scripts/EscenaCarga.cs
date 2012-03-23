@@ -7,18 +7,16 @@ public class EscenaCarga : MonoBehaviour {
 	private int estado 						= 0;				//0 para menu, 1 para comenzar, 2 para opciones, 3 para creditos, 4 para salir
 	
 	//Variables de la creacion
-	public GameObject contenedorTexturas;						//Aqui se guardan las texturas que luego se usarán en el planeta
+	private GameObject contenedorTexturas;						//Aqui se guardan las texturas que luego se usarán en el planeta
 	public Texture2D texturaBase;								//La textura visible que vamos a inicializar durante la creacion de un planeta nuevo
 	public Texture2D texturaNorm;								//La textura normal con el mapa de altura
 	private Texture2D texturaPantalla 		= null;				//La textura a enseñar durante la creacion
 	private Color[] pixels;										//Los pixeles sobre los que realizar operaciones
-//	private float media 					= 0.0f;				//La media de altura de la textura
 	
 	private int faseCreacion 				= 0;				//Fases de la creacion del planeta
 	private bool trabajando 				= false;			//Para saber si está haciendo algo por debajo el script
 	private bool paso1Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 	private bool paso2Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
-	private bool paso3Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 	
 	private float gananciaInit 				= 0.35f;			//La ganancia a pasar al script de creación del ruido
 	private float escalaInit 				= 0.004f;			//La escala a pasar al script de creación del ruido
@@ -62,7 +60,18 @@ public class EscenaCarga : MonoBehaviour {
 	
 	void Awake() {
 		miObjeto = this.transform;
-		DontDestroyOnLoad(contenedorTexturas);
+		GameObject[] cadena = GameObject.FindGameObjectsWithTag("Carga");
+		if (cadena.Length > 1) {
+			contenedorTexturas = cadena[0];
+			DontDestroyOnLoad(cadena[0]);
+			for (int i = 1; i < cadena.Length; i++) {
+				Destroy(cadena[i]);
+			}
+		}
+		else {
+			contenedorTexturas = cadena[0];
+			DontDestroyOnLoad(cadena[0]);
+		}
 		if (PlayerPrefs.HasKey("MusicaOn")) {
 			if (PlayerPrefs.GetInt("MusicaOn") == 1)
 				musicaOn = true;
@@ -84,13 +93,6 @@ public class EscenaCarga : MonoBehaviour {
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
-		
-		//Inicializacion de las texturas
-//		GameObject planeta = GameObject.FindWithTag("Planeta");
-//		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
-//		texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
-//		texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
-//		texturaMask = renderer.sharedMaterial.GetTexture("_Mask") as Texture2D;
 	}
 	
 	void Update() {
@@ -118,23 +120,18 @@ public class EscenaCarga : MonoBehaviour {
 	
 	void OnGUI() {
 		GUI.skin = estiloGUI;
-		//GUI.Box(Rect(0,0,Screen.width,Screen.height), "", "fondo_inicio_1");
 		GUI.Box(new Rect(cuantoW * 16, cuantoH, cuantoW * 16, cuantoH * 5), "", "header_titulo"); //Header es 500x100px
 		switch (estado) {
 			case 0: 	//Menu principal
 				menuPrincipal();
 				break;
 			case 1:		//Comenzar
-//				if (paso3Completado) {
 					ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 					temp.texturaBase = texturaBase;
 					temp.texturaNorm = texturaNorm;
-//					temp.texturaMask = texturaMask;
 					temp.texturaBase.Apply();
 					temp.texturaNorm.Apply();
-//					temp.texturaMask.Apply();
 					Application.LoadLevel("Escena_Principal");
-//				}
 				break;
 			case 2:		//Opciones
 				menuOpciones();
@@ -217,7 +214,6 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte1() {
-//		yield return new WaitForSeconds(0.1f);
 		pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
@@ -228,24 +224,16 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte2() {
-//		yield return new WaitForSeconds(0.1f);
-//		media = FuncTablero.calcularMedia(pixels);
-//		pixels = FuncTablero.realzarRelieve(pixels, media);
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
-//		texturaPantalla.SetPixels(pixels);
-//		texturaPantalla.Apply();
 		trabajando = false;
 	}
 	
 	private void creacionParte3() {
-//		yield return new WaitForSeconds(0.1f);
-//		Color[] pixelsAgua = FuncTablero.mascaraBumpAgua(pixels, nivelAguaInit);		//se ignora el mar para el relieve
 		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
+		texturaNorm.Apply();
 		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
 		texturaNorm.Apply();
-//		texturaMask.SetPixels(pixelsAgua);
-//		texturaMask.Apply();
 		trabajando = false;
 	}
 	
@@ -280,7 +268,6 @@ public class EscenaCarga : MonoBehaviour {
 			faseCreacion = 0;
 			paso1Completado = false;
 			paso2Completado = false;
-			paso3Completado = false;
 			estado = 5;
 		}
 		if (GUILayout.Button(new GUIContent("Cargar", "Cargar un juego guardado"), "boton_menu_2")) {
@@ -491,38 +478,19 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private void creacionParte3Interfaz() {
 		GUI.Box(new Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), texturaPantalla);
-		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
-		GUILayout.BeginVertical();
-		//Controles para alterar el tipo de terreno ya creado: ultimos retoques como por ejemplo los rios, montañas, cráteres, etc.
-		//Despues de este paso se acepta todo lo anterior y se pasa al juego.
-		
-		GUILayout.Space(cuantoH * 4);
-		
-		if (GUILayout.Button(new GUIContent("Aceptar", "Aceptar el actual planeta"))) {
-			trabajando = true;
-			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
-			creacionParte3();
-			paso3Completado = true;
-		}
-		
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Volver", "Volver a la segunda fase"))) {
 			faseCreacion = 1;
 		}
 		GUILayout.Space(cuantoW * 28);
-		if (paso3Completado) {
-			if (GUILayout.Button(new GUIContent("Comenzar", "Empezar el juego"))) {
-				faseCreacion = 0;
-				estado = 1;	
-			}
-		}
-		else {
-			if (GUILayout.Button(new GUIContent("Comenzar", "Completar el paso primero"))) {
-				//Sonido de error, el boton con estilo diferente para estar en gris, etc.
-			}
+		//Mejor si solo pulsando el boton de comenzar empiezas directamente
+		if (GUILayout.Button(new GUIContent("Comenzar", "Empezar el juego"))) {
+			trabajando = true;
+			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
+			creacionParte3();
+			faseCreacion = 0;
+			estado = 1;	
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();

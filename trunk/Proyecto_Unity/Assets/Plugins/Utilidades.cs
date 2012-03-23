@@ -11,66 +11,39 @@ using System.Reflection;
 
 //Clase contenedora del savegame ------------------------------------------------------------------------------------------------------
 [System.Serializable]
-public class SaveData {//: ISerializable { 
+public class SaveData {
 
-  // === Values ===
-  // Edit these during gameplay
-//  	public Texture2D normalMap;
+	//Variables a salvar
 	public int width;
 	public int height;
 	public float[] data;
-//	[SerializeField]
-//  	private Color[] normalMapPixels;
-  	// === /Values ===
 
-  	// The default constructor. Included for when we call it during Save() and Load()
+
   	public SaveData () {}
 
-  	// This constructor is called automatically by the parent class, ISerializable
-  	// We get to custom-implement the serialization process here
-//	[SecurityPermissionAttribute (SecurityAction.Demand, SerializationFormatter = true)]
-//  	public SaveData (SerializationInfo info, StreamingContext ctxt)
-//  	{
-//    	// Get the values from info and assign them to the appropriate properties. Make sure to cast each variable.
-//    	// Do this for each var defined in the Values section above
-//		try {
-////    		normalMap = (Texture2D)info.GetValue("normalMap", typeof(Texture2D));
-//    		normalMapPixels = (Color[])info.GetValue("normalMapPixels", typeof(Color[]));
-//		}
-//		catch (InvalidCastException e) {
-//			Debug.LogError("Excepcion de casting al recuperar el valor del savegame. Datos: " + e.Message);
-//		}
-//  	}
-//
-//  	// Required by the ISerializable class to be properly serialized. This is called automatically
-////	[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-//	public void GetObjectData (SerializationInfo info, StreamingContext ctxt)
-//  	{
-//    	// Repeat this for each var defined in the Values section
-////    	info.AddValue("normalMap", normalMap, typeof(Texture2D));
-//    	info.AddValue("normalMapPixels", normalMapPixels, typeof(Color[]));
-//  	}
-	
-//	public void setNormalMapPixels(Color[] col) {
-//		normalMapPixels = col;	
-//	}
-//	
-//	public Color[] getNormalMapPixels() {
-//		return normalMapPixels;	
-//	}
 }
 
 //Clase con los métodos a llamar para crear el savegame -------------------------------------------------------------------------------
 public class SaveLoad {
 	
-	public static string currentFileName = "SaveGame.hur";						// Edit this for different save files
+	public static string currentFileName = "SaveGame.hur";						
 	public static string currentFilePath = Application.persistentDataPath + "/Saves/";
-
-  	// Call this to write data
-  	public static void Save (float[] data, int width, int height)  		// Overloaded
+	
+	public static void Save (Texture2D tex) {							//Sobrecargado
+		Color[] colTemp = tex.GetPixels();
+		int tempLong = tex.width * tex.height;
+		float[] data = new float[tempLong];
+		for (int i = 0; i < tempLong; i++) {
+			data[i] = colTemp[i].r;
+		}
+		Save(data, tex.width, tex.height);
+	}
+	
+  	public static void Save (float[] data, int width, int height)  		//Sobrecargado
   	{
     	Save (currentFilePath + currentFileName, data, width, height);
   	}
+	
   	public static void Save (string filePath, float[] data, int width, int height)
   	{ 
 	    SaveData save = new SaveData ();
@@ -90,10 +63,10 @@ public class SaveLoad {
 		}
   	}
 
-  	// Call this to load from a file into "data"
-  	public static SaveData Load ()  {				// Overloaded
+  	public static SaveData Load ()  {									//Sobrecargado
 		return Load(currentFilePath + currentFileName);
-	}   
+	} 
+	
   	public static SaveData Load(string filePath) 
   	{
 	    SaveData data = new SaveData ();
@@ -108,10 +81,6 @@ public class SaveLoad {
 		finally {
 			stream.Close();
 		}
-		Debug.Log("Type of object deserialized: " + data.GetType());
-//        Debug.Log("normalMap = " + data.normalMap);
-		Debug.Log("Width = " + data.width);
-		Debug.Log("Height = " + data.height);
 		return data;
 	}
 	
@@ -152,28 +121,6 @@ public class SaveLoad {
 
 }
 
-// === This is required to guarantee a fixed serialization assembly name, which Unity likes to randomize on each compile
-// Do not change this
-//public sealed class VersionDeserializationBinder : SerializationBinder 
-//{ 
-//    public override Type BindToType( string assemblyName, string typeName )
-//    { 
-//        if ( !string.IsNullOrEmpty( assemblyName ) && !string.IsNullOrEmpty( typeName ) ) 
-//        { 
-//            Type typeToDeserialize = null; 
-//
-//            assemblyName = Assembly.GetExecutingAssembly().FullName; 
-//
-//            // The following line of code returns the type. 
-//            typeToDeserialize = Type.GetType( String.Format( "{0}, {1}", typeName, assemblyName ) ); 
-//
-//            return typeToDeserialize; 
-//        } 
-//
-//        return null; 
-//    } 
-//}
-
 //Clase para tratar la textura y el tablero -----------------------------------------------------------------------------------------
 public enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};													//Tipos de orografía
 public enum T_elementos {hidrogeno, helio, oxigeno, carbono, boro, nitrogeno, litio, silicio, magnesio, argon, potasio};	//Se pueden añadir mas mas adelante
@@ -201,6 +148,7 @@ public class Casilla {
 public class FuncTablero {
 	
 	//Variables ----------------------------------------------------------------------------------------------------------------------
+	
 	//Privadas para uso del script
 	private static int anchoTextura = 0;			//A cero inicialmente para detectar errores
 	private static int altoTextura = 0;				//A cero inicialmente para detectar errores
@@ -294,7 +242,6 @@ public class FuncTablero {
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		for (int l = 0; l < pixAgua.Length; l++) {
 			if (pixBump[l].r < media){
-				//pixBump[l] = new Color(media,media,media);
 				pixAgua[l] = new Color(0,0,0);
 			}
 			else 
@@ -469,6 +416,18 @@ public class FuncTablero {
 			}
 		}
 		return tablero;
+	}
+	
+	public static void alteraPixel(Texture2D tex, int w, int h, float valor){
+		if (w < 0 || h < 0 || w > tex.width || h > tex.height) {
+			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan.");
+		}
+		Color pix = tex.GetPixel(w,h);
+		pix.r = pix.r + valor;
+		pix.g = pix.g + valor;
+		pix.b = pix.b + valor;
+		tex.SetPixel(w,h,pix);
+		tex.Apply();
 	}
 	
 	public static void inicializa(Texture2D tex) {
