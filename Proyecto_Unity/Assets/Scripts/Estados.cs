@@ -58,17 +58,13 @@ public class Estados : MonoBehaviour {
 		Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
 		Texture2D texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
 		
-//		float media = 0.0f;
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
 		
-		pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
-		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
-		pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
+		pixels = FuncTablero.ruidoTextura();											//Se crea el ruido para la textura base y normales...
+		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);			//Se suaviza el borde lateral...
+		pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);			//Se suavizan los polos...
 		
-//		media = FuncTablero.calcularMedia(pixels);
-//		pixels = FuncTablero.realzarRelieve(pixels, media);
-//		media = FuncTablero.calcularMedia(pixels);
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 	
@@ -237,7 +233,6 @@ public class Estados : MonoBehaviour {
 	private void grupoIzquierda() {
 		GUI.BeginGroup(new Rect(5, Screen.height / 2 - 110, 125, 230));
 		if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Generar otro planeta") , "d_planeta")) {
-//			nuevoTerreno = true;
 			estado = T_estados.regenerar;
 		}
 		if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Opciones de cámara"), "d_cam")) {
@@ -250,7 +245,7 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void grupoDerecha() {
-		//TODO Dependiendo de que opción este pulsada, poner un menú u otro!
+		//Dependiendo de que opción este pulsada, poner un menú u otro!
 		Control_Raton script;
 		Transform objetivo;
 		if (menuOpcionesInt == 1) {
@@ -322,16 +317,10 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void menuGuardar() {
-//		GameObject planeta;
-//		MeshRenderer renderer;
-//		Texture2D texturaBase;
 		Control_Raton script;
 		GUI.Box(new Rect(Screen.width / 2 - 126, Screen.height / 2 - 151, 252, 302), "");
 		posicionScroll = GUI.BeginScrollView(new Rect(Screen.width / 2 - 125, Screen.height / 2 - 150, 250, 300), posicionScroll, new Rect(0, 0, 250, 75 * numSavesExtra));
 		if (GUI.Button(new Rect(5, 0, 240, 75), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
-//			planeta = GameObject.FindWithTag("Planeta");
-//			renderer = planeta.GetComponent<MeshRenderer>();
-//			texturaBase = (Texture2D)renderer.sharedMaterial.mainTexture;// as Texture2D;
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
 			SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
@@ -350,19 +339,9 @@ public class Estados : MonoBehaviour {
 		}
 		for (int i = 0; i < numSaves; i++) {
 			if (GUI.Button(new Rect(5, (i + 1) * 75, 240, 75), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
-//				planeta = GameObject.FindWithTag("Planeta");
-//				renderer = planeta.GetComponent<MeshRenderer>();
-//				texturaBase = (Texture2D)renderer.sharedMaterial.mainTexture;
 				ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
-//				Color[] tempPixels = temp.texturaBase.GetPixels();
-				SaveLoad.cambiaFileName(nombresSaves[i]);
-				int tempLong = temp.texturaBase.width * temp.texturaBase.height;
-				float[] data = new float[tempLong];
-				Color[] pixels = temp.texturaBase.GetPixels();
-				for (int j = 0; j < tempLong; j++) {
-					data[j] = pixels[j].r;
-				}			
-				SaveLoad.Save(data,temp.texturaBase.width, temp.texturaBase.height);
+				SaveLoad.cambiaFileName(nombresSaves[i]);		
+				SaveLoad.Save(temp.texturaBase);
 				//Recuperar estado normal
 				Time.timeScale = 1.0f;
 				script = transform.GetComponent<Control_Raton>();
@@ -390,6 +369,4 @@ public class Estados : MonoBehaviour {
 			estado = T_estados.principal;
 		}
 	}
-
-
 }
