@@ -1,20 +1,20 @@
 fileFormatVersion: 1
-guid: 1275825a345a8fe4280873a72f1c9468
+guid: c16ab555e0428154c82b7ddcc1966b80
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: -1
+    scaleFactor: 1
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
     swapUVs: 0
   tangentSpace:
-    normalImportMode: 1
+    normalImportMode: 0
     tangentImportMode: 1
-    smoothingAngle: 144
+    smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 1
+    generation: 0
   animations:
     generation: 3
     bakeAnimations: 0
@@ -31,4 +31,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: pCube1
+    4300000: pSphere1

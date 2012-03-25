@@ -1,17 +1,17 @@
 fileFormatVersion: 1
-guid: cf55afdc197d35144a13cef4d10ef647
+guid: 1275825a345a8fe4280873a72f1c9468
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 1
+    scaleFactor: -1
     useFileUnits: 1
     meshCompression: 0
-    generateColliders: 1
+    generateColliders: 0
     swapUVs: 0
   tangentSpace:
-    normalImportMode: 0
+    normalImportMode: 1
     tangentImportMode: 1
-    smoothingAngle: 60
+    smoothingAngle: 144
     splitTangents: 1
   materials:
     generation: 0
@@ -27,7 +27,6 @@ ModelImporter:
     - 400000
     - 3300000
     - 2300000
-    - 6400000
     - 11100000
 AssetImporter:
   importerVersion: 1

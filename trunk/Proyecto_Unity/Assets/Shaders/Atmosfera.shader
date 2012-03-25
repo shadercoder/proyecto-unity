@@ -1,15 +1,15 @@
-Shader "Planet/Atmosfera"
+Shader "Planet/Atmosfera2"
 {
 	Properties 
 	{
 _BaseNubes("_BaseNubes", 2D) = "black" {}
-_Paleta("_Paleta", 2D) = "black" {}
 _Velocidad("_Velocidad", Float) = 0.01
+_PaletaColor("_PaletaColor", 2D) = "black" {}
+_Ilum("_Ilum", 2D) = "black" {}
 _atmCerca("_atmCerca", Color) = (0.3706838,0.4156485,0.9552239,1)
 _atmLejos("_atmLejos", Color) = (0,0.9160838,1,1)
 _Espesura("_Espesura", Float) = 3
 _recorte("_recorte", Float) = 0.25
-_Ilum("_Ilum", 2D) = "black" {}
 
 	}
 	
@@ -19,7 +19,7 @@ _Ilum("_Ilum", 2D) = "black" {}
 		{
 "Queue"="Transparent"
 "IgnoreProjector"="False"
-"RenderType"="TransparentCutout"
+"RenderType"="Transparent"
 
 		}
 
@@ -40,13 +40,13 @@ Density 0.5
 
 
 sampler2D _BaseNubes;
-sampler2D _Paleta;
 float _Velocidad;
+sampler2D _PaletaColor;
+sampler2D _Ilum;
 float4 _atmCerca;
 float4 _atmLejos;
 float _Espesura;
 float _recorte;
-sampler2D _Ilum;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -120,16 +120,17 @@ float4 Multiply0=Lerp0 * Saturate0;
 float4 Multiply1=_Time * _Velocidad.xxxx;
 float4 UV_Pan0=float4((IN.uv_BaseNubes.xyxy).x + Multiply1.y,(IN.uv_BaseNubes.xyxy).y,(IN.uv_BaseNubes.xyxy).z,(IN.uv_BaseNubes.xyxy).w);
 float4 Tex2D1=tex2D(_BaseNubes,UV_Pan0.xy);
-float4 Add1=Multiply0 + Tex2D1;
+float4 Tex2D0=tex2D(_PaletaColor,Tex2D1.xy);
+float4 Add1=Multiply0 + Tex2D0;
 float4 Subtract0=Tex2D1 - _recorte.xxxx;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
-float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 clip( Subtract0 );
 o.Albedo = Add1;
+o.Alpha = Tex2D0.aaaa;
 
 				o.Normal = normalize(o.Normal);
 			}
