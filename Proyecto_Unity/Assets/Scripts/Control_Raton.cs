@@ -120,7 +120,7 @@ public class Control_Raton : MonoBehaviour {
 		
 		if (Input.GetKeyUp(KeyCode.E)) {
 			Animation anim = transform.GetComponentInChildren<Animation>();
-			anim.Play();
+			anim.Play("Shake");
 		}
 	   	
 	}

@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public enum tipoHabitat {mar, costa, rio, llanura, montana, desierto};
+//public enum tipoHabitat {mar, costa, rio, llanura, montana, desierto};		
+//Mejor usar T_habitats, que se ha definido de forma mas general en Utilidades.cs
 
 public class Vida : MonoBehaviour {
 	
@@ -16,7 +17,7 @@ public class Vida : MonoBehaviour {
 	}
 }
 
-public class Vegetal								//Representa una población de vegetales de una especie vegetal
+public class Vegetal : Especie						//Representa una población de vegetales de una especie vegetal
 {
 	public int idVegetal;							//id de la población
 	public EspecieVegetal especie;					//Especie vegetal a la que pertenece
@@ -24,16 +25,16 @@ public class Vegetal								//Representa una población de vegetales de una espe
 	public int posX;								//Celda en la que se encuentra el vegetal, coordenada X
 	public int posY;								//Celda en la que se encuentra el vegetal, coordenada Y
 	
-	public Vegetal(int idIndividuo,EspecieVegetal especie,int posX,int posY)
+	public Vegetal(int idIndividuo, EspecieVegetal especie, int posX, int posY)
 	{
 		this.idVegetal = idIndividuo;
 		this.especie = especie;
 		this.posX = posX;
 		this.posY = posY;
-		numVegetales = especie.numIniVegetales;
+		this.numVegetales = especie.numIniVegetales;
 	}	
 	
-	public Vegetal(int idIndividuo,EspecieVegetal especie,int posX,int posY,int numVegetales)
+	public Vegetal(int idIndividuo, EspecieVegetal especie, int posX, int posY, int numVegetales)
 	{
 		this.idVegetal = idIndividuo;
 		this.especie = especie;
@@ -49,7 +50,7 @@ public class Vegetal								//Representa una población de vegetales de una espe
 			aux = numVegetales;
 		else 
 			aux = vegetalesAConsumir;		
-		numVegetales -= vegetalesAConsumir;
+		this.numVegetales -= vegetalesAConsumir;
 		return aux;
 	}
 	
@@ -82,11 +83,11 @@ public class EspecieVegetal
 	public float capacidadReproductiva;				//% de individuos que se incrementan por turno en función de los vegetales actuales	(en tanto por 1)
 	public float capacidadMigracion;				//Probabilidad que tiene la especie de migrar a otra casilla en función del número de vegetales que posea (el valor viene indicado para numMaxVegetales y en tanto por 1)
 	public int radioMigracion;						//Longitud máxima de migración de la especie
-	public tipoHabitat habitat;
+	public T_habitats habitat;
 	//public int capacidadEvolucion;					//Probabilidad de que la especie evolucione dentro de la casilla
 	//public int capacidadEvolucionMigracion;			//Probabilidad de que la especie evolucione al migrar (teoricamente mucho más alto que la normal)
 	
-	public EspecieVegetal(int idEspecie,string nombre,int numMaxVegetales,int numIniVegetales,int capacidadReproductiva,int capacidadMigracion,int radioMigracion,tipoHabitat habitat)
+	public EspecieVegetal(int idEspecie, string nombre, int numMaxVegetales, int numIniVegetales, int capacidadReproductiva, int capacidadMigracion, int radioMigracion, T_habitats habitat)
 	{
 		this.idEspecie = idEspecie;
 		this.nombre = nombre;
@@ -99,7 +100,7 @@ public class EspecieVegetal
 	}	
 }
 
-public class Animal
+public class Animal : Especie
 {
 	public int idAnimal;							//id del animal
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
@@ -112,15 +113,15 @@ public class Animal
 	{
 		this.idAnimal = idAnimal;
 		this.especie = especie;
-		reserva = especie.reservaMaxima;
-		turnosParaReproduccion = especie.reproductibilidad/2;
+		this.reserva = especie.reservaMaxima;
+		this.turnosParaReproduccion = especie.reproductibilidad/2;
 		this.posX = posX;
 		this.posY = posY;
 	}
 	
 	public void alimentacion()
 	{		
-		int idComida;
+//		int idComida;
 //		if(TABLERO.buscaAlimento(especie.idEspecie,especie.tipo,idComida,posX,posY))
 //			reserva += TABLERO.consumeAlimento(idComida,ref posX,ref posY);		//Consume el alimento y desplaza la posicion del animal a la de su alimento
 //		else
@@ -136,8 +137,8 @@ public class Animal
 	public void movimientoAleatorio()
 	{
 		Random.seed = System.DateTime.Now.Millisecond;
-		int x = Random.Range(-1, 1);		
-		int y = Random.Range(-1, 1);
+//		int x = Random.Range(-1, 1);		
+//		int y = Random.Range(-1, 1);
 		/*	Sacamos la nueva posición en función de la velocidad (numero de posiciones que se puede mover por turno) y la direccion haciendo un random
 		 * entre -1, 0 y 1 de x y de y. La dirección viene dada según lo siguiente:
 		 * arriba 			=> x = 0, y = -1
@@ -149,8 +150,8 @@ public class Animal
 		 * izquierda		=> x = -1,y = 0
 		 * arriba izquierda	=> x = -1,y = -1
 		 */
-		int nposX = posX + especie.velocidad * x;
-		int nposY = posY + especie.velocidad * y;		
+//		int nposX = posX + especie.velocidad * x;
+//		int nposY = posY + especie.velocidad * y;		
 		
 //		TABLERO.movimiento(especie.habitat,nposX,nposY,ref posX,ref posY);	//Mueve al animal a una posición en la que pueda estar, desde donde esta y hasta donde puede ir				
 	}
@@ -182,11 +183,11 @@ public class EspecieAnimal
 	//public int vision;								//Rango de visión del animal para controlar su IA
 	public int velocidad;							//Número de casillas que puede desplazarse por turno
 	public int reproductibilidad;					//Número de turnos que dura un ciclo completo de reproducción
-	public enum tipoAnimal{herbivoro,carnivoro};
+	public enum tipoAnimal {herbivoro,carnivoro};
 	public tipoAnimal tipo;							//herbivoro o carnivoro 
-	public tipoHabitat habitat;
+	public T_habitats habitat;
 		
-	public EspecieAnimal(int idEspecie,string nombre,int consumo,int reservaMaxima,int alimentoQueProporciona,int velocidad,int reproductibilidad,tipoAnimal tipo,tipoHabitat habitat)
+	public EspecieAnimal(int idEspecie, string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int velocidad, int reproductibilidad, tipoAnimal tipo, T_habitats habitat)
 	{
 		this.idEspecie = idEspecie;
 		this.nombre = nombre;
