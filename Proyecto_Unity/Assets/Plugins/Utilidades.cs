@@ -166,7 +166,7 @@ public class FuncTablero {
 	//Terreno
 	public static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
 	public static float tamanoPlaya = 0.01f;		//El tamaño de las playas
-	public static float atenuacionRelieve = 20f;	//Suaviza o acentua el efecto de sombreado
+	public static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
 	public static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
 	public static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
 	public static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color

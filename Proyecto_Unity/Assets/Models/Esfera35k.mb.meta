@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: 10c90922f4721d949b1643e28c963d31
+guid: bf03d6319a722a24cbe22f1ee9e430dc
 ModelImporter:
   importerVersion: 7
   meshes:
@@ -7,7 +7,7 @@ ModelImporter:
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
-    swapUVs: 1
+    swapUVs: 0
   tangentSpace:
     normalImportMode: 0
     tangentImportMode: 1
@@ -31,4 +31,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: pCube1
+    4300000: pSphere1
