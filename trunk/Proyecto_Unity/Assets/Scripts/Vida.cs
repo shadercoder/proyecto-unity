@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public enum tipoHabitat {mar,costa,rio,llanura,montaña,desierto};
+public enum tipoHabitat {mar, costa, rio, llanura, montana, desierto};
 
 public class Vida : MonoBehaviour {
 	
@@ -23,22 +23,25 @@ public class Vegetal								//Representa una población de vegetales de una espe
 	public int numVegetales;						//Número de vegetales de la población
 	public int posX;								//Celda en la que se encuentra el vegetal, coordenada X
 	public int posY;								//Celda en la que se encuentra el vegetal, coordenada Y
+	
 	public Vegetal(int idIndividuo,EspecieVegetal especie,int posX,int posY)
 	{
-		this.idIndividuo = idIndividuo;
+		this.idVegetal = idIndividuo;
 		this.especie = especie;
 		this.posX = posX;
 		this.posY = posY;
 		numVegetales = especie.numIniVegetales;
 	}	
+	
 	public Vegetal(int idIndividuo,EspecieVegetal especie,int posX,int posY,int numVegetales)
 	{
-		this.idIndividuo = idIndividuo;
+		this.idVegetal = idIndividuo;
 		this.especie = especie;
 		this.posX = posX;
 		this.posY = posY;
 		this.numVegetales = numVegetales;
-	}		
+	}	
+	
 	public int consumeVegetales(int vegetalesAConsumir)			//Devuelve el número de vegetales que se han consumido
 	{				
 		int aux;
@@ -49,14 +52,17 @@ public class Vegetal								//Representa una población de vegetales de una espe
 		numVegetales -= vegetalesAConsumir;
 		return aux;
 	}
+	
 	public void reproduccion()
 	{
-		numVegetales *= especie.capacidadReproductiva;		
+		numVegetales *= (int)especie.capacidadReproductiva;		
 	}
+	
 	public void migracion()
 	{
-		TABLERO.migraVegetal(especie,posX,posY);		
+//		TABLERO.migraVegetal(especie,posX,posY);		
 	}
+	
 	public void algoritmoVida()
 	{		
 		Random.seed = System.DateTime.Now.Millisecond;
@@ -111,20 +117,22 @@ public class Animal
 		this.posX = posX;
 		this.posY = posY;
 	}
+	
 	public void alimentacion()
 	{		
 		int idComida;
-		if(TABLERO.buscaAlimento(especie.idEspecie,especie.tipo,idComida,posX,posY))
-			reserva += TABLERO.consumeAlimento(idComida,ref posX,ref posY);		//Consume el alimento y desplaza la posicion del animal a la de su alimento
-		else
-			movimientoAleatorio();
+//		if(TABLERO.buscaAlimento(especie.idEspecie,especie.tipo,idComida,posX,posY))
+//			reserva += TABLERO.consumeAlimento(idComida,ref posX,ref posY);		//Consume el alimento y desplaza la posicion del animal a la de su alimento
+//		else
+//			movimientoAleatorio();
 	}
 	
 	public void reproduccion()
 	{
-		TABLERO.reproduceAnimal(especie,posX,posY);
+//		TABLERO.reproduceAnimal(especie,posX,posY);
 		turnosParaReproduccion = especie.reproductibilidad;
-	}	
+	}
+	
 	public void movimientoAleatorio()
 	{
 		Random.seed = System.DateTime.Now.Millisecond;
@@ -144,8 +152,9 @@ public class Animal
 		int nposX = posX + especie.velocidad * x;
 		int nposY = posY + especie.velocidad * y;		
 		
-		TABLERO.movimiento(especie.habitat,nposX,nposY,ref posX,ref posY);	//Mueve al animal a una posición en la que pueda estar, desde donde esta y hasta donde puede ir				
+//		TABLERO.movimiento(especie.habitat,nposX,nposY,ref posX,ref posY);	//Mueve al animal a una posición en la que pueda estar, desde donde esta y hasta donde puede ir				
 	}
+	
 	public bool algoritmoVida()						//Devuelve true si el animal sobrevive y false si muere
 	{
 		reserva -= especie.consumo;

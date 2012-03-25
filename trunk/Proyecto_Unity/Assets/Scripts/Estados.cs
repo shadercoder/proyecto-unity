@@ -251,19 +251,19 @@ public class Estados : MonoBehaviour {
 		if (menuOpcionesInt == 1) {
 			GUI.BeginGroup(new Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
 			if (GUI.Button(new Rect(0, 0, 127, 79), new GUIContent("", "Click izq. para centrar"), "i_c_fija")) {
-				script = transform.GetComponent<Control_Raton>();
+				script = transform.parent.GetComponent<Control_Raton>();
 				objetivo = GameObject.Find("Planeta").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(1);
 			}
 			if (GUI.Button(new Rect(0, 79, 127, 70), new GUIContent("", "Rotar con click der."), "i_c_rot")) {
-				script = transform.GetComponent<Control_Raton>();
+				script = transform.parent.GetComponent<Control_Raton>();
 				objetivo = GameObject.Find("Planeta").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(0);
 			}
 			if (GUI.Button(new Rect(0, 149, 127, 79), new GUIContent("", "Centrar en la luna"), "i_c_3")) {
-				script = transform.GetComponent<Control_Raton>();
+				script = transform.parent.GetComponent<Control_Raton>();
 				objetivo = GameObject.Find("Moon").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(0);
@@ -278,12 +278,12 @@ public class Estados : MonoBehaviour {
 			if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Visión de la nave"), "i_nav")) {
 				camaraPrincipal.GetComponent<Camera>().enabled = false;
 				camaraReparaciones.GetComponent<Camera>().enabled = true;
-				script = transform.GetComponent<Control_Raton>();
+				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(false);
 				estado = T_estados.reparaciones;
 			}
 			if (GUI.Button(new Rect(0, 149, 126, 79), new GUIContent("", "Opciones del juego"), "i_fil")) {
-				script = transform.GetComponent<Control_Raton>();
+				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(false);
 				estado = T_estados.opciones;
 			}
@@ -297,7 +297,7 @@ public class Estados : MonoBehaviour {
 		GUILayout.BeginVertical();
 		if (GUILayout.Button(new GUIContent("Salir", "Salir del juego"), "boton_menu_1")) {
 			Time.timeScale = 1.0f;
-			script = transform.GetComponent<Control_Raton>();
+			script = transform.parent.GetComponent<Control_Raton>();
 			script.setInteraccion(true);
 			estado = T_estados.salir;
 		}
@@ -308,7 +308,7 @@ public class Estados : MonoBehaviour {
 		}
 		if (GUILayout.Button(new GUIContent("Volver", "Volver al juego"), "boton_menu_4")) {
 			Time.timeScale = 1.0f;
-			script = transform.GetComponent<Control_Raton>();
+			script = transform.parent.GetComponent<Control_Raton>();
 			script.setInteraccion(true);
 			estado = T_estados.principal;
 		}
@@ -333,7 +333,7 @@ public class Estados : MonoBehaviour {
 			SaveLoad.Save(data,temp.texturaBase.width, temp.texturaBase.height);
 			//Recuperar estado normal
 			Time.timeScale = 1.0f;
-			script = transform.GetComponent<Control_Raton>();
+			script = transform.parent.GetComponent<Control_Raton>();
 			script.setInteraccion(true);
 			estado = T_estados.principal;
 		}
@@ -344,7 +344,7 @@ public class Estados : MonoBehaviour {
 				SaveLoad.Save(temp.texturaBase);
 				//Recuperar estado normal
 				Time.timeScale = 1.0f;
-				script = transform.GetComponent<Control_Raton>();
+				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(true);
 				estado = T_estados.principal;
 			}
@@ -353,7 +353,7 @@ public class Estados : MonoBehaviour {
 		if (GUI.Button(new Rect(Screen.width / 2 -30, Screen.height / 2 + 160, 60, 20), new GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
 			//Recuperar estado normal
 			Time.timeScale = 1.0f;
-			script = transform.GetComponent<Control_Raton>();
+			script = transform.parent.GetComponent<Control_Raton>();
 			script.setInteraccion(true);
 			estado = T_estados.principal;
 		}
@@ -364,7 +364,7 @@ public class Estados : MonoBehaviour {
 		if (GUI.Button(new Rect(cuantoW, cuantoH * 20, cuantoW * 2, cuantoH), new GUIContent("Volver", "boton_atras"))) {
 			camaraPrincipal.GetComponent<Camera>().enabled = true;
 			camaraReparaciones.GetComponent<Camera>().enabled = false;
-			Control_Raton script = transform.GetComponent<Control_Raton>();
+			Control_Raton script = transform.parent.GetComponent<Control_Raton>();
 			script.setInteraccion(true);
 			estado = T_estados.principal;
 		}
