@@ -48,7 +48,7 @@ public class Estados : MonoBehaviour {
 	enum T_estados {inicial, principal, laboratorio, reparaciones, filtros, guardar, opciones, salir, regenerar};
 	
 	//Funciones auxiliares -----------------------------------------------------------------------------------------------------------------------
-	private IEnumerator terremoto() {
+	private IEnumerator terremoto(Vector2 coords) {
 //		public static void fisura(Texture2D tex, int posX, int posY, float longitud, float magnitud, Vector2 dir) {
 //		Vector2 dir = UnityEngine.Random.insideUnitCircle;
 //		Vector2 dirTemp = dir * longitud;
@@ -61,21 +61,59 @@ public class Estados : MonoBehaviour {
 		Vector3 cross2 = new Vector3(0, 0, 1);
 		Vector3 res = Vector3.Cross(cross1, cross2);
 		Vector2 dirPerp = new Vector2(res.x, res.y);
+//		Debug.Log("dir: " + dir);
+//		Debug.Log("dirPerp: " + dirPerp);
 		//Hacer un raycast al punto seleccionado o elegir aleatoriamente un punto de la textura para que ocurra ahi el terremoto
-		ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
-		Vector2 coords = new Vector2(Random.Range(0, temp.texturaBase.width), Random.Range(0, temp.texturaBase.height));
+		GameObject planeta = GameObject.FindWithTag("Planeta");
+		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
+		Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+		if (coords == Vector2.zero) {
+			Debug.LogError("Coords era cero en el metodo terremoto.");
+			coords = new Vector2(Random.Range(0, texturaBase.width), Random.Range(0, texturaBase.height));
+			Debug.LogError("Coords es ahora: " + coords);
+		}
 		//TODO Completar esta parte para lanzar las llamadas a FuncTablero.fisura(...)
 		//A lo largo de la perpendicular, crear fisuras de forma creciente desde el eje de simetría
 		//También puede hacerse paulatinamente respecto al tiempo
+		Camera.main.animation.Play("Shake");
+		Vector2 desviacion = dirPerp;
+		float longitud = 40.0f;
+		float magnitud = -1.0f;
+		FuncTablero.fisura(texturaBase, (int)coords.x, (int)coords.y, longitud, magnitud, dir); 
+		texturaBase.Apply();
+		yield return new WaitForSeconds(1);
+		for (int i = 0; i < 5; i++) {
+			desviacion = dirPerp * (i + 1);
+			longitud -= 6.0f;
+			magnitud -= 0.2f;
+			FuncTablero.fisura(texturaBase, (int)coords.x + (int)desviacion.x, (int)coords.y + (int)desviacion.y, longitud, magnitud, dir); 
+			FuncTablero.fisura(texturaBase, (int)coords.x - (int)desviacion.x, (int)coords.y - (int)desviacion.y, longitud, magnitud, dir);
+			texturaBase.Apply();
+			yield return new WaitForSeconds(1);
+		}
 		
-		FuncTablero.fisura(temp.texturaBase, (int)coords.x, (int)coords.y, 10.0f, -0.6f, dir); 
-		yield return new WaitForSeconds(0.1f);
-		FuncTablero.fisura(temp.texturaBase, (int)coords.x + (int)dirPerp.normalized.x, (int)coords.y + (int)dirPerp.normalized.y, 6.0f, -0.4f, dir); 
-		FuncTablero.fisura(temp.texturaBase, (int)coords.x - (int)dirPerp.normalized.x, (int)coords.y - (int)dirPerp.normalized.y, 6.0f, -0.4f, dir);
 	}
 	
 	private IEnumerator corutinaTerremoto() {
-		yield return StartCoroutine("terremoto");
+		RaycastHit hit;
+		Vector2 pixelUV = Vector2.zero;
+		int mask = 1 << 9;
+		Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width/2, Screen.height/2, 0));
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask) ) {
+			GameObject planeta = GameObject.FindWithTag("Planeta");
+			MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
+			Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+			pixelUV = hit.textureCoord;
+			pixelUV.x *= (float)texturaBase.width;
+			pixelUV.y *= (float)texturaBase.height;
+//			Debug.Log("Entro al raycasthit");
+//			Debug.Log("Hit: " + hit.collider);
+//			Debug.Log("Hit pos: " + hit.textureCoord);
+//			Debug.Log("Hit pos2: " + hit.textureCoord2);
+//			Debug.Log("Pos: " + pixelUV);
+		}
+		yield return StartCoroutine(terremoto(pixelUV));
+		
 	}
 	
 	//Funciones principales ----------------------------------------------------------------------------------------------------------------------
@@ -261,8 +299,9 @@ public class Estados : MonoBehaviour {
 	
 	private void grupoIzquierda() {
 		GUI.BeginGroup(new Rect(5, Screen.height / 2 - 110, 125, 230));
-		if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Generar otro planeta") , "d_planeta")) {
-			estado = T_estados.regenerar;
+		if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Generar cambio en planeta") , "d_planeta")) {
+//			estado = T_estados.regenerar;
+			StartCoroutine(corutinaTerremoto());
 		}
 		if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Opciones de c\u00e1mara"), "d_cam")) {
 			menuOpcionesInt = 1;
