@@ -118,7 +118,7 @@ public class Estados : MonoBehaviour {
 	
 	//Funciones principales ----------------------------------------------------------------------------------------------------------------------
 	private void creacionInicial() {
-		
+		Debug.Log("Creando planeta de cero en creacionInicial");
 		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
 		GameObject planeta = GameObject.FindWithTag("Planeta");
 		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
