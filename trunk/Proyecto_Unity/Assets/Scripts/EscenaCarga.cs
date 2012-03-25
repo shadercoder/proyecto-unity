@@ -268,6 +268,7 @@ public class EscenaCarga : MonoBehaviour {
 			faseCreacion = 0;
 			paso1Completado = false;
 			paso2Completado = false;
+			Camera.main.animation.Play("AcercarseHolograma");
 			estado = 5;
 		}
 		if (GUILayout.Button(new GUIContent("Cargar", "Cargar un juego guardado"), "boton_menu_2")) {
@@ -276,7 +277,7 @@ public class EscenaCarga : MonoBehaviour {
 		if (GUILayout.Button(new GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_3")) {
 			estado = 2;
 		}
-		if (GUILayout.Button(new GUIContent("Cr\u00e9ditos", "Visualiza los créditos"), "boton_menu_3")) { //U+00E9 es el caracter unicode 'é'
+		if (GUILayout.Button(new GUIContent("Cr\u00e9ditos", "Visualiza los cr\u00e9ditos"), "boton_menu_3")) { //U+00E9 es el caracter unicode 'é'
 			estado = 3;
 		}
 		if (GUILayout.Button(new GUIContent("Salir", "Salir de este juego"), "boton_menu_4")) {
@@ -302,7 +303,7 @@ public class EscenaCarga : MonoBehaviour {
 			}
 		}
 		GUI.EndScrollView();
-		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al men\u00fa"), "boton_atras")) {	//Aqui \u00fa es el caracter unicode para "ú"
 			estado = 0;
 		}
 	}
@@ -318,7 +319,7 @@ public class EscenaCarga : MonoBehaviour {
 		sfxVol = GUILayout.HorizontalSlider(sfxVol, 0.0f, 1.0f);
 		GUILayout.EndVertical();
 		GUILayout.EndArea();
-		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al men\u00fa"), "boton_atras")) {
 			PlayerPrefs.Save();
 			estado = 0;
 		}
@@ -326,7 +327,7 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private void creditos() {
 		GUI.TextArea(new Rect(cuantoW * 16, cuantoH * 8, cuantoW * 16, cuantoH * 14), cadenaCreditos);
-		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al menú"), "boton_atras")) {
+		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al men\u00fa"), "boton_atras")) {
 			estado = 0;
 		}
 	}
@@ -397,9 +398,10 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.EndArea();
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
 		GUILayout.BeginHorizontal();
-		if (GUILayout.Button(new GUIContent("Volver", "Volver al menú principal"))) {
+		if (GUILayout.Button(new GUIContent("Volver", "Volver al men\u00fa principal"))) {
 			faseCreacion = 0;
 			estado = 0;	
+			Camera.main.animation.Play("AlejarseHolograma");
 		}
 		GUILayout.Space(cuantoW * 28);
 		if (paso1Completado) {
@@ -468,7 +470,7 @@ public class EscenaCarga : MonoBehaviour {
 			}
 		}
 		else {
-			if (GUILayout.Button(new GUIContent("Siguiente", "Generar la orografía primero"))) {
+			if (GUILayout.Button(new GUIContent("Siguiente", "Generar la orograf\u00eda primero"))) { //Aqui \u00ed es el caracter unicode para la "í"
 				//Sonido de error, el boton con estilo diferente para estar en gris, etc.
 			}
 		}

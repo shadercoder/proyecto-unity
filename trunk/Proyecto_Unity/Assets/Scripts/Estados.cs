@@ -48,6 +48,35 @@ public class Estados : MonoBehaviour {
 	enum T_estados {inicial, principal, laboratorio, reparaciones, filtros, guardar, opciones, salir, regenerar};
 	
 	//Funciones auxiliares -----------------------------------------------------------------------------------------------------------------------
+	private IEnumerator terremoto() {
+//		public static void fisura(Texture2D tex, int posX, int posY, float longitud, float magnitud, Vector2 dir) {
+//		Vector2 dir = UnityEngine.Random.insideUnitCircle;
+//		Vector2 dirTemp = dir * longitud;
+//		while ((posY + dirTemp.y) >= tex.height || (posY + dirTemp.y) < 0) {
+//			dir = UnityEngine.Random.insideUnitCircle;
+//			dirTemp = dir * longitud;
+//		}
+		Vector2 dir = UnityEngine.Random.insideUnitCircle;
+		Vector3 cross1 = new Vector3(dir.x, dir.y, 0);
+		Vector3 cross2 = new Vector3(0, 0, 1);
+		Vector3 res = Vector3.Cross(cross1, cross2);
+		Vector2 dirPerp = new Vector2(res.x, res.y);
+		//Hacer un raycast al punto seleccionado o elegir aleatoriamente un punto de la textura para que ocurra ahi el terremoto
+		ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
+		Vector2 coords = new Vector2(Random.Range(0, temp.texturaBase.width), Random.Range(0, temp.texturaBase.height));
+		//TODO Completar esta parte para lanzar las llamadas a FuncTablero.fisura(...)
+		//A lo largo de la perpendicular, crear fisuras de forma creciente desde el eje de simetría
+		//También puede hacerse paulatinamente respecto al tiempo
+		
+		FuncTablero.fisura(temp.texturaBase, (int)coords.x, (int)coords.y, 10.0f, -0.6f, dir); 
+		yield return new WaitForSeconds(0.1f);
+		FuncTablero.fisura(temp.texturaBase, (int)coords.x + (int)dirPerp.normalized.x, (int)coords.y + (int)dirPerp.normalized.y, 6.0f, -0.4f, dir); 
+		FuncTablero.fisura(temp.texturaBase, (int)coords.x - (int)dirPerp.normalized.x, (int)coords.y - (int)dirPerp.normalized.y, 6.0f, -0.4f, dir);
+	}
+	
+	private IEnumerator corutinaTerremoto() {
+		yield return StartCoroutine("terremoto");
+	}
 	
 	//Funciones principales ----------------------------------------------------------------------------------------------------------------------
 	private void creacionInicial() {
@@ -235,7 +264,7 @@ public class Estados : MonoBehaviour {
 		if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Generar otro planeta") , "d_planeta")) {
 			estado = T_estados.regenerar;
 		}
-		if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Opciones de cámara"), "d_cam")) {
+		if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Opciones de c\u00e1mara"), "d_cam")) {
 			menuOpcionesInt = 1;
 		}
 		if (GUI.Button(new Rect(0, 149, 126, 79), new GUIContent("", "Opciones generales"), "d_func")) {
@@ -272,10 +301,10 @@ public class Estados : MonoBehaviour {
 		}
 		if (menuOpcionesInt == 2) {
 			GUI.BeginGroup(new Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
-			if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Laboratorio genético"), "i_lab")) {
+			if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Laboratorio gen\u00e9tico"), "i_lab")) {
 	
 			}
-			if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Visión de la nave"), "i_nav")) {
+			if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Visi\u00f3n de la nave"), "i_nav")) {
 				camaraPrincipal.GetComponent<Camera>().enabled = false;
 				camaraReparaciones.GetComponent<Camera>().enabled = true;
 				script = transform.parent.GetComponent<Control_Raton>();
