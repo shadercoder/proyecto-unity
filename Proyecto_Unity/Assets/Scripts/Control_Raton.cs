@@ -117,6 +117,11 @@ public class Control_Raton : MonoBehaviour {
 	
 		transform.rotation = rotation;
 		transform.position = position;
+		
+		if (Input.GetKeyUp(KeyCode.E)) {
+			Animation anim = transform.GetComponentInChildren<Animation>();
+			anim.Play();
+		}
 	   	
 	}
 	
