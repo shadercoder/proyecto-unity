@@ -281,19 +281,19 @@ public class Estados : MonoBehaviour {
 			GUI.BeginGroup(new Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
 			if (GUI.Button(new Rect(0, 0, 127, 79), new GUIContent("", "Click izq. para centrar"), "i_c_fija")) {
 				script = transform.parent.GetComponent<Control_Raton>();
-				objetivo = GameObject.Find("Planeta").GetComponent<Transform>();
+				objetivo = GameObject.FindGameObjectWithTag("Planeta").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(1);
 			}
 			if (GUI.Button(new Rect(0, 79, 127, 70), new GUIContent("", "Rotar con click der."), "i_c_rot")) {
 				script = transform.parent.GetComponent<Control_Raton>();
-				objetivo = GameObject.Find("Planeta").GetComponent<Transform>();
+				objetivo = GameObject.FindGameObjectWithTag("Planeta").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(0);
 			}
 			if (GUI.Button(new Rect(0, 149, 127, 79), new GUIContent("", "Centrar en la luna"), "i_c_3")) {
 				script = transform.parent.GetComponent<Control_Raton>();
-				objetivo = GameObject.Find("Moon").GetComponent<Transform>();
+				objetivo = GameObject.Find("luna").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(0);
 			}
