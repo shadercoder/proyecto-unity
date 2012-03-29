@@ -49,20 +49,11 @@ public class Estados : MonoBehaviour {
 	
 	//Funciones auxiliares -----------------------------------------------------------------------------------------------------------------------
 	private IEnumerator terremoto(Vector2 coords) {
-//		public static void fisura(Texture2D tex, int posX, int posY, float longitud, float magnitud, Vector2 dir) {
-//		Vector2 dir = UnityEngine.Random.insideUnitCircle;
-//		Vector2 dirTemp = dir * longitud;
-//		while ((posY + dirTemp.y) >= tex.height || (posY + dirTemp.y) < 0) {
-//			dir = UnityEngine.Random.insideUnitCircle;
-//			dirTemp = dir * longitud;
-//		}
 		Vector2 dir = UnityEngine.Random.insideUnitCircle;
 		Vector3 cross1 = new Vector3(dir.x, dir.y, 0);
 		Vector3 cross2 = new Vector3(0, 0, 1);
 		Vector3 res = Vector3.Cross(cross1, cross2);
 		Vector2 dirPerp = new Vector2(res.x, res.y);
-//		Debug.Log("dir: " + dir);
-//		Debug.Log("dirPerp: " + dirPerp);
 		//Hacer un raycast al punto seleccionado o elegir aleatoriamente un punto de la textura para que ocurra ahi el terremoto
 		GameObject planeta = GameObject.FindWithTag("Planeta");
 		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
@@ -76,7 +67,7 @@ public class Estados : MonoBehaviour {
 		//A lo largo de la perpendicular, crear fisuras de forma creciente desde el eje de simetría
 		//También puede hacerse paulatinamente respecto al tiempo
 		Camera.main.animation.Play("Shake");
-		Vector2 desviacion = dirPerp;
+		Vector2 desviacion = dirPerp.normalized;
 		float longitud = 40.0f;
 		float magnitud = -1.0f;
 		FuncTablero.fisura(texturaBase, (int)coords.x, (int)coords.y, longitud, magnitud, dir); 
@@ -106,11 +97,6 @@ public class Estados : MonoBehaviour {
 			pixelUV = hit.textureCoord;
 			pixelUV.x *= (float)texturaBase.width;
 			pixelUV.y *= (float)texturaBase.height;
-//			Debug.Log("Entro al raycasthit");
-//			Debug.Log("Hit: " + hit.collider);
-//			Debug.Log("Hit pos: " + hit.textureCoord);
-//			Debug.Log("Hit pos2: " + hit.textureCoord2);
-//			Debug.Log("Pos: " + pixelUV);
 		}
 		yield return StartCoroutine(terremoto(pixelUV));
 		
@@ -298,15 +284,15 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void grupoIzquierda() {
-		GUI.BeginGroup(new Rect(5, Screen.height / 2 - 110, 125, 230));
-		if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Generar cambio en planeta") , "d_planeta")) {
+		GUI.BeginGroup(new Rect(cuantoW, cuantoH * 10, cuantoW * 5, cuantoH * 12));
+		if (GUI.Button(new Rect(0, 0, cuantoW * 5, cuantoH * 4), new GUIContent("", "Generar cambio en planeta") , "d_planeta")) {
 //			estado = T_estados.regenerar;
-			StartCoroutine(corutinaTerremoto());
+			menuOpcionesInt = 3;
 		}
-		if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Opciones de c\u00e1mara"), "d_cam")) {
+		if (GUI.Button(new Rect(0, cuantoH * 4, cuantoW * 5, cuantoH * 4), new GUIContent("", "Opciones de c\u00e1mara"), "d_cam")) {
 			menuOpcionesInt = 1;
 		}
-		if (GUI.Button(new Rect(0, 149, 126, 79), new GUIContent("", "Opciones generales"), "d_func")) {
+		if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("", "Opciones generales"), "d_func")) {
 			menuOpcionesInt = 2;
 		}
 		GUI.EndGroup();
@@ -317,20 +303,20 @@ public class Estados : MonoBehaviour {
 		Control_Raton script;
 		Transform objetivo;
 		if (menuOpcionesInt == 1) {
-			GUI.BeginGroup(new Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
-			if (GUI.Button(new Rect(0, 0, 127, 79), new GUIContent("", "Click izq. para centrar"), "i_c_fija")) {
+			GUI.BeginGroup(new Rect(cuantoW * 43, cuantoH * 10, cuantoW * 5, cuantoH * 12));
+			if (GUI.Button(new Rect(0, 0, cuantoW * 5, cuantoH * 4), new GUIContent("", "Click izq. para centrar"), "i_c_fija")) {
 				script = transform.parent.GetComponent<Control_Raton>();
 				objetivo = GameObject.FindGameObjectWithTag("Planeta").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(1);
 			}
-			if (GUI.Button(new Rect(0, 79, 127, 70), new GUIContent("", "Rotar con click der."), "i_c_rot")) {
+			if (GUI.Button(new Rect(0, cuantoH * 4, cuantoW * 5, cuantoH * 4), new GUIContent("", "Rotar con click der."), "i_c_rot")) {
 				script = transform.parent.GetComponent<Control_Raton>();
 				objetivo = GameObject.FindGameObjectWithTag("Planeta").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
 				script.cambiarEstado(0);
 			}
-			if (GUI.Button(new Rect(0, 149, 127, 79), new GUIContent("", "Centrar en la luna"), "i_c_3")) {
+			if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("", "Centrar en la luna"), "i_c_3")) {
 				script = transform.parent.GetComponent<Control_Raton>();
 				objetivo = GameObject.Find("luna").GetComponent<Transform>();
 				script.cambiarTarget(objetivo);
@@ -339,24 +325,44 @@ public class Estados : MonoBehaviour {
 			GUI.EndGroup();
 		}
 		if (menuOpcionesInt == 2) {
-			GUI.BeginGroup(new Rect(Screen.width - 130, Screen.height / 2 - 110, 125, 230));
-			if (GUI.Button(new Rect(0, 0, 126, 79), new GUIContent("", "Laboratorio gen\u00e9tico"), "i_lab")) {
+			GUI.BeginGroup(new Rect(cuantoW * 43, cuantoH * 10, cuantoW * 5, cuantoH * 12));
+			if (GUI.Button(new Rect(0, 0, cuantoW * 5, cuantoH * 4), new GUIContent("", "Laboratorio gen\u00e9tico"), "i_lab")) {
 	
 			}
-			if (GUI.Button(new Rect(0, 79, 126, 70), new GUIContent("", "Visi\u00f3n de la nave"), "i_nav")) {
+			if (GUI.Button(new Rect(0, cuantoH * 4, cuantoW * 5, cuantoH * 4), new GUIContent("", "Visi\u00f3n de la nave"), "i_nav")) {
 				camaraPrincipal.GetComponent<Camera>().enabled = false;
 				camaraReparaciones.GetComponent<Camera>().enabled = true;
 				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(false);
 				estado = T_estados.reparaciones;
 			}
-			if (GUI.Button(new Rect(0, 149, 126, 79), new GUIContent("", "Opciones del juego"), "i_fil")) {
+			if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("", "Opciones del juego"), "i_fil")) {
 				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(false);
 				estado = T_estados.opciones;
 			}
 			GUI.EndGroup();
 		}
+		if (menuOpcionesInt == 3) {
+			GUI.BeginGroup(new Rect(cuantoW * 43, cuantoH * 10, cuantoW * 5, cuantoH * 12));
+			if (GUI.Button(new Rect(0, 0, cuantoW * 5, cuantoH * 4), new GUIContent("Fisura", "Crear fisura centrada"), "i_fil")) {
+				StartCoroutine(corutinaTerremoto());
+			}
+			if (GUI.Button(new Rect(0, cuantoH * 4, cuantoW * 5, cuantoH * 4), new GUIContent("Volcan", "Crear volcan centrado"), "i_fil")) {
+//				camaraPrincipal.GetComponent<Camera>().enabled = false;
+//				camaraReparaciones.GetComponent<Camera>().enabled = true;
+//				script = transform.parent.GetComponent<Control_Raton>();
+//				script.setInteraccion(false);
+//				estado = T_estados.reparaciones;
+			}
+			if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("Animal", "Poner objeto en tablero"), "i_fil")) {
+//				script = transform.parent.GetComponent<Control_Raton>();
+//				script.setInteraccion(false);
+//				estado = T_estados.opciones;
+			}
+			GUI.EndGroup();
+		}
+		
 	}
 	
 	private void menuOpciones() {
