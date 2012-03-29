@@ -420,29 +420,26 @@ public class FuncTablero {
 	
 	public static void alteraPixel(Texture2D tex, int w, int h, float valor){
 		if (w < 0 || h < 0 || w > tex.width || h > tex.height) {
-			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan.");
+			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan. w = " + w + " h = " + h);
 		}
 		Color pix = tex.GetPixel(w,h);
 		pix.r = pix.r + valor;
 		pix.g = pix.g + valor;
 		pix.b = pix.b + valor;
 		tex.SetPixel(w,h,pix);
-//		tex.Apply();
 	}
 	
 	public static void fisura(Texture2D tex, int posX, int posY, float longitud, float magnitud, Vector2 dir) {
-//		Vector2 dir = UnityEngine.Random.insideUnitCircle;
-//		Vector2 dirTemp = dir * longitud;
-//		while ((posY + dirTemp.y) >= tex.height || (posY + dirTemp.y) < 0) {
-//			dir = UnityEngine.Random.insideUnitCircle;
-//			dirTemp = dir * longitud;
-//		}
 		float posActual = Math.Abs(longitud);
 		for (int i = 0; i < (int)Math.Abs(longitud) * 2; i++) {
 			Vector2 pixel = new Vector2(posX + (int)(dir.x * posActual), posY + (int)(dir.y * posActual));
 			alteraPixel(tex, (int)pixel.x, (int)pixel.y, magnitud);
 			posActual -= 1.0f;
 		}
+	}
+	
+	public static void cuboMesh(Texture2D tex, int posX, int posY) {
+		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	}
 	
 	public static void inicializa(Texture2D tex) {
