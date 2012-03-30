@@ -1,14 +1,15 @@
-Shader "VertexMod"
+Shader "Planet/Magma"
 {
 	Properties 
 	{
-_MainTex("Textura Principal", 2D) = "black" {}
-_TexColor("Tinte textura principal", Color) = (1,1,1,1)
-_ColorStrength("Intensidad del color", Range(0,1) ) = 1
-_LightMap("Textura de luces", 2D) = "black" {}
-_EmisionColor("Color Luz", Color) = (1,0.5034965,0,1)
-_LightStrength("Rango de luz", Range(0,3) ) = 0.6859149
-_FactorMov("palpito", Float) = 0.02
+_Diffuse("_Diffuse", 2D) = "black" {}
+_Emission("_Emission", 2D) = "black" {}
+_EmisionColor("_EmisionColor", Color) = (0.6716418,0.2506126,0.2506126,1)
+_EmissionStrength("_EmissionStrength", Float) = 1
+_Bump("_Bump", 2D) = "black" {}
+_Normals("_Normals", 2D) = "black" {}
+_Bias("_Bias", Range(-3,3) ) = 2
+_Palpito("_Palpito", Float) = 0.01
 
 	}
 	
@@ -33,16 +34,17 @@ Fog{
 
 		CGPROGRAM
 #pragma surface surf BlinnPhongEditor  vertex:vert
-#pragma target 2.0
+#pragma target 3.0
 
 
-sampler2D _MainTex;
-float4 _TexColor;
-float _ColorStrength;
-sampler2D _LightMap;
+sampler2D _Diffuse;
+sampler2D _Emission;
 float4 _EmisionColor;
-float _LightStrength;
-float _FactorMov;
+float _EmissionStrength;
+sampler2D _Bump;
+sampler2D _Normals;
+float _Bias;
+float _Palpito;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -82,15 +84,18 @@ return c;
 			}
 			
 			struct Input {
-				float2 uv_MainTex;
-float2 uv_LightMap;
+				float2 uv_Diffuse;
+float2 uv_Normals;
+float3 viewDir;
+float2 uv_Bump;
+float2 uv_Emission;
 
 			};
 
 			void vert (inout appdata_full v, out Input o) {
 float4 Splat0=_SinTime.w;
 float4 Abs0=abs(Splat0);
-float4 Multiply1=_FactorMov.xxxx * Abs0;
+float4 Multiply1=_Palpito.xxxx * Abs0;
 float4 Multiply0=Multiply1 * float4( v.normal.x, v.normal.y, v.normal.z, 1.0 );
 float4 Add0=Multiply0 + v.vertex;
 float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
@@ -111,23 +116,26 @@ v.vertex = Add0;
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Tex2D0=tex2D(_MainTex,(IN.uv_MainTex.xyxy).xy);
-float4 Multiply2=_TexColor * _ColorStrength.xxxx;
-float4 Multiply0=Tex2D0 * Multiply2;
-float4 Tex2D1=tex2D(_LightMap,(IN.uv_LightMap.xyxy).xy);
-float4 Add0=_SinTime + float4( 1.0, 1.0, 1.0, 1.0 );
-float4 Abs0=abs(Add0);
-float4 Multiply4=Abs0 * _LightStrength.xxxx;
-float4 Multiply3=_EmisionColor * Multiply4;
-float4 Multiply1=Tex2D1 * Multiply3;
-float4 Master0_1_NoInput = float4(0,0,1,1);
+float4 Sampled2D0=tex2D(_Diffuse,IN.uv_Diffuse.xy);
+float4 Sampled2D3=tex2D(_Normals,IN.uv_Normals.xy);
+float4 UnpackNormal0=float4(UnpackNormal(Sampled2D3).xyz, 1.0);
+float4 Sampled2D2=tex2D(_Bump,IN.uv_Bump.xy);
+float4 ParallaxOffset0= ParallaxOffset( Sampled2D2.x, _Bias.xxxx.x, float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz).xyxy;
+float4 Add1=UnpackNormal0 + ParallaxOffset0;
+float4 Sampled2D1=tex2D(_Emission,IN.uv_Emission.xy);
+float4 Multiply1=_EmisionColor * Sampled2D1;
+float4 Splat0=_SinTime.w;
+float4 Abs0=abs(Splat0);
+float4 Multiply2=_EmissionStrength.xxxx * Abs0;
+float4 Multiply3=Multiply1 * Multiply2;
 float4 Master0_3_NoInput = float4(0,0,0,0);
+float4 Master0_4_NoInput = float4(0,0,0,0);
+float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Multiply0;
-o.Emission = Multiply1;
-o.Gloss = Multiply1;
-o.Alpha = Tex2D0.aaaa;
+o.Albedo = Sampled2D0;
+o.Normal = Add1;
+o.Emission = Multiply3;
 
 				o.Normal = normalize(o.Normal);
 			}

@@ -1,15 +1,13 @@
-Shader "Planet/Roca"
+Shader "Planet/planetaconramp"
 {
 	Properties 
 	{
 		_MainTex("Mapa terreno Base", 2D) = "black" {}
 		_RampaColor("_RampaColor", 2D) = "black" {}
-		_Lights("Mapa Luces", 2D) = "black" {}
-		_Lightscale("Intensidad de las luces", Float) = 1
 		_Normals("Mapa Relieve", 2D) = "bump" {}
-		_Amount("Escarpado,Extrusion", Range(0,1.5)) = 0.5
 		_Ilum("_Ilum", 2D) = "black" {}
-
+		_BiasTerreno("_BiasTerreno", Range(-3,3) ) = 0.5
+		_Amount("Extrusion", Range(-3,3) ) = 0.5
 	}
 	
 	SubShader 
@@ -22,29 +20,26 @@ Shader "Planet/Roca"
 
 		}
 
-		
-Cull Back
-ZWrite On
-ZTest LEqual
-ColorMask RGBA
-Fog{
-}
+					
+		Cull Back
+		ZWrite On
+		ZTest LEqual
+		ColorMask RGBA
+		Fog{
+	}
 
 
 		CGPROGRAM
-#pragma surface surf BlinnPhongEditor  vertex:vert
-#pragma target 3.0
+			#pragma surface surf BlinnPhongEditor  vertex:vert
+			#pragma target 3.0
 
 
-sampler2D _MainTex;
-sampler2D _RampaColor;
-sampler2D _Lights;
-float _Lightscale;
-sampler2D _Normals;
-float _Amount;
-
-sampler2D _Ilum;
-
+			sampler2D _MainTex;
+			sampler2D _RampaColor;
+			sampler2D _Normals;
+			sampler2D _Ilum;
+			float _BiasTerreno;
+			float _Amount;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -58,11 +53,11 @@ sampler2D _Ilum;
 			
 			inline half4 LightingBlinnPhongEditor_PrePass (EditorSurfaceOutput s, half4 light)
 			{
-float4 Luminance0= Luminance( light.xyz ).xxxx;
-float4 Assemble0=float4(Luminance0.x, float4( 0.0, 0.0, 0.0, 0.0 ).y, float4( 0.0, 0.0, 0.0, 0.0 ).z, float4( 0.0, 0.0, 0.0, 0.0 ).w);
-float4 Tex2D0=tex2D(_Ilum,Assemble0.xy);
-float4 Multiply0=float4( s.Albedo.x, s.Albedo.y, s.Albedo.z, 1.0 ) * Tex2D0;
-return Multiply0;
+				float4 Luminance0= Luminance( light.xyz ).xxxx;
+				float4 Assemble0=float4(Luminance0.x, float4( 0.0, 0.0, 0.0, 0.0 ).y, float4( 0.0, 0.0, 0.0, 0.0 ).z, float4( 0.0, 0.0, 0.0, 0.0 ).w);
+				float4 Tex2D0=tex2D(_Ilum,Assemble0.xy);
+				float4 Multiply0=float4( s.Albedo.x, s.Albedo.y, s.Albedo.z, 1.0 ) * Tex2D0;
+				return Multiply0;
 
 			}
 
@@ -86,7 +81,7 @@ return Multiply0;
 			struct Input {
 				float2 uv_MainTex;
 				float2 uv_Normals;
-				float2 uv_Lights;
+				float3 viewDir;
 
 			};
 
@@ -99,7 +94,6 @@ return Multiply0;
 				float4 tex = tex2Dlod (_MainTex, float4(v.texcoord.xyz,0));
 				v.vertex.xyz += v.normal * tex.rgb * _Amount;
 				#endif
-
 			}
 			
 
@@ -115,17 +109,17 @@ return Multiply0;
 float4 Sampled2D0=tex2D(_MainTex,IN.uv_MainTex.xy);
 float4 Tex2D1=tex2D(_RampaColor,Sampled2D0.xy);
 float4 Sampled2D2=tex2D(_Normals,IN.uv_Normals.xy);
-float4 UnpackNormal0=float4(UnpackNormal(Sampled2D2).xyz, 1.0);
-float4 Sampled2D1=tex2D(_Lights,IN.uv_Lights.xy);
-float4 Multiply0=Sampled2D1 * _Lightscale.xxxx;
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Sampled2D0;
+float4 ParallaxOffset0= ParallaxOffset( Invert0.x, _BiasTerreno.xxxx.x, float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz).xyxy;
+float4 Add0=Sampled2D2 + ParallaxOffset0;
+float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
 o.Albedo = Tex2D1;
-o.Normal = UnpackNormal0;
-o.Emission = Multiply0;
+o.Normal = Add0;
 
 				o.Normal = normalize(o.Normal);
 			}
