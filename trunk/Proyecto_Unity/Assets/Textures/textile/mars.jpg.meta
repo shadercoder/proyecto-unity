@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: 8a03ff1fd0da01840870717ce431687c
+guid: f60a610aff457f54193dfa7e5f528dc2
 TextureImporter:
   importerVersion: 1
   maxTextureSize: 1024
@@ -21,7 +21,7 @@ TextureImporter:
     bumpyness: 0.25
     filter: 0
   textureSettings:
-    filterMode: 2
-    anisoLevel: 2
+    filterMode: -1
+    anisoLevel: -1
     mipmapBias: -1
-    wrapMode: 1
+    wrapMode: -1
