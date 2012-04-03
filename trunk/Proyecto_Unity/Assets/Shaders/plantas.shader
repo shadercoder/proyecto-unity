@@ -8,6 +8,7 @@ _planta3("_planta3", 2D) = "black" {}
 _planta4("_planta4", 2D) = "black" {}
 _MainTex("_MainTex", 2D) = "black" {}
 _texturaPlaneta("_texturaPlaneta", 2D) = "black" {}
+_Amount("Extrusion", Range(0,3))=0.5
 
 	}
 	
@@ -41,6 +42,7 @@ sampler2D _planta3;
 sampler2D _planta4;
 sampler2D _MainTex;
 sampler2D _texturaPlaneta;
+float _Amount;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -94,7 +96,10 @@ float4 VertexOutputMaster0_0_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
-
+#if !defined(SHADER_API_OPENGL)
+				float4 tex = tex2Dlod (_MainTex, float4(v.texcoord.xyz,0));
+				v.vertex.xyz += v.normal * tex.rgb * _Amount;
+				#endif
 
 			}
 			
