@@ -125,23 +125,21 @@ public class SaveLoad {
 public enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};													//Tipos de orografía
 public enum T_elementos {hidrogeno, helio, oxigeno, carbono, boro, nitrogeno, litio, silicio, magnesio, argon, potasio};	//Se pueden añadir mas mas adelante
 
-public class Especie {
-	//A rellenar
-}
-
 public class Casilla {
 	public float altura;
 	public T_habitats habitat;
 	public T_elementos[] elementos;
-	public Especie[] especies;
 	public Vector2 coordsTex;
+//	public Vegetal vegetal;
+//	public Animal animal;
 	
-	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Especie[] esp, Vector2 coord) {
+	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord) {
 		habitat = hab;
 		altura = alt;
 		elementos = elems;
-		especies = esp;
 		coordsTex = coord;
+//		vegetal = null;
+//		animal = null;
 	}
 }
 
@@ -409,10 +407,9 @@ public class FuncTablero {
 				}
 				
 				//TODO Se coge una o varias especies aleatorias de las iniciales
-				Especie[] esp = new Especie[numMaxEspeciesCasilla];
 				//TODO Calculos para ver la especie/s a meter
 				
-				tablero[i,j] = new Casilla(media, habitat, elems, esp, cord);
+				tablero[i,j] = new Casilla(media, habitat, elems, cord);
 			}
 		}
 		return tablero;
@@ -438,9 +435,47 @@ public class FuncTablero {
 		}
 	}
 	
-	public static void fisuraTex(RaycastHit hit) {
+	public static void pintaPincel(RaycastHit hit, int pincel, bool subir) {
 		Pinceles temp = GameObject.FindGameObjectWithTag("Pinceles").GetComponent<Pinceles>();
-//		temp.
+		Texture2D objetivo = (Texture2D)hit.collider.renderer.sharedMaterial.mainTexture;
+		Texture2D pincelTex;
+		switch (pincel) {
+		case 0: 
+			pincelTex = temp.fisura1;
+			break;
+		case 1:
+			pincelTex = temp.fisura2;
+			break;
+		case 2:
+			pincelTex = temp.volcan1;
+			break;
+		case 3: 
+			pincelTex = temp.volcan2;
+			break;
+		case 4:			
+			pincelTex = temp.circulo1;
+			break;
+		default: 
+			pincelTex = temp.circulo2;
+			break;			
+		}		
+		int w = pincelTex.width;
+		int h = pincelTex.height;
+		Vector2 pos = hit.textureCoord;
+		pos.x *= objetivo.width;
+		pos.y *= objetivo.height;
+		pos.x -= w/2;
+		pos.y -= h/2;
+		if (pos.y < 0)
+			pos.y = 0;
+		int multi = -1;
+		if (subir)
+			multi = 1;
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				alteraPixel(objetivo,(int)pos.x + i,(int)pos.y + j, multi * (pincelTex.GetPixel(i,j).r));
+			}
+		}
 	}
 	
 	public static void cuboMesh(RaycastHit hit) {
