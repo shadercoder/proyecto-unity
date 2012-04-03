@@ -20,6 +20,7 @@ public class Estados : MonoBehaviour {
 	private Casilla[,] tablero;											//Tablero lógico del algoritmo
 	
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
+	private float escalaTiempo					= 1.0f;				//La escala temporal a la que se updateará todo
 	
 	//Opciones
 	public GameObject contenedorSonido;									//El objeto que va a contener la fuente del audio
@@ -105,12 +106,12 @@ public class Estados : MonoBehaviour {
 		RaycastHit hit;
 		bool pinchado = false;
 		while (!pinchado) {
-			if (Input.GetMouseButtonDown(0)) {
+			if (Input.GetMouseButton(0)) {
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				int mask = 1 << 9;
 				if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask)) {
 					Debug.Log("Rayo lanzado correctamente.");
-					FuncTablero.cuboMesh(hit);
+					FuncTablero.creaMesh(hit, 0);
 					pinchado = true;
 					continue;
 				}
@@ -245,7 +246,11 @@ public class Estados : MonoBehaviour {
 				activarTooltip = true;
 			}
 		}
-	
+		//Control del timescale
+		if (GUI.changed) {
+			Time.timeScale = escalaTiempo;
+			Time.fixedDeltaTime = 0.02f * escalaTiempo;
+		}	
 	}
 	
 	//Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
@@ -262,6 +267,7 @@ public class Estados : MonoBehaviour {
 			case T_estados.principal:
 				grupoIzquierda();
 				grupoDerecha();
+				sliderTiempo();
 				break;
 			case T_estados.guardar:
 				menuGuardar();
@@ -380,6 +386,12 @@ public class Estados : MonoBehaviour {
 		
 	}
 	
+	private void sliderTiempo() {
+		GUILayout.BeginArea(new Rect(cuantoW * 20, cuantoH * 28, cuantoW * 8, cuantoH * 2));
+		escalaTiempo = customSliderLayout(escalaTiempo, 0.2f, 50.0f, "Escala temporal", "Controla el flujo temporal");
+		GUILayout.EndArea();
+	}
+	
 	private void menuOpciones() {
 		Control_Raton script;
 		GUILayout.BeginArea(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
@@ -457,5 +469,14 @@ public class Estados : MonoBehaviour {
 			script.setInteraccion(true);
 			estado = T_estados.principal;
 		}
+	}
+	
+	private float customSliderLayout(float valor, float izq, float der, string str, string tool) {
+		float valorOut;
+		GUILayout.BeginVertical();
+		GUILayout.Label(new GUIContent(str, tool));
+		valorOut = GUILayout.HorizontalSlider(valor, izq, der);
+		GUILayout.EndVertical();
+		return valorOut;
 	}
 }

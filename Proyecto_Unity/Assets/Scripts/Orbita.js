@@ -19,6 +19,6 @@ function Start() {
 }
 
 // Update is called once per frame
-function Update () {
+function FixedUpdate () {
 	transform.RotateAround (target.position, orbitDir, speed * Time.deltaTime);
 }
