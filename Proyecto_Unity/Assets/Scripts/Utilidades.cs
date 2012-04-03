@@ -486,6 +486,46 @@ public class FuncTablero {
 		cube.transform.rotation = Quaternion.LookRotation(Camera.main.transform.position, hit.normal);		
 	}
 	
+	public static void creaMesh(RaycastHit hit, int seleccion) {
+		GameObject creacion;
+		switch (seleccion) {
+		case 0: 
+			creacion = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			break;
+		case 1: 
+			creacion = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+			break;
+		case 2: 
+			creacion = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+			break;
+		case 3: 
+			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+			break;
+		case 4: 
+			creacion = new GameObject("Nave");
+			creacion.AddComponent("MeshRenderer");
+			creacion.AddComponent("MeshFilter");
+//			creacion.GetComponent<MeshFilter>().sharedMesh = "Nave";
+			break;
+		case 5: 
+			creacion = new GameObject("Mina");
+			creacion.AddComponent("MeshRenderer");
+			creacion.AddComponent("MeshFilter");
+//			creacion.GetComponent<MeshFilter>().sharedMesh = "Mina";
+			break;
+		default: 
+			creacion = new GameObject("Edificio");
+			creacion.AddComponent("MeshRenderer");
+			creacion.AddComponent("MeshFilter");
+//			creacion.GetComponent<MeshFilter>().sharedMesh = "Edificio";;
+			break;
+		}
+		Vector3 punto = hit.point - hit.transform.position;
+		creacion.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
+		creacion.transform.position = punto;
+		creacion.transform.rotation = Quaternion.LookRotation(Camera.main.transform.position, hit.normal);		
+	}
+	
 	public static void inicializa(Texture2D tex) {
 		anchoTextura = tex.width;
 		altoTextura = tex.height;
