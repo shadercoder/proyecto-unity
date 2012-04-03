@@ -81,8 +81,7 @@ public class Estados : MonoBehaviour {
 			FuncTablero.fisura(texturaBase, (int)coords.x - (int)desviacion.x, (int)coords.y - (int)desviacion.y, longitud, magnitud, dir);
 			texturaBase.Apply();
 			yield return new WaitForSeconds(1);
-		}
-		
+		}		
 	}
 	
 	private IEnumerator corutinaTerremoto() {
@@ -100,6 +99,24 @@ public class Estados : MonoBehaviour {
 		}
 		yield return StartCoroutine(terremoto(pixelUV));
 		
+	}
+	
+	private IEnumerator corutinaAnimalCubo() {
+		RaycastHit hit;
+		bool pinchado = false;
+		while (!pinchado) {
+			if (Input.GetMouseButtonDown(0)) {
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				int mask = 1 << 9;
+				if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask)) {
+					Debug.Log("Rayo lanzado correctamente.");
+					FuncTablero.cuboMesh(hit);
+					pinchado = true;
+					continue;
+				}
+			}
+			yield return new WaitForSeconds(0.1f);
+		}		
 	}
 	
 	//Funciones principales ----------------------------------------------------------------------------------------------------------------------
@@ -356,9 +373,7 @@ public class Estados : MonoBehaviour {
 //				estado = T_estados.reparaciones;
 			}
 			if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("Animal", "Poner objeto en tablero"), "i_fil")) {
-//				script = transform.parent.GetComponent<Control_Raton>();
-//				script.setInteraccion(false);
-//				estado = T_estados.opciones;
+				StartCoroutine(corutinaAnimalCubo());
 			}
 			GUI.EndGroup();
 		}
