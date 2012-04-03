@@ -130,16 +130,16 @@ public class Casilla {
 	public T_habitats habitat;
 	public T_elementos[] elementos;
 	public Vector2 coordsTex;
-//	public Vegetal vegetal;
-//	public Animal animal;
+	public Vegetal vegetal;
+	public Animal animal;
 	
 	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord) {
 		habitat = hab;
 		altura = alt;
 		elementos = elems;
 		coordsTex = coord;
-//		vegetal = null;
-//		animal = null;
+		vegetal = null;
+		animal = null;
 	}
 }
 
