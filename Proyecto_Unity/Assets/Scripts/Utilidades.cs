@@ -438,8 +438,17 @@ public class FuncTablero {
 		}
 	}
 	
-	public static void cuboMesh(Texture2D tex, int posX, int posY) {
+	public static void fisuraTex(RaycastHit hit) {
+		Pinceles temp = GameObject.FindGameObjectWithTag("Pinceles").GetComponent<Pinceles>();
+//		temp.
+	}
+	
+	public static void cuboMesh(RaycastHit hit) {
 		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		Vector3 punto = hit.point - hit.transform.position;
+		cube.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
+		cube.transform.position = punto;
+		cube.transform.rotation = Quaternion.LookRotation(Camera.main.transform.position, hit.normal);		
 	}
 	
 	public static void inicializa(Texture2D tex) {
