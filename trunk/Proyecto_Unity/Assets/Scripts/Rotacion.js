@@ -11,7 +11,7 @@ function Start() {
 }
 	
 // Update is called once per frame
-function Update() {
+function FixedUpdate() {
 	// rotar en el eje a velocidad
 	target.Rotate(eje * velocidad * Time.deltaTime);
 }

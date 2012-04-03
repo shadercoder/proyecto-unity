@@ -478,13 +478,13 @@ public class FuncTablero {
 		}
 	}
 	
-	public static void cuboMesh(RaycastHit hit) {
-		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		Vector3 punto = hit.point - hit.transform.position;
-		cube.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
-		cube.transform.position = punto;
-		cube.transform.rotation = Quaternion.LookRotation(Camera.main.transform.position, hit.normal);		
-	}
+//	public static void cuboMesh(RaycastHit hit) {
+//		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//		Vector3 punto = hit.point - hit.transform.position;
+//		cube.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
+//		cube.transform.position = punto;
+//		cube.transform.rotation = Quaternion.LookRotation(Camera.main.transform.position, hit.normal);
+//	}
 	
 	public static void creaMesh(RaycastHit hit, int seleccion) {
 		GameObject creacion;
@@ -520,10 +520,11 @@ public class FuncTablero {
 //			creacion.GetComponent<MeshFilter>().sharedMesh = "Edificio";;
 			break;
 		}
+		creacion.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 		Vector3 punto = hit.point - hit.transform.position;
 		creacion.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
 		creacion.transform.position = punto;
-		creacion.transform.rotation = Quaternion.LookRotation(Camera.main.transform.position, hit.normal);		
+		creacion.transform.rotation = Quaternion.LookRotation(hit.normal);	//Camera.main.transform.position, 
 	}
 	
 	public static void inicializa(Texture2D tex) {
