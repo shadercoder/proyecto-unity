@@ -2,7 +2,7 @@ fileFormatVersion: 1
 guid: 10367c93dcb02a34c843e209bcf38b57
 TextureImporter:
   importerVersion: 2
-  maxTextureSize: 128
+  maxTextureSize: 512
   textureFormat: -3
   grayscaleToAlpha: 0
   npotScale: 0
