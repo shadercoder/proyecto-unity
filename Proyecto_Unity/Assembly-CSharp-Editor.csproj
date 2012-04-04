@@ -49,7 +49,9 @@
      <None Include="Assets\Shaders\Oceano (prueba).shader" />
      <None Include="Assets\Shaders\Planeta.shader" />
      <None Include="Assets\StrumpyShaderEditor\Editor\Resources\Internal\Temp\TempShader.shader" />
+     <None Include="Assets\Shaders\plantas.shader" />
      <None Include="Assets\Shaders\Roca.shader" />
+     <None Include="Assets\Shaders\RocaInt.shader" />
      <None Include="Assets\Shaders\Atmosfera.shader" />
      <None Include="Assets\Shaders\Magma.shader" />
      <None Include="Assets\StrumpyShaderEditor\Editor\Resources\Internal\TextureCopy.shader" />
@@ -58,10 +60,6 @@
  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{F37A79B4-C2C7-6852-C193-7AAC2BF48F42}</Project>
-      <Name>Assembly-CSharp-firstpass</Name>
-    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
       <Project>{99A0895B-BA26-3B3B-4494-F69A7AC214AE}</Project>
       <Name>Assembly-CSharp</Name>
