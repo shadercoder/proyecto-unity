@@ -6,7 +6,8 @@ using System.Collections.Generic;
 //public enum tipoHabitat {mar, costa, rio, llanura, montana, desierto};		
 //Mejor usar T_habitats, que se ha definido de forma mas general en Utilidades.cs
 
-public class Vida{// : MonoBehaviour {	
+public class Vida
+{
 	//Estructuras
 	public Casilla[,] tablero;										//Tablero lógico que representa las casillas
 	public Dictionary<string, Especie> especies;					//Listado de todas las especies
@@ -22,7 +23,24 @@ public class Vida{// : MonoBehaviour {
 	
 	public int idActualVegetal;
 	public int idActualAnimal;
-			
+	
+	Vida()
+	{
+		tablero = new Casilla[128,128];
+		especies = new Dictionary<string, Especie>();
+		especiesVegetales = new Dictionary<string, EspecieVegetal>();
+		especiesAnimales = new Dictionary<string, EspecieAnimal>();
+		seres = new List<Ser>();	
+		vegetales = new List<Vegetal>();
+		animales = new List<Animal>();
+		numEspecies = 0;
+		numEspeciesVegetales = 0;
+		numEspeciesAnimales = 0;
+		idActualVegetal = 0;
+		idActualAnimal = 0;
+	}
+	
+	
 	Vida(Casilla[,] tablero)
 	{
 		this.tablero = tablero;
@@ -37,6 +55,22 @@ public class Vida{// : MonoBehaviour {
 		numEspeciesAnimales = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
+	}
+	
+	Vida(Vida vida)
+	{
+		tablero = vida.tablero;
+		especies = vida.especies;
+		especiesVegetales = vida.especiesVegetales;
+		especiesAnimales = vida.especiesAnimales;
+		seres = vida.seres;
+		vegetales = vida.vegetales;
+		animales = vida.animales;	
+		numEspecies = vida.numEspecies;
+		numEspeciesVegetales = vida.numEspeciesVegetales;
+		numEspeciesAnimales = vida.numEspeciesAnimales;
+		idActualVegetal = vida.idActualVegetal;
+		idActualAnimal = vida.idActualAnimal;
 	}
 	
 	//Devuelve true si hay un vegetal en la casilla [x,y] y false si no lo hay
@@ -162,6 +196,142 @@ public class Vida{// : MonoBehaviour {
 		return false;
 	}
 	
+	//Devuelve true si consigue desplazar al animal y false si no lo consigue
+	public bool desplazaAnimal(Animal animal,int nposX,int nposY)
+	{		
+		Random.seed = System.DateTime.Now.Millisecond;
+		while(animal.posX != nposX || animal.posY != nposY)
+		{
+			if(!tieneAnimal(nposX,nposY) && animal.especie.habitat == tablero[nposX,nposY].habitat)
+			{
+				animal.desplazarse(nposX,nposY);
+				tablero[animal.posX,animal.posY].animal = null;
+				tablero[nposX,nposY].animal = animal;
+				return true;
+			}	
+			if(nposX > animal.posX) nposX--;
+			else if(nposX < animal.posX) nposX++;
+			if(nposY > animal.posY) nposY--;
+			else if(nposY < animal.posY) nposY++;			
+		}
+		return false;
+	}
+	
+	//Devuelve true si consigue crear un nuevo animal colindante a la posición de entrada y false si no lo consigue
+	public bool reproduceAnimal(EspecieAnimal especie,int posX,int posY)
+	{
+		List<int> aux = new List<int>();
+		aux.Add(0);
+		aux.Add(1);
+		aux.Add(2);
+		aux.Add(3);
+		aux.Add(4);
+		aux.Add(5);
+		aux.Add(6);
+		aux.Add(7);
+		
+		System.Random random = new System.Random();
+		int pos;		
+		int n;
+		for(int i = aux.Count; i > 1; i--)
+		{
+			pos = random.Next(i);
+			n = aux[i-1];
+			aux[i-1] = aux[pos];
+			aux[pos] = n;
+		}	
+		
+		int x;
+		int y;
+		for(int i = 0; i < 8; i++)
+		{
+			switch(aux[i])
+			{
+				case 0: x = 0;y = -1;break;		//arriba
+				case 1: x = 1;y = -1;break;		//arriba derecha				
+				case 2: x = 1;y = 0;break;		//derecha
+				case 3: x = 1;y = 1;break;		//abajo derecha
+				case 4: x = 0;y = 1;break;		//abajo
+				case 5: x = -1;y = 1;break;		//abajo izquierda
+				case 6: x = -1;y = 0;break;		//izquierda
+				case 7: x = -1;y = -1;break;	//arriba izquierda
+			default: x = 0; y = 0; break;
+			}			
+			if(!tieneAnimal(posX + x,posY + y) && especie.habitat == tablero[posX + x,posY + y].habitat)
+			{
+				anadeAnimal(especie,posX + x,posY + y);
+				return true;
+			}			
+		}
+		return false;
+	}
+	
+	//Devuelve true si ha comido y false si no
+	public bool buscaAlimentoAnimal(Animal animal)
+	{
+		int vision = animal.especie.vision;
+		int velocidad = animal.especie.velocidad;
+		if(animal.especie.tipo == EspecieAnimal.tipoAnimal.carnivoro)
+		{
+			for(int i = 0; i < animales.Count; i++)
+			{
+				//Si el animal está en su radio de visión
+				if(animales[i].posX >= animal.posX - vision && animales[i].posX <= animal.posX + vision && 
+				   animales[i].posY >= animal.posY - vision && animales[i].posY <= animal.posY + vision)
+				{
+					//Si el animal está en su radio de acción lo consume
+					if(animales[i].posX >= animal.posX - velocidad && animales[i].posX <= animal.posX + velocidad && 
+				   	   animales[i].posY >= animal.posY - velocidad && animales[i].posY <= animal.posY + velocidad)
+					{
+						animal.ingiereAlimento(animales[i].especie.alimentoQueProporciona);
+						int x = animales[i].posX;
+						int y = animales[i].posY;						
+						eliminaAnimal(animales[i]);
+						desplazaAnimal(animal,x,y);
+						return true;
+					}
+					//Sino se acerca a el
+					else
+					{
+						int x;
+						int y;
+						//if(
+					}
+					
+				}
+			}			
+		}
+		else if(animal.especie.tipo == EspecieAnimal.tipoAnimal.herbivoro)
+		{
+			
+			
+		}	
+		
+		
+		return false;
+	}
+	
+	public bool movimientoAleatorio(Animal animal)
+	{
+		int x = Random.Range(-1, 1);            
+	    int y = Random.Range(-1, 1);
+	    /*      Sacamos la nueva posición en función de la velocidad (numero de posiciones que se puede mover por turno) y la direccion haciendo un random
+	     * entre -1, 0 y 1 de x y de y. La dirección viene dada según lo siguiente:
+	     * arriba                       => x = 0, y = -1
+	     * arriba derecha       => x = 1, y = -1
+	     * derecha                      => x = 1, y = 0
+	     * abajo derecha        => x = 1, y = 1
+	     * abajo                        => x = 0, y = 1
+	     * abajo izquierda      => x = -1,y = 1
+	     * izquierda            => x = -1,y = 0
+	     * arriba izquierda     => x = -1,y = -1
+	     */
+	    int nposX = animal.posX + animal.especie.velocidad * x;
+	    int nposY = animal.posY + animal.especie.velocidad * y;       
+		desplazaAnimal(animal,nposX,nposY);		
+		return true;
+	}
+						
 	public void algoritmoVida()
 	{
 		randomLista();
@@ -181,10 +351,17 @@ public class Vida{// : MonoBehaviour {
 			else if(ser is Animal)
 			{
 				animal = (Animal)ser;	
-				animal.alimentacion();
+				if(!animal.consumirAlimento())
+				{
+					eliminaAnimal(animal);
+					continue;
+				}
 				if(animal.reproduccion())
-					;//alimentaAnimal();
-				//buscaAlimento();
+					reproduceAnimal(animal.especie,animal.posX,animal.posY);
+				if(animal.reserva < animal.especie.reservaMaxima * 0.75)		//Si está por debajo del 75% de la reserva de comida
+					buscaAlimentoAnimal(animal);
+				else 															//Movimiento aleatorio				
+					movimientoAleatorio(animal);		
 			}			
 		}
 	}
@@ -192,8 +369,7 @@ public class Vida{// : MonoBehaviour {
 	public void randomLista()
 	{
 		System.Random random = new System.Random();
-		int pos;
-		
+		int pos;		
 		Ser ser;
 		for(int i = seres.Count; i > 1; i--)
 		{
@@ -201,34 +377,7 @@ public class Vida{// : MonoBehaviour {
 			ser = seres[i-1];
 			seres[i-1] = seres[pos];
 			seres[pos] = ser;
-		}
-		/*
-		Vegetal vegetal;
-		Animal animal;
-		for(int i = vegetales.Count; i > 1; i--)
-		{
-			pos = random.Next(i);
-			vegetal = vegetales[i-1];
-			vegetales[i-1] = vegetales[pos];
-			vegetales[pos] = ser;
-		}
-		for(int i = seres.Count; i > 1; i--)
-		{
-			pos = random.Next(i);
-			ser = seres[i-1];
-			seres[i-1] = seres[pos];
-			seres[pos] = ser;
-		}*/
-	}
-	
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+		}		
 	}
 }
 
@@ -267,19 +416,20 @@ public class EspecieAnimal : Especie
 	public int consumo;									//Alimento que consume por turno
 	public int reservaMaxima;							//Máximo valor para la reserva de comida, es decir, el alimento almacenado para sobrevivir
 	public int alimentoQueProporciona;					//Alimento que recibe un animal al comerse a uno de esta especie
-	//public int vision;								//Rango de visión del animal para controlar su IA
+	public int vision;								//Rango de visión del animal para controlar su IA
 	public int velocidad;								//Número de casillas que puede desplazarse por turno
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public enum tipoAnimal {herbivoro,carnivoro};
 	public tipoAnimal tipo;								//herbivoro o carnivoro 
 		
-	public EspecieAnimal(int idEspecie, string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int velocidad, int reproductibilidad, tipoAnimal tipo)//, T_habitats habitat)
+	public EspecieAnimal(int idEspecie, string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo)//, T_habitats habitat)
 	{
 		this.idEspecie = idEspecie;
 		this.nombre = nombre;
 		this.consumo = consumo;
 		this.reservaMaxima = reservaMaxima;
 		this.alimentoQueProporciona = alimentoQueProporciona;
+		this.vision = vision;
 		this.velocidad = velocidad;
 		this.reproductibilidad = reproductibilidad;	
 		this.tipo = tipo;
@@ -290,7 +440,6 @@ public class EspecieAnimal : Especie
 public class Ser
 {
 	public int idSer;								//Id del ser
-	//public Especie especie;							//Especie a la que pertenece
 	public int posX;
 	public int posY;
 }
@@ -364,18 +513,18 @@ public class Animal : Ser
 	}
 	
 	//Devuelve true si el animal sobrevive y false si muere
-	public bool alimentacion()
+	public bool consumirAlimento()
 	{		
 		reserva -= especie.consumo;
 		return reserva > 0;
-		
-		/*
-		int idComida;
-		if(TABLERO.buscaAlimento(especie.idEspecie,especie.tipo,idComida,posX,posY))
-			reserva += TABLERO.consumeAlimento(idComida,ref posX,ref posY);		//Consume el alimento y desplaza la posicion del animal a la de su alimento
-		else
-			movimientoAleatorio();
-			*/
+	}
+	
+	public void ingiereAlimento(int comida)
+	{		
+		if(reserva + comida > especie.reservaMaxima)
+			reserva = especie.reservaMaxima;
+		else 
+			reserva += comida;		
 	}
 	
 	//Devuelve true si el animal se reproducre y false si no	
