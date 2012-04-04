@@ -317,14 +317,14 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void menuIzquierdaHex() {
-		GUI.BeginGroup(new Rect(cuantoW, cuantoH, cuantoW * 12, cuantoH * 29));
-		GUI.Box(new Rect(0,0,cuantoW * 12, cuantoH * 5), new GUIContent(Time.time.ToString(), "Tiempo en el que te encuentras"), "BarraTiempo");
-		escalaTiempo = sliderTiempoCompuesto(new Rect(0,cuantoH * 5, cuantoW * 12, cuantoH * 5), escalaTiempo);
-		botonHexCompuestoAltera(new Rect(0, cuantoH * 10, cuantoW * 12, cuantoH * 5));
-		botonHexCompuestoCamara(new Rect(0, cuantoH * 15, cuantoW * 12, cuantoH * 5));
-		botonHexCompuestoOpciones(new Rect(0, cuantoH * 20, cuantoW * 12, cuantoH * 5));
-		GUI.Box(new Rect(0, cuantoH * 25, cuantoW * 12, cuantoH * 4), "", "BarraAbajo");
-		GUI.EndGroup();
+//		GUI.BeginGroup(new Rect(cuantoW, cuantoH, cuantoW * 12, cuantoH * 29));
+		GUI.Box(new Rect(cuantoW,cuantoH,cuantoW * 12, cuantoH * 5), new GUIContent(Time.time.ToString(), "Tiempo en el que te encuentras"), "BarraTiempo");
+		escalaTiempo = sliderTiempoCompuesto(new Rect(cuantoW,cuantoH * 6, cuantoW * 12, cuantoH * 5), escalaTiempo);
+		botonHexCompuestoAltera(new Rect(cuantoW, cuantoH * 11, cuantoW * 12, cuantoH * 5));
+		botonHexCompuestoCamara(new Rect(cuantoW, cuantoH * 16, cuantoW * 12, cuantoH * 5));
+		botonHexCompuestoOpciones(new Rect(cuantoW, cuantoH * 21, cuantoW * 12, cuantoH * 5));
+		GUI.Box(new Rect(cuantoW, cuantoH * 26, cuantoW * 12, cuantoH * 5), "", "BarraAbajo");
+//		GUI.EndGroup();
 	}
 	
 	/*
@@ -471,7 +471,9 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void botonHexCompuestoAltera(Rect pos) {
-		GUI.Box(pos, new GUIContent("", "Opciones para alterar el planeta"), "BarraHexGran");
+		GUI.Box(new Rect(pos.x,pos.y,pos.width - cuantoW * 3.9f, pos.height), new GUIContent("", "Opciones para alterar el planeta"), "BarraHexGran");
+		if (menuAltera)
+			GUI.Box(new Rect(pos.x + cuantoW * 8.1f,pos.y,pos.width - cuantoW * 8.1f, pos.height), new GUIContent("", "Opciones (P) para alterar el planeta"), "BarraHexPeq");
 		GUILayout.BeginArea(pos);
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button("Alterar", "BotonVacio", GUILayout.Width(pos.width / 2))) {
@@ -481,17 +483,19 @@ public class Estados : MonoBehaviour {
 			Debug.Log("Pulsado altera grande.");
 		}
 		if (menuAltera) {
-			GUI.Box(pos, new GUIContent("", "Opciones (P) para alterar el planeta"), "BarraHexPeq");
 			if (GUILayout.Button(new GUIContent("Peques", "Opciones (P)(B) para alterar tambien"), "BotonVacio", GUILayout.Width(pos.width / 2))) {
 				Debug.Log("Pulsado un peque de altera.");
 			}
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
+		
 	}
 	
 	private void botonHexCompuestoCamara(Rect pos) {
-		GUI.Box(pos, new GUIContent("", "Opciones para cambiar la camara"), "BarraHexGran");
+		GUI.Box(new Rect(pos.x,pos.y,pos.width - cuantoW * 3.9f, pos.height), new GUIContent("", "Opciones para cambiar la camara"), "BarraHexGran");
+		if (menuCamara)
+			GUI.Box(new Rect(pos.x + cuantoW * 8.1f,pos.y,pos.width - cuantoW * 8.1f, pos.height), new GUIContent("", "Opciones (P) para cambiar la camara"), "BarraHexPeq");
 		GUILayout.BeginArea(pos);
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button("Camara", "BotonVacio", GUILayout.Width(pos.width / 2))) {
@@ -501,7 +505,6 @@ public class Estados : MonoBehaviour {
 			Debug.Log("Pulsado camara grande.");
 		}
 		if (menuCamara) {
-			GUI.Box(pos, new GUIContent("", "Opciones (P) para cambiar la camara"), "BarraHexPeq");
 			if (GUILayout.Button(new GUIContent("Peques", "Opciones (P)(B) para la camara"), "BotonVacio", GUILayout.Width(pos.width / 2))) {
 				Debug.Log("Pulsado un peque de camara.");
 			}
@@ -511,7 +514,9 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void botonHexCompuestoOpciones(Rect pos) {
-		GUI.Box(pos, new GUIContent("", "Opciones generales"), "BarraHexGran");
+		GUI.Box(new Rect(pos.x,pos.y,pos.width - cuantoW * 3.9f, pos.height), new GUIContent("", "Opciones generales"), "BarraHexGran");
+		if (menuOpcion)
+			GUI.Box(new Rect(pos.x + cuantoW * 8.1f,pos.y,pos.width - cuantoW * 8.1f, pos.height), new GUIContent("", "Opciones (P) generales"), "BarraHexPeq");
 		GUILayout.BeginArea(pos);
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button("Opciones", "BotonVacio", GUILayout.Width(pos.width / 2))) {
@@ -521,7 +526,6 @@ public class Estados : MonoBehaviour {
 			Debug.Log("Pulsado opciones grande.");
 		}
 		if (menuOpcion) {
-			GUI.Box(pos, new GUIContent("", "Opciones (P) generales"), "BarraHexPeq");
 			if (GUILayout.Button(new GUIContent("Peques", "Opciones (P)(B) generales"), "BotonVacio", GUILayout.Width(pos.width / 2))) {
 				Debug.Log("Pulsado un peque de opciones.");
 			}
@@ -533,7 +537,8 @@ public class Estados : MonoBehaviour {
 	private float sliderTiempoCompuesto(Rect pos, float valor) {
 		float valorOut;
 		GUI.Box(pos, new GUIContent("", "En que tiempo nos encontramos"), "BarraSlider");
-		GUILayout.BeginArea(new Rect(pos.x + 95, pos.y + 35, pos.width - 125, pos.height - 35));
+//		GUILayout.BeginArea(new Rect(pos.x + 95, pos.y + 35, pos.width - 125, pos.height - 35));
+		GUILayout.BeginArea(new Rect(pos.x + cuantoW * 3.5f, pos.y + cuantoH * 1.7f, pos.width - cuantoW * 5.5f, pos.height - cuantoH * 2));
 		valorOut = GUILayout.HorizontalSlider(valor, 0.2f, 99.9f);
 		GUILayout.Label("Escala temporal");
 		GUILayout.EndArea();
