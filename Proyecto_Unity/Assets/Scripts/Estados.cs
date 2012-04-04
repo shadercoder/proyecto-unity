@@ -259,7 +259,7 @@ public class Estados : MonoBehaviour {
 		GUI.skin = estiloGUI;
 		switch (estado) {
 			case T_estados.inicial:
-				GUI.Box(new Rect((Screen.width / 2) - 100, (Screen.height / 2) - 30, 200, 60), "Re-Generando!");
+				GUI.Box(new Rect(cuantoW * 21, cuantoH * 14, cuantoW * 6, cuantoH * 2), "Re-Generando!");
 				break;
 			case T_estados.opciones:
 				menuOpciones();
@@ -394,7 +394,7 @@ public class Estados : MonoBehaviour {
 	
 	private void menuOpciones() {
 		Control_Raton script;
-		GUILayout.BeginArea(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 200, 200));
+		GUILayout.BeginArea(new Rect(cuantoW * 20, cuantoH * 12, cuantoW * 8, cuantoH * 6));
 		GUILayout.BeginVertical();
 		if (GUILayout.Button(new GUIContent("Salir", "Salir del juego"), "boton_menu_1")) {
 			Time.timeScale = 1.0f;
@@ -419,9 +419,9 @@ public class Estados : MonoBehaviour {
 	
 	private void menuGuardar() {
 		Control_Raton script;
-		GUI.Box(new Rect(Screen.width / 2 - 126, Screen.height / 2 - 151, 252, 302), "");
-		posicionScroll = GUI.BeginScrollView(new Rect(Screen.width / 2 - 125, Screen.height / 2 - 150, 250, 300), posicionScroll, new Rect(0, 0, 250, 75 * numSavesExtra));
-		if (GUI.Button(new Rect(5, 0, 240, 75), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
+		GUI.Box(new Rect(cuantoW * 14, cuantoH * 7, cuantoW * 20, cuantoH * 16), "");
+		posicionScroll = GUI.BeginScrollView(new Rect(cuantoW * 14, cuantoH * 8, cuantoW * 20, cuantoH * 14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
+		if (GUI.Button(new Rect(cuantoW, cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
 			SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
@@ -439,7 +439,7 @@ public class Estados : MonoBehaviour {
 			estado = T_estados.principal;
 		}
 		for (int i = 0; i < numSaves; i++) {
-			if (GUI.Button(new Rect(5, (i + 1) * 75, 240, 75), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
+			if (GUI.Button(new Rect(cuantoW, (i + 1) * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
 				ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 				SaveLoad.cambiaFileName(nombresSaves[i]);		
 				SaveLoad.Save(temp.texturaBase);
@@ -451,7 +451,7 @@ public class Estados : MonoBehaviour {
 			}
 		}
 		GUI.EndScrollView();
-		if (GUI.Button(new Rect(Screen.width / 2 -30, Screen.height / 2 + 160, 60, 20), new GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
+		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
 			//Recuperar estado normal
 			Time.timeScale = 1.0f;
 			script = transform.parent.GetComponent<Control_Raton>();

@@ -294,7 +294,7 @@ public class EscenaCarga : MonoBehaviour {
 		caja = new Rect(cuantoW * 14, cuantoH * 8, cuantoW * 20, cuantoH * 14);
 		posicionScroll = GUI.BeginScrollView(caja, posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSaves));
 		if (numSaves == 0) {
-			GUI.Label(new Rect(cuantoW * 20, cuantoH * 14, cuantoW * 8, cuantoH * 2), "No hay ninguna partida guardada");
+			GUI.Label(new Rect(cuantoW, cuantoH * 4, cuantoW * 18, cuantoH * 4), "No hay ninguna partida guardada");
 		}
 		for (int i = 0; i < numSaves; i++) {
 			if (GUI.Button(new Rect(cuantoW, i * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Cargar partida num. " + i))) {
