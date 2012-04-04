@@ -13,7 +13,7 @@ public class Vida
 	public Dictionary<string, Especie> especies;					//Listado de todas las especies
 	public Dictionary<string, EspecieVegetal> especiesVegetales;	//Listado de todas las especies vegetales
 	public Dictionary<string, EspecieAnimal> especiesAnimales;		//Listado de todas las especies animales
-	public List<Ser> seres;										//Listado de todos los seres
+	public List<Ser> seres;											//Listado de todos los seres
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
 	
@@ -275,13 +275,15 @@ public class Vida
 		{
 			for(int i = 0; i < animales.Count; i++)
 			{
+				/*
 				//Si el animal está en su radio de visión
 				if(animales[i].posX >= animal.posX - vision && animales[i].posX <= animal.posX + vision && 
 				   animales[i].posY >= animal.posY - vision && animales[i].posY <= animal.posY + vision)
 				{
 					//Si el animal está en su radio de acción lo consume
 					if(animales[i].posX >= animal.posX - velocidad && animales[i].posX <= animal.posX + velocidad && 
-				   	   animales[i].posY >= animal.posY - velocidad && animales[i].posY <= animal.posY + velocidad)
+				   	   animales[i].posY >= animal.posY - velocidad && animales[i].posY <= animal.posY + velocidad &&
+				   	   animales[i].especie.idEspecie != animal.especie.idEspecie)
 					{
 						animal.ingiereAlimento(animales[i].especie.alimentoQueProporciona);
 						int x = animales[i].posX;
@@ -298,16 +300,52 @@ public class Vida
 						//if(
 					}
 					
+				}*/
+				//Si el animal está en su radio de acción lo consume
+				if(animales[i].posX >= animal.posX - velocidad && animales[i].posX <= animal.posX + velocidad && 
+			   	   animales[i].posY >= animal.posY - velocidad && animales[i].posY <= animal.posY + velocidad &&
+				   animales[i].especie.idEspecie != animal.especie.idEspecie)
+				{
+					animal.ingiereAlimento(animales[i].especie.alimentoQueProporciona);
+					int x = animales[i].posX;
+					int y = animales[i].posY;						
+					eliminaAnimal(animales[i]);
+					desplazaAnimal(animal,x,y);
+					return true;
+				}
+				//Sino movimiento random
+				else
+				{
+					movimientoAleatorio(animal);
+					return false;
 				}
 			}			
 		}
 		else if(animal.especie.tipo == EspecieAnimal.tipoAnimal.herbivoro)
 		{
-			
-			
-		}	
-		
-		
+			for(int i = 0; i < vegetales.Count; i++)
+			{				
+				//Si el animal está en su radio de acción lo consume
+				if(vegetales[i].posX >= animal.posX - velocidad && vegetales[i].posX <= animal.posX + velocidad && 
+			   	   vegetales[i].posY >= animal.posY - velocidad && vegetales[i].posY <= animal.posY + velocidad)
+				{					
+					int vegetalesComidos = vegetales[i].consumeVegetales(animal.especie.reservaMaxima - animal.reserva);
+					int x = vegetales[i].posX;
+					int y = vegetales[i].posY;											
+					if(vegetales[i].numVegetales == 0)
+						eliminaVegetal(vegetales[i]);	
+					animal.ingiereAlimento(vegetalesComidos);
+					desplazaAnimal(animal,x,y);
+					return true;
+				}
+				//Sino movimiento random
+				else
+				{
+					movimientoAleatorio(animal);
+					return false;
+				}
+			}
+		}
 		return false;
 	}
 	
@@ -473,10 +511,15 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	{				
 		int aux;
 		if(numVegetales < vegetalesAConsumir)
+		{	
 			aux = numVegetales;
+			numVegetales = 0;
+		}
 		else 
+		{
 			aux = vegetalesAConsumir;		
-		this.numVegetales -= vegetalesAConsumir;
+			numVegetales -= vegetalesAConsumir;
+		}
 		return aux;
 	}
 	
