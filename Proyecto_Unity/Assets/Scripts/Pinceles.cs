@@ -3,10 +3,9 @@ using System.Collections;
 
 public class Pinceles : MonoBehaviour {
 
-	public Texture2D fisura1;
-	public Texture2D fisura2;
-	public Texture2D volcan1;
-	public Texture2D volcan2;
-	public Texture2D circulo1;
-	public Texture2D circulo2;	
+	public Texture2D crater;
+	public Texture2D volcan;
+	public Texture2D pincelDuro;
+	public Texture2D pincelRegular;
+	public Texture2D pincelIrregular;
 }
