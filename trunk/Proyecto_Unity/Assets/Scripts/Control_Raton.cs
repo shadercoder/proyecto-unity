@@ -27,9 +27,7 @@ public class Control_Raton : MonoBehaviour {
 	private float ySmooth = 0.0f; 
 	private float xVelocity = 0.0f;
 	private float yVelocity = 0.0f;
-	
-//	private Vector3 posVelocity = Vector3.zero;
-	
+		
 	//Raycast para la parte de pulsar y centrar
 	private RaycastHit hit;
 	private float temporizador = 0.0f;
@@ -39,13 +37,11 @@ public class Control_Raton : MonoBehaviour {
 	//Estados de la camara
 	private int estado = 0;				//0 para orbita normal, 1 para pulsar&centrar
 	private bool interaccion = true;	//Si el ratón puede interactuar con el mundo o no
+	private bool llamaCorutinaPincel = false;
 	
 //	@script AddComponentMenu("Camera-Control/Mouse Orbit smoothed")
 	
-	void Start () {
-	   
-	//    Screen.showCursor = false;
-	
+	void Start () {	
 	    Vector3 angles = transform.eulerAngles;
 	    x = angles.y;
 	    y = angles.x;
@@ -59,6 +55,7 @@ public class Control_Raton : MonoBehaviour {
 		
 		Vector3 position;
 		Quaternion rotation;
+	//Esta parte es de control y debe estar al principio --------------------------------------------------
 		//Si el estado es 2, no permitir ningún movimiento
 		if (!interaccion) {
 			return;
@@ -69,20 +66,35 @@ public class Control_Raton : MonoBehaviour {
 			transform.rotation = Quaternion.LookRotation(dirTemp);
 			return;
 		}
+	//Hasta aqui la parte de control inicial --------------------------------------------------------------
+		
+		
+	//Aqui la parte de lanzamiento de eventos desde el ratón: corutinas de pincel etc. -----------------------
+		
+		if (llamaCorutinaPincel && Input.GetMouseButtonUp(0)) {
+			Estados script = Camera.mainCamera.GetComponent<Estados>();
+			StartCoroutine(script.corutinaPincel());
+			Debug.Log("Dentro del script de control_raton y en llamaCorutinaPincel.");
+		}
+		
+	//Hasta aqui la parte de lanzamiento de eventos desde el ratón -------------------------------------------
+		
 		
 		//clic y centrar camara a la distancia actual en direccion al origen de la esfera pasando por el punto señalado:
-		if(Input.GetMouseButtonUp(0) && estado == 1){
-			if (temporizador < Time.time) {
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (Physics.Raycast(ray, out hit, Mathf.Infinity) ) {
-					Vector3 direccion = target.position - hit.point;
-					rotacionClick = Quaternion.LookRotation(direccion);
-					rotacionObjetivo = rotacionClick;
-					temporizador = Time.time + 0.5f;
-				}
-			}
-		}    
+//		if(Input.GetMouseButtonUp(0) && estado == 1){
+//			if (temporizador < Time.time) {
+//				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+//				if (Physics.Raycast(ray, out hit, Mathf.Infinity) ) {
+//					Vector3 direccion = target.position - hit.point;
+//					rotacionClick = Quaternion.LookRotation(direccion);
+//					rotacionObjetivo = rotacionClick;
+//					temporizador = Time.time + 0.5f;
+//				}
+//			}
+//		}    
 	   
+	//Esta parte es para el click & drag con el boton derecho --------------------------------------------
+		
 	    //Al pinchar con el boton derecho, resetear las posiciones para que no haya saltos bruscos
 	    if (target && Input.GetMouseButtonDown(1) && estado == 0) {
 	    	y = transform.rotation.eulerAngles.x;
@@ -90,6 +102,7 @@ public class Control_Raton : MonoBehaviour {
 	    	xSmooth = x;
 	    	ySmooth = y;
 	    }
+		
 		//mouseorbit activado, desplazamiento onDrag
 	    if (target && Input.GetMouseButton(1) && estado == 0) {
 		    x += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
@@ -117,11 +130,7 @@ public class Control_Raton : MonoBehaviour {
 	
 		transform.rotation = rotation;
 		transform.position = position;
-		
-		if (Input.GetKeyUp(KeyCode.E)) {
-			Animation anim = transform.GetComponentInChildren<Animation>();
-			anim.Play("Shake");
-		}
+	//Hasta aqui el click & drag con el boton derecho -------------------------------------------------------
 	   	
 	}
 	
@@ -146,5 +155,9 @@ public class Control_Raton : MonoBehaviour {
 	
 	public void setInteraccion(bool bol) {
 		interaccion = bol;
+	}
+	
+	public void setCorutinaPincel(bool bol) {
+		llamaCorutinaPincel = bol;
 	}
 }

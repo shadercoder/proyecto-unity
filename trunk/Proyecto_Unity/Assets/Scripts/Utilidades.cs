@@ -441,22 +441,22 @@ public class FuncTablero {
 		Texture2D pincelTex;
 		switch (pincel) {
 		case 0: 
-			pincelTex = temp.fisura1;
+			pincelTex = temp.crater;
 			break;
 		case 1:
-			pincelTex = temp.fisura2;
+			pincelTex = temp.volcan;
 			break;
 		case 2:
-			pincelTex = temp.volcan1;
+			pincelTex = temp.pincelDuro;
 			break;
 		case 3: 
-			pincelTex = temp.volcan2;
+			pincelTex = temp.pincelRegular;
 			break;
 		case 4:			
-			pincelTex = temp.circulo1;
+			pincelTex = temp.pincelIrregular;
 			break;
 		default: 
-			pincelTex = temp.circulo2;
+			pincelTex = temp.pincelRegular;
 			break;			
 		}		
 		int w = pincelTex.width;
@@ -468,6 +468,8 @@ public class FuncTablero {
 		pos.y -= h/2;
 		if (pos.y < 0)
 			pos.y = 0;
+		if (pos.y >= objetivo.height)
+			pos.y = objetivo.height - 1;
 		int multi = -1;
 		if (subir)
 			multi = 1;
@@ -477,14 +479,6 @@ public class FuncTablero {
 			}
 		}
 	}
-	
-//	public static void cuboMesh(RaycastHit hit) {
-//		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//		Vector3 punto = hit.point - hit.transform.position;
-//		cube.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
-//		cube.transform.position = punto;
-//		cube.transform.rotation = Quaternion.LookRotation(Camera.main.transform.position, hit.normal);
-//	}
 	
 	public static void creaMesh(RaycastHit hit, int seleccion) {
 		GameObject creacion;
@@ -502,22 +496,16 @@ public class FuncTablero {
 			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 			break;
 		case 4: 
-			creacion = new GameObject("Nave");
-			creacion.AddComponent("MeshRenderer");
-			creacion.AddComponent("MeshFilter");
-//			creacion.GetComponent<MeshFilter>().sharedMesh = "Nave";
+			//TODO Instanciar con instantiate(...) un prefab de nave
+			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 			break;
 		case 5: 
-			creacion = new GameObject("Mina");
-			creacion.AddComponent("MeshRenderer");
-			creacion.AddComponent("MeshFilter");
-//			creacion.GetComponent<MeshFilter>().sharedMesh = "Mina";
+			//TODO Instanciar con instantiate(...) un prefab de mina
+			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 			break;
 		default: 
-			creacion = new GameObject("Edificio");
-			creacion.AddComponent("MeshRenderer");
-			creacion.AddComponent("MeshFilter");
-//			creacion.GetComponent<MeshFilter>().sharedMesh = "Edificio";;
+			//TODO Instanciar con instantiate(...) un prefab de edificioX
+			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 			break;
 		}
 		creacion.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);

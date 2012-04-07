@@ -90,6 +90,7 @@ public class EscenaCarga : MonoBehaviour {
 		if (PlayerPrefs.HasKey("SfxVol")) {
 			sfxVol = PlayerPrefs.GetFloat("SfxVol");
 		}
+		SaveLoad.compruebaRuta();
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
