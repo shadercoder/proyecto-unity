@@ -35,7 +35,7 @@ public class Control_Raton : MonoBehaviour {
 	//Estados de la camara
 	private int estado = 0;				//0 para orbita normal, 1 para pulsar&centrar
 	private bool interaccion = true;	//Si el ratón puede interactuar con el mundo o no
-	private bool llamaCorutinaPincel = false;
+//	private bool llamaCorutinaPincel = false;
 	
 	
 	void Start () {	

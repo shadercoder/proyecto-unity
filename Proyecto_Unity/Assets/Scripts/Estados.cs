@@ -40,13 +40,14 @@ public class Estados : MonoBehaviour {
 	public float tiempoPincel					= 0.25f;				//Incremento de tiempo para aplicar el pincel
 	
 	//Opciones
-	public GameObject contenedorSonido;									//El objeto que va a contener la fuente del audio
+	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
+	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
 	private AudioSource sonido;											//La fuente del audio
 	
-	private bool musicaOn 						= true;					//Está la música activada?
-	private float musicaVol 					= 0.5f;					//A que volumen?
-	private bool sfxOn 							= true;					//Estan los efectos de sonido activados?
-	private float sfxVol 						= 0.5f; 				//A que volumen?
+//	private bool musicaOn 						= true;					//Está la música activada?
+//	private float musicaVol 					= 0.5f;					//A que volumen?
+//	private bool sfxOn 							= true;					//Estan los efectos de sonido activados?
+//	private float sfxVol 						= 0.5f; 				//A que volumen?
 	
 	//Tooltips
 	private Vector3 posicionMouse 				= Vector3.zero;			//Guarda la ultima posicion del mouse		
@@ -130,27 +131,29 @@ public class Estados : MonoBehaviour {
 			texturaBase.Apply();
 			texturaNorm.Apply();
 		}
+		Audio_Ambience ambiente = sonidoAmbiente.GetComponent<Audio_Ambience>();
+		Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
 		if (PlayerPrefs.GetInt("MusicaOn") == 1)
-			musicaOn = true;
+			ambiente.activado = true;
 		else
-			musicaOn = false;
-		musicaVol = PlayerPrefs.GetFloat("MusicaVol");
+			ambiente.activado = false;
+		ambiente.volumen = PlayerPrefs.GetFloat("MusicaVol");
 		if (PlayerPrefs.GetInt("SfxOn") == 1)
-			sfxOn = true;
+			efectos.activado = true;
 		else
-			sfxOn = false;
-		sfxVol = PlayerPrefs.GetFloat("SfxVol");
-		sonido = contenedorSonido.GetComponent<AudioSource>();
-		sonido.mute = !musicaOn;
-		sonido.volume = musicaVol;
-		//esto para que no salgan warnings molestos
-		if (sfxOn) {
-			float a = sfxVol;
-			sfxVol = a;
-		}
-		else {
-		
-		}
+			efectos.activado = false;
+		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
+//		sonido = sonidoAmbiente.GetComponent<AudioSource>();
+//		sonido.mute = !musicaOn;
+//		sonido.volume = musicaVol;
+//		//esto para que no salgan warnings molestos
+//		if (sfxOn) {
+//			float a = sfxVol;
+//			sfxVol = a;
+//		}
+//		else {
+//		
+//		}
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
