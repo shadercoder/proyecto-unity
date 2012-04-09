@@ -10,7 +10,9 @@ _atmCerca("_atmCerca", Color) = (0.3706838,0.4156485,0.9552239,1)
 _atmLejos("_atmLejos", Color) = (0,0.9160838,1,1)
 _Espesura("_Espesura", Float) = 3
 _alturaNubes("_alturaNubes", Range(-0.1,2) ) = -0.1
-_prueba1("_prueba1", Float) = 0.1
+_prueba1("_prueba1", Float) = 1
+_fogColor("_fogColor", Color) = (0.7313433,0.9661831,1,1)
+_fogDensity("_fogDensity", Float) = 1
 
 	}
 	
@@ -18,8 +20,8 @@ _prueba1("_prueba1", Float) = 0.1
 	{
 		Tags
 		{
-"Queue"="Transparent"
-"IgnoreProjector"="False"
+"Queue"="Overlay"
+"IgnoreProjector"="True"
 "RenderType"="Transparent"
 
 		}
@@ -28,16 +30,16 @@ _prueba1("_prueba1", Float) = 0.1
 Cull Back
 ZWrite On
 ZTest LEqual
-ColorMask RGBA
-Blend SrcAlpha OneMinusDstAlpha
+ColorMask RGB
 Fog{
+Mode Global
 Color (0.6285365,0.8134524,0.8507463,1)
 Density 2
 }
 
 
 		CGPROGRAM
-#pragma surface surf BlinnPhongEditor  fullforwardshadows vertex:vert
+#pragma surface surf BlinnPhongEditor  addshadow fullforwardshadows nolightmap noforwardadd alpha decal:add vertex:vert
 #pragma target 3.0
 
 
@@ -50,6 +52,8 @@ float4 _atmLejos;
 float _Espesura;
 float _alturaNubes;
 float _prueba1;
+float4 _fogColor;
+float _fogDensity;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -119,19 +123,22 @@ float4 Pow0=pow(Fresnel0,_Espesura.xxxx);
 float4 Saturate0=saturate(Pow0);
 float4 Lerp0=lerp(_atmCerca,_atmLejos,Saturate0);
 float4 Multiply0=Lerp0 * Saturate0;
+float4 Multiply4=Pow0 * _fogColor;
+float4 Lerp1_0_NoInput = float4(0,0,0,0);
+float4 Lerp1=lerp(Lerp1_0_NoInput,Multiply4,_fogDensity.xxxx);
+float4 Add0=Multiply0 + Lerp1;
 float4 Multiply1=_Time * _Velocidad.xxxx;
 float4 UV_Pan0=float4((IN.uv_BaseNubes.xyxy).x + Multiply1.y,(IN.uv_BaseNubes.xyxy).y,(IN.uv_BaseNubes.xyxy).z,(IN.uv_BaseNubes.xyxy).w);
 float4 Tex2D1=tex2D(_BaseNubes,UV_Pan0.xy);
-float4 Add1=Multiply0 + Tex2D1;
-float4 Multiply3=Tex2D1 * _prueba1.xxxx;
+float4 Add2=Add0 + Tex2D1;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Add1;
-o.Alpha = Multiply3;
+o.Albedo = Add2;
+o.Alpha = Tex2D1;
 
 				o.Normal = normalize(o.Normal);
 			}
