@@ -29,7 +29,7 @@ Cull Back
 ZWrite On
 ZTest LEqual
 ColorMask RGBA
-Blend SrcColor OneMinusSrcAlpha
+Blend SrcAlpha OneMinusSrcAlpha
 Fog{
 }
 
@@ -149,5 +149,5 @@ o.Alpha = Multiply1;
 			}
 		ENDCG
 	}
-	Fallback "Diffuse"
+	Fallback "RocaInt"
 }

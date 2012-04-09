@@ -167,5 +167,5 @@ o.Normal = Add0;
 			}
 		ENDCG
 	}
-	Fallback "Diffuse"
+	Fallback "VertexLit"
 }
