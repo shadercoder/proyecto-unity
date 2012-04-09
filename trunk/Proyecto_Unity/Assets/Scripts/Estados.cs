@@ -12,7 +12,7 @@ public class Estados : MonoBehaviour {
 	public GUISkin estiloGUI_Nuevo;
 	public GameObject camaraReparaciones;								//Para mostrar las opciones de las reparaciones de la nave
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
-	private int menuOpcionesInt					= 0;					//Variable de control sobre el menu lateral derecho
+//	private int menuOpcionesInt					= 0;					//Variable de control sobre el menu lateral derecho
 	private int cuantoW							= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
 	private int cuantoH							= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 	
@@ -24,10 +24,6 @@ public class Estados : MonoBehaviour {
 	private bool botonPequeSubir				= false;				//de la interfaz del menu izquierdo
 	private bool botonPequeBajar				= false;
 	private bool botonPequeAllanar				= false;
-	private bool botonPequeNave					= false;
-	private bool botonPequePlaneta				= false;
-	private bool botonPequeCristal				= false;
-	private bool botonPequeEspecies				= false;
 	
 	private bool activarPinceles				= false;				//Variable de control para pintar sobre la textura
 	
@@ -41,7 +37,7 @@ public class Estados : MonoBehaviour {
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
-	public float tiempoPincel					= 0.5f;					//Incremento de tiempo para aplicar el pincel
+	public float tiempoPincel					= 0.25f;				//Incremento de tiempo para aplicar el pincel
 	
 	//Opciones
 	public GameObject contenedorSonido;									//El objeto que va a contener la fuente del audio
@@ -70,94 +66,24 @@ public class Estados : MonoBehaviour {
 	enum T_estados {inicial, principal, reparaciones, filtros, guardar, opciones, salir};
 	
 	//Funciones auxiliares -----------------------------------------------------------------------------------------------------------------------
-//	private IEnumerator terremoto(Vector2 coords) {
-//		Vector2 dir = UnityEngine.Random.insideUnitCircle;
-//		Vector3 cross1 = new Vector3(dir.x, dir.y, 0);
-//		Vector3 cross2 = new Vector3(0, 0, 1);
-//		Vector3 res = Vector3.Cross(cross1, cross2);
-//		Vector2 dirPerp = new Vector2(res.x, res.y);
-//		//Hacer un raycast al punto seleccionado o elegir aleatoriamente un punto de la textura para que ocurra ahi el terremoto
-//		GameObject planeta = GameObject.FindWithTag("Planeta");
-//		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
-//		Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
-//		if (coords == Vector2.zero) {
-//			Debug.LogError("Coords era cero en el metodo terremoto.");
-//			coords = new Vector2(Random.Range(0, texturaBase.width), Random.Range(0, texturaBase.height));
-//			Debug.LogError("Coords es ahora: " + coords);
-//		}
-//		//TODO Completar esta parte para lanzar las llamadas a FuncTablero.fisura(...)
-//		//A lo largo de la perpendicular, crear fisuras de forma creciente desde el eje de simetría
-//		//También puede hacerse paulatinamente respecto al tiempo
-//		Camera.main.animation.Play("Shake");
-//		Vector2 desviacion = dirPerp.normalized;
-//		float longitud = 40.0f;
-//		float magnitud = -1.0f;
-//		FuncTablero.fisura(texturaBase, (int)coords.x, (int)coords.y, longitud, magnitud, dir); 
-//		texturaBase.Apply();
-//		yield return new WaitForSeconds(1);
-//		for (int i = 0; i < 5; i++) {
-//			desviacion = dirPerp * (i + 1);
-//			longitud -= 6.0f;
-//			magnitud -= 0.2f;
-//			FuncTablero.fisura(texturaBase, (int)coords.x + (int)desviacion.x, (int)coords.y + (int)desviacion.y, longitud, magnitud, dir); 
-//			FuncTablero.fisura(texturaBase, (int)coords.x - (int)desviacion.x, (int)coords.y - (int)desviacion.y, longitud, magnitud, dir);
-//			texturaBase.Apply();
-//			yield return new WaitForSeconds(1);
-//		}		
-//	}
-//	
-//	private IEnumerator corutinaTerremoto() {
-//		RaycastHit hit;
-//		Vector2 pixelUV = Vector2.zero;
-//		int mask = 1 << 9;
-//		Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width/2, Screen.height/2, 0));
-//		if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask) ) {
-//			GameObject planeta = GameObject.FindWithTag("Planeta");
-//			MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
-//			Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
-//			pixelUV = hit.textureCoord;
-//			pixelUV.x *= (float)texturaBase.width;
-//			pixelUV.y *= (float)texturaBase.height;
-//		}
-//		yield return StartCoroutine(terremoto(pixelUV));
-//	}
 	
 	public IEnumerator corutinaPincel() {
 		//Interacción con los pinceles
 		if (Time.realtimeSinceStartup >= ultimoPincel + tiempoPincel) {
-			Debug.Log("Dentro de corutinaPincel() pero sin lanzar el rayo");
 			ultimoPincel = Time.realtimeSinceStartup;
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			int mask = 1 << 9;
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask)) {
-				Debug.Log("Dentro de corutinaPincel() y lanzado el rayo");
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity)) {
 				bool temp = false;
-				if (botonPequeSubir && !botonPequeBajar)
+				if (botonPequeSubir)
 					temp = true;
 				FuncTablero.pintaPincel(hit, seleccionPincel, temp);
+				Texture2D texTemp = hit.transform.renderer.sharedMaterial.mainTexture as Texture2D;
+				texTemp.Apply();
 			}
 		}
 		yield return new WaitForEndOfFrame();
 	}
-	
-//	private IEnumerator corutinaAnimalCubo() {
-//		RaycastHit hit;
-//		bool pinchado = false;
-//		while (!pinchado) {
-//			if (Input.GetMouseButton(0)) {
-//				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-//				int mask = 1 << 9;
-//				if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask)) {
-//					Debug.Log("Rayo lanzado correctamente.");
-//					FuncTablero.creaMesh(hit, 0);
-//					pinchado = true;
-//					continue;
-//				}
-//			}
-//			yield return new WaitForSeconds(0.1f);
-//		}		
-//	}
 	
 	//Funciones principales ----------------------------------------------------------------------------------------------------------------------
 	private void creacionInicial() {
@@ -283,11 +209,13 @@ public class Estados : MonoBehaviour {
 			//Control del timescale
 			Time.timeScale = escalaTiempo;
 			Time.fixedDeltaTime = 0.02f * escalaTiempo;
-			
-			//Control de los pinceles
-			Control_Raton script = transform.parent.GetComponent<Control_Raton>();
-			script.setCorutinaPincel(activarPinceles);
 		}
+		
+		//Estado de los pinceles
+		if (botonPequeSubir || botonPequeBajar || botonPequeAllanar) 
+			activarPinceles = true;
+		else
+			activarPinceles = false;
 		
 	}
 	
@@ -320,14 +248,20 @@ public class Estados : MonoBehaviour {
 				break;
 		}
 		
+		//Control pincel en textura
+		//TODO alguna forma de evitar el raycast cuando colisione con la GUI
+		if (activarPinceles && Input.GetMouseButtonDown(0) && Event.current.type == EventType.MouseDown) {
+			StartCoroutine(corutinaPincel());
+		}
+		
 		//Tooltip
 		if (activarTooltip) {
-			int longitud = GUI.tooltip.Length;
-			if (longitud == 0) {
+			float longitud = GUI.tooltip.Length;
+			if (longitud == 0.0f) {
 				return;
 			}
 			else {
-				longitud *= 9;
+				longitud *= 8.5f;
 			}
 			float posx = Input.mousePosition.x;
 			float posy = Input.mousePosition.y;
@@ -343,13 +277,7 @@ public class Estados : MonoBehaviour {
 			Rect pos = new Rect(posx, Screen.height - posy, longitud, 25);
 			GUI.Box(pos, "");
 			GUI.Label(pos, GUI.tooltip);
-		}
-		
-		//Estado de los pinceles
-		if (botonPequeSubir || botonPequeBajar || botonPequeAllanar) 
-			activarPinceles = true;
-		else
-			activarPinceles = false;
+		}		
 	}
 	
 	private void menuIzquierdaHex() {
@@ -513,12 +441,24 @@ public class Estados : MonoBehaviour {
 			menuAltera = true;
 			menuCamara = false;
 			menuOpcion = false;
-			Debug.Log("Pulsado altera grande.");
 		}
 		if (menuAltera) {
 			botonPequeSubir = GUI.Toggle(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 0.95f, cuantoW * 1.4f, cuantoH * 1.7f), botonPequeSubir, new GUIContent("", "Eleva el terreno pulsado"), "BotonPequeSubir");
+			if (GUI.changed && botonPequeSubir) {
+				botonPequeBajar = false;
+				botonPequeAllanar = false;
+			}
 			botonPequeBajar = GUI.Toggle(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 1.85f, cuantoW * 1.4f, cuantoH * 1.7f), botonPequeBajar, new GUIContent("", "Hunde el terreno pulsado"), "BotonPequeBajar");
+			if (GUI.changed && botonPequeBajar) {
+				botonPequeSubir = false;
+				botonPequeAllanar = false;
+			}
 			botonPequeAllanar = GUI.Toggle(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 2.75f, cuantoW * 1.4f, cuantoH * 1.7f), botonPequeAllanar, new GUIContent("", "Allana el terreno pulsado"), "BotonPequeAllanar");
+			if (GUI.changed && botonPequeAllanar) {
+				botonPequeSubir = false;
+				botonPequeBajar = false;
+				Debug.Log("Pulsado boton allanar. Sin funcionalidad aun.");
+			}
 			if (GUI.Button(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 3.75f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("", "Selecciona el pincel para el terreno"), "BotonPequePinceles")) {
 				botonPequePincel = true;
 			}
@@ -529,25 +469,8 @@ public class Estados : MonoBehaviour {
 				}
 			}
 		}
-		if (GUI.changed) {
-			if (botonPequeBajar) {
-				botonPequeSubir = false;
-				botonPequeAllanar = false;
-				Debug.Log("Pulsado peque altera 2-4");
-			}
-			if (botonPequeAllanar) {
-				botonPequeSubir = false;
-				botonPequeBajar = false;
-				//TODO Aqui van las acciones de allanar
-				Debug.Log("Pulsado boton allanar. Sin funcionalidad aun.");
-			}
-			if (botonPequeSubir) {
-				botonPequeBajar = false;
-				botonPequeAllanar = false;
-				//TODO Aqui van las acciones de subir
-				Debug.Log("Pulsado peque altera 1-4");
-			}
-		}
+		//TODO Esto hay que cambiarlo porque ahora mismo hay preferencia y no se puede pasar de bajar a subir o allanar directamente, solo de subir->allanar->bajar
+		//No se puede ir de bajar->allanar->subir porque los if van con prioridad. Hay que hacer un if (GUI.changed) despues de cada toggle!!
 	}
 	
 	private void botonHexCompuestoCamara(Rect pos) {
@@ -562,7 +485,6 @@ public class Estados : MonoBehaviour {
 			botonPequeSubir = false;
 			botonPequeBajar = false;
 			botonPequeAllanar = false;
-			Debug.Log("Pulsado camara grande.");
 		}
 		if (menuCamara) {
 			if (GUI.Button(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 0.95f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("", "Vista del planeta"), "BotonPequePlaneta")) {
@@ -608,7 +530,6 @@ public class Estados : MonoBehaviour {
 				Time.timeScale = 1.0f;
 				nombresSaves = SaveLoad.getFileNames();
 				estado = T_estados.guardar;
-				Debug.Log("Pulsado boton de opciones guardar");
 			}
 			if (GUI.Button(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 2.75f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("Volver", "Volver al juego con normalidad."), "BotonVacio")) {
 //				Time.timeScale = 1.0f;
@@ -622,7 +543,6 @@ public class Estados : MonoBehaviour {
 				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(true);
 				estado = T_estados.salir;
-				Debug.Log("Pulsado boton de opciones salir");
 			}
 		}
 	}
