@@ -30,8 +30,6 @@ public class Control_Raton : MonoBehaviour {
 		
 	//Raycast para la parte de pulsar y centrar
 	private RaycastHit hit;
-	private float temporizador = 0.0f;
-	private Quaternion rotacionClick = Quaternion.identity;
 	private Quaternion rotacionObjetivo = Quaternion.identity;
 	
 	//Estados de la camara
@@ -39,23 +37,20 @@ public class Control_Raton : MonoBehaviour {
 	private bool interaccion = true;	//Si el ratón puede interactuar con el mundo o no
 	private bool llamaCorutinaPincel = false;
 	
-//	@script AddComponentMenu("Camera-Control/Mouse Orbit smoothed")
 	
 	void Start () {	
 	    Vector3 angles = transform.eulerAngles;
 	    x = angles.y;
 	    y = angles.x;
-	
-	    // Make the rigid body not change rotation
-	//    if (rigidbody)
-	//        rigidbody.freezeRotation = true;
 	}
 	
 	void LateUpdate () {
 		
 		Vector3 position;
 		Quaternion rotation;
+		
 	//Esta parte es de control y debe estar al principio --------------------------------------------------
+		
 		//Si el estado es 2, no permitir ningún movimiento
 		if (!interaccion) {
 			return;
@@ -66,19 +61,7 @@ public class Control_Raton : MonoBehaviour {
 			transform.rotation = Quaternion.LookRotation(dirTemp);
 			return;
 		}
-	//Hasta aqui la parte de control inicial --------------------------------------------------------------
-		
-		
-	//Aqui la parte de lanzamiento de eventos desde el ratón: corutinas de pincel etc. -----------------------
-		
-		if (llamaCorutinaPincel && Input.GetMouseButtonUp(0)) {
-			Estados script = Camera.mainCamera.GetComponent<Estados>();
-			StartCoroutine(script.corutinaPincel());
-			Debug.Log("Dentro del script de control_raton y en llamaCorutinaPincel.");
-		}
-		
-	//Hasta aqui la parte de lanzamiento de eventos desde el ratón -------------------------------------------
-		
+	//Hasta aqui la parte de control inicial --------------------------------------------------------------		
 		
 		//clic y centrar camara a la distancia actual en direccion al origen de la esfera pasando por el punto señalado:
 //		if(Input.GetMouseButtonUp(0) && estado == 1){
@@ -148,16 +131,12 @@ public class Control_Raton : MonoBehaviour {
 	}
 	
 	//Estados en los que puede encontrarse el script de control: 0 para arrastre y 1 para click & go
-	public void cambiarEstado(int est) {
-		if (est >= 0 && est <= 1)
-			this.estado = est;
-	}
+//	public void cambiarEstado(int est) {
+//		if (est >= 0 && est <= 1)
+//			this.estado = est;
+//	}
 	
 	public void setInteraccion(bool bol) {
 		interaccion = bol;
-	}
-	
-	public void setCorutinaPincel(bool bol) {
-		llamaCorutinaPincel = bol;
 	}
 }
