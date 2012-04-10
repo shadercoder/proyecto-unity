@@ -18,7 +18,6 @@ function Start() {
 	Vector3.OrthoNormalize(line, direction, orbitDir); 
 }
 
-// Update is called once per frame
 function FixedUpdate () {
 	transform.RotateAround (target.position, orbitDir, speed * Time.deltaTime);
 }
