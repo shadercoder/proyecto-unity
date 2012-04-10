@@ -24,9 +24,8 @@ public class Vida
 	public int idActualVegetal;
 	public int idActualAnimal;
 	
-	Vida()
+	public Vida()
 	{
-		tablero = new Casilla[128,128];
 		especies = new Dictionary<string, Especie>();
 		especiesVegetales = new Dictionary<string, EspecieVegetal>();
 		especiesAnimales = new Dictionary<string, EspecieAnimal>();
@@ -38,10 +37,9 @@ public class Vida
 		numEspeciesAnimales = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
-	}
+	}	
 	
-	
-	Vida(Casilla[,] tablero)
+	public Vida(Casilla[,] tablero)
 	{
 		this.tablero = tablero;
 		especies = new Dictionary<string, Especie>();
@@ -57,7 +55,7 @@ public class Vida
 		idActualAnimal = 0;
 	}
 	
-	Vida(Vida vida)
+	public Vida(Vida vida)
 	{
 		tablero = vida.tablero;
 		especies = vida.especies;
@@ -75,14 +73,28 @@ public class Vida
 	
 	//Devuelve true si hay un vegetal en la casilla [x,y] y false si no lo hay
 	public bool tieneVegetal(int x,int y)
-	{
-		return tablero[x,y].vegetal != null;		
+	{		
+		try{
+		return tablero[x,y].vegetal != null;
+		}
+		catch(System.Exception)
+		{
+			Debug.Log("x: "+x+"  y: "+y);			
+		}
+		return true;		
 	}
 	
 	//Devuelve true si hay un animal en la casilla [x,y] y false si no lo hay
 	public bool tieneAnimal(int x,int y)
 	{
-		return tablero[x,y].animal != null;		
+		try{
+		return tablero[x,y].animal != null;
+		}
+		catch(System.Exception)
+		{
+			Debug.Log("x: "+x+"  y: "+y);			
+		}
+		return true;
 	}
 	
 	//Devuelve false si la especie ya existe (no se añade) y true si se añade correctamente
@@ -90,6 +102,7 @@ public class Vida
 	{		
 		if(especies.ContainsKey(especie.nombre))
 			return false;
+		especie.idEspecie = numEspeciesVegetales;
 		especies.Add(especie.nombre,especie);
 		numEspecies++;
 		especiesVegetales.Add(especie.nombre,especie);
@@ -102,6 +115,7 @@ public class Vida
 	{		
 		if(especies.ContainsKey((string)especie.nombre))
 			return false;
+		especie.idEspecie = numEspeciesAnimales;
 		especies.Add((string)especie.nombre,especie);
 		numEspecies++;
 		especiesAnimales.Add(especie.nombre,especie);
@@ -139,12 +153,12 @@ public class Vida
 		Especie especie;
 		especies.TryGetValue(nombre,out especie);
 		return especie;			
-	}	
-	
+	}
+			
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeVegetal(EspecieVegetal especie,int posX,int posY)
 	{
-		if(tieneVegetal(posX,posY))
+		if(tieneVegetal(posX,posY) || especie.habitat != tablero[posX,posY].habitat)
 			return false;
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY);
 		idActualVegetal++;
@@ -157,7 +171,7 @@ public class Vida
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeAnimal(EspecieAnimal especie,int posX,int posY)
 	{
-		if(tieneAnimal(posX,posY))
+		if(tieneAnimal(posX,posY) || especie.habitat != tablero[posX,posY].habitat)
 			return false;
 		Animal animal = new Animal(idActualAnimal,especie,posX,posY);
 		idActualAnimal++;
@@ -190,7 +204,8 @@ public class Vida
 	{
 		Random.seed = System.DateTime.Now.Millisecond;
 		int nposX = posX + Random.Range(-especie.radioMigracion,especie.radioMigracion);
-		int nposY = posY + Random.Range(-especie.radioMigracion,especie.radioMigracion);		
+		int nposY = posY + Random.Range(-especie.radioMigracion,especie.radioMigracion);				
+		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);		
 		if(anadeVegetal(especie,nposX,nposY))
 			return true;
 		return false;
@@ -200,8 +215,9 @@ public class Vida
 	public bool desplazaAnimal(Animal animal,int nposX,int nposY)
 	{		
 		Random.seed = System.DateTime.Now.Millisecond;
-		while(animal.posX != nposX || animal.posY != nposY)
-		{
+		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
+		while(animal.posX != nposX || animal.posY != nposY)		
+		{			
 			if(!tieneAnimal(nposX,nposY) && animal.especie.habitat == tablero[nposX,nposY].habitat)
 			{
 				animal.desplazarse(nposX,nposY);
@@ -212,7 +228,8 @@ public class Vida
 			if(nposX > animal.posX) nposX--;
 			else if(nposX < animal.posX) nposX++;
 			if(nposY > animal.posY) nposY--;
-			else if(nposY < animal.posY) nposY++;			
+			else if(nposY < animal.posY) nposY++;
+			FuncTablero.convierteCoordenadas(ref nposX,ref nposY);				
 		}
 		return false;
 	}
@@ -256,10 +273,13 @@ public class Vida
 				case 6: x = -1;y = 0;break;		//izquierda
 				case 7: x = -1;y = -1;break;	//arriba izquierda
 			default: x = 0; y = 0; break;
-			}			
-			if(!tieneAnimal(posX + x,posY + y) && especie.habitat == tablero[posX + x,posY + y].habitat)
-			{
-				anadeAnimal(especie,posX + x,posY + y);
+			}
+			x += posX;
+			y += posY;
+			FuncTablero.convierteCoordenadas(ref x,ref y);
+			if(!tieneAnimal(x,y) && especie.habitat == tablero[x,y].habitat)
+			{				
+				anadeAnimal(especie,x,y);
 				return true;
 			}			
 		}
@@ -271,7 +291,7 @@ public class Vida
 	{
 		int vision = animal.especie.vision;
 		int velocidad = animal.especie.velocidad;
-		if(animal.especie.tipo == EspecieAnimal.tipoAnimal.carnivoro)
+		if(animal.especie.tipo == tipoAnimal.carnivoro)
 		{
 			for(int i = 0; i < animales.Count; i++)
 			{
@@ -321,7 +341,7 @@ public class Vida
 				}
 			}			
 		}
-		else if(animal.especie.tipo == EspecieAnimal.tipoAnimal.herbivoro)
+		else if(animal.especie.tipo == tipoAnimal.herbivoro)
 		{
 			for(int i = 0; i < vegetales.Count; i++)
 			{				
@@ -366,6 +386,7 @@ public class Vida
 	     */
 	    int nposX = animal.posX + animal.especie.velocidad * x;
 	    int nposY = animal.posY + animal.especie.velocidad * y;       
+		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
 		desplazaAnimal(animal,nposX,nposY);		
 		return true;
 	}
@@ -417,6 +438,86 @@ public class Vida
 			seres[pos] = ser;
 		}		
 	}
+	
+	public bool buscaPosicionVaciaVegetal(T_habitats habitat,ref int x,ref int y)
+	{
+		System.Random random = new System.Random();
+		int pos;
+		int aux;
+		List<int> listaX = new List<int>();
+		for(int i = 0; i < FuncTablero.altoTableroUtil; i++)
+			listaX.Add(i);
+		for(int i = FuncTablero.altoTableroUtil; i > 1; i--)
+		{
+			pos = random.Next(i);
+			aux = listaX[i-1];
+			listaX[i-1] = listaX[pos];
+			listaX[pos] = aux;
+		}
+		
+		List<int> listaY = new List<int>();
+		for(int i = 0; i < FuncTablero.anchoTablero; i++)
+			listaY.Add(i);
+		for(int i = FuncTablero.anchoTablero; i > 1; i--)
+		{
+			pos = random.Next(i);
+			aux = listaY[i-1];
+			listaY[i-1] = listaY[pos];
+			listaY[pos] = aux;
+		}
+		
+		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
+			for(int j = 0; j < FuncTablero.anchoTablero; j++)
+			{
+				if(!tieneVegetal(listaX[i],listaY[j]))
+			   	{
+					x = listaX[i];
+					y = listaY[j];
+					return true;
+				}
+			}
+		return false;
+	}
+			
+	public bool buscaPosicionVaciaAnimal(T_habitats habitat,ref int x,ref int y)
+	{
+		System.Random random = new System.Random();
+		int pos;
+		int aux;
+		List<int> listaX = new List<int>();
+		for(int i = 0; i < FuncTablero.altoTableroUtil; i++)
+			listaX.Add(i);
+		for(int i = FuncTablero.altoTableroUtil; i > 1; i--)
+		{
+			pos = random.Next(i);
+			aux = listaX[i-1];
+			listaX[i-1] = listaX[pos];
+			listaX[pos] = aux;
+		}
+		
+		List<int> listaY = new List<int>();
+		for(int i = 0; i < FuncTablero.anchoTablero; i++)
+			listaY.Add(i);
+		for(int i = FuncTablero.anchoTablero; i > 1; i--)
+		{
+			pos = random.Next(i);
+			aux = listaY[i-1];
+			listaY[i-1] = listaY[pos];
+			listaY[pos] = aux;
+		}
+		
+		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
+			for(int j = 0; j < FuncTablero.anchoTablero; j++)
+			{
+				if(!tieneAnimal(listaX[i],listaY[j]))
+			   	{
+					x = listaX[i];
+					y = listaY[j];
+					return true;
+				}
+			}
+		return false;
+	}
 }
 
 public class Especie
@@ -436,9 +537,8 @@ public class EspecieVegetal : Especie
 	//public int capacidadEvolucion;					//Probabilidad de que la especie evolucione dentro de la casilla
 	//public int capacidadEvolucionMigracion;			//Probabilidad de que la especie evolucione al migrar (teoricamente mucho más alto que la normal)
 	
-	public EspecieVegetal(int idEspecie, string nombre, int numMaxVegetales, int numIniVegetales, int capacidadReproductiva, int capacidadMigracion, int radioMigracion, T_habitats habitat)
+	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales, int capacidadReproductiva, int capacidadMigracion, int radioMigracion, T_habitats habitat)
 	{
-		this.idEspecie = idEspecie;
 		this.nombre = nombre;
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
@@ -449,6 +549,7 @@ public class EspecieVegetal : Especie
 	}	
 }
 
+public enum tipoAnimal {herbivoro,carnivoro};	
 public class EspecieAnimal : Especie
 {
 	public int consumo;									//Alimento que consume por turno
@@ -457,12 +558,10 @@ public class EspecieAnimal : Especie
 	public int vision;								//Rango de visión del animal para controlar su IA
 	public int velocidad;								//Número de casillas que puede desplazarse por turno
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
-	public enum tipoAnimal {herbivoro,carnivoro};
 	public tipoAnimal tipo;								//herbivoro o carnivoro 
 		
-	public EspecieAnimal(int idEspecie, string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo)//, T_habitats habitat)
+	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo, T_habitats habitat)
 	{
-		this.idEspecie = idEspecie;
 		this.nombre = nombre;
 		this.consumo = consumo;
 		this.reservaMaxima = reservaMaxima;
@@ -493,8 +592,9 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	{
 		this.idSer = idSer;
 		this.especie = especie;
-		this.posX = posX;
-		this.posY = posY;
+		this.posX = posX % FuncTablero.altoTableroUtil;
+		this.posY = posY % FuncTablero.anchoTablero;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);
 		this.numVegetales = especie.numIniVegetales;
 	}	
 	
@@ -502,8 +602,9 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	{
 		this.idSer = idSer;
 		this.especie = especie;
-		this.posX = posX;
-		this.posY = posY;
+		this.posX = posX % FuncTablero.altoTableroUtil;
+		this.posY = posY % FuncTablero.anchoTablero;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);
 		this.numVegetales = numVegetales;
 	}	
 	
@@ -525,7 +626,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	
 	public void reproduccion()
 	{
-		numVegetales *= (int)especie.capacidadReproductiva;			
+		numVegetales = (int)(numVegetales * (1 + especie.capacidadReproductiva/100.0f));
 	}
 	
 	//Devuelve true si se produce una migración y false si no
@@ -533,7 +634,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	{
 		Random.seed = System.DateTime.Now.Millisecond;
 		int r = Random.Range(0, numVegetales);
-		return (r < especie.capacidadMigracion * numVegetales);
+		return (r < (especie.capacidadMigracion/100.0f) * numVegetales);
 	}	
 }
 
@@ -551,8 +652,7 @@ public class Animal : Ser
 		this.especie = especie;
 		this.reserva = especie.reservaMaxima/2;
 		this.turnosParaReproduccion = especie.reproductibilidad;
-		this.posX = posX;
-		this.posY = posY;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
 	}
 	
 	//Devuelve true si el animal sobrevive y false si muere
@@ -582,7 +682,6 @@ public class Animal : Ser
 	
 	public void desplazarse(int posX,int posY)
 	{
-		this.posX = posX;
-		this.posY = posY;		
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
 	}		
 }

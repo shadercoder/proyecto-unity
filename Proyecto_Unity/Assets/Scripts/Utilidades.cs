@@ -173,11 +173,10 @@ public class FuncTablero {
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
 	public static int altoTablero = 128;			//El alto del tablero lógico (debe ser potencia de 2 tambien)
 	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
-	public static int numMaxEspeciesCasilla	= 5;	//Numero maximo de especies que puede haber por casilla a la vez
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 	public static int margen = 50;					//El numero de pixeles que habrá en los polos intransitables
 
-	private static int altoTableroUtil;				//El alto del tablero una vez eliminadas las casillas de los polos
+	public static int altoTableroUtil;				//El alto del tablero una vez eliminadas las casillas de los polos
 	
 	
 	//Funciones --------------------------------------------------------------------------------------------------------------------
@@ -406,13 +405,26 @@ public class FuncTablero {
 					habitat = T_habitats.mountain;
 				}
 				
-				//TODO Se coge una o varias especies aleatorias de las iniciales
+				//TODO Se coge una o varias especies aleatorias de las iniciales	
 				//TODO Calculos para ver la especie/s a meter
 				
+				//////
+				habitat = T_habitats.plain;
+				////
 				tablero[i,j] = new Casilla(media, habitat, elems, cord);
 			}
 		}
 		return tablero;
+	}
+	
+	public static void convierteCoordenadas(ref int x,ref int y)
+	{
+		x %= altoTableroUtil;
+		while(x < 0)
+			x += altoTableroUtil;
+		y %= anchoTablero;
+		while(y < 0)
+			y += anchoTablero;		
 	}
 	
 	public static void alteraPixel(Texture2D tex, int w, int h, float valor){

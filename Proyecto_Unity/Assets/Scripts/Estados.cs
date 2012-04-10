@@ -38,6 +38,8 @@ public class Estados : MonoBehaviour {
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
 	public float tiempoPincel					= 0.25f;				//Incremento de tiempo para aplicar el pincel
+	private int numPasos						= 0;
+	private bool algoritmoActivado				= false;
 	
 	//Opciones
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
@@ -114,13 +116,13 @@ public class Estados : MonoBehaviour {
 	
 	//Update y transiciones de estados -------------------------------------------------------------------------------------------------------
 	
-	void Awake() {
+	void Awake() {		
 		contenedorTexturas = GameObject.FindGameObjectWithTag("Carga");
 		if (contenedorTexturas == null) {
 			creacionInicial();
 		}
 		else {
-			//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
+			//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez			
 			GameObject planeta = GameObject.FindWithTag("Planeta");
 			MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
 			Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
@@ -143,6 +145,30 @@ public class Estados : MonoBehaviour {
 		else
 			efectos.activado = false;
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
+		
+		Texture2D tex = GameObject.FindGameObjectWithTag("Planeta").renderer.sharedMaterial.mainTexture as Texture2D;
+		Casilla[,] tablero = FuncTablero.iniciaTablero(tex);
+		vida = new Vida(tablero);				
+		
+		int x = 0;
+		int y = 0;
+		vida.anadeEspecieVegetal(new EspecieVegetal("musgo",1000,5,100,5,3,T_habitats.plain));
+		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
+		vida.anadeVegetal((EspecieVegetal)vida.dameEspecie("musgo"),x,y);	
+		
+		vida.anadeEspecieAnimal(new EspecieAnimal("comemusgo",10,1000,0,5,5,5,tipoAnimal.herbivoro,T_habitats.plain));
+		vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
+		vida.anadeAnimal((EspecieAnimal)vida.dameEspecie("comemusgo"),x-50,y+5);
+		
+		/*
+		bool lalala = false;		
+		while(lalala == false)
+		{
+			int x = Random.Range(0,122);
+			int y = Random.Range(0,122);			
+			lalala = vida.anadeVegetal((EspecieVegetal)vida.dameEspecie("musgo"),x,y);	
+		}*/		
+		
 //		sonido = sonidoAmbiente.GetComponent<AudioSource>();
 //		sonido.mute = !musicaOn;
 //		sonido.volume = musicaVol;
@@ -159,11 +185,20 @@ public class Estados : MonoBehaviour {
 		nombresSaves = SaveLoad.getFileNames();
 		numSavesExtra = numSaves - 3;
 		if (numSavesExtra < 0)
-			numSavesExtra = 0;
+			numSavesExtra = 0;		
+	}
+	
+	void FixedUpdate() {
+		//Algoritmo de vida
+		
+		numPasos++;		
+		if(algoritmoActivado && numPasos%5 == 0) {
+			vida.algoritmoVida();			
+		}
 	}
 	
 	void Update () {
-	
+		
 		switch (estado) {
 			case T_estados.inicial:
 				creacionInicial();
@@ -218,8 +253,7 @@ public class Estados : MonoBehaviour {
 		if (botonPequeSubir || botonPequeBajar || botonPequeAllanar) 
 			activarPinceles = true;
 		else
-			activarPinceles = false;
-		
+			activarPinceles = false;						
 	}
 	
 	//Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
@@ -256,6 +290,18 @@ public class Estados : MonoBehaviour {
 		if (activarPinceles && Input.GetMouseButtonDown(0) && Event.current.type == EventType.MouseDown) {
 			StartCoroutine(corutinaPincel());
 		}
+		
+		//Debug del algoritmo
+		if(GUI.Button(new Rect(cuantoW * 40, cuantoH * 24,cuantoW * 8,cuantoH * 1), "Activar/Desactivar")) 
+			if(algoritmoActivado)
+				algoritmoActivado = false;
+			else
+				algoritmoActivado = true;
+		
+		GUI.Box(new Rect(cuantoW * 40, cuantoH * 25,cuantoW * 8,cuantoH * 4),new GUIContent("Algoritmo Especies","debug"));
+		GUI.Label(new Rect(cuantoW * 41, cuantoH * 26,cuantoW * 7,cuantoH * 2),"Num vegetales: "+vida.vegetales.Count);
+		GUI.Label(new Rect(cuantoW * 41, cuantoH * 27,cuantoW * 7,cuantoH * 2),"Num animales: "+vida.animales.Count);
+		GUI.Label(new Rect(cuantoW * 41, cuantoH * 28,cuantoW * 7,cuantoH * 2),"Num pasos: "+numPasos);
 		
 		//Tooltip
 		if (activarTooltip) {
