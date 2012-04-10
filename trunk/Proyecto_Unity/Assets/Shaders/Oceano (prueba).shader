@@ -1,12 +1,15 @@
-Shader "RimLighting"
+Shader "Planet/Oceano"
 {
 	Properties 
 	{
-_DiffuseColor("_DiffuseColor", Color) = (0.1259746,0.4516517,0.6492537,1)
-_RimColor("_RimColor", Color) = (0,0.5384617,1,1)
-_RimPower("_RimPower", Float) = 3
-_Glossiness("_Glossiness", Range(0.1,1) ) = 1
-_SpecularColor("_SpecularColor", Color) = (0,0.58042,1,1)
+_Color("_Color", Color) = (0,0.2161048,0.3059701,1)
+_RefStrGloss("_RefStrGloss", 2D) = "gray" {}
+_Normals("_Normals", 2D) = "bump" {}
+_ReflectionCubemap("_ReflectionCubemap", Cube) = "black" {}
+_ReflectionColor("_ReflectionColor", Color) = (0.5970149,0.5970149,0.5970149,1)
+_SpecularColor("_SpecularColor", Color) = (1,0.8071182,0.5074627,1)
+_Shininess("_Shininess", Range(0.1,4) ) = 1.814286
+_SeaSpd("_SeaSpd", Float) = 0.9
 
 	}
 	
@@ -14,9 +17,9 @@ _SpecularColor("_SpecularColor", Color) = (0,0.58042,1,1)
 	{
 		Tags
 		{
-"Queue"="Geometry"
+"Queue"="Transparent"
 "IgnoreProjector"="False"
-"RenderType"="Opaque"
+"RenderType"="Transparent"
 
 		}
 
@@ -25,20 +28,24 @@ Cull Back
 ZWrite On
 ZTest LEqual
 ColorMask RGBA
+Blend SrcColor DstAlpha
 Fog{
 }
 
 
 		CGPROGRAM
 #pragma surface surf BlinnPhongEditor  vertex:vert
-#pragma target 2.0
+#pragma target 3.0
 
 
-float4 _DiffuseColor;
-float4 _RimColor;
-float _RimPower;
-float _Glossiness;
+float4 _Color;
+sampler2D _RefStrGloss;
+sampler2D _Normals;
+samplerCUBE _ReflectionCubemap;
+float4 _ReflectionColor;
 float4 _SpecularColor;
+float _Shininess;
+float _SeaSpd;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -78,7 +85,9 @@ return c;
 			}
 			
 			struct Input {
-				float3 viewDir;
+				float2 uv_Normals;
+float3 simpleWorldRefl;
+float2 uv_RefStrGloss;
 
 			};
 
@@ -88,6 +97,7 @@ float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 
+o.simpleWorldRefl = -reflect( normalize(WorldSpaceViewDir(v.vertex)), normalize(mul((float3x3)_Object2World, SCALED_NORMAL)));
 
 			}
 			
@@ -101,18 +111,22 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Fresnel0_1_NoInput = float4(0,0,1,1);
-float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
-float4 Pow0=pow(Fresnel0,_RimPower.xxxx);
-float4 Multiply0=_RimColor * Pow0;
-float4 Master0_1_NoInput = float4(0,0,1,1);
+float4 Multiply2=_SeaSpd.xxxx * _Time;
+float4 UV_Pan0=float4((IN.uv_Normals.xyxy).x + Multiply2.x,(IN.uv_Normals.xyxy).y + Multiply2.x,(IN.uv_Normals.xyxy).z,(IN.uv_Normals.xyxy).w);
+float4 Tex2D0=tex2D(_Normals,UV_Pan0.xy);
+float4 UnpackNormal0=float4(UnpackNormal(Tex2D0).xyz, 1.0);
+float4 TexCUBE0=texCUBE(_ReflectionCubemap,float4( IN.simpleWorldRefl.x, IN.simpleWorldRefl.y,IN.simpleWorldRefl.z,1.0 ));
+float4 Multiply0=_ReflectionColor * TexCUBE0;
+float4 Tex2D1=tex2D(_RefStrGloss,(IN.uv_RefStrGloss.xyxy).xy);
+float4 Multiply1=_Shininess.xxxx * _SpecularColor;
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = _DiffuseColor;
+o.Albedo = _Color;
+o.Normal = UnpackNormal0;
 o.Emission = Multiply0;
-o.Specular = _Glossiness.xxxx;
-o.Gloss = _SpecularColor;
+o.Specular = Tex2D1.aaaa;
+o.Gloss = Multiply1;
 
 				o.Normal = normalize(o.Normal);
 			}
