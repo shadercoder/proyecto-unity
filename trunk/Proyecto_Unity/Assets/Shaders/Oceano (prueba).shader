@@ -2,11 +2,13 @@ Shader "Planet/Oceano"
 {
 	Properties 
 	{
-_Color("_Color", Color) = (0,0.2161048,0.3059701,1)
+_ColorNear("_ColorNear", Color) = (0,0.8741257,1,1)
+_ColorFar("_ColorFar", Color) = (0,0.1811397,0.2910448,1)
+_densidadAgua("_densidadAgua", Range(0,0.05) ) = 0.0002645503
 _RefStrGloss("_RefStrGloss", 2D) = "gray" {}
 _Normals("_Normals", 2D) = "bump" {}
 _ReflectionCubemap("_ReflectionCubemap", Cube) = "black" {}
-_ReflectionColor("_ReflectionColor", Color) = (0.5970149,0.5970149,0.5970149,1)
+_ReflectionColor("_ReflectionColor", Color) = (0,0.6223779,1,1)
 _SpecularColor("_SpecularColor", Color) = (1,0.8071182,0.5074627,1)
 _Shininess("_Shininess", Range(0.1,4) ) = 1.814286
 _SeaSpd("_SeaSpd", Float) = 0.9
@@ -38,7 +40,9 @@ Fog{
 #pragma target 3.0
 
 
-float4 _Color;
+float4 _ColorNear;
+float4 _ColorFar;
+float _densidadAgua;
 sampler2D _RefStrGloss;
 sampler2D _Normals;
 samplerCUBE _ReflectionCubemap;
@@ -85,7 +89,8 @@ return c;
 			}
 			
 			struct Input {
-				float2 uv_Normals;
+				float3 viewDir;
+float2 uv_Normals;
 float3 simpleWorldRefl;
 float2 uv_RefStrGloss;
 
@@ -111,6 +116,10 @@ o.simpleWorldRefl = -reflect( normalize(WorldSpaceViewDir(v.vertex)), normalize(
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
+float4 Fresnel0_1_NoInput = float4(0,0,1,1);
+float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
+float4 Pow0=pow(_densidadAgua.xxxx,Fresnel0);
+float4 Lerp0=lerp(_ColorFar,_ColorNear,Pow0);
 float4 Multiply2=_SeaSpd.xxxx * _Time;
 float4 UV_Pan0=float4((IN.uv_Normals.xyxy).x + Multiply2.x,(IN.uv_Normals.xyxy).y + Multiply2.x,(IN.uv_Normals.xyxy).z,(IN.uv_Normals.xyxy).w);
 float4 Tex2D0=tex2D(_Normals,UV_Pan0.xy);
@@ -119,14 +128,15 @@ float4 TexCUBE0=texCUBE(_ReflectionCubemap,float4( IN.simpleWorldRefl.x, IN.simp
 float4 Multiply0=_ReflectionColor * TexCUBE0;
 float4 Tex2D1=tex2D(_RefStrGloss,(IN.uv_RefStrGloss.xyxy).xy);
 float4 Multiply1=_Shininess.xxxx * _SpecularColor;
-float4 Master0_5_NoInput = float4(1,1,1,1);
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Lerp0;
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = _Color;
+o.Albedo = Lerp0;
 o.Normal = UnpackNormal0;
 o.Emission = Multiply0;
 o.Specular = Tex2D1.aaaa;
 o.Gloss = Multiply1;
+o.Alpha = Invert0;
 
 				o.Normal = normalize(o.Normal);
 			}
