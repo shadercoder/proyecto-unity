@@ -485,9 +485,10 @@ public class FuncTablero {
 		int multi = -1;
 		if (subir)
 			multi = 1;
+		float atenuacion = 0.1f;
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
-				alteraPixel(objetivo,(int)pos.x + i,(int)pos.y + j, multi * (pincelTex.GetPixel(i,j).r));
+				alteraPixel(objetivo,(int)pos.x + i,(int)pos.y + j, multi * ((pincelTex.GetPixel(i,j).r) * atenuacion));
 			}
 		}
 	}
