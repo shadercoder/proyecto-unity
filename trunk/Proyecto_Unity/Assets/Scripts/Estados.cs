@@ -36,7 +36,7 @@ public class Estados : MonoBehaviour {
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
-	public float tiempoPincel					= 0.05f;				//Incremento de tiempo para aplicar el pincel
+	public float tiempoPincel					= 0.03f;				//Incremento de tiempo para aplicar el pincel
 	private int numPasos						= 0;
 	private bool algoritmoActivado				= false;
 	
@@ -329,12 +329,12 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private void menuIzquierdaHex() {
-		barraInformacion(new Rect(cuantoW,cuantoH,cuantoW * 12, cuantoH * 5));
-		escalaTiempo = sliderTiempoCompuesto(new Rect(cuantoW,cuantoH * 6, cuantoW * 12, cuantoH * 5), escalaTiempo);
-		botonHexCompuestoAltera(new Rect(cuantoW, cuantoH * 11, cuantoW * 12, cuantoH * 5));
-		botonHexCompuestoCamara(new Rect(cuantoW, cuantoH * 16, cuantoW * 12, cuantoH * 5));
-		botonHexCompuestoOpciones(new Rect(cuantoW, cuantoH * 21, cuantoW * 12, cuantoH * 5));
-		GUI.Box(new Rect(cuantoW, cuantoH * 26, cuantoW * 12, cuantoH * 5), "", "BarraAbajo");
+		barraInformacion(new Rect(cuantoW,cuantoH,cuantoW * 8, cuantoH * 3));
+		escalaTiempo = sliderTiempoCompuesto(new Rect(cuantoW,cuantoH * 4, cuantoW * 8, cuantoH * 3), escalaTiempo);
+		botonHexCompuestoAltera(new Rect(cuantoW, cuantoH * 7, cuantoW * 8, cuantoH * 3));
+		botonHexCompuestoCamara(new Rect(cuantoW, cuantoH * 10, cuantoW * 8, cuantoH * 3));
+		botonHexCompuestoOpciones(new Rect(cuantoW, cuantoH * 13, cuantoW * 8, cuantoH * 3));
+		GUI.Box(new Rect(cuantoW, cuantoH * 16, cuantoW * 8, cuantoH * 3), "", "BarraAbajo");
 	}
 	
 	/*	
@@ -482,32 +482,32 @@ public class Estados : MonoBehaviour {
 	
 	private void botonHexCompuestoAltera(Rect pos) {
 		
-		GUI.Box(new Rect(pos.x,pos.y,pos.width - cuantoW * 3.9f, pos.height), new GUIContent("", "Opciones para alterar el planeta"), "BarraHexGran");
+		GUI.Box(new Rect(pos.x,pos.y,pos.width - (pos.width * 3.9f / 12.0f), pos.height), new GUIContent("", "Opciones para alterar el planeta"), "BarraHexGran");
 		if (menuAltera)
-			GUI.Box(new Rect(pos.x + cuantoW * 7.0f,pos.y + cuantoH * 0.75f,pos.width - cuantoW * 8.1f, pos.height), new GUIContent("", "Opciones (P) para alterar el planeta"), "BarraHexPeq");
-		if (GUI.Button(new Rect(pos.x + cuantoW * 3.5f, pos.y + cuantoH * 0.6f, pos.width - cuantoW * 8.3f, pos.height - cuantoH * 0.9f),"", "BotonGrandeAlterar")) {
+			GUI.Box(new Rect(pos.x + (pos.width * 7.0f / 12.0f),pos.y + (pos.height * 0.75f / 5.0f),pos.width - (pos.width * 8.1f / 12.0f), pos.height), new GUIContent("", "Opciones (P) para alterar el planeta"), "BarraHexPeq");
+		if (GUI.Button(new Rect(pos.x + (pos.width * 3.5f / 12.0f), pos.y + (pos.height * 0.6f / 5.0f), pos.width - (pos.width * 8.3f / 12.0f), pos.height - (pos.height * 0.9f / 5.0f)),"", "BotonGrandeAlterar")) {
 			menuAltera = true;
 			menuCamara = false;
 			menuOpcion = false;
 		}
 		if (menuAltera) {
-			botonPequeSubir = GUI.Toggle(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 0.95f, cuantoW * 1.4f, cuantoH * 1.7f), botonPequeSubir, new GUIContent("", "Eleva el terreno pulsado"), "BotonPequeSubir");
+			botonPequeSubir = GUI.Toggle(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 0.95f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), botonPequeSubir, new GUIContent("", "Eleva el terreno pulsado"), "BotonPequeSubir");
 			if (GUI.changed && botonPequeSubir) {
 				botonPequeBajar = false;
 				botonPequeAllanar = false;
 			}
-			botonPequeBajar = GUI.Toggle(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 1.85f, cuantoW * 1.4f, cuantoH * 1.7f), botonPequeBajar, new GUIContent("", "Hunde el terreno pulsado"), "BotonPequeBajar");
+			botonPequeBajar = GUI.Toggle(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 1.85f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), botonPequeBajar, new GUIContent("", "Hunde el terreno pulsado"), "BotonPequeBajar");
 			if (GUI.changed && botonPequeBajar) {
 				botonPequeSubir = false;
 				botonPequeAllanar = false;
 			}
-			botonPequeAllanar = GUI.Toggle(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 2.75f, cuantoW * 1.4f, cuantoH * 1.7f), botonPequeAllanar, new GUIContent("", "Allana el terreno pulsado"), "BotonPequeAllanar");
+			botonPequeAllanar = GUI.Toggle(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 2.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), botonPequeAllanar, new GUIContent("", "Allana el terreno pulsado"), "BotonPequeAllanar");
 			if (GUI.changed && botonPequeAllanar) {
 				botonPequeSubir = false;
 				botonPequeBajar = false;
 				Debug.Log("Pulsado boton allanar. Sin funcionalidad aun.");
 			}
-			if (GUI.Button(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 3.75f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("", "Selecciona el pincel para el terreno"), "BotonPequePinceles")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 3.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("", "Selecciona el pincel para el terreno"), "BotonPequePinceles")) {
 				botonPequePincel = true;
 			}
 			if (botonPequePincel) {
@@ -523,10 +523,10 @@ public class Estados : MonoBehaviour {
 	
 	private void botonHexCompuestoCamara(Rect pos) {
 		Control_Raton script;
-		GUI.Box(new Rect(pos.x,pos.y,pos.width - cuantoW * 3.9f, pos.height), new GUIContent("", "Opciones para cambiar la camara"), "BarraHexGran");
+		GUI.Box(new Rect(pos.x,pos.y,pos.width - (pos.width * 3.9f / 12.0f), pos.height), new GUIContent("", "Opciones para cambiar la camara"), "BarraHexGran");
 		if (menuCamara)
-			GUI.Box(new Rect(pos.x + cuantoW * 7.0f,pos.y + cuantoH * 0.75f,pos.width - cuantoW * 8.1f, pos.height), new GUIContent("", "Opciones (P) para cambiar la camara"), "BarraHexPeq");
-		if (GUI.Button(new Rect(pos.x + cuantoW * 3.5f, pos.y + cuantoH * 0.6f, pos.width - cuantoW * 8.3f, pos.height - cuantoH * 0.9f), "", "BotonGrandeCamara")) {
+			GUI.Box(new Rect(pos.x + (pos.width * 7.0f / 12.0f),pos.y + (pos.height * 0.75f / 5.0f),pos.width - (pos.width * 8.1f / 12.0f), pos.height), new GUIContent("", "Opciones (P) para cambiar la camara"), "BarraHexPeq");
+		if (GUI.Button(new Rect(pos.x + (pos.width * 3.5f / 12.0f), pos.y + (pos.height * 0.6f / 5.0f), pos.width - (pos.width * 8.3f / 12.0f), pos.height - (pos.height * 0.9f / 5.0f)), "", "BotonGrandeCamara")) {
 			menuAltera = false;
 			menuCamara = true;
 			menuOpcion = false;
@@ -535,20 +535,20 @@ public class Estados : MonoBehaviour {
 			botonPequeAllanar = false;
 		}
 		if (menuCamara) {
-			if (GUI.Button(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 0.95f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("", "Vista del planeta"), "BotonPequePlaneta")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 0.95f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("", "Vista del planeta"), "BotonPequePlaneta")) {
 				Debug.Log("Pulsado peque camara 1-4");
 			}
-			if (GUI.Button(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 1.85f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("", "Vista de la nave"), "BotonPequeNave")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 1.85f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("", "Vista de la nave"), "BotonPequeNave")) {
 				camaraPrincipal.GetComponent<Camera>().enabled = false;
 				camaraReparaciones.GetComponent<Camera>().enabled = true;
 				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(false);
 				estado = T_estados.reparaciones;
 			}
-			if (GUI.Button(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 2.75f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("", "Vista de las especies"), "BotonPequeEspecies")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 2.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("", "Vista de las especies"), "BotonPequeEspecies")) {
 				Debug.Log("Pulsado peque camara 3-4");
 			}
-			if (GUI.Button(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 3.75f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("", "Vista de los elementos"), "BotonPequeCristales")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 3.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("", "Vista de los elementos"), "BotonPequeCristales")) {
 				Debug.Log("Pulsado peque camara 4-4");
 			}
 		}
@@ -556,10 +556,10 @@ public class Estados : MonoBehaviour {
 	
 	private void botonHexCompuestoOpciones(Rect pos) {
 		Control_Raton script;
-		GUI.Box(new Rect(pos.x,pos.y,pos.width - cuantoW * 3.9f, pos.height), new GUIContent("", "Opciones generales"), "BarraHexGran");
+		GUI.Box(new Rect(pos.x,pos.y,pos.width - (pos.width * 3.9f / 12.0f), pos.height), new GUIContent("", "Opciones generales"), "BarraHexGran");
 		if (menuOpcion)
-			GUI.Box(new Rect(pos.x + cuantoW * 7.0f,pos.y + cuantoH * 0.75f,pos.width - cuantoW * 8.1f, pos.height), new GUIContent("", "Opciones (P) generales"), "BarraHexPeq");
-		if (GUI.Button(new Rect(pos.x + cuantoW * 3.5f, pos.y + cuantoH * 0.6f, pos.width - cuantoW * 8.3f, pos.height - cuantoH * 0.9f), "Opciones", "BotonGrandeOpciones")) {
+			GUI.Box(new Rect(pos.x + (pos.width * 7.0f / 12.0f),pos.y + (pos.height * 0.75f / 5.0f),pos.width - (pos.width * 8.1f / 12.0f), pos.height), new GUIContent("", "Opciones (P) generales"), "BarraHexPeq");
+		if (GUI.Button(new Rect(pos.x + (pos.width * 3.5f / 12.0f), pos.y + (pos.height * 0.6f / 5.0f), pos.width - (pos.width * 8.3f / 12.0f), pos.height - (pos.height * 0.9f / 5.0f)), "Opciones", "BotonGrandeOpciones")) {
 			menuAltera = false;
 			menuCamara = false;
 			menuOpcion = true;
@@ -571,22 +571,22 @@ public class Estados : MonoBehaviour {
 //			estado = T_estados.opciones;
 		}
 		if (menuOpcion) {
-			if (GUI.Button(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 0.95f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("Peq1", "Opciones (P)(B) generales"), "BotonVacio")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 0.95f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("Peq1", "Opciones (P)(B) generales"), "BotonVacio")) {
 				Debug.Log("Pulsado peque opciones 1-4");
 			}
-			if (GUI.Button(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 1.85f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("Guardar", "Guardar la partida actual"), "BotonVacio")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 1.85f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("Guardar", "Guardar la partida actual"), "BotonVacio")) {
 				Time.timeScale = 1.0f;
 				nombresSaves = SaveLoad.getFileNames();
 				estado = T_estados.guardar;
 			}
-			if (GUI.Button(new Rect(pos.x + cuantoW * 7.7f, pos.y + cuantoH * 2.75f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("Volver", "Volver al juego con normalidad."), "BotonVacio")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 2.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("Volver", "Volver al juego con normalidad."), "BotonVacio")) {
 //				Time.timeScale = 1.0f;
 //				script = transform.parent.GetComponent<Control_Raton>();
 //				script.setInteraccion(true);
 //				estado = T_estados.principal;
 				Debug.Log("Pulsado peque opciones 3-4");
 			}
-			if (GUI.Button(new Rect(pos.x + cuantoW * 9.1f, pos.y + cuantoH * 3.75f, cuantoW * 1.4f, cuantoH * 1.7f), new GUIContent("Salir", "Salir al menu del juego."), "BotonVacio")) {
+			if (GUI.Button(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 3.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("Salir", "Salir al menu del juego."), "BotonVacio")) {
 				Time.timeScale = 1.0f;
 				script = transform.parent.GetComponent<Control_Raton>();
 				script.setInteraccion(true);
@@ -598,15 +598,15 @@ public class Estados : MonoBehaviour {
 	private float sliderTiempoCompuesto(Rect pos, float valor) {
 		float valorOut;
 		GUI.Box(pos, new GUIContent("", "En que tiempo nos encontramos"), "BarraSlider");
-		valorOut = GUI.HorizontalSlider(new Rect(pos.x + cuantoW * 3.3f, pos.y + cuantoH * 1.7f, pos.width - cuantoW * 4.3f, pos.height - cuantoH * 2), valor, 0.2f, 99.9f);
-		GUI.Label(new Rect(pos.x + cuantoW * 4.3f, pos.y + cuantoH * 2.9f, pos.width - cuantoW * 4.3f, pos.height - cuantoH * 2), "Escala temporal: " + Time.timeScale.ToString("0#.0"));
+		valorOut = GUI.HorizontalSlider(new Rect(pos.x + (pos.width * 3.3f / 12.0f), pos.y + (pos.height * 1.7f / 5.0f), pos.width - (pos.width * 4.3f / 12.0f), pos.height - (pos.height * 2.0f / 5.0f)), valor, 0.2f, 99.9f);
+		GUI.Label(new Rect(pos.x + (pos.width * 4.3f / 12.0f), pos.y + (pos.height * 2.9f / 5.0f), pos.width - (pos.width * 4.3f / 12.0f), pos.height - (pos.height * 2.0f / 5.0f)), "Escala temporal: " + Time.timeScale.ToString("0#.0"));
 		return valorOut;
 	}
 	
 	private void barraInformacion(Rect pos) {
 		GUI.Box(pos, new GUIContent("", "Tiempo en el que te encuentras"), "BarraTiempo");
 		string temp = Time.time.ToString("#.0");
-		GUI.Label(new Rect(pos.x + cuantoW * 7.0f, pos.y + cuantoH * 2.0f, cuantoW * 3.0f, cuantoH * 2.0f), temp);
+		GUI.Label(new Rect(pos.x + (pos.width * 7.0f / 12.0f), pos.y + (pos.height * 2.0f / 5.0f), (pos.width * 3.0f / 12.0f), (pos.height * 2.0f / 5.0f)), temp);
 	}
 
 }
