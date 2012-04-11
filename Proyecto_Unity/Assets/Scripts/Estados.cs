@@ -12,7 +12,6 @@ public class Estados : MonoBehaviour {
 	public GUISkin estiloGUI_Nuevo;
 	public GameObject camaraReparaciones;								//Para mostrar las opciones de las reparaciones de la nave
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
-//	private int menuOpcionesInt					= 0;					//Variable de control sobre el menu lateral derecho
 	private int cuantoW							= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
 	private int cuantoH							= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 	
@@ -37,7 +36,7 @@ public class Estados : MonoBehaviour {
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
-	public float tiempoPincel					= 0.25f;				//Incremento de tiempo para aplicar el pincel
+	public float tiempoPincel					= 0.05f;				//Incremento de tiempo para aplicar el pincel
 	private int numPasos						= 0;
 	private bool algoritmoActivado				= false;
 	
@@ -287,7 +286,7 @@ public class Estados : MonoBehaviour {
 		
 		//Control pincel en textura
 		//TODO alguna forma de evitar el raycast cuando colisione con la GUI
-		if (activarPinceles && Input.GetMouseButtonDown(0) && Event.current.type == EventType.MouseDown) {
+		if (activarPinceles && Input.GetMouseButton(0) && ((Event.current.type == EventType.MouseDown) || (Event.current.type == EventType.MouseDrag))) {
 			StartCoroutine(corutinaPincel());
 		}
 		
