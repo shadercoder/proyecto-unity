@@ -9,21 +9,23 @@ public class EscenaCarga : MonoBehaviour {
 	//Variables de la creacion
 	private GameObject contenedorTexturas;						//Aqui se guardan las texturas que luego se usarán en el planeta
 	public Texture2D texturaBase;								//La textura visible que vamos a inicializar durante la creacion de un planeta nuevo
-	public Texture2D texturaNorm;								//La textura normal con el mapa de altura
-	private Texture2D texturaPantalla 		= null;				//La textura a enseñar durante la creacion
 	private Color[] pixels;										//Los pixeles sobre los que realizar operaciones
 	
 	private int faseCreacion 				= 0;				//Fases de la creacion del planeta
 	private bool trabajando 				= false;			//Para saber si está haciendo algo por debajo el script
 	private bool paso1Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
-	private bool paso2Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 	
+		//Primera fase
 	private float gananciaInit 				= 0.35f;			//La ganancia a pasar al script de creación del ruido
 	private float escalaInit 				= 0.004f;			//La escala a pasar al script de creación del ruido
 	private float lacunaridadInit			= 3.5f;				//La lacunaridad a pasar al script de creacion del ruido
 	private float octavasFloat				= 12.0f;			//Las octavas a pasar al script de creacion del ruido
-	private float nivelAguaInit 			= 0.5f;				//El punto a partir del cual deja de haber mar en la orografía del planeta
-	private float temperaturaInit 			= 0.5f;				//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
+	
+		//Segunda fase
+	public GameObject objetoOceano;
+	private Vector3 escalaBase 				= new Vector3(45.0f,45.0f,45.0f);	//La escala básica del océano
+	private float nivelAguaInit 			= 0.6f;								//El punto a partir del cual deja de haber mar en la orografía del planeta
+	private float temperaturaInit 			= 0.5f;								//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 	
 	//Opciones
 	private bool musicaOn 					= true;				//Está la música activada?
@@ -94,6 +96,7 @@ public class EscenaCarga : MonoBehaviour {
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
+		objetoOceano.transform.localScale = escalaBase + new Vector3(nivelAguaInit, nivelAguaInit, nivelAguaInit);
 	}
 	
 	void Update() {
@@ -129,9 +132,8 @@ public class EscenaCarga : MonoBehaviour {
 			case 1:		//Comenzar
 					ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 					temp.texturaBase = texturaBase;
-					temp.texturaNorm = texturaNorm;
 					temp.texturaBase.Apply();
-					temp.texturaNorm.Apply();
+					temp.escalaOceano = (escalaBase + new Vector3(nivelAguaInit, nivelAguaInit, nivelAguaInit)) * 1.0111f;
 					Application.LoadLevel("Escena_Principal");
 				break;
 			case 2:		//Opciones
@@ -218,23 +220,12 @@ public class EscenaCarga : MonoBehaviour {
 		pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);		//Se suavizan los polos...
-		texturaPantalla = new Texture2D(texturaBase.width, texturaBase.height);
-		texturaPantalla.SetPixels(pixels);
-		texturaPantalla.Apply();
-		trabajando = false;
-	}
-	
-	private void creacionParte2() {
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 		trabajando = false;
 	}
 	
 	private void creacionParte3() {
-		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
-		texturaNorm.Apply();
-		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
-		texturaNorm.Apply();
 		trabajando = false;
 	}
 	
@@ -251,9 +242,6 @@ public class EscenaCarga : MonoBehaviour {
 		}
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
-		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
-		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
-		texturaNorm.Apply();
 		estado = 1;
 	}	
 	
@@ -265,10 +253,8 @@ public class EscenaCarga : MonoBehaviour {
 		if (GUILayout.Button(new GUIContent("Comenzar juego", "Comenzar un juego nuevo"), "boton_menu_1")) {
 			pixels = new Color[texturaBase.width * texturaBase.height];
 			FuncTablero.inicializa(texturaBase);
-			texturaPantalla = null;
 			faseCreacion = 0;
 			paso1Completado = false;
-			paso2Completado = false;
 			Camera.main.animation.Play("AcercarseHolograma");
 			estado = 5;
 		}
@@ -336,13 +322,6 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte1Interfaz() {
-		
-		if (texturaPantalla == null) {
-			GUI.Box(new Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), "\n\n\n Debe generar una vista del planeta para poder avanzar.");
-		}
-		else {
-			GUI.Box(new Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), texturaPantalla);
-		}
 		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
 		GUILayout.BeginVertical();
 		//Controles para alterar el tipo de terreno a crear aleatoriamente: cosas que no influyan mucho, nombre, etc. o cosas que 
@@ -423,7 +402,6 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte2Interfaz() {
-		GUI.Box(new Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), texturaPantalla);
 		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
 		GUILayout.BeginVertical();
 		//Controles para alterar el tipo de terreno ya creado: tipo de planeta a escoger con la "rampa" adecuada, altura de las montañas, 
@@ -435,9 +413,13 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Nivel del agua", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
-		nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.0f, 1.0f);
+		nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.2f, 1.0f);
 		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
+		
+		if (GUI.changed) {			
+			objetoOceano.transform.localScale = escalaBase + new Vector3(nivelAguaInit, nivelAguaInit, nivelAguaInit);
+		}
 		
 		GUILayout.Space(cuantoH * 2);
 		
@@ -450,15 +432,6 @@ public class EscenaCarga : MonoBehaviour {
 		
 		GUILayout.Space(cuantoH * 2);
 		
-		if (GUILayout.Button(new GUIContent("Generar", "Genera un nuevo planeta"))) {	
-			FuncTablero.setNivelAgua(nivelAguaInit);
-			FuncTablero.setTemperatura(temperaturaInit);
-			trabajando = true;
-			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
-			creacionParte2();
-			paso2Completado = true;
-		}
-		
 		GUILayout.EndVertical();
 		GUILayout.EndArea();
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
@@ -467,22 +440,16 @@ public class EscenaCarga : MonoBehaviour {
 			faseCreacion = 0;
 		}
 		GUILayout.Space(cuantoW * 28);
-		if (paso2Completado) {
-			if (GUILayout.Button(new GUIContent("Siguiente", "Pasar a la tercera fase"))) {
-				faseCreacion = 2;
-			}
-		}
-		else {
-			if (GUILayout.Button(new GUIContent("Siguiente", "Generar la orograf\u00eda primero"))) { //Aqui \u00ed es el caracter unicode para la "í"
-				//Sonido de error, el boton con estilo diferente para estar en gris, etc.
-			}
+		if (GUILayout.Button(new GUIContent("Siguiente", "Pasar a la tercera fase"))) {
+			FuncTablero.setNivelAgua(nivelAguaInit);
+			FuncTablero.setTemperatura(temperaturaInit);
+			faseCreacion = 2;
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
 	}
 	
 	private void creacionParte3Interfaz() {
-		GUI.Box(new Rect(cuantoW * 12, cuantoH * 7, cuantoW * 35, cuantoH * 19), texturaPantalla);
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Volver", "Volver a la segunda fase"))) {
