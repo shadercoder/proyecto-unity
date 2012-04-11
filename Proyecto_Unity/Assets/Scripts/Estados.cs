@@ -34,21 +34,18 @@ public class Estados : MonoBehaviour {
 	private Vida vida;													//Tablero lógico del algoritmo
 	
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
+	public GameObject objetoOceano;
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
 	public float tiempoPincel					= 0.03f;				//Incremento de tiempo para aplicar el pincel
-	private int numPasos						= 0;
+	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
+	private int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
 	private bool algoritmoActivado				= false;
 	
 	//Opciones
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
 	private AudioSource sonido;											//La fuente del audio
-	
-//	private bool musicaOn 						= true;					//Está la música activada?
-//	private float musicaVol 					= 0.5f;					//A que volumen?
-//	private bool sfxOn 							= true;					//Estan los efectos de sonido activados?
-//	private float sfxVol 						= 0.5f; 				//A que volumen?
 	
 	//Tooltips
 	private Vector3 posicionMouse 				= Vector3.zero;			//Guarda la ultima posicion del mouse		
@@ -94,7 +91,6 @@ public class Estados : MonoBehaviour {
 		GameObject planeta = GameObject.FindWithTag("Planeta");
 		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
 		Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
-		Texture2D texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
 		
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
@@ -105,10 +101,6 @@ public class Estados : MonoBehaviour {
 		
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
-	
-		texturaNorm.SetPixels(pixels);													//Se aplican los pixeles a la textura normal para duplicarlos
-		texturaNorm.SetPixels32(FuncTablero.creaNormalMap(texturaNorm));				//se transforma a NormalMap
-		texturaNorm.Apply();
 		
 		estado = T_estados.principal;
 	}
@@ -125,12 +117,10 @@ public class Estados : MonoBehaviour {
 			GameObject planeta = GameObject.FindWithTag("Planeta");
 			MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
 			Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
-			Texture2D texturaNorm = renderer.sharedMaterial.GetTexture("_Normals") as Texture2D;	//Los nombres vienen definidos en el editor, en el material
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			texturaBase = temp.texturaBase;
-			texturaNorm = temp.texturaNorm;
 			texturaBase.Apply();
-			texturaNorm.Apply();
+			objetoOceano.transform.localScale = temp.escalaOceano;
 		}
 		Audio_Ambience ambiente = sonidoAmbiente.GetComponent<Audio_Ambience>();
 		Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
@@ -167,18 +157,6 @@ public class Estados : MonoBehaviour {
 			int y = Random.Range(0,122);			
 			lalala = vida.anadeVegetal((EspecieVegetal)vida.dameEspecie("musgo"),x,y);	
 		}*/		
-		
-//		sonido = sonidoAmbiente.GetComponent<AudioSource>();
-//		sonido.mute = !musicaOn;
-//		sonido.volume = musicaVol;
-//		//esto para que no salgan warnings molestos
-//		if (sfxOn) {
-//			float a = sfxVol;
-//			sfxVol = a;
-//		}
-//		else {
-//		
-//		}
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
@@ -190,9 +168,11 @@ public class Estados : MonoBehaviour {
 	void FixedUpdate() {
 		//Algoritmo de vida
 		
-		numPasos++;		
-		if(algoritmoActivado && numPasos%5 == 0) {
-			vida.algoritmoVida();			
+		tiempoPaso += Time.deltaTime;		
+		if(algoritmoActivado && tiempoPaso > 1.0f) {		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
+			vida.algoritmoVida();
+			numPasos ++;
+			tiempoPaso = 0.0f;
 		}
 	}
 	
@@ -337,70 +317,6 @@ public class Estados : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW, cuantoH * 16, cuantoW * 8, cuantoH * 3), "", "BarraAbajo");
 	}
 	
-	/*	
-	private void grupoDerecha() {
-		//Dependiendo de que opción este pulsada, poner un menú u otro!
-		Control_Raton script;
-		Transform objetivo;
-		if (menuOpcionesInt == 1) {
-			GUI.BeginGroup(new Rect(cuantoW * 43, cuantoH * 10, cuantoW * 5, cuantoH * 12));
-			if (GUI.Button(new Rect(0, 0, cuantoW * 5, cuantoH * 4), new GUIContent("", "Click izq. para centrar"), "i_c_fija")) {
-				script = transform.parent.GetComponent<Control_Raton>();
-				objetivo = GameObject.FindGameObjectWithTag("Planeta").GetComponent<Transform>();
-				script.cambiarTarget(objetivo);
-				script.cambiarEstado(1);
-			}
-			if (GUI.Button(new Rect(0, cuantoH * 4, cuantoW * 5, cuantoH * 4), new GUIContent("", "Rotar con click der."), "i_c_rot")) {
-				script = transform.parent.GetComponent<Control_Raton>();
-				objetivo = GameObject.FindGameObjectWithTag("Planeta").GetComponent<Transform>();
-				script.cambiarTarget(objetivo);
-				script.cambiarEstado(0);
-			}
-			if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("", "Centrar en la luna"), "i_c_3")) {
-				script = transform.parent.GetComponent<Control_Raton>();
-				objetivo = GameObject.Find("luna").GetComponent<Transform>();
-				script.cambiarTarget(objetivo);
-				script.cambiarEstado(0);
-			}
-			GUI.EndGroup();
-		}
-		if (menuOpcionesInt == 2) {
-			GUI.BeginGroup(new Rect(cuantoW * 43, cuantoH * 10, cuantoW * 5, cuantoH * 12));
-			if (GUI.Button(new Rect(0, 0, cuantoW * 5, cuantoH * 4), new GUIContent("", "Laboratorio gen\u00e9tico"), "i_lab")) {
-	
-			}
-			if (GUI.Button(new Rect(0, cuantoH * 4, cuantoW * 5, cuantoH * 4), new GUIContent("", "Visi\u00f3n de la nave"), "i_nav")) {
-				camaraPrincipal.GetComponent<Camera>().enabled = false;
-				camaraReparaciones.GetComponent<Camera>().enabled = true;
-				script = transform.parent.GetComponent<Control_Raton>();
-				script.setInteraccion(false);
-				estado = T_estados.reparaciones;
-			}
-			if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("", "Opciones del juego"), "i_fil")) {
-				script = transform.parent.GetComponent<Control_Raton>();
-				script.setInteraccion(false);
-				estado = T_estados.opciones;
-			}
-			GUI.EndGroup();
-		}
-		if (menuOpcionesInt == 3) {
-			GUI.BeginGroup(new Rect(cuantoW * 43, cuantoH * 10, cuantoW * 5, cuantoH * 12));
-			if (GUI.Button(new Rect(0, 0, cuantoW * 5, cuantoH * 4), new GUIContent("Fisura", "Crear fisura centrada"), "i_fil")) {
-				StartCoroutine(corutinaTerremoto());
-			}
-			if (GUI.Button(new Rect(0, cuantoH * 4, cuantoW * 5, cuantoH * 4), new GUIContent("Volcan", "Crear volcan centrado"), "i_fil")) {
-
-			}
-			if (GUI.Button(new Rect(0, cuantoH * 8, cuantoW * 5, cuantoH * 4), new GUIContent("Animal", "Poner objeto en tablero"), "i_fil")) {
-				StartCoroutine(corutinaAnimalCubo());
-			}
-			GUI.EndGroup();
-		}
-		
-	}
-	*/
-	
-	
 	private void menuOpciones() {
 		Control_Raton script;
 		GUILayout.BeginArea(new Rect(cuantoW * 20, cuantoH * 12, cuantoW * 8, cuantoH * 6));
@@ -517,8 +433,6 @@ public class Estados : MonoBehaviour {
 				}
 			}
 		}
-		//TODO Esto hay que cambiarlo porque ahora mismo hay preferencia y no se puede pasar de bajar a subir o allanar directamente, solo de subir->allanar->bajar
-		//No se puede ir de bajar->allanar->subir porque los if van con prioridad. Hay que hacer un if (GUI.changed) despues de cada toggle!!
 	}
 	
 	private void botonHexCompuestoCamara(Rect pos) {
@@ -566,9 +480,6 @@ public class Estados : MonoBehaviour {
 			botonPequeSubir = false;
 			botonPequeBajar = false;
 			botonPequeAllanar = false;
-//			script = transform.parent.GetComponent<Control_Raton>();
-//			script.setInteraccion(false);
-//			estado = T_estados.opciones;
 		}
 		if (menuOpcion) {
 			if (GUI.Button(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 0.95f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("Peq1", "Opciones (P)(B) generales"), "BotonVacio")) {
@@ -580,10 +491,6 @@ public class Estados : MonoBehaviour {
 				estado = T_estados.guardar;
 			}
 			if (GUI.Button(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 2.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("Volver", "Volver al juego con normalidad."), "BotonVacio")) {
-//				Time.timeScale = 1.0f;
-//				script = transform.parent.GetComponent<Control_Raton>();
-//				script.setInteraccion(true);
-//				estado = T_estados.principal;
 				Debug.Log("Pulsado peque opciones 3-4");
 			}
 			if (GUI.Button(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 3.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("Salir", "Salir al menu del juego."), "BotonVacio")) {
