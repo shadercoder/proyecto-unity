@@ -8,4 +8,6 @@ public class Pinceles : MonoBehaviour {
 	public Texture2D pincelDuro;
 	public Texture2D pincelRegular;
 	public Texture2D pincelIrregular;
+	
+	public Texture2D pincelPlantas;
 }

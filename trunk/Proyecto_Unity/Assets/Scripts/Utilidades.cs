@@ -125,24 +125,6 @@ public class SaveLoad {
 public enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};													//Tipos de orografía
 public enum T_elementos {hidrogeno, helio, oxigeno, carbono, boro, nitrogeno, litio, silicio, magnesio, argon, potasio};	//Se pueden añadir mas mas adelante
 
-public class Casilla {
-	public float altura;
-	public T_habitats habitat;
-	public T_elementos[] elementos;
-	public Vector2 coordsTex;
-	public Vegetal vegetal;
-	public Animal animal;
-	
-	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord) {
-		habitat = hab;
-		altura = alt;
-		elementos = elems;
-		coordsTex = coord;
-		vegetal = null;
-		animal = null;
-	}
-}
-
 public class FuncTablero {
 	
 	//Variables ----------------------------------------------------------------------------------------------------------------------
@@ -395,10 +377,10 @@ public class FuncTablero {
 				else if (((nivelAgua - (tamanoPlaya * 1.2)) <= media) && (media < (nivelAgua + (tamanoPlaya * 1.2)))) {
 					habitat = T_habitats.coast;
 				}
-				else if (((nivelAgua + (tamanoPlaya * 1.2)) <= media) && (media < alturaColinas)) {
+				else if (((nivelAgua + (tamanoPlaya * 1.2)) <= media) && (media < (nivelAgua + alturaColinas))) {
 					habitat = T_habitats.plain;
 				}
-				else if ((alturaColinas <= media) && (media < alturaMontana)) {
+				else if (((nivelAgua + alturaColinas) <= media) && (media < (nivelAgua + alturaMontana))) {
 					habitat = T_habitats.hill;
 				}
 				else /*if (alturaMontana < media)*/ {
@@ -425,7 +407,7 @@ public class FuncTablero {
 	}
 	
 	public static void alteraPixel(Texture2D tex, int w, int h, float valor){
-		if (w < 0 || h < 0 || w > tex.width || h > tex.height) {
+		if (w < 0 || h < 0 || h > tex.height) {
 			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan. w = " + w + " h = " + h);
 		}
 		Color pix = tex.GetPixel(w,h);
@@ -435,12 +417,66 @@ public class FuncTablero {
 		tex.SetPixel(w,h,pix);
 	}
 	
+	public static void alteraPixelColor(Texture2D tex, int w, int h, Color valor){
+		if (h < 0 || h > tex.height) {
+			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan. w = " + w + " h = " + h);
+		}
+		if (w < 0)
+			w += tex.width;
+		w = w % tex.width;
+		Color pix = tex.GetPixel(w,h);
+		pix += valor;
+		tex.SetPixel(w,h,pix);
+	}
+	
 	public static void fisura(Texture2D tex, int posX, int posY, float longitud, float magnitud, Vector2 dir) {
 		float posActual = Math.Abs(longitud);
 		for (int i = 0; i < (int)Math.Abs(longitud) * 2; i++) {
 			Vector2 pixel = new Vector2(posX + (int)(dir.x * posActual), posY + (int)(dir.y * posActual));
 			alteraPixel(tex, (int)pixel.x, (int)pixel.y, magnitud);
 			posActual -= 1.0f;
+		}
+	}
+	
+	
+	
+	public static void pintaPlantas(Texture2D objetivo, Vector2 coords, int idColor) {
+		Pinceles temp = GameObject.FindGameObjectWithTag("Pinceles").GetComponent<Pinceles>();
+		Texture2D pincelTex = temp.pincelPlantas;		
+		int w = pincelTex.width;
+		int h = pincelTex.height;
+		Vector2 pos = coords;
+//		pos.x *= objetivo.width;
+//		pos.y *= objetivo.height;
+		pos.x -= w/2;
+		pos.y -= h/2;
+		if (pos.y < 0)
+			pos.y = 0;
+		if (pos.y >= objetivo.height)
+			pos.y = objetivo.height - 1;
+		Color colorObjetivo;
+		switch (idColor) {
+		case 0: 
+			colorObjetivo = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+			break;
+		case 1:
+			colorObjetivo = new Color(0.0f, 1.0f, 0.0f, 0.0f);
+			break;
+		case 2:
+			colorObjetivo = new Color(0.0f, 0.0f, 1.0f, 0.0f);
+			break;
+		case 3:
+			colorObjetivo = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+			break;
+		default:
+			colorObjetivo = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+			break;
+		}
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				if (pincelTex.GetPixel(i,j).r > 0.0f)
+					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorObjetivo);
+			}
 		}
 	}
 	
@@ -593,6 +629,14 @@ public class FuncTablero {
 	public static void setTemperatura(float entrada) {
 		if (entrada >= 0.0f && entrada <= 1.0f)
 			temperatura = entrada;
+	}
+	
+	public static int getRelTexTabAncho() {
+		return relTexTabAncho;
+	}
+	
+	public static int getRelTexTabAlto() {
+		return relTexTabAlto;
 	}
 	
 }

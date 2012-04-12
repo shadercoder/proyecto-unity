@@ -34,7 +34,8 @@ public class Estados : MonoBehaviour {
 	private Vida vida;													//Tablero lógico del algoritmo
 	
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
-	public GameObject objetoOceano;
+	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
+	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
 	public float tiempoPincel					= 0.03f;				//Incremento de tiempo para aplicar el pincel
@@ -63,7 +64,7 @@ public class Estados : MonoBehaviour {
 	private string[] nombresSaves;										//Los nombres de los ficheros de savegames guardados
 
 	//Tipos especiales ----------------------------------------------------------------------------------------------------------------------
-	
+	 
 	//Añadir los que hagan falta mas tarde
 	enum T_estados {inicial, principal, reparaciones, filtros, guardar, opciones, salir};
 	
@@ -140,7 +141,7 @@ public class Estados : MonoBehaviour {
 		
 		Texture2D tex = GameObject.FindGameObjectWithTag("Planeta").renderer.sharedMaterial.mainTexture as Texture2D;
 		Casilla[,] tablero = FuncTablero.iniciaTablero(tex);
-		vida = new Vida(tablero);				
+		vida = new Vida(tablero, texPlantas);				
 		
 		int x = 0;
 		int y = 0;
@@ -452,7 +453,7 @@ public class Estados : MonoBehaviour {
 				botonPequePincel = true;
 			}
 			if (botonPequePincel) {
-				seleccionPincel = GUI.SelectionGrid(new Rect(cuantoW * 18, cuantoH * 12, cuantoW * 12, cuantoH * 6), seleccionPincel, nombresPinceles, 2);
+				seleccionPincel = cajaSeleccionPincel(seleccionPincel);
 				if (GUI.changed) {
 					botonPequePincel = false;
 				}
@@ -539,6 +540,32 @@ public class Estados : MonoBehaviour {
 		GUI.Box(pos, new GUIContent("", "Tiempo en el que te encuentras"), "BarraTiempo");
 		string temp = Time.time.ToString("#.0");
 		GUI.Label(new Rect(pos.x + (pos.width * 7.0f / 12.0f), pos.y + (pos.height * 2.0f / 5.0f), (pos.width * 3.0f / 12.0f), (pos.height * 2.0f / 5.0f)), temp);
+	}
+	
+	private int cajaSeleccionPincel(int entrada) {
+//		GUI.Label(new Rect(cuantoW * 23, cuantoH * 23, cuantoW * 2, cuantoH * 2), seleccionPincel.ToString());
+		GUI.Box(new Rect(cuantoW * 18, cuantoH * 25, cuantoW * 12.5f, cuantoH * 5), "", "CajaPinceles");
+		if (GUI.Button(new Rect(cuantoW * 19.5f, cuantoH * 27.0f, cuantoW * 1.5f, cuantoH * 1.5f), "", "PincelCrater")) {
+			GUI.changed = true;
+			return 0;
+		}
+		if (GUI.Button(new Rect(cuantoW * 21.5f, cuantoH * 27.0f, cuantoW * 1.5f, cuantoH * 1.5f), "", "PincelVolcan")){
+			GUI.changed = true;
+			return 1;
+		}
+		if (GUI.Button(new Rect(cuantoW * 23.5f, cuantoH * 27.0f, cuantoW * 1.5f, cuantoH * 1.5f), "", "PincelDuro")){
+			GUI.changed = true;
+			return 2;
+		}
+		if (GUI.Button(new Rect(cuantoW * 25.5f, cuantoH * 27.0f, cuantoW * 1.5f, cuantoH * 1.5f), "", "PincelSuave")){
+			GUI.changed = true;
+			return 3;
+		}
+		if (GUI.Button(new Rect(cuantoW * 27.5f, cuantoH * 27.0f, cuantoW * 1.5f, cuantoH * 1.5f), "", "PincelIrregular")){
+			GUI.changed = true;
+			return 4;
+		}
+		return entrada;
 	}
 
 }
