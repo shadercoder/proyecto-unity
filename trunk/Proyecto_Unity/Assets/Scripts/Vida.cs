@@ -465,16 +465,13 @@ public class Vida
 			listaY[i-1] = listaY[pos];
 			listaY[pos] = aux;
 		}
-		
 		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
 			for(int j = 0; j < FuncTablero.anchoTablero; j++)
 			{
-				if(!tieneVegetal(listaX[i],listaY[j]))
-			   	{
-					x = listaX[i];
-					y = listaY[j];
-					return true;
-				}
+				x = listaX[i];
+				y = listaY[j];
+				if(!tieneVegetal(x,y) && tablero[x,y].habitat == habitat)			   	
+					return true;				
 			}
 		return false;
 	}
@@ -509,12 +506,10 @@ public class Vida
 		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
 			for(int j = 0; j < FuncTablero.anchoTablero; j++)
 			{
-				if(!tieneAnimal(listaX[i],listaY[j]))
-			   	{
-					x = listaX[i];
-					y = listaY[j];
-					return true;
-				}
+				x = listaX[i];
+				y = listaY[j];
+				if(!tieneAnimal(x,y) && tablero[x,y].habitat == habitat)			   	
+					return true;				
 			}
 		return false;
 	}
@@ -534,10 +529,11 @@ public class EspecieVegetal : Especie
 	public float capacidadReproductiva;					//% de individuos que se incrementan por turno en función de los vegetales actuales	(en tanto por 1)
 	public float capacidadMigracion;					//Probabilidad que tiene la especie de migrar a otra casilla en función del número de vegetales que posea (el valor viene indicado para numMaxVegetales y en tanto por 1)
 	public int radioMigracion;							//Longitud máxima de migración de la especie
+	public int idTextura;
 	//public int capacidadEvolucion;					//Probabilidad de que la especie evolucione dentro de la casilla
 	//public int capacidadEvolucionMigracion;			//Probabilidad de que la especie evolucione al migrar (teoricamente mucho más alto que la normal)
 	
-	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales, int capacidadReproductiva, int capacidadMigracion, int radioMigracion, T_habitats habitat)
+	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales, int capacidadReproductiva, int capacidadMigracion, int radioMigracion, T_habitats habitat, int idTextura)
 	{
 		this.nombre = nombre;
 		this.numMaxVegetales = numMaxVegetales;
@@ -546,6 +542,7 @@ public class EspecieVegetal : Especie
 		this.capacidadMigracion = capacidadMigracion;
 		this.radioMigracion = radioMigracion;
 		this.habitat = habitat;
+		this.idTextura = idTextura;
 	}	
 }
 

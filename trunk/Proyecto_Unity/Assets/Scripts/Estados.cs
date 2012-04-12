@@ -41,6 +41,9 @@ public class Estados : MonoBehaviour {
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
 	private int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
 	private bool algoritmoActivado				= false;
+	/*** DEBUG ***/
+	public int numCasillasPlain					= 0;	
+	/*************/
 	
 	//Opciones
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
@@ -141,14 +144,17 @@ public class Estados : MonoBehaviour {
 		
 		int x = 0;
 		int y = 0;
-		vida.anadeEspecieVegetal(new EspecieVegetal("musgo",1000,5,100,5,3,T_habitats.plain));
+		//ESPECIE VEGETAL => string nombre, int numMaxVegetales, int numIniVegetales, int capacidadReproductiva, int capacidadMigracion, int radioMigracion, T_habitats habitat,Texture2D textura)
+		//EspecieVegetal especie = new EspecieVegetal("musgo",100,5,10,5,10,T_habitats.plain,0);
+		EspecieVegetal especie = new EspecieVegetal("musgo",10,10,10,25,8,T_habitats.plain,0);
+		vida.anadeEspecieVegetal(especie);
 		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
-		vida.anadeVegetal((EspecieVegetal)vida.dameEspecie("musgo"),x,y);	
-		
+		vida.anadeVegetal(especie,x,y);	
+		/*
 		vida.anadeEspecieAnimal(new EspecieAnimal("comemusgo",10,1000,0,5,5,5,tipoAnimal.herbivoro,T_habitats.plain));
 		vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
-		vida.anadeAnimal((EspecieAnimal)vida.dameEspecie("comemusgo"),x-50,y+5);
-		
+		vida.anadeAnimal((EspecieAnimal)vida.dameEspecie("comemusgo"),x,y);
+		*/
 		/*
 		bool lalala = false;		
 		while(lalala == false)
@@ -163,6 +169,13 @@ public class Estados : MonoBehaviour {
 		numSavesExtra = numSaves - 3;
 		if (numSavesExtra < 0)
 			numSavesExtra = 0;		
+		
+		/*** DEBUG ***/
+		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
+			for(int j = 0; j < FuncTablero.anchoTablero; j++)
+				if(tablero[i,j].habitat == T_habitats.plain)
+					numCasillasPlain++;
+		/*************/
 	}
 	
 	void FixedUpdate() {
@@ -174,6 +187,17 @@ public class Estados : MonoBehaviour {
 			numPasos ++;
 			tiempoPaso = 0.0f;
 		}
+		/*
+		if(numPasos == 500)
+		{
+			int x = 0;
+			int y = 0;
+			//string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo, T_habitats habitat
+			EspecieAnimal especie = new EspecieAnimal("comemusgo",8,100,0,5,5,5,tipoAnimal.herbivoro,T_habitats.plain);
+			vida.anadeEspecieAnimal(especie);
+			vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
+			vida.anadeAnimal(especie,x,y);			
+		}*/
 	}
 	
 	void Update () {
@@ -277,11 +301,12 @@ public class Estados : MonoBehaviour {
 			else
 				algoritmoActivado = true;
 		
-		GUI.Box(new Rect(cuantoW * 40, cuantoH * 25,cuantoW * 8,cuantoH * 4),new GUIContent("Algoritmo Especies","debug"));
+		GUI.Box(new Rect(cuantoW * 40, cuantoH * 25,cuantoW * 8,cuantoH * 5),new GUIContent("Algoritmo Especies","debug"));
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 26,cuantoW * 7,cuantoH * 2),"Num vegetales: "+vida.vegetales.Count);
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 27,cuantoW * 7,cuantoH * 2),"Num animales: "+vida.animales.Count);
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 28,cuantoW * 7,cuantoH * 2),"Num pasos: "+numPasos);
-		
+		GUI.Label(new Rect(cuantoW * 41, cuantoH * 29,cuantoW * 7,cuantoH * 2),"Num casillas plain: "+numCasillasPlain);
+				
 		//Tooltip
 		if (activarTooltip) {
 			float longitud = GUI.tooltip.Length;
