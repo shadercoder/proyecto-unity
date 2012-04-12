@@ -408,9 +408,6 @@ public class FuncTablero {
 				//TODO Se coge una o varias especies aleatorias de las iniciales	
 				//TODO Calculos para ver la especie/s a meter
 				
-				//////
-				habitat = T_habitats.plain;
-				////
 				tablero[i,j] = new Casilla(media, habitat, elems, cord);
 			}
 		}
