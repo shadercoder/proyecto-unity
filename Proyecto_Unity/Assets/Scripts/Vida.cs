@@ -3,11 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-//public enum tipoHabitat {mar, costa, rio, llanura, montana, desierto};		
-//Mejor usar T_habitats, que se ha definido de forma mas general en Utilidades.cs
+public class Casilla {
+	public float altura;
+	public T_habitats habitat;
+	public T_elementos[] elementos;
+	public Vector2 coordsTex;
+	public Vegetal vegetal;
+	public Animal animal;
+	public Vector2[] pinceladas;
+	
+	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord) {
+		habitat = hab;
+		altura = alt;
+		elementos = elems;
+		coordsTex = coord;
+		vegetal = null;
+		animal = null;
+	}
+}
+ 
 
 public class Vida
 {
+	//Referencia a la textura de las plantas
+	public Texture2D texturaPlantas;
 	//Estructuras
 	public Casilla[,] tablero;										//Tablero lógico que representa las casillas
 	public Dictionary<string, Especie> especies;					//Listado de todas las especies
@@ -39,7 +58,7 @@ public class Vida
 		idActualAnimal = 0;
 	}	
 	
-	public Vida(Casilla[,] tablero)
+	public Vida(Casilla[,] tablero, Texture2D texPlantas)
 	{
 		this.tablero = tablero;
 		especies = new Dictionary<string, Especie>();
@@ -53,6 +72,7 @@ public class Vida
 		numEspeciesAnimales = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
+		texturaPlantas = texPlantas;
 	}
 	
 	public Vida(Vida vida)
@@ -69,6 +89,22 @@ public class Vida
 		numEspeciesAnimales = vida.numEspeciesAnimales;
 		idActualVegetal = vida.idActualVegetal;
 		idActualAnimal = vida.idActualAnimal;
+		texturaPlantas = vida.texturaPlantas;
+	}
+	
+	public void pintaPlantasTex(int posX,int posY) {
+		Vegetal veg = tablero[posX,posY].vegetal;
+		if (veg.numVegetales > 0) {
+			int temp = (int)Mathf.Lerp(0.0f, 4.0f, veg.numVegetales / veg.especie.numMaxVegetales);
+			Vector2[] arrayPos = new Vector2[temp];
+			for (int i = 0; i < temp; i++) {
+				int tempX = (int)(tablero[posX,posY].coordsTex.x + Random.Range(0, FuncTablero.getRelTexTabAncho()));
+				int tempY =  (int)(tablero[posX,posY].coordsTex.y + Random.Range(0, FuncTablero.getRelTexTabAlto()));
+				Vector2 posTemp = new Vector2(tempX, tempY);
+				arrayPos[i] = posTemp;
+				FuncTablero.pintaPlantas(texturaPlantas, posTemp, veg.especie.idTextura);
+			}
+		}
 	}
 	
 	//Devuelve true si hay un vegetal en la casilla [x,y] y false si no lo hay
@@ -165,6 +201,7 @@ public class Vida
 		seres.Add(vegetal);
 		vegetales.Add(vegetal);
 		tablero[posX,posY].vegetal = vegetal;
+		pintaPlantasTex(posX,posY);
 		return true;
 	}	
 	
@@ -403,7 +440,11 @@ public class Vida
 			if(ser is Vegetal)
 			{
 				vegetal = (Vegetal)ser;
+				int temp1 = (int)Mathf.Lerp(0.0f, 4.0f, vegetal.numVegetales / vegetal.especie.numMaxVegetales);
 				vegetal.reproduccion();
+				int temp2 = (int)Mathf.Lerp(0.0f, 4.0f, vegetal.numVegetales / vegetal.especie.numMaxVegetales);
+				if (temp1 != temp2)
+					pintaPlantasTex(vegetal.posX, vegetal.posY);
 				if(vegetal.migracion())
 					migraVegetal(vegetal.especie,vegetal.posX,vegetal.posY);
 			}
@@ -423,6 +464,7 @@ public class Vida
 					movimientoAleatorio(animal);		
 			}			
 		}
+		texturaPlantas.Apply();
 	}
 	
 	public void randomLista()
@@ -623,7 +665,11 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	
 	public void reproduccion()
 	{
+		if (numVegetales >= especie.numMaxVegetales)
+			return;
 		numVegetales = (int)(numVegetales * (1 + especie.capacidadReproductiva/100.0f));
+		if (numVegetales >= especie.numMaxVegetales)
+			numVegetales = especie.numMaxVegetales;
 	}
 	
 	//Devuelve true si se produce una migración y false si no
