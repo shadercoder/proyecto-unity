@@ -151,6 +151,23 @@ public class Estados : MonoBehaviour {
 		vida.anadeEspecieVegetal(especie);
 		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
 		vida.anadeVegetal(especie,x,y);	
+		
+		EspecieVegetal especie2 = new EspecieVegetal("musgo2",10,10,10,25,8,T_habitats.mountain,1);
+		vida.anadeEspecieVegetal(especie2);
+		vida.buscaPosicionVaciaVegetal(T_habitats.mountain,ref x,ref y);
+		vida.anadeVegetal(especie2,x,y);	
+		
+		EspecieVegetal especie3 = new EspecieVegetal("musgo3",10,10,10,25,8,T_habitats.hill,2);
+		vida.anadeEspecieVegetal(especie3);
+		vida.buscaPosicionVaciaVegetal(T_habitats.hill,ref x,ref y);
+		vida.anadeVegetal(especie3,x,y);	
+		
+		EspecieVegetal especie4 = new EspecieVegetal("musgo4",10,10,10,25,8,T_habitats.sand,3);
+		vida.anadeEspecieVegetal(especie4);
+		vida.buscaPosicionVaciaVegetal(T_habitats.sand,ref x,ref y);
+		vida.anadeVegetal(especie4,x,y);	
+		
+		
 		/*
 		vida.anadeEspecieAnimal(new EspecieAnimal("comemusgo",10,1000,0,5,5,5,tipoAnimal.herbivoro,T_habitats.plain));
 		vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
