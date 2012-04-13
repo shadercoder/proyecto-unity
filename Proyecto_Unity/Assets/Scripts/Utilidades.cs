@@ -446,8 +446,6 @@ public class FuncTablero {
 		int w = pincelTex.width;
 		int h = pincelTex.height;
 		Vector2 pos = coords;
-//		pos.x *= objetivo.width;
-//		pos.y *= objetivo.height;
 		pos.x -= w/2;
 		pos.y -= h/2;
 		if (pos.y < 0)
@@ -472,10 +470,12 @@ public class FuncTablero {
 			colorObjetivo = new Color(1.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		}
+		Color colorTemp = colorObjetivo;
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
-				if (pincelTex.GetPixel(i,j).r > 0.0f)
-					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorObjetivo);
+				colorTemp = colorObjetivo;
+				colorTemp *= pincelTex.GetPixel(i,j);
+					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorTemp);
 			}
 		}
 	}
@@ -518,7 +518,7 @@ public class FuncTablero {
 		int multi = -1;
 		if (subir)
 			multi = 1;
-		float atenuacion = 0.1f;
+		float atenuacion = 0.15f;
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
 				alteraPixel(objetivo,(int)pos.x + i,(int)pos.y + j, multi * ((pincelTex.GetPixel(i,j).r) * atenuacion));

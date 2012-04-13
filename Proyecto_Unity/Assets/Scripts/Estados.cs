@@ -27,7 +27,7 @@ public class Estados : MonoBehaviour {
 	private bool activarPinceles				= false;				//Variable de control para pintar sobre la textura
 	
 	private int seleccionPincel 				= 0;					//la selección del pincel a utilizar
-	private string[] nombresPinceles			= new string[] {"Crater", "Volcan", "Pincel duro", "Pincel suave", "Pincel irregular"};
+//	private string[] nombresPinceles			= new string[] {"Crater", "Volcan", "Pincel duro", "Pincel suave", "Pincel irregular"};
 	
 	//Privadas del script
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
@@ -38,7 +38,7 @@ public class Estados : MonoBehaviour {
 	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
-	public float tiempoPincel					= 0.03f;				//Incremento de tiempo para aplicar el pincel
+	public float tiempoPincel					= 0.001f;				//Incremento de tiempo para aplicar el pincel
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
 	private int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
 	private bool algoritmoActivado				= false;
@@ -543,7 +543,6 @@ public class Estados : MonoBehaviour {
 	}
 	
 	private int cajaSeleccionPincel(int entrada) {
-//		GUI.Label(new Rect(cuantoW * 23, cuantoH * 23, cuantoW * 2, cuantoH * 2), seleccionPincel.ToString());
 		GUI.Box(new Rect(cuantoW * 18, cuantoH * 25, cuantoW * 12.5f, cuantoH * 5), "", "CajaPinceles");
 		if (GUI.Button(new Rect(cuantoW * 19.5f, cuantoH * 27.0f, cuantoW * 1.5f, cuantoH * 1.5f), "", "PincelCrater")) {
 			GUI.changed = true;
