@@ -3,19 +3,21 @@ Shader "Planet/RocaTextureLerp"
 	Properties 
 	{
 _MainTex("Mapa terreno Base", 2D) = "black" {}
-_RampaColor("_RampaColor", 2D) = "black" {}
+_RampaColor("Canales para cada Altura", 2D) = "black" {}
 _Normals("Mapa Relieve", 2D) = "bump" {}
-_Ilum("_Ilum", 2D) = "black" {}
-_BiasTerreno("_BiasTerreno", Range(-3,3) ) = 0.5
-_Amount("Extrusion", float) = 0.5
-_texTop("cumbres", 2D) = "black" {}
-_texMountain("montañas", 2D) = "black" {}
-_texHill("altura alta", 2D) = "black" {}
-_texMedium("altura media", 2D) = "black" {}
-_texLow("altura baja", 2D) = "black" {}
-_texBottom("valles", 2D) = "black" {}
-_prueba1("_prueba1", Range(0.01,1) ) = 0.5
-_prueba2("_prueba2", Range(0,1) ) = 0.5
+_Ilum("Rampa de iluminación", 2D) = "black" {}
+_BiasTerreno("Efecto Parallax Terreno", Range(-3,3) ) = 0.5
+_Amount("Extrusion", Range(-3,3) ) = 0.5
+_texTop("Cumbre", 2D) = "black" {}
+_texTopNorm("Normales Cumbre", 2D) = "black" {}
+_texMount("Montañas", 2D) = "black" {}
+_texMountNorm("Normales Montaña", 2D) = "black" {}
+_texMedium("Altura Media", 2D) = "black" {}
+_texMediumNorm("Normales Altura Media", 2D) = "black" {}
+_texLow("Baja Altura", 2D) = "black" {}
+_texLowNorm("Normales Baja Altura", 2D) = "black" {}
+_texBot("Valles", 2D) = "black" {}
+_texBotNorm("Normales Valles", 2D) = "black" {}
 
 	}
 	
@@ -48,15 +50,17 @@ sampler2D _RampaColor;
 sampler2D _Normals;
 sampler2D _Ilum;
 float _BiasTerreno;
-sampler2D _texTop;
-sampler2D _texMountain;
-sampler2D _texHill;
-sampler2D _texMedium;
-sampler2D _texLow;
-sampler2D _texBottom;
-float _prueba1;
-float _prueba2;
 float _Amount;
+sampler2D _texTop;
+sampler2D _texTopNorm;
+sampler2D _texMount;
+sampler2D _texMountNorm;
+sampler2D _texMedium;
+sampler2D _texMediumNorm;
+sampler2D _texLow;
+sampler2D _texLowNorm;
+sampler2D _texBot;
+sampler2D _texBotNorm;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -96,15 +100,12 @@ return Multiply0;
 			}
 			
 			struct Input {
-				float2 uv_texBottom;
+				float2 uv_texBot;
 float2 uv_texLow;
 float2 uv_MainTex;
 float2 uv_texMedium;
-float2 uv_texHill;
-float2 uv_texMountain;
+float2 uv_texMount;
 float2 uv_texTop;
-float2 uv_Normals;
-float3 viewDir;
 
 			};
 
@@ -113,7 +114,7 @@ float4 VertexOutputMaster0_0_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
-#if !defined(SHADER_API_OPENGL)
+				#if !defined(SHADER_API_OPENGL)
 				float4 tex = tex2Dlod (_MainTex, float4(v.texcoord.xyz,0));
 				v.vertex.xyz += v.normal * tex.rgb * _Amount;
 				#endif
@@ -130,42 +131,31 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Sampled2D6=tex2D(_texBottom,IN.uv_texBottom.xy);
+float4 Sampled2D6=tex2D(_texBot,IN.uv_texBot.xy);
 float4 Sampled2D1=tex2D(_texLow,IN.uv_texLow.xy);
 float4 Sampled2D0=tex2D(_MainTex,IN.uv_MainTex.xy);
 float4 Tex2D1=tex2D(_RampaColor,Sampled2D0.xy);
-float4 Splat2=Tex2D1.z;
-float4 Lerp2=lerp(Sampled2D6,Sampled2D1,Splat2);
+float4 Split0=Tex2D1;
+float4 Lerp2=lerp(Sampled2D6,Sampled2D1,float4( Split0.x, Split0.x, Split0.x, Split0.x));
 float4 Sampled2D3=tex2D(_texMedium,IN.uv_texMedium.xy);
-float4 Splat1=Tex2D1.y;
-float4 Add1=Splat2 + Splat1;
-float4 Lerp0=lerp(Lerp2,Sampled2D3,Add1);
-float4 Sampled2D7=tex2D(_texHill,IN.uv_texHill.xy);
-float4 Splat0=Tex2D1.x;
-float4 Add2=Splat1 + Splat0;
-float4 Lerp3=lerp(Lerp0,Sampled2D7,Add2);
-float4 Sampled2D4=tex2D(_texMountain,IN.uv_texMountain.xy);
-float4 Lerp4_2_NoInput = float4(0,0,0,0);
-float4 Lerp4=lerp(Lerp3,Sampled2D4,Lerp4_2_NoInput);
+float4 Lerp0=lerp(Lerp2,Sampled2D3,float4( Split0.y, Split0.y, Split0.y, Split0.y));
+float4 Sampled2D4=tex2D(_texMount,IN.uv_texMount.xy);
+float4 Lerp3=lerp(Lerp0,Sampled2D4,float4( Split0.z, Split0.z, Split0.z, Split0.z));
 float4 Sampled2D5=tex2D(_texTop,IN.uv_texTop.xy);
-float4 Lerp1=lerp(Lerp4,Sampled2D5,Splat0);
-float4 Sampled2D2=tex2D(_Normals,IN.uv_Normals.xy);
-float4 UnpackNormal0=float4(UnpackNormal(Sampled2D2).xyz, 1.0);
-float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Tex2D1;
-float4 ParallaxOffset0= ParallaxOffset( Invert0.x, _BiasTerreno.xxxx.x, float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz).xyxy;
-float4 Add0=UnpackNormal0 + ParallaxOffset0;
+float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.w, Split0.w, Split0.w, Split0.w);
+float4 Lerp4=lerp(Lerp3,Sampled2D5,Invert1);
+float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Lerp1;
-o.Normal = Add0;
+o.Albedo = Lerp4;
 
 				o.Normal = normalize(o.Normal);
 			}
 		ENDCG
 	}
-	Fallback "VertexLit"
+	Fallback "Diffuse"
 }
