@@ -165,6 +165,7 @@ public class Estados : MonoBehaviour {
 	//Update y transiciones de estados -------------------------------------------------------------------------------------------------------
 	
 	void Awake() {		
+		Random.seed = System.DateTime.Now.Millisecond;
 		contenedorTexturas = GameObject.FindGameObjectWithTag("Carga");
 		if (contenedorTexturas == null) {
 			creacionInicial();
@@ -196,27 +197,25 @@ public class Estados : MonoBehaviour {
 		
 		int x = 0;
 		int y = 0;
-		//ESPECIE VEGETAL => string nombre, int numMaxVegetales, int numIniVegetales, int capacidadReproductiva, int capacidadMigracion, int radioMigracion, T_habitats habitat,Texture2D textura)
-		//EspecieVegetal especie = new EspecieVegetal("musgo",100,5,10,5,10,T_habitats.plain,0);
-		EspecieVegetal especie = new EspecieVegetal("musgo",10,10,10,25,8,T_habitats.plain,0);
+		//ESPECIE VEGETAL => nombre numMaxVegetales numIniVegetales capacidadReproductiva capacidadMigracionLocal capacidadMigracionGlobal int radioMigracion T_habitats habitat canalTextura
+		
+		EspecieVegetal especie = new EspecieVegetal("musgo",100,10,10,5,0.1f,8,T_habitats.plain,0);
 		vida.anadeEspecieVegetal(especie);
 		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
 		vida.anadeVegetal(especie,x,y);	
+		Debug.Log("musgo1 x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie2 = new EspecieVegetal("musgo2",10,10,10,25,8,T_habitats.mountain,1);
+		EspecieVegetal especie2 = new EspecieVegetal("musgo2",100,10,10,5,0.1f,15,T_habitats.mountain,1);
 		vida.anadeEspecieVegetal(especie2);
 		vida.buscaPosicionVaciaVegetal(T_habitats.mountain,ref x,ref y);
 		vida.anadeVegetal(especie2,x,y);	
+		Debug.Log("musgo2 x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie3 = new EspecieVegetal("musgo3",10,10,10,25,8,T_habitats.hill,2);
+		EspecieVegetal especie3 = new EspecieVegetal("musgo3",100,10,10,5,0.1f,12,T_habitats.hill,2);
 		vida.anadeEspecieVegetal(especie3);
 		vida.buscaPosicionVaciaVegetal(T_habitats.hill,ref x,ref y);
 		vida.anadeVegetal(especie3,x,y);	
-		
-		EspecieVegetal especie4 = new EspecieVegetal("musgo4",10,10,10,25,8,T_habitats.sand,3);
-		vida.anadeEspecieVegetal(especie4);
-		vida.buscaPosicionVaciaVegetal(T_habitats.sand,ref x,ref y);
-		vida.anadeVegetal(especie4,x,y);	
+		Debug.Log("musgo3 x: "+x+"   y: "+y);
 		
 		
 		/*
