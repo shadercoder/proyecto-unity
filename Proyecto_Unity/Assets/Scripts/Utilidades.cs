@@ -8,6 +8,8 @@ using System;
 using System.Runtime.Serialization;
 using System.Reflection;
 
+using System.Collections;
+using System.Collections.Generic;
 
 //Clase contenedora del savegame ------------------------------------------------------------------------------------------------------
 [System.Serializable]
@@ -157,10 +159,9 @@ public class FuncTablero {
 	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 	public static int margen = 50;					//El numero de pixeles que habrá en los polos intransitables
-
 	public static int altoTableroUtil;				//El alto del tablero una vez eliminadas las casillas de los polos
 	
-	
+		
 	//Funciones --------------------------------------------------------------------------------------------------------------------
 	
 	public static float ruido_Turbulence(Vector2 coordsIn, int nOctavas, float lacunarity, float gain) {
@@ -387,12 +388,9 @@ public class FuncTablero {
 					habitat = T_habitats.mountain;
 				}
 				
-				//TODO Se coge una o varias especies aleatorias de las iniciales	
-				//TODO Calculos para ver la especie/s a meter
-				
 				tablero[i,j] = new Casilla(media, habitat, elems, cord);
 			}
-		}
+		}		
 		return tablero;
 	}
 	
@@ -575,6 +573,21 @@ public class FuncTablero {
 		perlin = new Perlin();
 	}
 	
+	//Ordena aleatoriamente una lista
+	public static void randomLista<T>(IList<T>lista)
+	{
+		System.Random random = new System.Random();
+		int pos;		
+		T aux;
+		for(int i = lista.Count; i > 1; i--)
+		{
+			pos = random.Next(i);
+			aux = lista[i-1];
+			lista[i-1] = lista[pos];
+			lista[pos] = aux;
+		}			
+	}	
+		
 	//Getters y setters -------------------------------------
 	
 	public static void setOctavas(int entrada) {
