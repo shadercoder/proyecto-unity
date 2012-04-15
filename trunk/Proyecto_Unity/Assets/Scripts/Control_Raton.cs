@@ -27,6 +27,11 @@ public class Control_Raton : MonoBehaviour {
 	private float ySmooth = 0.0f; 
 	private float xVelocity = 0.0f;
 	private float yVelocity = 0.0f;
+	
+	private bool desplazamientoTeclado = false;
+	
+	//Cache
+	private Transform miTransform;
 		
 	//Raycast para la parte de pulsar y centrar
 	private RaycastHit hit;
@@ -39,9 +44,10 @@ public class Control_Raton : MonoBehaviour {
 	
 	
 	void Start () {	
-	    Vector3 angles = transform.eulerAngles;
+		miTransform = transform;
+	    Vector3 angles = miTransform.eulerAngles;
 	    x = angles.y;
-	    y = angles.x;
+	    y = angles.x;		
 	}
 	
 	void LateUpdate () {
@@ -58,8 +64,15 @@ public class Control_Raton : MonoBehaviour {
 		
 		if (disable) {
 			Vector3 dirTemp = target.position - Camera.main.transform.position;
-			transform.rotation = Quaternion.LookRotation(dirTemp);
+			miTransform.rotation = Quaternion.LookRotation(dirTemp);
 			return;
+		}
+		
+		if (Input.GetKeyUp("t")) {
+			if (desplazamientoTeclado)
+				desplazamientoTeclado = false;
+			else
+				desplazamientoTeclado = true;
 		}
 	//Hasta aqui la parte de control inicial --------------------------------------------------------------		
 		
@@ -74,14 +87,27 @@ public class Control_Raton : MonoBehaviour {
 //					temporizador = Time.time + 0.5f;
 //				}
 //			}
-//		}    
+//		}   
+		
+	//Control con los botones del teclado
+		if (target && desplazamientoTeclado) {
+			x += Input.GetAxis("Horizontal");
+			y += Input.GetAxis("Vertical");
+			xSmooth = Mathf.SmoothDamp(xSmooth, x, ref xVelocity, smoothTime);
+		    ySmooth = Mathf.SmoothDamp(ySmooth, y, ref yVelocity, smoothTime);
+		    ySmooth = ClampAngle(ySmooth, yMinLimit, yMaxLimit);
+	        rotation = Quaternion.Euler(ySmooth, xSmooth, 0);
+			miTransform.rotation = rotation;
+			miTransform.position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
+			rotacionObjetivo = Quaternion.Euler(y, x, 0);
+		}
 	   
 	//Esta parte es para el click & drag con el boton derecho --------------------------------------------
 		
 	    //Al pinchar con el boton derecho, resetear las posiciones para que no haya saltos bruscos
 	    if (target && Input.GetMouseButtonDown(1) && estado == 0) {
-	    	y = transform.rotation.eulerAngles.x;
-	    	x = transform.rotation.eulerAngles.y;
+	    	y = miTransform.rotation.eulerAngles.x;
+	    	x = miTransform.rotation.eulerAngles.y;
 	    	xSmooth = x;
 	    	ySmooth = y;
 	    }
@@ -94,8 +120,8 @@ public class Control_Raton : MonoBehaviour {
 		    ySmooth = Mathf.SmoothDamp(ySmooth, y, ref yVelocity, smoothTime);
 		    ySmooth = ClampAngle(ySmooth, yMinLimit, yMaxLimit);
 	        rotation = Quaternion.Euler(ySmooth, xSmooth, 0);
-	        transform.rotation = rotation;
-	        transform.position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
+	        miTransform.rotation = rotation;
+	        miTransform.position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
 	        rotacionObjetivo = Quaternion.Euler(y, x, 0);
 	    }
 	    
@@ -108,11 +134,11 @@ public class Control_Raton : MonoBehaviour {
 		   	}
 	   	}	
 	   	
-		rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, Time.deltaTime * 3);
+		rotation = Quaternion.Slerp(miTransform.rotation, rotacionObjetivo, Time.deltaTime * 3);
 		position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
 	
-		transform.rotation = rotation;
-		transform.position = position;
+		miTransform.rotation = rotation;
+		miTransform.position = position;
 	//Hasta aqui el click & drag con el boton derecho -------------------------------------------------------
 	   	
 	}
@@ -138,5 +164,9 @@ public class Control_Raton : MonoBehaviour {
 	
 	public void setInteraccion(bool bol) {
 		interaccion = bol;
+	}
+	
+	public void setDesplazamientoTeclado(bool entrada) {
+		desplazamientoTeclado = entrada;
 	}
 }
