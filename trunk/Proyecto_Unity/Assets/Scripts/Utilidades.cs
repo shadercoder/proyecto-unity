@@ -137,19 +137,19 @@ public class FuncTablero {
 	private static Perlin perlin;					//Semilla
 	
 	//Ruido
-	public static int octavas	= 4;				//Octavas para la funcion de ruido de turbulencias
-	public static int octavas2	= 12;				//Octavas para la funcion de ruido de turbulencias
-	public static float lacunaridad	= 4.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
-	public static float ganancia = 0.45f;			//El peso que se le da a cada nueva octava
-	public static float escala = 0.004f;			//El nivel de zoom sobre el ruido
+	private static int octavas	= 4;				//Octavas para la funcion de ruido de turbulencias
+	private static int octavas2	= 12;				//Octavas para la funcion de ruido de turbulencias
+	private static float lacunaridad	= 4.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
+	private static float ganancia = 0.45f;			//El peso que se le da a cada nueva octava
+	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	public static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
-	public static float tamanoPlaya = 0.01f;		//El tamaño de las playas
-	public static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
-	public static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
-	public static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
-	public static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color
+	private static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
+	private static float tamanoPlaya = 0.01f;		//El tamaño de las playas
+	private static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
+	private static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
+	private static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
+	private static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)

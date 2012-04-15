@@ -6,56 +6,64 @@ using System.Collections;
 public class Estados : MonoBehaviour {
 
 	//Variables ---------------------------------------------------------------------------------------------------------------------------
-
-	//GUI
-	public GUISkin estiloGUI;											//Los estilos diferentes para la GUI, configurables desde el editor
-	public GUISkin estiloGUI_Nuevo;
+	
+	//Públicas
 	public GameObject camaraReparaciones;								//Para mostrar las opciones de las reparaciones de la nave
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
+	public GUISkin estiloGUI;											//Los estilos diferentes para la GUI, configurables desde el editor
+	public GUISkin estiloGUI_Nuevo;										//Estilos para la GUI, nueva versión
+	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
+	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
+	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
+	public float tiempoPincel					= 0.001f;				//Incremento de tiempo para aplicar el pincel
+	public float tiempoTooltip 					= 0.75f;				//Tiempo que tarda en aparecer el tooltip	
+	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
+	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
+	
+	//GUI	
 	private int cuantoW							= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
 	private int cuantoH							= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
-	
+		//Botones grandes
 	private bool menuAltera						= false;				//Variables de control de los botones grandes
 	private bool menuCamara						= false;				//de la interfaz del menu izquierdo
 	private bool menuOpcion						= false;
-	
+		//Botones pequeños
 	private bool botonPequePincel				= false;				//Variables de control de los botones pequeños
 	private bool botonPequeSubir				= false;				//de la interfaz del menu izquierdo
 	private bool botonPequeBajar				= false;
 	private bool botonPequeAllanar				= false;
 	
-	private bool activarPinceles				= false;				//Variable de control para pintar sobre la textura
-	
-	private int seleccionPincel 				= 0;					//la selección del pincel a utilizar
-//	private string[] nombresPinceles			= new string[] {"Crater", "Volcan", "Pincel duro", "Pincel suave", "Pincel irregular"};
-	
 	//Privadas del script
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
-	private Vida vida;													//Tablero lógico del algoritmo
-	
+	private Vida vida;													//Tablero lógico del algoritmo		
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
-	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
-	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
+		//Pinceles
+	private bool activarPinceles				= false;				//Variable de control para pintar sobre la textura	
+	private int seleccionPincel 				= 0;					//la selección del pincel a utilizar
 	private float ultimoPincel					= 0.0f;					//Ultimo pincel aplicado
-	public float tiempoPincel					= 0.001f;				//Incremento de tiempo para aplicar el pincel
+		//Filtros -----------------
+	private float tiempoCasilla					= 0.5f;					//Cuanto tiempo tiene que pasar entre casilla y casilla
+	private float ultimaCasilla					= 0.0f;					//Momento en el que se lanzo el ultimo rayo
+		//Filtro de especies 
+	private bool infoEspecies					= false;				//Indica si se muestra la info de las especies de la casilla
+	private string infoEspecies_Hab;									//La primera linea a mostrar en la casilla de info de especies
+	private string infoEspecies_Esp;									//La segunda linea de la casilla info especies
+		//Filtro de elementos
+	private bool infoElems						= false;				//Indica si se muestra la info de los elementos de la casilla
+	private string infoElems_Elem;										//Primera linea a mostrar de la info de elementos
+		//Algoritmo vida
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
 	private int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
-	private bool algoritmoActivado				= false;
+	private bool algoritmoActivado				= false;				//Se encuentra activado el algoritmo de la vida?
 	/*** DEBUG ***/
-	public int numCasillasPlain					= 0;	
+	private int numCasillasPlain				= 0;	
 	/*************/
-	
-	//Opciones
-	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
-	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
-	private AudioSource sonido;											//La fuente del audio
 	
 	//Tooltips
 	private Vector3 posicionMouse 				= Vector3.zero;			//Guarda la ultima posicion del mouse		
 	private bool activarTooltip 				= false;				//Controla si se muestra o no el tooltip	
 	private float ultimoMov 					= 0.0f;					//Ultima vez que se movio el mouse		
-	public float tiempoTooltip 					= 0.75f;				//Tiempo que tarda en aparecer el tooltip	
 	
 	//Menus para guardar
 	private Vector2 posicionScroll 				= Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
@@ -70,13 +78,13 @@ public class Estados : MonoBehaviour {
 	
 	//Funciones auxiliares -----------------------------------------------------------------------------------------------------------------------
 	
-	public IEnumerator corutinaPincel() {
+	private IEnumerator corutinaPincel() {
 		//Interacción con los pinceles
 		if (Time.realtimeSinceStartup >= ultimoPincel + tiempoPincel) {
 			ultimoPincel = Time.realtimeSinceStartup;
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity)) {
+			if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
 				bool temp = false;
 				if (botonPequeSubir)
 					temp = true;
@@ -88,13 +96,58 @@ public class Estados : MonoBehaviour {
 		yield return new WaitForEndOfFrame();
 	}
 	
+	private void actualizaInfoEspecies() {
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+			Vector2 coordTemp = hit.textureCoord;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+			Vegetal veg = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].vegetal;
+			Animal anim = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].animal;
+			T_habitats hab = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].habitat;
+			infoEspecies_Hab = "Habitat: " + hab.ToString() + "";
+			infoEspecies_Esp = "";
+			if (anim != null)
+				infoEspecies_Esp += "Animal: " + anim.especie.nombre + "\n";
+			if (veg != null)
+				infoEspecies_Esp += "Planta: " + veg.especie.nombre;
+		}
+		else {
+			infoEspecies_Esp = "";
+			infoEspecies_Hab = "";
+		}
+	}
+	
+	private void actualizaInfoElems() {
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+			Vector2 coordTemp = hit.textureCoord;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+			T_elementos[] elem = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].elementos;
+			if (elem.Length > 0) {
+				infoElems_Elem = "Encontrado " + elem[0].ToString();
+				for (int i = 1; i < elem.Length; i++) {
+					infoElems_Elem += ", " + elem[i].ToString() + "\n";	
+				}
+			}
+			else 
+				infoElems_Elem = "";
+		}
+		else {
+			infoElems_Elem = "";
+		}
+	}
+	
 	//Funciones principales ----------------------------------------------------------------------------------------------------------------------
 	private void creacionInicial() {
 		Debug.Log("Creando planeta de cero en creacionInicial");
 		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
-		GameObject planeta = GameObject.FindWithTag("Planeta");
-		MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
-		Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+		Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 		
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
@@ -118,9 +171,7 @@ public class Estados : MonoBehaviour {
 		}
 		else {
 			//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez			
-			GameObject planeta = GameObject.FindWithTag("Planeta");
-			MeshRenderer renderer = planeta.GetComponent<MeshRenderer>();
-			Texture2D texturaBase = renderer.sharedMaterial.mainTexture as Texture2D;
+			Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			texturaBase = temp.texturaBase;
 			texturaBase.Apply();
@@ -139,7 +190,7 @@ public class Estados : MonoBehaviour {
 			efectos.activado = false;
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
 		
-		Texture2D tex = GameObject.FindGameObjectWithTag("Planeta").renderer.sharedMaterial.mainTexture as Texture2D;
+		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 		Casilla[,] tablero = FuncTablero.iniciaTablero(tex);
 		vida = new Vida(tablero, texPlantas);				
 		
@@ -274,7 +325,19 @@ public class Estados : MonoBehaviour {
 		if (botonPequeSubir || botonPequeBajar || botonPequeAllanar) 
 			activarPinceles = true;
 		else
-			activarPinceles = false;						
+			activarPinceles = false;
+		
+		//Info de la casilla
+		if ((infoEspecies || infoElems) && (Time.realtimeSinceStartup > ultimaCasilla + tiempoCasilla)) {
+			//Especies
+			if (infoEspecies) {
+				actualizaInfoEspecies();
+			}
+			//Elementos
+			else {
+				actualizaInfoElems();
+			}
+		}
 	}
 	
 	//Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
@@ -319,12 +382,23 @@ public class Estados : MonoBehaviour {
 			else
 				algoritmoActivado = true;
 		
+		//Informacion del debug del algoritmo
 		GUI.Box(new Rect(cuantoW * 40, cuantoH * 25,cuantoW * 8,cuantoH * 5),new GUIContent("Algoritmo Especies","debug"));
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 26,cuantoW * 7,cuantoH * 2),"Num vegetales: "+vida.vegetales.Count);
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 27,cuantoW * 7,cuantoH * 2),"Num animales: "+vida.animales.Count);
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 28,cuantoW * 7,cuantoH * 2),"Num pasos: "+numPasos);
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 29,cuantoW * 7,cuantoH * 2),"Num casillas plain: "+numCasillasPlain);
 				
+		//Info de la casilla
+		//Especies
+		if (infoEspecies) {
+			infoCasillaEspecie();
+		}
+		//Elementos
+		else if (infoElems) {
+			infoCasillaElems();
+		}		
+		
 		//Tooltip
 		if (activarTooltip) {
 			float longitud = GUI.tooltip.Length;
@@ -389,7 +463,7 @@ public class Estados : MonoBehaviour {
 		Control_Raton script;
 		GUI.Box(new Rect(cuantoW * 14, cuantoH * 7, cuantoW * 20, cuantoH * 16), "");
 		posicionScroll = GUI.BeginScrollView(new Rect(cuantoW * 14, cuantoH * 8, cuantoW * 20, cuantoH * 14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
-		if (GUI.Button(new Rect(cuantoW, cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
+		if (GUI.Button(new Rect(cuantoW, 0, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) {
 			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 			string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
 			SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
@@ -422,6 +496,7 @@ public class Estados : MonoBehaviour {
 		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
 			//Recuperar estado normal
 			Time.timeScale = 1.0f;
+			escalaTiempo = 1.0f;
 			script = transform.parent.GetComponent<Control_Raton>();
 			script.setInteraccion(true);
 			estado = T_estados.principal;
@@ -502,11 +577,15 @@ public class Estados : MonoBehaviour {
 				script.setInteraccion(false);
 				estado = T_estados.reparaciones;
 			}
-			if (GUI.Button(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 2.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("", "Vista de las especies"), "BotonPequeEspecies")) {
-				Debug.Log("Pulsado peque camara 3-4");
+			infoEspecies = GUI.Toggle(new Rect(pos.x + (pos.width * 7.7f / 12.0f), pos.y + (pos.height * 2.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), infoEspecies, new GUIContent("", "Vista de las especies"), "BotonPequeEspecies");
+			if (GUI.changed && infoEspecies) {
+				//Activar información de las especies de la casilla
+				infoElems = false;
 			}
-			if (GUI.Button(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 3.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), new GUIContent("", "Vista de los elementos"), "BotonPequeCristales")) {
-				Debug.Log("Pulsado peque camara 4-4");
+			infoElems = GUI.Toggle(new Rect(pos.x + (pos.width * 9.1f / 12.0f), pos.y + (pos.height * 3.75f / 5.0f), (pos.width * 1.4f / 12.0f), (pos.height * 1.7f / 5.0f)), infoElems, new GUIContent("", "Vista de los elementos"), "BotonPequeCristales");
+			if (GUI.changed && infoElems) {	
+				//Activar información de los elementos de la casilla
+				infoEspecies = false;
 			}
 		}
 	}
@@ -582,6 +661,17 @@ public class Estados : MonoBehaviour {
 			return 4;
 		}
 		return entrada;
+	}
+	
+	private void infoCasillaEspecie() {
+		GUI.Box(new Rect(cuantoW * 40, cuantoH * 20, cuantoW * 8, cuantoH * 4), new GUIContent("", "Informacion de la casilla"));
+		GUI.Label(new Rect(cuantoW * 40, cuantoH * 20.2f, cuantoW * 8, cuantoH * 1.6f), infoEspecies_Hab);
+		GUI.Label(new Rect(cuantoW * 40, cuantoH * 22.0f, cuantoW * 8, cuantoH * 1.6f), infoEspecies_Esp);
+	}
+	
+	private void infoCasillaElems() {
+		GUI.Box(new Rect(cuantoW * 40, cuantoH * 20, cuantoW * 8, cuantoH * 4), new GUIContent("", "Informacion de la casilla"));
+		GUI.Label(new Rect(cuantoW * 40, cuantoH * 20.2f, cuantoW * 8, cuantoH * 1.6f), infoElems_Elem);
 	}
 
 }
