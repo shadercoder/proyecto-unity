@@ -350,14 +350,27 @@ public class FuncTablero {
 	    return pixelsN;
 	}
 	
-	public static Casilla[,] iniciaTablero(Texture2D tex) {
+	public static Casilla[,] iniciaTablero(Texture2D tex, Mesh mesh) {
 		Color[] pixels = tex.GetPixels();
 		Casilla[,] tablero = new Casilla[altoTableroUtil,anchoTablero];
+		Vector3[] vertices = mesh.vertices;
+		Vector2[] uvs = mesh.uv;
 		for (int i = 0; i < altoTableroUtil; i++) {
 			for (int j = 0; j < anchoTablero; j++) {
 				//Las coordenadas de la casilla actual en la textura
 				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
-				
+				int indice = -1;
+				for (int k = 0; k < uvs.Length; k++) {
+					Vector2 temp = uvs[i];
+					temp.x *= tex.width;
+					temp.y *= tex.height;
+					if (temp.x == cord.x && temp.y == cord.y) {
+						indice = i;
+						break;
+					}
+				}
+				if (indice == -1)
+					Debug.LogError("No se ha encontrado la coordenada por su UV en iniciaTablero(). Casilla: " + i + "," + j + ";");
 				//Se calcula la media de altura de la casilla
 				float media = 0;
 				for (int x = 0; x < relTexTabAlto; x++) {
@@ -388,7 +401,7 @@ public class FuncTablero {
 					habitat = T_habitats.mountain;
 				}
 				
-				tablero[i,j] = new Casilla(media, habitat, elems, cord);
+				tablero[i,j] = new Casilla(media, habitat, elems, cord, vertices[indice]);
 			}
 		}		
 		return tablero;
@@ -415,7 +428,7 @@ public class FuncTablero {
 		tex.SetPixel(w,h,pix);
 	}
 	
-	public static void alteraPixelColor(Texture2D tex, int w, int h, Color valor){
+	public static void alteraPixelColor(Texture2D tex, int w, int h, Color valor, bool positivo){
 		if (h < 0 || h > tex.height) {
 			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan. w = " + w + " h = " + h);
 		}
@@ -423,7 +436,10 @@ public class FuncTablero {
 			w += tex.width;
 		w = w % tex.width;
 		Color pix = tex.GetPixel(w,h);
-		pix += valor;
+		if (positivo)
+			pix += valor;
+		else
+			pix -= valor;
 		tex.SetPixel(w,h,pix);
 	}
 	
@@ -438,7 +454,7 @@ public class FuncTablero {
 	
 	
 	
-	public static void pintaPlantas(Texture2D objetivo, Vector2 coords, int idColor) {
+	public static void pintaPlantas(Texture2D objetivo, Vector2 coords, int idColor, bool positivo) {
 		Pinceles temp = GameObject.FindGameObjectWithTag("Pinceles").GetComponent<Pinceles>();
 		Texture2D pincelTex = temp.pincelPlantas;		
 		int w = pincelTex.width;
@@ -473,7 +489,7 @@ public class FuncTablero {
 			for (int j = 0; j < h; j++) {
 				colorTemp = colorObjetivo;
 				colorTemp *= pincelTex.GetPixel(i,j);
-					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorTemp);
+					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorTemp, positivo);
 			}
 		}
 	}
@@ -524,20 +540,24 @@ public class FuncTablero {
 		}
 	}
 	
-	public static void creaMesh(RaycastHit hit, int seleccion) {
+	public static GameObject creaMesh(RaycastHit hit, int seleccion) {
 		GameObject creacion;
 		switch (seleccion) {
 		case 0: 
 			creacion = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			creacion.renderer.material.color = Color.red;
 			break;
 		case 1: 
 			creacion = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+			creacion.renderer.material.color = Color.blue;
 			break;
 		case 2: 
 			creacion = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+			creacion.renderer.material.color = Color.black;
 			break;
 		case 3: 
 			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+			creacion.renderer.material.color = Color.green;
 			break;
 		case 4: 
 			//TODO Instanciar con instantiate(...) un prefab de nave
@@ -557,6 +577,17 @@ public class FuncTablero {
 		creacion.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
 		creacion.transform.position = punto;
 		creacion.transform.rotation = Quaternion.LookRotation(hit.normal);	//Camera.main.transform.position, 
+		return creacion;
+	}
+	
+	public static GameObject creaMesh(Vector3 posicion, GameObject mesh) {
+		GameObject creacion = GameObject.Instantiate(mesh) as GameObject;
+		creacion.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+		creacion.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
+		creacion.transform.position = posicion;
+		Vector3 normal = posicion - creacion.transform.parent.position;
+		creacion.transform.rotation = Quaternion.LookRotation(normal);
+		return creacion;
 	}
 	
 	public static void inicializa(Texture2D tex) {
@@ -574,7 +605,7 @@ public class FuncTablero {
 	}
 	
 	//Ordena aleatoriamente una lista
-	public static void randomLista<T>(IList<T>lista)
+	public static void randomLista<T>(IList<T> lista)
 	{
 		System.Random random = new System.Random();
 		int pos;		

@@ -7,17 +7,19 @@ public class Casilla {
 	public T_habitats habitat;
 	public T_elementos[] elementos;
 	public Vector2 coordsTex;
+	public Vector3 coordsVert;
 	public Vegetal vegetal;
 	public Animal animal;
 	public Vector2[] pinceladas;
 	
-	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord) {
+	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord, Vector3 vert) {
 		habitat = hab;
 		altura = alt;
 		elementos = elems;
 		coordsTex = coord;
 		vegetal = null;
 		animal = null;
+		coordsVert = vert;
 	}
 }
  
@@ -90,17 +92,44 @@ public class Vida
 		texturaPlantas = vida.texturaPlantas;
 	}
 	
-	public void pintaPlantasTex(int posX,int posY) {
+	private void pintaPlantasTex(int posX,int posY) {
 		Vegetal veg = tablero[posX,posY].vegetal;
 		if (veg.numVegetales > 0) {
 			int temp = (int)Mathf.Lerp(0.0f, 4.0f, veg.numVegetales / veg.especie.numMaxVegetales);
-			Vector2[] arrayPos = new Vector2[temp];
-			for (int i = 0; i < temp; i++) {
-				int tempX = (int)(tablero[posX,posY].coordsTex.x + Random.Range(0, FuncTablero.getRelTexTabAncho()));
-				int tempY =  (int)(tablero[posX,posY].coordsTex.y + Random.Range(0, FuncTablero.getRelTexTabAlto()));
-				Vector2 posTemp = new Vector2(tempX, tempY);
-				arrayPos[i] = posTemp;
-				FuncTablero.pintaPlantas(texturaPlantas, posTemp, veg.especie.idTextura);
+			if (tablero[posX,posY].pinceladas != null) {
+				if (tablero[posX,posY].pinceladas.Length < temp) {
+					Vector2[] arrayPos = new Vector2[temp];
+					for (int j = 0; j < tablero[posX,posY].pinceladas.Length; j++) {
+						arrayPos[j] = tablero[posX,posY].pinceladas[j];
+					}
+					for (int i = tablero[posX,posY].pinceladas.Length; i < temp; i++) {
+						int tempX = (int)(tablero[posX,posY].coordsTex.x + Random.Range(0, FuncTablero.getRelTexTabAncho()));
+						int tempY =  (int)(tablero[posX,posY].coordsTex.y + Random.Range(0, FuncTablero.getRelTexTabAlto()));
+						Vector2 posTemp = new Vector2(tempX, tempY);
+						arrayPos[i] = posTemp;
+						FuncTablero.pintaPlantas(texturaPlantas, posTemp, veg.especie.idTextura, true);
+					}
+					tablero[posX,posY].pinceladas = arrayPos;
+				}
+				else if (tablero[posX,posY].pinceladas.Length > temp) {
+					Vector2[] arrayPos = new Vector2[temp];
+					for (int j = 0; j < temp; j++) {
+						arrayPos[j] = tablero[posX,posY].pinceladas[j];
+					}
+					for (int i = temp; i < tablero[posX,posY].pinceladas.Length; i++) {
+						FuncTablero.pintaPlantas(texturaPlantas, tablero[posX,posY].pinceladas[i], veg.especie.idTextura, false);
+					}
+					tablero[posX,posY].pinceladas = arrayPos;
+				}
+			}
+			else {
+				tablero[posX,posY].pinceladas = new Vector2[temp];
+				for (int i = 0; i < temp; i++) {
+					int tempX = (int)(tablero[posX,posY].coordsTex.x + Random.Range(0, FuncTablero.getRelTexTabAncho()));
+					int tempY =  (int)(tablero[posX,posY].coordsTex.y + Random.Range(0, FuncTablero.getRelTexTabAlto()));
+					tablero[posX,posY].pinceladas[i] = new Vector2(tempX, tempY);
+					FuncTablero.pintaPlantas(texturaPlantas, tablero[posX,posY].pinceladas[i], veg.especie.idTextura, true);
+				}
 			}
 		}
 	}
@@ -209,6 +238,7 @@ public class Vida
 		if(tieneAnimal(posX,posY) || especie.habitat != tablero[posX,posY].habitat)
 			return false;
 		Animal animal = new Animal(idActualAnimal,especie,posX,posY);
+		animal.malla = FuncTablero.creaMesh(tablero[posX,posY].coordsVert, animal.especie.modelo);
 		idActualAnimal++;
 		seres.Add(animal);
 		animales.Add(animal);		
@@ -254,6 +284,10 @@ public class Vida
 				animal.desplazarse(nposX,nposY);
 				tablero[animal.posX,animal.posY].animal = null;
 				tablero[nposX,nposY].animal = animal;
+				//Mover la malla
+				animal.malla.transform.position = tablero[nposX,nposY].coordsVert;
+				Vector3 normal = animal.malla.transform.position - animal.malla.transform.parent.position;
+				animal.malla.transform.rotation = Quaternion.LookRotation(normal);
 				return true;
 			}	
 			if(nposX > animal.posX) nposX--;
@@ -391,13 +425,8 @@ public class Vida
 			if(ser is Vegetal)
 			{
 				vegetal = (Vegetal)ser;
-				int temp1 = (int)Mathf.Lerp(0.0f, 4.0f, vegetal.numVegetales / vegetal.especie.numMaxVegetales);
 				if(vegetal.reproduccion())
-				{
-					int temp2 = (int)Mathf.Lerp(0.0f, 4.0f, vegetal.numVegetales / vegetal.especie.numMaxVegetales);
-					if (temp1 != temp2)
 						pintaPlantasTex(vegetal.posX, vegetal.posY);
-				}
 				if(vegetal.migracionLocal())
 					migraVegetal(vegetal.especie,vegetal.posX,vegetal.posY,1);
 				if(vegetal.migracionGlobal())
@@ -504,12 +533,13 @@ public class EspecieAnimal : Especie
 	public int consumo;									//Alimento que consume por turno
 	public int reservaMaxima;							//Máximo valor para la reserva de comida, es decir, el alimento almacenado para sobrevivir
 	public int alimentoQueProporciona;					//Alimento que recibe un animal al comerse a uno de esta especie
-	public int vision;								//Rango de visión del animal para controlar su IA
+	public int vision;									//Rango de visión del animal para controlar su IA
 	public int velocidad;								//Número de casillas que puede desplazarse por turno
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public tipoAnimal tipo;								//herbivoro o carnivoro 
+	public GameObject modelo;							//El modelo a usar en la especie
 		
-	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo, T_habitats habitat)
+	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo, T_habitats habitat, GameObject malla)
 	{
 		this.nombre = nombre;
 		this.consumo = consumo;
@@ -520,6 +550,7 @@ public class EspecieAnimal : Especie
 		this.reproductibilidad = reproductibilidad;	
 		this.tipo = tipo;
 		this.habitat = habitat;
+		this.modelo = malla;
 	}		
 }
 
@@ -602,14 +633,15 @@ public class Animal : Ser
 	public int reserva;								//Reserva de alimento que tiene
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
 	public GameObject malla;
-	public Animal(int idSer,EspecieAnimal especie,int posX,int posY)//,GameObject malla)
+	
+	public Animal(int idSer,EspecieAnimal especie,int posX,int posY)
 	{
 		this.idSer = idSer;
 		this.especie = especie;
 		this.reserva = especie.reservaMaxima/2;
 		this.turnosParaReproduccion = especie.reproductibilidad;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
-		//this.malla = malla;
+		this.malla = null;
 	}
 	
 	//Devuelve true si el animal sobrevive y false si muere
