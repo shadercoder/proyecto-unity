@@ -192,7 +192,8 @@ public class Estados : MonoBehaviour {
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
 		
 		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-		Casilla[,] tablero = FuncTablero.iniciaTablero(tex);
+		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
+		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, mesh);
 		vida = new Vida(tablero, texPlantas);				
 		
 		int x = 0;
