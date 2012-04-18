@@ -158,6 +158,10 @@ public class Estados : MonoBehaviour {
 		
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
+//		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
+//		Mesh meshTemp = filter.sharedMesh;
+//		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f);
+//		filter.sharedMesh = meshTemp;
 		
 		estado = T_estados.principal;
 	}

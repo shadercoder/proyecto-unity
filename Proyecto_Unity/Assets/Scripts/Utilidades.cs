@@ -359,12 +359,13 @@ public class FuncTablero {
 			for (int j = 0; j < anchoTablero; j++) {
 				//Las coordenadas de la casilla actual en la textura
 				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
+				Vector2 cord2 = new Vector2((j + 1) * relTexTabAncho, (i + 1 + casillasPolos) * relTexTabAlto);
 				int indice = -1;
 				for (int k = 0; k < uvs.Length; k++) {
-					Vector2 temp = uvs[i];
+					Vector2 temp = uvs[k];
 					temp.x *= tex.width;
 					temp.y *= tex.height;
-					if (temp.x == cord.x && temp.y == cord.y) {
+					if (temp.x >= cord.x && temp.y >= cord.y && temp.x <= cord2.x && temp.y <= cord2.y) {
 						indice = i;
 						break;
 					}
@@ -588,6 +589,20 @@ public class FuncTablero {
 		Vector3 normal = posicion - creacion.transform.parent.position;
 		creacion.transform.rotation = Quaternion.LookRotation(normal);
 		return creacion;
+	}
+	
+	public static Mesh extruyeVertices(Mesh mesh, Texture2D tex, float extrusion) {
+		Vector3[] verts = mesh.vertices;
+		for (int i = 0; i < verts.Length; i++) {
+			Vector2 cord = mesh.uv[i];
+			cord.x *= tex.width;
+			cord.y *= tex.height;
+			Color col = tex.GetPixel((int)cord.x, (int)cord.y);
+			verts[i] = verts[i] + (extrusion * mesh.normals[i] * col.r);
+		}
+		Mesh resultado = mesh;
+		resultado.vertices = verts;
+		return resultado;
 	}
 	
 	public static void inicializa(Texture2D tex) {
