@@ -591,17 +591,19 @@ public class FuncTablero {
 		return creacion;
 	}
 	
-	public static Mesh extruyeVertices(Mesh mesh, Texture2D tex, float extrusion) {
+	public static Mesh extruyeVertices(Mesh mesh, Texture2D tex, float extrusion, Vector3 centro) {
 		Vector3[] verts = mesh.vertices;
+		Vector3[] vertsRes = new Vector3[verts.Length];
 		for (int i = 0; i < verts.Length; i++) {
-			Vector2 cord = mesh.uv[i];
+			Vector2 cord = new Vector2(mesh.uv[i].x, mesh.uv[i].y);
 			cord.x *= tex.width;
 			cord.y *= tex.height;
 			Color col = tex.GetPixel((int)cord.x, (int)cord.y);
-			verts[i] = verts[i] + (extrusion * mesh.normals[i] * col.r);
+			Vector3 normal = verts[i] - centro;
+			vertsRes[i] = verts[i];// + (extrusion * normal.normalized * col.r);
 		}
-		Mesh resultado = mesh;
-		resultado.vertices = verts;
+		Mesh resultado = GameObject.Instantiate(mesh) as Mesh;
+		resultado.vertices = vertsRes;
 		return resultado;
 	}
 	
