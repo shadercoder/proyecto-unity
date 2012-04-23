@@ -10,7 +10,7 @@ _PlantTex("Textura Plantas", 2D) = "black" {}
 _valorBlend("_valorBlend", Float) = 7
 _valorColorido("_valorColorido", Float) = 1.5
 _MainTex("Textura Relieve", 2D) = "black" {}
-_Amount("Extrusion", Range(-3,3) ) = 0.5
+_Amount("Extrusion", Float ) = 0.22
 
 	}
 	
