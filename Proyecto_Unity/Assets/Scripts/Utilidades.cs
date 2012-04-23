@@ -218,14 +218,25 @@ public class FuncTablero {
 		return med;
 	}
 	
-	public static Color[] mascaraBumpAgua(Color[] pixBump, float media) {
+	public static Color[] calculaTexAgua(Color[] pix, float alturaCosta) {
+	/*Codigo de colores: 
+	 * Negro: no extrusion
+	 * tamañoPlaya?
+	 * Rojo: agua poco profunda
+	 * Punto medio - altura Costa
+	 * Verde: oceano
+	 * Azul: playa
+	 * */
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		for (int l = 0; l < pixAgua.Length; l++) {
-			if (pixBump[l].r < media){
-				pixAgua[l] = new Color(0,0,0);
-			}
-			else 
-				pixAgua[l] = new Color(1,1,1);			
+			if (pix[l].grayscale < 0.23f/*alturaCosta-tamanoPlay0a*/){
+				pixAgua[l] = new Color (0, 0.5f+pix[l].g, 0, 0);				
+			} else if ((0.23 <= pix[l].grayscale)&& (pix[l].grayscale < 0.245/*alturaCosta-tamanoPlaya*/)){
+				pixAgua[l] = new Color (0.5f+pix[l].r, 0, 0,  0);
+			} else if ((/*alturaCosta+tamanoPlaya*/ 0.245<= pix[l].grayscale)&& (pix[l].grayscale < 0.4/*alturaCosta*/)){
+				pixAgua[l] = new Color (0, 0, 0.5f+pix[l].b, 0);
+			} else 
+				pixAgua[l] = Color.black;
 		}
 		return pixAgua;
 	}
@@ -302,6 +313,7 @@ public class FuncTablero {
 		return y;
 	}
 	
+	[Obsolete("No es necesario usar este metodo")]
 	public static Color[] realzarRelieve(Color[] pix, float media) {
 		Color[] pixels = pix;
 		for (int i = 0; i < pixels.Length; i++) {
@@ -317,6 +329,7 @@ public class FuncTablero {
 		return pixels;
 	}
 	
+	[Obsolete("No es necesario usar este metodo")]
 	public static Color32[] creaNormalMap(Texture2D tex){
 		Color32[] pixels = tex.GetPixels32();
 		Color32[] pixelsN = new Color32[anchoTextura * altoTextura];
@@ -600,8 +613,10 @@ public class FuncTablero {
 			cord.y *= tex.height;
 			Color col = tex.GetPixel((int)cord.x, (int)cord.y);
 			Vector3 normal = verts[i] - centro;
-			vertsRes[i] = verts[i];// + (extrusion * normal.normalized * col.r);
+			vertsRes[i] = verts[i];// + (extrusion * normal.normalized * tex.grayscale);
+			
 		}
+		
 		Mesh resultado = GameObject.Instantiate(mesh) as Mesh;
 		resultado.vertices = vertsRes;
 		return resultado;

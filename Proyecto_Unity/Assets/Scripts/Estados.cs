@@ -148,6 +148,7 @@ public class Estados : MonoBehaviour {
 		Debug.Log("Creando planeta de cero en creacionInicial");
 		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
 		Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+		Texture2D texturaAgua = objetoOceano.renderer.sharedMaterial.mainTexture as Texture2D;
 		
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
@@ -158,11 +159,15 @@ public class Estados : MonoBehaviour {
 		
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
-		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
+		
+		pixels = FuncTablero.calculaTexAgua(pixels, 0.25f);
+		texturaAgua.SetPixels(pixels);
+		texturaAgua.Apply();
+		/*MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
 		Mesh meshTemp = filter.mesh;
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
 		filter.mesh = meshTemp;
-		
+		*/
 		estado = T_estados.principal;
 	}
 	
