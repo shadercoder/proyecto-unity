@@ -27,6 +27,8 @@ public class Vida
 {
 	//Referencia a la textura de las plantas
 	public Texture2D texturaPlantas;
+	//Transform del objeto roca, para mover los meshes
+	private Transform objetoRoca;
 	//Estructuras
 	public Casilla[,] tablero;										//Tablero lógico que representa las casillas
 	public Dictionary<string, Especie> especies;					//Listado de todas las especies
@@ -58,7 +60,7 @@ public class Vida
 		idActualAnimal = 0;
 	}	
 	
-	public Vida(Casilla[,] tablero, Texture2D texPlantas)
+	public Vida(Casilla[,] tablero, Texture2D texPlantas, Transform objeto)
 	{
 		this.tablero = tablero;
 		especies = new Dictionary<string, Especie>();
@@ -73,6 +75,7 @@ public class Vida
 		idActualVegetal = 0;
 		idActualAnimal = 0;
 		texturaPlantas = texPlantas;
+		objetoRoca = objeto;
 	}
 	
 	public Vida(Vida vida)
@@ -239,6 +242,7 @@ public class Vida
 			return false;
 		Animal animal = new Animal(idActualAnimal,especie,posX,posY);
 		animal.malla = FuncTablero.creaMesh(tablero[posX,posY].coordsVert, animal.especie.modelo);
+		animal.malla.transform.position = objetoRoca.TransformPoint(animal.malla.transform.position);
 		idActualAnimal++;
 		seres.Add(animal);
 		animales.Add(animal);		
@@ -287,6 +291,7 @@ public class Vida
 				//Mover la malla
 				animal.malla.transform.position = tablero[nposX,nposY].coordsVert;
 				Vector3 normal = animal.malla.transform.position - animal.malla.transform.parent.position;
+				animal.malla.transform.position = objetoRoca.TransformPoint(animal.malla.transform.position);
 				animal.malla.transform.rotation = Quaternion.LookRotation(normal);
 				return true;
 			}	
