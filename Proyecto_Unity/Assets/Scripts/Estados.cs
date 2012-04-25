@@ -14,6 +14,7 @@ public class Estados : MonoBehaviour {
 	public GUISkin estiloGUI_Nuevo;										//Estilos para la GUI, nueva versión
 	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
 	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
+	public GameObject objetoPlanta;										//El objeto que representa la esfera de las plantas
 	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	public float tiempoPincel					= 0.001f;				//Incremento de tiempo para aplicar el pincel
 	public float tiempoTooltip 					= 0.75f;				//Tiempo que tarda en aparecer el tooltip	
@@ -160,16 +161,16 @@ public class Estados : MonoBehaviour {
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 		
-		pixels = FuncTablero.calculaTexAgua(pixels, 0.25f);
+		pixels = FuncTablero.calculaTexAgua(pixels);
 		texturaAgua.SetPixels(pixels);
 		texturaAgua.Apply();
-		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
-		Mesh meshTemp = filter.mesh;
-		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.0019f, objetoRoca.transform.position);
-		meshTemp.RecalculateNormals();
-		meshTemp.RecalculateBounds();
-		filter.mesh = meshTemp;
 		
+		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
+		MeshFilter filter2 = objetoPlanta.GetComponent<MeshFilter>();
+		Mesh meshTemp = filter.mesh;
+		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
+		filter.mesh = meshTemp;
+		filter2.mesh = meshTemp;
 		estado = T_estados.principal;
 	}
 	
