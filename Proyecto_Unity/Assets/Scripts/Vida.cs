@@ -10,6 +10,7 @@ public class Casilla {
 	public Vector3 coordsVert;
 	public Vegetal vegetal;
 	public Animal animal;
+	public Edificio edificio;
 	public Vector2[] pinceladas;
 	
 	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord, Vector3 vert) {
@@ -19,6 +20,7 @@ public class Casilla {
 		coordsTex = coord;
 		vegetal = null;
 		animal = null;
+		edificio = null;
 		coordsVert = vert;
 	}
 }
@@ -34,30 +36,40 @@ public class Vida
 	public Dictionary<string, Especie> especies;					//Listado de todas las especies
 	public Dictionary<string, EspecieVegetal> especiesVegetales;	//Listado de todas las especies vegetales
 	public Dictionary<string, EspecieAnimal> especiesAnimales;		//Listado de todas las especies animales
+	public Dictionary<string, TipoEdificio> tiposEdificios;			//Listado de todos los tipos de edificios
 	public List<Ser> seres;											//Listado de todos los seres
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
+	public List<Edificio> edificios;									//Listado de todos los edificios
+	
 	
 	public int numEspecies;
 	public int numEspeciesVegetales;
 	public int numEspeciesAnimales;
+	public int numTiposEdificios;
 	
 	public int idActualVegetal;
 	public int idActualAnimal;
+	public int idActualEdificio;
+	
 	
 	public Vida()
 	{
 		especies = new Dictionary<string, Especie>();
 		especiesVegetales = new Dictionary<string, EspecieVegetal>();
 		especiesAnimales = new Dictionary<string, EspecieAnimal>();
+		tiposEdificios = new Dictionary<string, TipoEdificio>();
 		seres = new List<Ser>();	
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
+		edificios = new List<Edificio>();
 		numEspecies = 0;
 		numEspeciesVegetales = 0;
 		numEspeciesAnimales = 0;
+		numTiposEdificios = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
+		idActualEdificio = 0;
 	}	
 	
 	public Vida(Casilla[,] tablero, Texture2D texPlantas, Transform objeto)
@@ -66,14 +78,17 @@ public class Vida
 		especies = new Dictionary<string, Especie>();
 		especiesVegetales = new Dictionary<string, EspecieVegetal>();
 		especiesAnimales = new Dictionary<string, EspecieAnimal>();
+		tiposEdificios = new Dictionary<string, TipoEdificio>();
 		seres = new List<Ser>();	
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
+		edificios = new List<Edificio>();
 		numEspecies = 0;
 		numEspeciesVegetales = 0;
 		numEspeciesAnimales = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
+		idActualEdificio = 0;
 		texturaPlantas = texPlantas;
 		objetoRoca = objeto;
 	}
@@ -84,14 +99,18 @@ public class Vida
 		especies = vida.especies;
 		especiesVegetales = vida.especiesVegetales;
 		especiesAnimales = vida.especiesAnimales;
+		tiposEdificios = vida.tiposEdificios;
 		seres = vida.seres;
-		vegetales = vida.vegetales;
-		animales = vida.animales;	
+		vegetales = vida.vegetales;		
+		animales = vida.animales;
+		edificios = vida.edificios;
 		numEspecies = vida.numEspecies;
 		numEspeciesVegetales = vida.numEspeciesVegetales;
 		numEspeciesAnimales = vida.numEspeciesAnimales;
+		numTiposEdificios = vida.numTiposEdificios;
 		idActualVegetal = vida.idActualVegetal;
 		idActualAnimal = vida.idActualAnimal;
+		idActualEdificio = vida.idActualEdificio;
 		texturaPlantas = vida.texturaPlantas;
 	}
 	
@@ -140,27 +159,19 @@ public class Vida
 	//Devuelve true si hay un vegetal en la casilla [x,y] y false si no lo hay
 	public bool tieneVegetal(int x,int y)
 	{		
-		try{
-		return tablero[x,y].vegetal != null;
-		}
-		catch(System.Exception)
-		{
-			Debug.Log("x: "+x+"  y: "+y);			
-		}
-		return true;		
+		return tablero[x,y].vegetal != null;				
 	}
 	
 	//Devuelve true si hay un animal en la casilla [x,y] y false si no lo hay
 	public bool tieneAnimal(int x,int y)
 	{
-		try{
-		return tablero[x,y].animal != null;
-		}
-		catch(System.Exception)
-		{
-			Debug.Log("x: "+x+"  y: "+y);			
-		}
-		return true;
+		return tablero[x,y].animal != null;		
+	}
+	
+	//Devuelve true si hay un edificio en la casilla [x,y] y false si no lo hay
+	public bool tieneEdificio(int x,int y)
+	{
+		return tablero[x,y].edificio != null;		
 	}
 	
 	//Devuelve false si la especie ya existe (no se añade) y true si se añade correctamente
@@ -189,6 +200,17 @@ public class Vida
 		return true;
 	}
 	
+	//Devuelve false si la especie ya existe (no se añade) y true si se añade correctamente
+	public bool anadeTipoEdificio(TipoEdificio tipoEdificio)
+	{			
+		if(tiposEdificios.ContainsKey((string)tipoEdificio.nombre))
+			return false;
+		tipoEdificio.idTipoSer = numTiposEdificios;
+		tiposEdificios.Add((string)tipoEdificio.nombre,tipoEdificio);
+		numTiposEdificios++;
+		return true;
+	}
+	
 	//Devuelve false si la especie no existe (no se elimina) y true si se elimina correctamente
 	public bool eliminaEspecieVegetal(EspecieVegetal especie)
 	{		
@@ -213,6 +235,16 @@ public class Vida
 		return true;
 	}
 	
+	//Devuelve false si el edificio no existe (no se elimina) y true si se elimina correctamente
+	public bool eliminaTipoEdificio(TipoEdificio tipoEdificio)
+	{		
+		if(!tiposEdificios.ContainsKey(tipoEdificio.nombre))
+			return false;
+		tiposEdificios.Remove(tipoEdificio.nombre);
+		numTiposEdificios--;
+		return true;
+	}
+	
 	//Devuelve la especie identificada por nombre
 	public Especie dameEspecie(string nombre)
 	{
@@ -220,11 +252,20 @@ public class Vida
 		especies.TryGetValue(nombre,out especie);
 		return especie;			
 	}
-			
+	
+	//Devuelve la especie identificada por nombre
+	public TipoEdificio dameTipoEdificio(string nombre)
+	{
+		TipoEdificio tipoEdificio;
+		tiposEdificios.TryGetValue(nombre,out tipoEdificio);
+		return tipoEdificio;			
+	}
+	
+	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeVegetal(EspecieVegetal especie,int posX,int posY)
 	{
-		if(tieneVegetal(posX,posY) || especie.habitat != tablero[posX,posY].habitat)
+		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY);
 		idActualVegetal++;
@@ -238,15 +279,28 @@ public class Vida
 	//Devuelve false si el animal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeAnimal(EspecieAnimal especie,int posX,int posY)
 	{
-		if(tieneAnimal(posX,posY) || especie.habitat != tablero[posX,posY].habitat)
+		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		Animal animal = new Animal(idActualAnimal,especie,posX,posY);
-		animal.malla = FuncTablero.creaMesh(tablero[posX,posY].coordsVert, animal.especie.modelo);
-		animal.malla.transform.position = objetoRoca.TransformPoint(animal.malla.transform.position);
+		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, especie.modelo));
+		animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
 		idActualAnimal++;
 		seres.Add(animal);
 		animales.Add(animal);		
 		tablero[posX,posY].animal = animal;
+		return true;
+	}
+	
+	//Devuelve false si el edificio ya existe (no se añade) y true si se añade correctamente	
+	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY)
+	{
+		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
+			return false;
+		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert,tipoEdificio.modelo));
+		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
+		idActualEdificio++;		
+		seres.Add(edificio);
+		edificios.Add(edificio);		
+		tablero[posX,posY].edificio = edificio;
 		return true;
 	}
 	
@@ -255,6 +309,7 @@ public class Vida
 	{
 		if(!vegetales.Contains(vegetal))
 			return false;
+		tablero[vegetal.posX,vegetal.posY].vegetal = null;
 		vegetales.Remove(vegetal);
 		return true;
 	}
@@ -264,7 +319,18 @@ public class Vida
 	{
 		if(!animales.Contains(animal))
 			return false;
+		tablero[animal.posX,animal.posY].animal = null;
 		animales.Remove(animal);
+		return true;
+	}
+	
+	//Devuelve false si el edificio no existe (no se elimina) y true si se elimina correctamente
+	public bool eliminaEdificio(Edificio edificio)
+	{
+		if(!edificios.Contains(edificio))
+			return false;
+		tablero[edificio.posX,edificio.posY].edificio = null;
+		edificios.Remove(edificio);
 		return true;
 	}
 	
@@ -283,16 +349,16 @@ public class Vida
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
 		while(animal.posX != nposX || animal.posY != nposY)		
 		{			
-			if(!tieneAnimal(nposX,nposY) && animal.especie.habitat == tablero[nposX,nposY].habitat)
+			if(!tieneAnimal(nposX,nposY) && animal.especie.tieneHabitat(tablero[nposX,nposY].habitat))
 			{
 				animal.desplazarse(nposX,nposY);
 				tablero[animal.posX,animal.posY].animal = null;
 				tablero[nposX,nposY].animal = animal;
 				//Mover la malla
-				animal.malla.transform.position = tablero[nposX,nposY].coordsVert;
-				Vector3 normal = animal.malla.transform.position - animal.malla.transform.parent.position;
-				animal.malla.transform.position = objetoRoca.TransformPoint(animal.malla.transform.position);
-				animal.malla.transform.rotation = Quaternion.LookRotation(normal);
+				animal.modelo.transform.position = tablero[nposX,nposY].coordsVert;
+				Vector3 normal = animal.modelo.transform.position - animal.modelo.transform.parent.position;
+				animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
+				animal.modelo.transform.rotation = Quaternion.LookRotation(normal);
 				return true;
 			}	
 			if(nposX > animal.posX) nposX--;
@@ -318,7 +384,7 @@ public class Vida
 	{
 		int vision = animal.especie.vision;
 		int velocidad = animal.especie.velocidad;
-		if(animal.especie.tipo == tipoAnimal.carnivoro)
+		if(animal.especie.tipo == tipoAlimentacionAnimal.carnivoro)
 		{
 			for(int i = 0; i < animales.Count; i++)
 			{
@@ -368,7 +434,7 @@ public class Vida
 				}
 			}			
 		}
-		else if(animal.especie.tipo == tipoAnimal.herbivoro)
+		else if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
 		{
 			for(int i = 0; i < vegetales.Count; i++)
 			{				
@@ -451,7 +517,12 @@ public class Vida
 					buscaAlimentoAnimal(animal);
 				else 															//Movimiento aleatorio				
 					movimientoAleatorio(animal);		
-			}			
+			}	
+			else if(ser is Edificio)
+			{
+				
+				
+			}
 		}
 		texturaPlantas.Apply();
 	}
@@ -497,13 +568,98 @@ public class Vida
 			}
 		return false;
 	}
+	
+	public bool buscaPosicionVaciaEdificio(T_habitats habitat,ref int x,ref int y)
+	{
+		List<int> listaX = new List<int>();
+		for(int i = 0; i < FuncTablero.altoTableroUtil; i++)
+			listaX.Add(i);
+		FuncTablero.randomLista(listaX);		
+		List<int> listaY = new List<int>();
+		for(int i = 0; i < FuncTablero.anchoTablero; i++)
+			listaY.Add(i);
+		FuncTablero.randomLista(listaY);
+		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
+			for(int j = 0; j < FuncTablero.anchoTablero; j++)
+			{
+				x = listaX[i];
+				y = listaY[j];
+				if(!tieneEdificio(x,y) && tablero[x,y].habitat == habitat)			   	
+					return true;				
+			}
+		return false;
+	}
+}
+
+public class TipoEdificio
+{
+	public int idTipoSer;								//Identificador del tipo de ser
+	public string nombre;								//Nombre del tipo de ser
+	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
+	public GameObject modelo;							//El modelo de este tipo de edificio		
+	
+	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
+	public bool aniadirHabitat(T_habitats habitat)
+	{
+		if(habitats.Contains(habitat))
+			return false;
+		habitats.Add(habitat);
+		return true;
+	}
+	
+	//Devuelve true si ha conseguido eliminar el hábitat, false si no existe
+	public bool eliminarHabitat(T_habitats habitat)
+	{
+		return habitats.Remove(habitat);
+	}
+	
+	public bool tieneHabitat(T_habitats habitat)
+	{
+		return habitats.Contains(habitat);
+	}
+	
+	public TipoEdificio(int idTipoSer,string nombre,T_habitats habitat,GameObject modelo)
+	{
+		habitats = new List<T_habitats>();
+		this.idTipoSer = idTipoSer;
+		this.nombre = nombre;
+		aniadirHabitat(habitat);
+		this.modelo = modelo;
+	}
+	public TipoEdificio(int idTipoSer,string nombre,List<T_habitats> habitats,GameObject modelo)
+	{
+		this.idTipoSer = idTipoSer;
+		this.nombre = nombre;
+		this.habitats = habitats;
+		this.modelo = modelo;		
+	}
 }
 
 public class Especie
 {
 	public int idEspecie;								//Identificador de la especie a la que pertenece	
 	public string nombre;								//Nombre de la especie
-	public T_habitats habitat;							//Diferentes hábitat en los que puede estar la especie
+	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
+	
+	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
+	public bool aniadirHabitat(T_habitats habitat)
+	{
+		if(habitats.Contains(habitat))
+			return false;
+		habitats.Add(habitat);
+		return true;
+	}
+	
+	//Devuelve true si ha conseguido eliminar el hábitat, false si no existe
+	public bool eliminarHabitat(T_habitats habitat)
+	{
+		return habitats.Remove(habitat);		
+	}
+	
+	public bool tieneHabitat(T_habitats habitat)
+	{
+		return habitats.Contains(habitat);
+	}	
 }
 
 public class EspecieVegetal : Especie
@@ -520,6 +676,7 @@ public class EspecieVegetal : Especie
 	
 	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura)
 	{
+		habitats = new List<T_habitats>();
 		this.nombre = nombre;
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
@@ -527,12 +684,24 @@ public class EspecieVegetal : Especie
 		this.capacidadMigracionLocal = capacidadMigracionLocal;
 		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
 		this.radioMigracion = radioMigracion;
-		this.habitat = habitat;
+		this.aniadirHabitat(habitat);
 		this.idTextura = idTextura;
-	}	
+	}
+	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura)
+	{
+		this.nombre = nombre;
+		this.numMaxVegetales = numMaxVegetales;
+		this.numIniVegetales = numIniVegetales;
+		this.capacidadReproductiva = capacidadReproductiva;
+		this.capacidadMigracionLocal = capacidadMigracionLocal;
+		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
+		this.radioMigracion = radioMigracion;
+		this.habitats = habitats;
+		this.idTextura = idTextura;
+	}
 }
 
-public enum tipoAnimal {herbivoro,carnivoro};	
+public enum tipoAlimentacionAnimal {herbivoro,carnivoro};	
 public class EspecieAnimal : Especie
 {
 	public int consumo;									//Alimento que consume por turno
@@ -541,10 +710,24 @@ public class EspecieAnimal : Especie
 	public int vision;									//Rango de visión del animal para controlar su IA
 	public int velocidad;								//Número de casillas que puede desplazarse por turno
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
-	public tipoAnimal tipo;								//herbivoro o carnivoro 
+	public tipoAlimentacionAnimal tipo;					//herbivoro o carnivoro 
 	public GameObject modelo;							//El modelo a usar en la especie
 		
-	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo, T_habitats habitat, GameObject malla)
+	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, GameObject modelo)
+	{
+		habitats = new List<T_habitats>();
+		this.nombre = nombre;
+		this.consumo = consumo;
+		this.reservaMaxima = reservaMaxima;
+		this.alimentoQueProporciona = alimentoQueProporciona;
+		this.vision = vision;
+		this.velocidad = velocidad;
+		this.reproductibilidad = reproductibilidad;	
+		this.tipo = tipo;
+		this.aniadirHabitat(habitat);
+		this.modelo = modelo;
+	}		
+	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, GameObject modelo)
 	{
 		this.nombre = nombre;
 		this.consumo = consumo;
@@ -554,9 +737,9 @@ public class EspecieAnimal : Especie
 		this.velocidad = velocidad;
 		this.reproductibilidad = reproductibilidad;	
 		this.tipo = tipo;
-		this.habitat = habitat;
-		this.modelo = malla;
-	}		
+		this.habitats = habitats;
+		this.modelo = modelo;
+	}	
 }
 
 public class Ser
@@ -575,9 +758,9 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	{
 		this.idSer = idSer;
 		this.especie = especie;
-		this.posX = posX % FuncTablero.altoTableroUtil;
-		this.posY = posY % FuncTablero.anchoTablero;
-		FuncTablero.convierteCoordenadas(ref posX,ref posY);
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
+		this.posX = posX;
+		this.posY = posY;
 		this.numVegetales = especie.numIniVegetales;
 	}	
 	
@@ -637,16 +820,18 @@ public class Animal : Ser
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
 	public int reserva;								//Reserva de alimento que tiene
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
-	public GameObject malla;
+	public GameObject modelo;
 	
-	public Animal(int idSer,EspecieAnimal especie,int posX,int posY)
+	public Animal(int idSer,EspecieAnimal especie,int posX,int posY,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.especie = especie;
 		this.reserva = especie.reservaMaxima/2;
-		this.turnosParaReproduccion = especie.reproductibilidad;
-		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
-		this.malla = null;
+		this.turnosParaReproduccion = especie.reproductibilidad;		
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
+		this.posX = posX;
+		this.posY = posY;
+		this.modelo = modelo;
 	}
 	
 	//Devuelve true si el animal sobrevive y false si muere
@@ -678,4 +863,19 @@ public class Animal : Ser
 	{
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
 	}		
+}
+
+public class Edificio : Ser
+{
+	public TipoEdificio tipo;
+	public GameObject modelo;
+	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,GameObject modelo)
+	{
+		this.idSer = idSer;
+		this.tipo = tipo;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
+		this.posX = posX;
+		this.posY = posY;
+		this.modelo = modelo;
+	}
 }
