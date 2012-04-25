@@ -613,7 +613,7 @@ public class FuncTablero {
 			cord.y *= tex.height;
 			Color col = tex.GetPixel((int)cord.x, (int)cord.y);
 			Vector3 normal = verts[i] - centro;
-			vertsRes[i] = verts[i];// + (extrusion * normal.normalized * tex.grayscale);
+			vertsRes[i] = verts[i];// + (extrusion * normal.normalized * col.grayscale);
 			
 		}
 		

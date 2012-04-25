@@ -163,11 +163,13 @@ public class Estados : MonoBehaviour {
 		pixels = FuncTablero.calculaTexAgua(pixels, 0.25f);
 		texturaAgua.SetPixels(pixels);
 		texturaAgua.Apply();
-		/*MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
+		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
 		Mesh meshTemp = filter.mesh;
-		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
+		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.0019f, objetoRoca.transform.position);
+		meshTemp.RecalculateNormals();
+		meshTemp.RecalculateBounds();
 		filter.mesh = meshTemp;
-		*/
+		
 		estado = T_estados.principal;
 	}
 	
@@ -203,7 +205,7 @@ public class Estados : MonoBehaviour {
 		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
 		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, mesh);
-		vida = new Vida(tablero, texPlantas);				
+		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		
 		int x = 0;
 		int y = 0;
@@ -227,12 +229,10 @@ public class Estados : MonoBehaviour {
 		vida.anadeVegetal(especie3,x,y);	
 		Debug.Log("musgo3 x: "+x+"   y: "+y);
 		
-		
-		/*
-		vida.anadeEspecieAnimal(new EspecieAnimal("comemusgo",10,1000,0,5,5,5,tipoAnimal.herbivoro,T_habitats.plain));
+		vida.anadeEspecieAnimal(new EspecieAnimal("comemusgo",1,1000,0,5,5,1,tipoAnimal.herbivoro,T_habitats.plain, GameObject.CreatePrimitive(PrimitiveType.Cube)));
 		vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
 		vida.anadeAnimal((EspecieAnimal)vida.dameEspecie("comemusgo"),x,y);
-		*/
+		
 		/*
 		bool lalala = false;		
 		while(lalala == false)
