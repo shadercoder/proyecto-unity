@@ -57,10 +57,7 @@ public class Estados : MonoBehaviour {
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
 	private int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
 	private bool algoritmoActivado				= false;				//Se encuentra activado el algoritmo de la vida?
-	/*** DEBUG ***/
-	private int numCasillasPlain				= 0;	
-	/*************/
-	
+		
 	//Tooltips
 	private Vector3 posicionMouse 				= Vector3.zero;			//Guarda la ultima posicion del mouse		
 	private bool activarTooltip 				= false;				//Controla si se muestra o no el tooltip	
@@ -216,67 +213,36 @@ public class Estados : MonoBehaviour {
 		vida.anadeEspecieVegetal(especie);
 		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
 		vida.anadeVegetal(especie,x,y);	
-		Debug.Log("musgo1 x: "+x+"   y: "+y);
+		Debug.Log("Introducido vegetal "+ especie.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
 		EspecieVegetal especie2 = new EspecieVegetal("musgo2",100,10,10,5,0.1f,15,T_habitats.mountain,1);
 		vida.anadeEspecieVegetal(especie2);
 		vida.buscaPosicionVaciaVegetal(T_habitats.mountain,ref x,ref y);
 		vida.anadeVegetal(especie2,x,y);	
-		Debug.Log("musgo2 x: "+x+"   y: "+y);
+		Debug.Log("Introducido vegetal "+ especie2.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
 		EspecieVegetal especie3 = new EspecieVegetal("musgo3",100,10,10,5,0.1f,12,T_habitats.hill,2);
 		vida.anadeEspecieVegetal(especie3);
 		vida.buscaPosicionVaciaVegetal(T_habitats.hill,ref x,ref y);
 		vida.anadeVegetal(especie3,x,y);	
-		Debug.Log("musgo3 x: "+x+"   y: "+y);
-		
-		vida.anadeEspecieAnimal(new EspecieAnimal("comemusgo",1,1000,0,5,5,1,tipoAnimal.herbivoro,T_habitats.plain, GameObject.CreatePrimitive(PrimitiveType.Cube)));
-		vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
-		vida.anadeAnimal((EspecieAnimal)vida.dameEspecie("comemusgo"),x,y);
-		
-		/*
-		bool lalala = false;		
-		while(lalala == false)
-		{
-			int x = Random.Range(0,122);
-			int y = Random.Range(0,122);			
-			lalala = vida.anadeVegetal((EspecieVegetal)vida.dameEspecie("musgo"),x,y);	
-		}*/		
+		Debug.Log("Introducido vegetal "+ especie3.nombre +" en la posicion:   x: "+x+"   y: "+y);
+			
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
 		numSavesExtra = numSaves - 3;
 		if (numSavesExtra < 0)
-			numSavesExtra = 0;		
-		
-		/*** DEBUG ***/
-		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
-			for(int j = 0; j < FuncTablero.anchoTablero; j++)
-				if(tablero[i,j].habitat == T_habitats.plain)
-					numCasillasPlain++;
-		/*************/
+			numSavesExtra = 0;
 	}
 	
 	void FixedUpdate() {
-		//Algoritmo de vida
-		
+		//Algoritmo de vida		
 		tiempoPaso += Time.deltaTime;		
 		if(algoritmoActivado && tiempoPaso > 1.0f) {		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
 			vida.algoritmoVida();
 			numPasos ++;
 			tiempoPaso = 0.0f;
 		}
-		/*
-		if(numPasos == 500)
-		{
-			int x = 0;
-			int y = 0;
-			//string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAnimal tipo, T_habitats habitat
-			EspecieAnimal especie = new EspecieAnimal("comemusgo",8,100,0,5,5,5,tipoAnimal.herbivoro,T_habitats.plain);
-			vida.anadeEspecieAnimal(especie);
-			vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
-			vida.anadeAnimal(especie,x,y);			
-		}*/
 	}
 	
 	void Update () {
@@ -393,12 +359,21 @@ public class Estados : MonoBehaviour {
 				algoritmoActivado = true;
 		
 		//Informacion del debug del algoritmo
-		GUI.Box(new Rect(cuantoW * 40, cuantoH * 25,cuantoW * 8,cuantoH * 5),new GUIContent("Algoritmo Especies","debug"));
+		if(GUI.Button(new Rect(cuantoW * 40, cuantoH * 23,cuantoW * 8,cuantoH * 1), "Introducir animal")) 			
+		{
+			int x=0,y=0;
+			vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
+			EspecieAnimal especie = new EspecieAnimal("comemusgo"+vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain,GameObject.CreatePrimitive(PrimitiveType.Cube));			
+			vida.anadeEspecieAnimal(especie);						
+			vida.anadeAnimal(especie,x,y);	
+			Debug.Log("Introducido animal "+especie.nombre+" en la posicion:   "+"x: "+x+"   y: "+y);		
+		}
+		GUI.Box(new Rect(cuantoW * 40, cuantoH * 25,cuantoW * 8,cuantoH * 6),new GUIContent("Algoritmo Especies","debug"));
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 26,cuantoW * 7,cuantoH * 2),"Num vegetales: "+vida.vegetales.Count);
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 27,cuantoW * 7,cuantoH * 2),"Num animales: "+vida.animales.Count);
 		GUI.Label(new Rect(cuantoW * 41, cuantoH * 28,cuantoW * 7,cuantoH * 2),"Num pasos: "+numPasos);
-		GUI.Label(new Rect(cuantoW * 41, cuantoH * 29,cuantoW * 7,cuantoH * 2),"Num casillas plain: "+numCasillasPlain);
-				
+			
+		
 		//Info de la casilla
 		//Especies
 		if (infoEspecies) {
