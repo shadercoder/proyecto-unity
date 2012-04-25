@@ -146,8 +146,8 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	private static float nivelAgua = 0.1f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
-	private static float tamanoPlaya = 0.01f;		//El tamaño de las playas
+	private static float nivelAgua = 0.25f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
+	private static float tamanoPlaya = 0.05f;		//El tamaño de las playas
 	private static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
 	private static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
 	private static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
@@ -218,7 +218,7 @@ public class FuncTablero {
 		return med;
 	}
 	
-	public static Color[] calculaTexAgua(Color[] pix, float alturaCosta) {
+	public static Color[] calculaTexAgua(Color[] pix) {
 	/*Codigo de colores: 
 	 * Negro: no extrusion
 	 * tamañoPlaya?
@@ -229,11 +229,11 @@ public class FuncTablero {
 	 * */
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		for (int l = 0; l < pixAgua.Length; l++) {
-			if (pix[l].grayscale < 0.23f/*alturaCosta-tamanoPlay0a*/){
+			if (pix[l].grayscale < nivelAgua-tamanoPlaya){
 				pixAgua[l] = new Color (0, 0.5f+pix[l].g, 0, 0);				
-			} else if ((0.23 <= pix[l].grayscale)&& (pix[l].grayscale < 0.245/*alturaCosta-tamanoPlaya*/)){
+			} else if ((nivelAgua-tamanoPlaya <= pix[l].grayscale)&& (pix[l].grayscale < nivelAgua )){
 				pixAgua[l] = new Color (0.5f+pix[l].r, 0, 0,  0);
-			} else if ((/*alturaCosta+tamanoPlaya*/ 0.245<= pix[l].grayscale)&& (pix[l].grayscale < 0.4/*alturaCosta*/)){
+			} else if ((nivelAgua<= pix[l].grayscale)&& (pix[l].grayscale <nivelAgua+tamanoPlaya*4)){
 				pixAgua[l] = new Color (0, 0, 0.5f+pix[l].b, 0);
 			} else 
 				pixAgua[l] = Color.black;
@@ -399,16 +399,16 @@ public class FuncTablero {
 				T_elementos[] elems = new T_elementos[5];
 				//Calcular el habitat...
 				T_habitats habitat;
-				if (media < (nivelAgua - (tamanoPlaya * 1.2))) {
+				if (media < (nivelAgua - tamanoPlaya)) {
 					habitat = T_habitats.sea;
 				} 
-				else if (((nivelAgua - (tamanoPlaya * 1.2)) <= media) && (media < (nivelAgua + (tamanoPlaya * 1.2)))) {
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya)) {
 					habitat = T_habitats.coast;
 				}
-				else if (((nivelAgua + (tamanoPlaya * 1.2)) <= media) && (media < (nivelAgua + alturaColinas))) {
+				else if ((nivelAgua + tamanoPlaya <= media) && (media < nivelAgua + alturaColinas)) {
 					habitat = T_habitats.plain;
 				}
-				else if (((nivelAgua + alturaColinas) <= media) && (media < (nivelAgua + alturaMontana))) {
+				else if ((nivelAgua + alturaColinas <= media) && (media < nivelAgua + alturaMontana)) {
 					habitat = T_habitats.hill;
 				}
 				else /*if (alturaMontana < media)*/ {
@@ -613,8 +613,8 @@ public class FuncTablero {
 			cord.y *= tex.height;
 			Color col = tex.GetPixel((int)cord.x, (int)cord.y);
 			Vector3 normal = verts[i] - centro;
-			vertsRes[i] = verts[i];// + (extrusion * normal.normalized * col.grayscale);
-			
+			Vector3 desplazamiento = (extrusion/512 * normal.normalized * col.grayscale);
+			vertsRes[i] = verts[i] + desplazamiento;	
 		}
 		
 		Mesh resultado = GameObject.Instantiate(mesh) as Mesh;
