@@ -209,23 +209,29 @@ public class Estados : MonoBehaviour {
 		int y = 0;
 		//ESPECIE VEGETAL => nombre numMaxVegetales numIniVegetales capacidadReproductiva capacidadMigracionLocal capacidadMigracionGlobal int radioMigracion T_habitats habitat canalTextura
 		
-		EspecieVegetal especie = new EspecieVegetal("musgo",100,10,10,5,0.1f,8,T_habitats.plain,0);
+		EspecieVegetal especie = new EspecieVegetal("musgo",100,10,10,5,0.1f,8,T_habitats.plain,3);
 		vida.anadeEspecieVegetal(especie);
 		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
 		vida.anadeVegetal(especie,x,y);	
 		Debug.Log("Introducido vegetal "+ especie.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie2 = new EspecieVegetal("musgo2",100,10,10,5,0.1f,15,T_habitats.mountain,1);
+		EspecieVegetal especie2 = new EspecieVegetal("musgo2",100,10,10,5,0.1f,15,T_habitats.mountain,2);
 		vida.anadeEspecieVegetal(especie2);
 		vida.buscaPosicionVaciaVegetal(T_habitats.mountain,ref x,ref y);
 		vida.anadeVegetal(especie2,x,y);	
 		Debug.Log("Introducido vegetal "+ especie2.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie3 = new EspecieVegetal("musgo3",100,10,10,5,0.1f,12,T_habitats.hill,2);
+		EspecieVegetal especie3 = new EspecieVegetal("musgo3",100,10,10,5,0.1f,12,T_habitats.hill,1);
 		vida.anadeEspecieVegetal(especie3);
 		vida.buscaPosicionVaciaVegetal(T_habitats.hill,ref x,ref y);
 		vida.anadeVegetal(especie3,x,y);	
 		Debug.Log("Introducido vegetal "+ especie3.nombre +" en la posicion:   x: "+x+"   y: "+y);
+		
+		EspecieVegetal especie4 = new EspecieVegetal("musgo4",100,10,10,5,0.1f,12,T_habitats.coast,0);
+		vida.anadeEspecieVegetal(especie4);
+		vida.buscaPosicionVaciaVegetal(T_habitats.coast,ref x,ref y);
+		vida.anadeVegetal(especie4,x,y);	
+		Debug.Log("Introducido vegetal "+ especie4.nombre +" en la posicion:   x: "+x+"   y: "+y);
 			
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];

@@ -149,8 +149,8 @@ public class FuncTablero {
 	private static float nivelAgua = 0.25f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
 	private static float tamanoPlaya = 0.05f;		//El tamaño de las playas
 	private static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
-	private static float alturaColinas = 0.15f;		//La altura a partir de la cual se considera colina
-	private static float alturaMontana = 0.2f;		//La altura a partir de la cual se considera montaña
+	private static float alturaColinas = 0.35f;		//La altura a partir de la cual se considera colina
+	private static float alturaMontana = 0.6f;		//La altura a partir de la cual se considera montaña
 	private static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color
 	
 	//Para el tablero
@@ -400,15 +400,15 @@ public class FuncTablero {
 				//Calcular el habitat...
 				T_habitats habitat;
 				if (media < (nivelAgua - tamanoPlaya)) {
-					habitat = T_habitats.sea;
+					habitat = T_habitats.sea; 
 				} 
-				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya)) {
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua)) {
 					habitat = T_habitats.coast;
 				}
-				else if ((nivelAgua + tamanoPlaya <= media) && (media < nivelAgua + alturaColinas)) {
+				else if ((nivelAgua <= media) && (media < alturaColinas)) {
 					habitat = T_habitats.plain;
 				}
-				else if ((nivelAgua + alturaColinas <= media) && (media < nivelAgua + alturaMontana)) {
+				else if ((alturaColinas <= media) && (media < alturaMontana)) {
 					habitat = T_habitats.hill;
 				}
 				else /*if (alturaMontana < media)*/ {
@@ -417,7 +417,7 @@ public class FuncTablero {
 				
 				tablero[i,j] = new Casilla(media, habitat, elems, cord, vertices[indice]);
 			}
-		}		
+		}
 		return tablero;
 	}
 	
@@ -546,7 +546,7 @@ public class FuncTablero {
 		int multi = -1;
 		if (subir)
 			multi = 1;
-		float atenuacion = 0.15f;
+		float atenuacion = 0.05f;
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
 				alteraPixel(objetivo,(int)pos.x + i,(int)pos.y + j, multi * ((pincelTex.GetPixel(i,j).r) * atenuacion));
