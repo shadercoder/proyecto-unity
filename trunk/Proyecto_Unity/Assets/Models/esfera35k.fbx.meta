@@ -5,8 +5,8 @@ ModelImporter:
   meshes:
     scaleFactor: 0.01
     useFileUnits: 1
-    meshCompression: 0
-    generateColliders: 0
+    meshCompression: 3
+    generateColliders: 1
     swapUVs: 0
   tangentSpace:
     normalImportMode: 0
@@ -14,9 +14,9 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 1
+    generation: 0
   animations:
-    generation: 3
+    generation: 0
     bakeAnimations: 0
     animationCompression: 1
     animationWrapMode: 0
@@ -27,7 +27,7 @@ ModelImporter:
     - 400000
     - 3300000
     - 2300000
-    - 11100000
+    - 6400000
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
