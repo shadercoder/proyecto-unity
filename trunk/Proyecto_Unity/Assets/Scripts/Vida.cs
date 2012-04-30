@@ -427,12 +427,14 @@ public class Vida
 					return true;
 				}
 				//Sino movimiento random
-				else
-				{
-					movimientoAleatorio(animal);
-					return false;
-				}
-			}			
+//				else
+//				{
+//					movimientoAleatorio(animal);
+//					return false;
+//				}
+			}
+			movimientoAleatorio(animal);
+			return false;
 		}
 		else if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
 		{
@@ -451,13 +453,10 @@ public class Vida
 					desplazaAnimal(animal,x,y);
 					return true;
 				}
-				//Sino movimiento random
-				else
-				{
-					movimientoAleatorio(animal);
-					return false;
-				}
 			}
+			//Sino movimiento random
+			movimientoAleatorio(animal);
+			return false;
 		}
 		return false;
 	}
@@ -479,7 +478,6 @@ public class Vida
 	     */
 	    int nposX = animal.posX + animal.especie.velocidad * x;
 	    int nposY = animal.posY + animal.especie.velocidad * y;       
-		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
 		desplazaAnimal(animal,nposX,nposY);		
 		return true;
 	}
@@ -505,18 +503,21 @@ public class Vida
 			}
 			else if(ser is Animal)
 			{
-				animal = (Animal)ser;	
+				animal = (Animal)ser;
 				if(!animal.consumirAlimento())
 				{
 					eliminaAnimal(animal);
 					continue;
 				}
-				if(animal.reproduccion())
+				if(animal.reproduccion()) {
 					reproduceAnimal(animal.especie,animal.posX,animal.posY);
-				if(animal.reserva < animal.especie.reservaMaxima * 0.75)		//Si está por debajo del 75% de la reserva de comida
+				}
+				if(animal.reserva < animal.especie.reservaMaxima * 0.75) {		//Si está por debajo del 75% de la reserva de comida
 					buscaAlimentoAnimal(animal);
-				else 															//Movimiento aleatorio				
-					movimientoAleatorio(animal);		
+				}
+				else { 															//Movimiento aleatorio				
+					movimientoAleatorio(animal);
+				}
 			}	
 			else if(ser is Edificio)
 			{
@@ -859,9 +860,11 @@ public class Animal : Ser
 		return true;
 	}
 	
-	public void desplazarse(int posX,int posY)
+	public void desplazarse(int posXin,int posYin)
 	{
-		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
+		FuncTablero.convierteCoordenadas(ref posXin,ref posYin);
+		this.posX = posXin;
+		this.posY = posYin;
 	}		
 }
 
