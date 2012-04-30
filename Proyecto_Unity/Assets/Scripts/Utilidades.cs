@@ -379,7 +379,7 @@ public class FuncTablero {
 					temp.x *= tex.width;
 					temp.y *= tex.height;
 					if (temp.x >= cord.x && temp.y >= cord.y && temp.x <= cord2.x && temp.y <= cord2.y) {
-						indice = i;
+						indice = k;
 						break;
 					}
 				}
