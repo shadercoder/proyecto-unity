@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Casilla {
-	public float altura;
 	public T_habitats habitat;
 	public T_elementos[] elementos;
 	public Vector2 coordsTex;
@@ -13,9 +12,8 @@ public class Casilla {
 	public Edificio edificio;
 	public Vector2[] pinceladas;
 	
-	public Casilla(float alt, T_habitats hab, T_elementos[] elems, Vector2 coord, Vector3 vert) {
+	public Casilla(T_habitats hab, T_elementos[] elems, Vector2 coord, Vector3 vert) {
 		habitat = hab;
-		altura = alt;
 		elementos = elems;
 		coordsTex = coord;
 		vegetal = null;

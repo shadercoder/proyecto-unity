@@ -1,4 +1,4 @@
-using UnityEngine;    // For Debug.Log, etc.
+using UnityEngine;
 
 using System.Text;
 using System.IO;
@@ -148,7 +148,7 @@ public class FuncTablero {
 	//Terreno
 	private static float nivelAgua = 0.25f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
 	private static float tamanoPlaya = 0.05f;		//El tamaño de las playas
-	private static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
+//	private static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
 	private static float alturaColinas = 0.35f;		//La altura a partir de la cual se considera colina
 	private static float alturaMontana = 0.6f;		//La altura a partir de la cual se considera montaña
 	private static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color
@@ -200,23 +200,23 @@ public class FuncTablero {
 		return pixels;
 	}
 	
-	public static float calcularMedia(Color[] pix) {
-		float med = 0f;
-		float max = -1.0f;
-		float min = 1.0f;
-		for (int i = 0; i < pix.Length; i++) {
-			med += pix[i].r;
-			if (pix[i].r > max)
-				max = pix[i].r;
-			if (pix[i].r < min)
-				min = pix[i].r;
-		}
-		med /= pix.Length;
-		Debug.Log("Max = " + max.ToString());
-		Debug.Log("Min = " + min.ToString());
-		Debug.Log("Media = " + med.ToString());
-		return med;
-	}
+//	public static float calcularMedia(Color[] pix) {
+//		float med = 0f;
+//		float max = -1.0f;
+//		float min = 1.0f;
+//		for (int i = 0; i < pix.Length; i++) {
+//			med += pix[i].r;
+//			if (pix[i].r > max)
+//				max = pix[i].r;
+//			if (pix[i].r < min)
+//				min = pix[i].r;
+//		}
+//		med /= pix.Length;
+//		Debug.Log("Max = " + max.ToString());
+//		Debug.Log("Min = " + min.ToString());
+//		Debug.Log("Media = " + med.ToString());
+//		return med;
+//	}
 	
 	public static Color[] calculaTexAgua(Color[] pix) {
 	/*Codigo de colores: 
@@ -230,7 +230,7 @@ public class FuncTablero {
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		for (int l = 0; l < pixAgua.Length; l++) {
 			if (pix[l].grayscale < nivelAgua-tamanoPlaya){
-				pixAgua[l] = new Color (0, 0.5f+pix[l].g, 0, 0);				
+				pixAgua[l] = new Color (0, 0.5f+pix[l].g, 0, 0);
 			} else if ((nivelAgua-tamanoPlaya <= pix[l].grayscale)&& (pix[l].grayscale < nivelAgua )){
 				pixAgua[l] = new Color (0.5f+pix[l].r, 0, 0,  0);
 			} else if ((nivelAgua<= pix[l].grayscale)&& (pix[l].grayscale <nivelAgua+tamanoPlaya*4)){
@@ -313,54 +313,270 @@ public class FuncTablero {
 		return y;
 	}
 	
-	[Obsolete("No es necesario usar este metodo")]
-	public static Color[] realzarRelieve(Color[] pix, float media) {
-		Color[] pixels = pix;
-		for (int i = 0; i < pixels.Length; i++) {
-			float valor = pixels[i].r;
-			//Los valores por encima de la media * 2 seran maximos (0.85 sobre 1)
-			//y de ahi hacia abajo linealmente descendentes (hasta 0)
-			if (valor <= (media * 2.0f))
-				valor = Mathf.Lerp(0.0f, 0.65f, valor / (media * 2.0f));
-			else
-				valor = Mathf.Lerp(0.65f, 1.0f, valor / (media * 6.5f));
-			pixels[i] = new Color(valor, valor, valor);
-		}
-		return pixels;
-	}
+//	[Obsolete("No es necesario usar este metodo")]
+//	public static Color[] realzarRelieve(Color[] pix, float media) {
+//		Color[] pixels = pix;
+//		for (int i = 0; i < pixels.Length; i++) {
+//			float valor = pixels[i].r;
+//			//Los valores por encima de la media * 2 seran maximos (0.85 sobre 1)
+//			//y de ahi hacia abajo linealmente descendentes (hasta 0)
+//			if (valor <= (media * 2.0f))
+//				valor = Mathf.Lerp(0.0f, 0.65f, valor / (media * 2.0f));
+//			else
+//				valor = Mathf.Lerp(0.65f, 1.0f, valor / (media * 6.5f));
+//			pixels[i] = new Color(valor, valor, valor);
+//		}
+//		return pixels;
+//	}
 	
-	[Obsolete("No es necesario usar este metodo")]
-	public static Color32[] creaNormalMap(Texture2D tex){
-		Color32[] pixels = tex.GetPixels32();
-		Color32[] pixelsN = new Color32[anchoTextura * altoTextura];
-		Color c3;
+//	[Obsolete("No es necesario usar este metodo")]
+//	public static Color32[] creaNormalMap(Texture2D tex){
+//		Color32[] pixels = tex.GetPixels32();
+//		Color32[] pixelsN = new Color32[anchoTextura * altoTextura];
+//		Color c3;
+//		
+//		for (int y = 0; y < altoTextura; y++) {
+//	        int offset  = y * anchoTextura;
+//	        for (int x = 0; x < anchoTextura; x++)
+//	        {
+//	
+//	            float h0 = pixels[x + offset].r;
+//	            float h1 = pixels[x + (anchoTextura * safey(y + 1))].r;
+//	            float h2  = pixels[safex(x + 1) + offset].r;
+//	
+//	            float Nx = h0 - h2;
+//	            float Ny = h0 - h1;
+//				float Nz = atenuacionRelieve;
+//	
+//	            Vector3 normal = new Vector3(Nx,Ny,Nz);
+//				normal.Normalize();
+//	            normal /= 2;
+//				
+//	            byte cr = (byte)(128 + (255 * normal.x));
+//	            byte cg = (byte)(128 + (255 * normal.y));
+//	            byte cb = (byte)(128 + (255 * normal.z));
+//				c3 = new Color32(cr, cg, cb, 128);
+//	            
+//				pixelsN[x + offset] = c3;
+//	        }
+//	    }
+//	    return pixelsN;
+//	}
+	
+	private static T_habitats[] calculaHabitats(Texture2D tex) {
+		T_habitats[] habitats = new T_habitats[altoTableroUtil*anchoTablero];
+		Color[] pixels = tex.GetPixels();
 		
-		for (int y = 0; y < altoTextura; y++) {
-	        int offset  = y * anchoTextura;
-	        for (int x = 0; x < anchoTextura; x++)
-	        {
-	
-	            float h0 = pixels[x + offset].r;
-	            float h1 = pixels[x + (anchoTextura * safey(y + 1))].r;
-	            float h2  = pixels[safex(x + 1) + offset].r;
-	
-	            float Nx = h0 - h2;
-	            float Ny = h0 - h1;
-				float Nz = atenuacionRelieve;
-	
-	            Vector3 normal = new Vector3(Nx,Ny,Nz);
-				normal.Normalize();
-	            normal /= 2;
+		//Se divide el espacio en zonas (en este caso 3 franjas horizontales)
+		int limiteHab1 = altoTableroUtil / 3;
+		int limiteHab2 = (altoTableroUtil / 3) * 2 + (altoTableroUtil % 3);
+		
+		/* TODO A la hora de hacer aleatorio un habitat, se me ocurre un problema posible.
+		 * Una vez que empiece a haber una zona con un habitat, va a ser dificil que cambie a otro
+		 * y si lo hace va a empezar a ser demasiado aleatorio y van a quedar zonas con habitats
+		 * caóticos.
+		 * 
+		 * Para solucionarlo se me ocurre llevar unas variables de conteo que digan cuantos habitats
+		 * de un tipo llevamos pintados seguidos. Una vez esta variable alcance cierto valor
+		 * o cierta relación se cumpla, disminuir drásticamente las posibilidades de que vuelva a 
+		 * aparecer este hábitat en las siguientes casillas a pintar.
+		 * De nuevo cuando el valor llegue a otro punto controlado, se pueden invertir las tornas 
+		 * o volver a los niveles originales.
+		 * */
+		
+		//TODO Tambien falta meter la influencia de la temperatura del planeta.
+		
+		//Se calcula la primera franja de izquierda a derecha y de arriba a abajo
+		//Esta franja representa la zona cercana al polo norte hasta el primer trópico
+		for (int i = 0; i < limiteHab1; i++) {
+			for (int j = 0; j < anchoTablero; j++) {
+				//Coordenadas de la casilla que estamos mirando
+				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
+				//Se calcula la media de altura de la casilla
+				float media = 0;
+				for (int x = 0; x < relTexTabAlto; x++) {
+					for (int y = 0; y < relTexTabAncho; y++) {
+						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+					}
+				}
+				media = media / (relTexTabAncho * relTexTabAlto);
 				
-	            byte cr = (byte)(128 + (255 * normal.x));
-	            byte cg = (byte)(128 + (255 * normal.y));
-	            byte cb = (byte)(128 + (255 * normal.z));
-				c3 = new Color32(cr, cg, cb, 128);
-	            
-				pixelsN[x + offset] = c3;
-	        }
-	    }
-	    return pixelsN;
+				//Se calcula el habitat en el que va a estar la casilla
+				T_habitats habitatTemp;
+				if (media < (nivelAgua - tamanoPlaya)) {
+					habitatTemp = T_habitats.sea; 
+				} 
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua)) {
+					habitatTemp = T_habitats.coast;
+				}
+				else if ((nivelAgua <= media) && (media < alturaColinas)) {
+					//TODO Meter aleatorio entre diferentes habitats a esta altura
+					habitatTemp = T_habitats.plain;
+				}
+				else if ((alturaColinas <= media) && (media < alturaMontana)) {
+					//TODO Meter aleatorio entre diferentes habitats a esta altura
+					//Área de montaña. Habitats posibles: Mountain y Volcanic
+					//Con un 20% es volcanico y con un 80% es montaña
+					habitatTemp = T_habitats.hill;
+				}
+				else /*if (alturaMontana < media)*/ {
+					//TODO Esto es una primera aproximación a lo que hay que hacer
+					//Área de montaña. Habitats posibles: Mountain y Volcanic
+					//Con un 10% es volcanico y con un 90% es montaña
+					float posibilidad = 0.1f;
+					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
+					if (i > 0 && habitats[((i - 1) * anchoTablero) + j] == T_habitats.volcanic)
+						posibilidad += 0.15f;
+					if (j > 0) {
+						if (i > 0 && habitats[((i - 1) * anchoTablero) + j - 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+						if (i > 0 && habitats[(i * anchoTablero) + j - 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+					}
+					else {
+						if (i > 0 && habitats[(i * anchoTablero) - 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+						if (i > 0 && habitats[(i * anchoTablero) - 2] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+					}
+					if (numero <= posibilidad)
+						habitatTemp = T_habitats.volcanic;
+					else
+						habitatTemp = T_habitats.mountain;
+				}
+				habitats[i * anchoTablero + j] = habitatTemp;
+			}
+		}
+		
+		//public enum T_habitats {mountain, plain, hill, sand, volcanic, sea, coast};													//Tipos de orografía
+
+		//Franja sur, que equivaldría como la primera a zonas mas cercanas a los polos
+		//Se calcula de derecha a izquierda y de abajo a arriba
+		for (int i = altoTableroUtil - 1; i >= limiteHab2; i--) {
+			for (int j = anchoTablero - 1; j >= 0; j--) {
+				//Coordenadas de la casilla que estamos mirando
+				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
+				//Se calcula la media de altura de la casilla
+				float media = 0;
+				for (int x = 0; x < relTexTabAlto; x++) {
+					for (int y = 0; y < relTexTabAncho; y++) {
+						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+					}
+				}
+				media = media / (relTexTabAncho * relTexTabAlto);
+				
+				//Se calcula el habitat en el que va a estar la casilla
+				T_habitats habitatTemp;
+				if (media < (nivelAgua - tamanoPlaya)) {
+					habitatTemp = T_habitats.sea; 
+				} 
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua)) {
+					habitatTemp = T_habitats.coast;
+				}
+				else if ((nivelAgua <= media) && (media < alturaColinas)) {
+					//TODO Meter aleatorio entre diferentes habitats a esta altura
+					habitatTemp = T_habitats.plain;
+				}
+				else if ((alturaColinas <= media) && (media < alturaMontana)) {
+					//TODO Meter aleatorio entre diferentes habitats a esta altura
+					//Área de montaña baja. Habitats posibles: Mountain y Volcanic
+					//Con un 20% es volcanico y con un 80% es montaña
+					//{mountain, plain, hill, sand, volcanic, sea, coast};
+					habitatTemp = T_habitats.hill;
+				}
+				else /*if (alturaMontana < media)*/ {
+					//TODO Esto es una primera aproximación a lo que hay que hacer
+					//Área de montaña. Habitats posibles: Mountain y Volcanic
+					//Con un 10% es volcanico y con un 90% es montaña
+					float posibilidad = 0.1f;
+					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
+					//TODO Hay que mirar el habitat en las direcciones adecuadas
+					if (i < (altoTableroUtil - 1) && habitats[((i + 1) * anchoTablero) + j] == T_habitats.volcanic)
+						posibilidad += 0.15f;
+					if (j < anchoTablero - 1) {
+						if (i < (altoTableroUtil - 1) && habitats[((i + 1) * anchoTablero) + j + 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+						if (i < (altoTableroUtil - 1) && habitats[(i * anchoTablero) + j + 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+					}
+					else {
+						if (i < (altoTableroUtil - 1) && habitats[(i * anchoTablero) + 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+						if (i < (altoTableroUtil - 1) && habitats[(i * anchoTablero) + 2] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+					}
+					if (numero <= posibilidad)
+						habitatTemp = T_habitats.volcanic;
+					else
+						habitatTemp = T_habitats.mountain;
+				}
+				habitats[i * anchoTablero + j] = habitatTemp;
+			}
+		}
+		
+		//Franja central (en esta hay mas posibilidad de areas tropicales o desiertos (mas calor)
+		//TODO Sentido del cálculo???
+		for (int i = limiteHab1; i < limiteHab2; i++) {
+			for (int j = 0; j < anchoTablero; j++) {
+				//Coordenadas de la casilla que estamos mirando
+				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
+				//Se calcula la media de altura de la casilla
+				float media = 0;
+				for (int x = 0; x < relTexTabAlto; x++) {
+					for (int y = 0; y < relTexTabAncho; y++) {
+						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+					}
+				}
+				media = media / (relTexTabAncho * relTexTabAlto);
+				
+				//Se calcula el habitat en el que va a estar la casilla
+				T_habitats habitatTemp;
+				if (media < (nivelAgua - tamanoPlaya)) {
+					habitatTemp = T_habitats.sea; 
+				} 
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua)) {
+					habitatTemp = T_habitats.coast;
+				}
+				else if ((nivelAgua <= media) && (media < alturaColinas)) {
+					//TODO Meter aleatorio entre diferentes habitats a esta altura
+					habitatTemp = T_habitats.plain;
+				}
+				else if ((alturaColinas <= media) && (media < alturaMontana)) {
+					//TODO Meter aleatorio entre diferentes habitats a esta altura
+					//Área de montaña. Habitats posibles: Mountain y Volcanic
+					//Con un 20% es volcanico y con un 80% es montaña
+					habitatTemp = T_habitats.hill;
+				}
+				else /*if (alturaMontana < media)*/ {
+					//TODO Esto es una primera aproximación a lo que hay que hacer
+					//Área de montaña. Habitats posibles: Mountain y Volcanic
+					//Con un 10% es volcanico y con un 90% es montaña
+					float posibilidad = 0.1f;
+					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
+					if (i > 0 && habitats[((i - 1) * anchoTablero) + j] == T_habitats.volcanic)
+						posibilidad += 0.15f;
+					if (j > 0) {
+						if (i > 0 && habitats[((i - 1) * anchoTablero) + j - 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+						if (i > 0 && habitats[(i * anchoTablero) + j - 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+					}
+					else {
+						if (i > 0 && habitats[(i * anchoTablero) - 1] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+						if (i > 0 && habitats[(i * anchoTablero) - 2] == T_habitats.volcanic)
+							posibilidad += 0.15f;
+					}
+					if (numero <= posibilidad)
+						habitatTemp = T_habitats.volcanic;
+					else
+						habitatTemp = T_habitats.mountain;
+				}
+				habitats[i * anchoTablero + j] = habitatTemp;
+			}
+		}		
+		
+		return habitats;
 	}
 	
 	public static Casilla[,] iniciaTablero(Texture2D tex, Mesh mesh) {
@@ -368,11 +584,13 @@ public class FuncTablero {
 		Casilla[,] tablero = new Casilla[altoTableroUtil,anchoTablero];
 		Vector3[] vertices = mesh.vertices;
 		Vector2[] uvs = mesh.uv;
+		T_habitats[] habitat = calculaHabitats(tex);
 		for (int i = 0; i < altoTableroUtil; i++) {
 			for (int j = 0; j < anchoTablero; j++) {
 				//Las coordenadas de la casilla actual en la textura
 				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
 				Vector2 cord2 = new Vector2((j + 1) * relTexTabAncho, (i + 1 + casillasPolos) * relTexTabAlto);
+				//Se calcula la coordenada del vértice a partir del UV
 				int indice = -1;
 				for (int k = 0; k < uvs.Length; k++) {
 					Vector2 temp = uvs[k];
@@ -385,37 +603,12 @@ public class FuncTablero {
 				}
 				if (indice == -1)
 					Debug.LogError("No se ha encontrado la coordenada por su UV en iniciaTablero(). Casilla: " + i + "," + j + ";");
-				//Se calcula la media de altura de la casilla
-				float media = 0;
-				for (int x = 0; x < relTexTabAlto; x++) {
-					for (int y = 0; y < relTexTabAncho; y++) {
-						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
-					}
-				}
-				media = media / (relTexTabAncho * relTexTabAlto);
 				
-				//Se calcula el habitat en el que va a estar la casilla y los elementos que tendrá
-				//TODO Esto es un ejemplo a refinar de los elementos a introducir...
-				T_elementos[] elems = new T_elementos[5];
-				//Calcular el habitat...
-				T_habitats habitat;
-				if (media < (nivelAgua - tamanoPlaya)) {
-					habitat = T_habitats.sea; 
-				} 
-				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua)) {
-					habitat = T_habitats.coast;
-				}
-				else if ((nivelAgua <= media) && (media < alturaColinas)) {
-					habitat = T_habitats.plain;
-				}
-				else if ((alturaColinas <= media) && (media < alturaMontana)) {
-					habitat = T_habitats.hill;
-				}
-				else /*if (alturaMontana < media)*/ {
-					habitat = T_habitats.mountain;
-				}
+				//Parche hasta que lo introduzcamos
+				T_elementos[] elems = new T_elementos[1];
+				elems[0] = T_elementos.carbono;
 				
-				tablero[i,j] = new Casilla(media, habitat, elems, cord, vertices[indice]);
+				tablero[i,j] = new Casilla(habitat[i * anchoTablero + j], elems, cord, vertices[indice]);
 			}
 		}
 		return tablero;
@@ -457,14 +650,14 @@ public class FuncTablero {
 		tex.SetPixel(w,h,pix);
 	}
 	
-	public static void fisura(Texture2D tex, int posX, int posY, float longitud, float magnitud, Vector2 dir) {
-		float posActual = Math.Abs(longitud);
-		for (int i = 0; i < (int)Math.Abs(longitud) * 2; i++) {
-			Vector2 pixel = new Vector2(posX + (int)(dir.x * posActual), posY + (int)(dir.y * posActual));
-			alteraPixel(tex, (int)pixel.x, (int)pixel.y, magnitud);
-			posActual -= 1.0f;
-		}
-	}
+//	public static void fisura(Texture2D tex, int posX, int posY, float longitud, float magnitud, Vector2 dir) {
+//		float posActual = Math.Abs(longitud);
+//		for (int i = 0; i < (int)Math.Abs(longitud) * 2; i++) {
+//			Vector2 pixel = new Vector2(posX + (int)(dir.x * posActual), posY + (int)(dir.y * posActual));
+//			alteraPixel(tex, (int)pixel.x, (int)pixel.y, magnitud);
+//			posActual -= 1.0f;
+//		}
+//	}
 	
 	
 	
@@ -552,46 +745,6 @@ public class FuncTablero {
 				alteraPixel(objetivo,(int)pos.x + i,(int)pos.y + j, multi * ((pincelTex.GetPixel(i,j).r) * atenuacion));
 			}
 		}
-	}
-	
-	public static GameObject creaMesh(RaycastHit hit, int seleccion) {
-		GameObject creacion;
-		switch (seleccion) {
-		case 0: 
-			creacion = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			creacion.renderer.material.color = Color.red;
-			break;
-		case 1: 
-			creacion = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-			creacion.renderer.material.color = Color.blue;
-			break;
-		case 2: 
-			creacion = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-			creacion.renderer.material.color = Color.black;
-			break;
-		case 3: 
-			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-			creacion.renderer.material.color = Color.green;
-			break;
-		case 4: 
-			//TODO Instanciar con instantiate(...) un prefab de nave
-			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-			break;
-		case 5: 
-			//TODO Instanciar con instantiate(...) un prefab de mina
-			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-			break;
-		default: 
-			//TODO Instanciar con instantiate(...) un prefab de edificioX
-			creacion = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-			break;
-		}
-		creacion.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-		Vector3 punto = hit.point - hit.transform.position;
-		creacion.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
-		creacion.transform.position = punto;
-		creacion.transform.rotation = Quaternion.LookRotation(hit.normal);	//Camera.main.transform.position, 
-		return creacion;
 	}
 	
 	public static GameObject creaMesh(Vector3 posicion, GameObject mesh) {
@@ -697,10 +850,10 @@ public class FuncTablero {
 			alturaMontana = entrada;
 	}
 	
-	public static void setAtenuacionRelieve(float entrada) {
-		if (entrada >= 0)
-			atenuacionRelieve = entrada;
-	}
+//	public static void setAtenuacionRelieve(float entrada) {
+//		if (entrada >= 0)
+//			atenuacionRelieve = entrada;
+//	}
 	
 	public static void setTemperatura(float entrada) {
 		if (entrada >= 0.0f && entrada <= 1.0f)
