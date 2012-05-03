@@ -754,7 +754,7 @@ public class FuncTablero {
 		creacion.transform.position = posicion;
 		Vector3 normal = posicion - creacion.transform.parent.position;
 		creacion.transform.rotation = Quaternion.LookRotation(normal);
-		creacion.transform.Rotate(0,0,UnityEngine.Random.Range(0,180),Space.Self);
+		//creacion.transform.Rotate(0,0,UnityEngine.Random.Range(0,180),Space.Self);
 
 		return creacion;
 	}

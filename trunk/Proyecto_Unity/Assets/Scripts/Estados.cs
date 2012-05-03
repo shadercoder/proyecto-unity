@@ -370,7 +370,7 @@ public class Estados : MonoBehaviour {
 		{
 			int x=0,y=0;
 			vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
-			EspecieAnimal especie = new EspecieAnimal("comemusgo"+vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain,GameObject.CreatePrimitive(PrimitiveType.Cube));			
+			EspecieAnimal especie = new EspecieAnimal("comemusgo"+vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain,GameObject.FindGameObjectWithTag("velociraptor"));			
 			vida.anadeEspecieAnimal(especie);						
 			vida.anadeAnimal(especie,x,y);	
 			Debug.Log("Introducido animal "+especie.nombre+" en la posicion:   "+"x: "+x+"   y: "+y);		
