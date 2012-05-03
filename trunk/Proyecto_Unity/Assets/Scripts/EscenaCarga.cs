@@ -48,8 +48,8 @@ public class EscenaCarga : MonoBehaviour {
 	
 	//Interfaz
 	public GUISkin estiloGUI;										//Los estilos a usar para la escena de carga y menús
-	private int cuantoW 					= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
-	private int cuantoH 					= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
+	private int cuantoW 					= Screen.width / 16;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
+	private int cuantoH 					= Screen.height / 9;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 	
 	//Menus para guardar
 	private Vector2 posicionScroll 			= Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll

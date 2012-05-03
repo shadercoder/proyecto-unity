@@ -1,17 +1,17 @@
 fileFormatVersion: 1
-guid: ee27c2c70d9a32f4fab975122200a762
+guid: 9cd171389b1047747916716cb39bdbe1
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.01
+    scaleFactor: 0.006
     useFileUnits: 1
-    meshCompression: 3
+    meshCompression: 2
     generateColliders: 0
     swapUVs: 0
   tangentSpace:
     normalImportMode: 1
     tangentImportMode: 1
-    smoothingAngle: 0
+    smoothingAngle: 60
     splitTangents: 1
   materials:
     generation: 2
@@ -20,7 +20,7 @@ ModelImporter:
     bakeAnimations: 0
     animationCompression: 1
     animationWrapMode: 0
-    splitAnimations: 0
+    splitAnimations: 1
   nodeInfo:
     //RootNode:
     - 100000
@@ -30,5 +30,7 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Nave
-    7400000: Default Take //// nave_01
+    4300000: Cube_002
+    4300002: Arboleda
+    4300004: Arboleda_003
+    7400000: Default Take //// arboles simples
