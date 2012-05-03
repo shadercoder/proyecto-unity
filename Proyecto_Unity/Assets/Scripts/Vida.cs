@@ -23,7 +23,7 @@ public class Casilla {
 	}
 }
  
-public class Vida
+public class Vida : MonoBehaviour
 {
 	//Referencia a la textura de las plantas
 	public Texture2D texturaPlantas;
@@ -265,7 +265,8 @@ public class Vida
 	{
 		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY);
+		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, especie.modelo));
+		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
 		idActualVegetal++;
 		seres.Add(vegetal);
 		vegetales.Add(vegetal);
@@ -639,6 +640,7 @@ public class Especie
 	public int idEspecie;								//Identificador de la especie a la que pertenece	
 	public string nombre;								//Nombre de la especie
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
+	public GameObject modelo;							//El modelo a usar en la especie
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
 	public bool aniadirHabitat(T_habitats habitat)
@@ -673,7 +675,7 @@ public class EspecieVegetal : Especie
 	//public int capacidadEvolucion;					//Probabilidad de que la especie evolucione dentro de la casilla
 	//public int capacidadEvolucionMigracion;			//Probabilidad de que la especie evolucione al migrar (teoricamente mucho más alto que la normal)
 	
-	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura)
+	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, GameObject modelo)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
@@ -685,8 +687,9 @@ public class EspecieVegetal : Especie
 		this.radioMigracion = radioMigracion;
 		this.aniadirHabitat(habitat);
 		this.idTextura = idTextura;
+		this.modelo = modelo;
 	}
-	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura)
+	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, GameObject modelo)
 	{
 		this.nombre = nombre;
 		this.numMaxVegetales = numMaxVegetales;
@@ -697,6 +700,7 @@ public class EspecieVegetal : Especie
 		this.radioMigracion = radioMigracion;
 		this.habitats = habitats;
 		this.idTextura = idTextura;
+		this.modelo = modelo;
 	}
 }
 
@@ -710,7 +714,6 @@ public class EspecieAnimal : Especie
 	public int velocidad;								//Número de casillas que puede desplazarse por turno
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public tipoAlimentacionAnimal tipo;					//herbivoro o carnivoro 
-	public GameObject modelo;							//El modelo a usar en la especie
 		
 	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, GameObject modelo)
 	{
@@ -746,6 +749,7 @@ public class Ser
 	public int idSer;								//Id del ser
 	public int posX;
 	public int posY;
+	public GameObject modelo;
 }
 
 public class Vegetal : Ser 							//Representa una población de vegetales de una especie vegetal
@@ -753,7 +757,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	public EspecieVegetal especie;				//Especie vegetal a la que pertenece
 	public int numVegetales;						//Número de vegetales de la población
 	
-	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY)
+	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.especie = especie;
@@ -761,9 +765,10 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		this.posX = posX;
 		this.posY = posY;
 		this.numVegetales = especie.numIniVegetales;
+		this.modelo = modelo;
 	}	
 	
-	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, int numVegetales)
+	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, int numVegetales,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.especie = especie;
@@ -771,6 +776,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		this.posY = posY % FuncTablero.anchoTablero;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);
 		this.numVegetales = numVegetales;
+		this.modelo = modelo;
 	}	
 	
 	public int consumeVegetales(int vegetalesAConsumir)			//Devuelve el número de vegetales que se han consumido
@@ -819,7 +825,7 @@ public class Animal : Ser
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
 	public int reserva;								//Reserva de alimento que tiene
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
-	public GameObject modelo;
+	//public GameObject modelo;
 	
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY,GameObject modelo)
 	{
@@ -869,7 +875,7 @@ public class Animal : Ser
 public class Edificio : Ser
 {
 	public TipoEdificio tipo;
-	public GameObject modelo;
+	//public GameObject modelo;
 	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,GameObject modelo)
 	{
 		this.idSer = idSer;
