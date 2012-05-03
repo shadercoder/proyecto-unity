@@ -155,7 +155,7 @@ public class FuncTablero {
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
-	public static int altoTablero = 128;			//El alto del tablero lógico (debe ser potencia de 2 tambien)
+	public static int altoTablero = 128;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
 	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 	public static int margen = 50;					//El numero de pixeles que habrá en los polos intransitables
@@ -749,11 +749,13 @@ public class FuncTablero {
 	
 	public static GameObject creaMesh(Vector3 posicion, GameObject mesh) {
 		GameObject creacion = GameObject.Instantiate(mesh) as GameObject;
-		creacion.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+		creacion.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 		creacion.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
 		creacion.transform.position = posicion;
 		Vector3 normal = posicion - creacion.transform.parent.position;
 		creacion.transform.rotation = Quaternion.LookRotation(normal);
+		creacion.transform.Rotate(0,0,UnityEngine.Random.Range(0,180),Space.Self);
+
 		return creacion;
 	}
 	

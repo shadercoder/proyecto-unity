@@ -19,7 +19,7 @@ public class Controles : MonoBehaviour {
 	
 	//Posición y rotacion actuales
 	private float distanciaNave		= 5.0f;		//La distancia hasta la nave desde la camara
-	private float distanciaObjetivo = 10.0f;	//La distancia entre la nave y el objetivo
+	private float distanciaObjetivo = 7.0f;		//La distancia entre la nave y el objetivo
 	private int distanciaMin		= 3;		//La minima distancia a la que estara la camara
 	private int distanciaMax		= 20;		//La maxima distancia a la que estara la camara
 	
