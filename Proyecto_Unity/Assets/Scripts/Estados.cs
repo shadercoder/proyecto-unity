@@ -20,6 +20,9 @@ public class Estados : MonoBehaviour {
 	public float tiempoTooltip 					= 0.75f;				//Tiempo que tarda en aparecer el tooltip	
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
+		//Modelos
+	public GameObject velociraptor;										//El modelo del velociraptor (velociraptor_lowPoly)
+	public GameObject planta1;											//El modelo de la planta numero 1
 	
 	//GUI	
 	private int cuantoW							= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
@@ -210,25 +213,25 @@ public class Estados : MonoBehaviour {
 		int y = 0;
 		//ESPECIE VEGETAL => nombre numMaxVegetales numIniVegetales capacidadReproductiva capacidadMigracionLocal capacidadMigracionGlobal int radioMigracion T_habitats habitat canalTextura
 		
-		EspecieVegetal especie = new EspecieVegetal("musgo",1000,50,50,50,0.1f,8,T_habitats.plain,0,GameObject.FindGameObjectWithTag("arbolesSimples"));
+		EspecieVegetal especie = new EspecieVegetal("musgo",1000,50,50,50,0.1f,8,T_habitats.plain,0,planta1);
 		vida.anadeEspecieVegetal(especie);
 		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
 		vida.anadeVegetal(especie,x,y);	
 		Debug.Log("Introducido vegetal "+ especie.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie2 = new EspecieVegetal("musgo2",1000,50,50,20,0.1f,15,T_habitats.mountain,1,GameObject.FindGameObjectWithTag("arbolesSimples"));
+		EspecieVegetal especie2 = new EspecieVegetal("musgo2",1000,50,50,20,0.1f,15,T_habitats.mountain,1,planta1);
 		vida.anadeEspecieVegetal(especie2);
 		vida.buscaPosicionVaciaVegetal(T_habitats.mountain,ref x,ref y);
 		vida.anadeVegetal(especie2,x,y);	
 		Debug.Log("Introducido vegetal "+ especie2.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie3 = new EspecieVegetal("musgo3",1000,50,50,20,0.1f,12,T_habitats.hill,2,GameObject.FindGameObjectWithTag("arbolesSimples"));
+		EspecieVegetal especie3 = new EspecieVegetal("musgo3",1000,50,50,20,0.1f,12,T_habitats.hill,2,planta1);
 		vida.anadeEspecieVegetal(especie3);
 		vida.buscaPosicionVaciaVegetal(T_habitats.hill,ref x,ref y);
 		vida.anadeVegetal(especie3,x,y);	
 		Debug.Log("Introducido vegetal "+ especie3.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie4 = new EspecieVegetal("musgo4",1000,50,50,20,0.1f,12,T_habitats.coast,3,GameObject.FindGameObjectWithTag("arbolesSimples"));
+		EspecieVegetal especie4 = new EspecieVegetal("musgo4",1000,50,50,20,0.1f,12,T_habitats.coast,3,planta1);
 		vida.anadeEspecieVegetal(especie4);
 		vida.buscaPosicionVaciaVegetal(T_habitats.coast,ref x,ref y);
 		vida.anadeVegetal(especie4,x,y);	
@@ -370,7 +373,7 @@ public class Estados : MonoBehaviour {
 		{
 			int x=0,y=0;
 			vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
-			EspecieAnimal especie = new EspecieAnimal("comemusgo"+vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain,GameObject.FindGameObjectWithTag("velociraptor"));			
+			EspecieAnimal especie = new EspecieAnimal("comemusgo"+vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain, velociraptor);//GameObject.FindGameObjectWithTag("velociraptor"));			
 			vida.anadeEspecieAnimal(especie);						
 			vida.anadeAnimal(especie,x,y);	
 			Debug.Log("Introducido animal "+especie.nombre+" en la posicion:   "+"x: "+x+"   y: "+y);		
