@@ -48,8 +48,8 @@ public class EscenaCarga : MonoBehaviour {
 	
 	//Interfaz
 	public GUISkin estiloGUI;										//Los estilos a usar para la escena de carga y menús
-	private int cuantoW 					= Screen.width / 16;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
-	private int cuantoH 					= Screen.height / 9;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
+	private int cuantoW 					= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
+	private int cuantoH 					= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 	
 	//Menus para guardar
 	private Vector2 posicionScroll 			= Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
@@ -322,7 +322,7 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte1Interfaz() {
-		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
+		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 19));
 		GUILayout.BeginVertical();
 		//Controles para alterar el tipo de terreno a crear aleatoriamente: cosas que no influyan mucho, nombre, etc. o cosas que 
 		//influyan en la creacion del ruido, por ejemplo el numero de octavas a usar podemos llamarlo "factor de erosion" o cosas asi.
