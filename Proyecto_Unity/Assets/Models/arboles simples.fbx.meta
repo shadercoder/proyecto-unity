@@ -9,8 +9,8 @@ ModelImporter:
     generateColliders: 0
     swapUVs: 0
   tangentSpace:
-    normalImportMode: 1
-    tangentImportMode: 1
+    normalImportMode: 0
+    tangentImportMode: 0
     smoothingAngle: 60
     splitTangents: 1
   materials:

@@ -1,16 +1,12 @@
-Shader "Planet/RocaTextureLerp"
+Shader "Clip"
 {
 	Properties 
 	{
-_MainTex("Mapa terreno Base", 2D) = "black" {}
-_RampaColor("Canales para cada Altura", 2D) = "black" {}
-_Ilum("Rampa de iluminación", 2D) = "black" {}
-_Amount("Extrusion por Shader", Float) = 0
-_texTop("Cumbre", 2D) = "black" {}
-_texMount("Montañas", 2D) = "black" {}
-_texMedium("Altura Media", 2D) = "black" {}
-_texLow("Baja Altura", 2D) = "black" {}
-_texBot("Valles", 2D) = "black" {}
+_ColorNubes("_ColorNubes", Color) = (1,0,0,1)
+_CantidadNubes("_CantidadNubes", Range(0,1) ) = 0.2516232
+_baseNubes("_baseNubes", 2D) = "black" {}
+_velocidadNubes("_velocidadNubes", Float) = 0
+_Ilum("_Ilum", 2D) = "black" {}
 
 	}
 	
@@ -25,7 +21,7 @@ _texBot("Valles", 2D) = "black" {}
 		}
 
 		
-Cull Back
+Cull Off
 ZWrite On
 ZTest LEqual
 ColorMask RGBA
@@ -34,19 +30,15 @@ Fog{
 
 
 		CGPROGRAM
-#pragma surface surf BlinnPhongEditor  vertex:vert
+#pragma surface surf BlinnPhongEditor  addshadow fullforwardshadows vertex:vert
 #pragma target 3.0
 
 
-sampler2D _MainTex;
-sampler2D _RampaColor;
+float4 _ColorNubes;
+float _CantidadNubes;
+sampler2D _baseNubes;
+float _velocidadNubes;
 sampler2D _Ilum;
-float _Amount;
-sampler2D _texTop;
-sampler2D _texMount;
-sampler2D _texMedium;
-sampler2D _texLow;
-sampler2D _texBot;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -86,24 +78,15 @@ return Multiply0;
 			}
 			
 			struct Input {
-				float2 uv_texBot;
-float2 uv_texLow;
-float2 uv_MainTex;
-float2 uv_texMedium;
-float2 uv_texMount;
-float2 uv_texTop;
+				float2 uv_baseNubes;
 
 			};
 
 			void vert (inout appdata_full v, out Input o) {
-float4 Multiply1_0_NoInput = float4(0,0,0,0);
-float4 Multiply1=Multiply1_0_NoInput * float4( v.normal.x, v.normal.y, v.normal.z, 1.0 );
-float4 Multiply0=Multiply1 * _Amount.xxxx;
-float4 Add0=v.vertex + Multiply0;
+float4 VertexOutputMaster0_0_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
-v.vertex = Add0;
 
 
 			}
@@ -118,27 +101,19 @@ v.vertex = Add0;
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Sampled2D6=tex2D(_texBot,IN.uv_texBot.xy);
-float4 Sampled2D1=tex2D(_texLow,IN.uv_texLow.xy);
-float4 Sampled2D0=tex2D(_MainTex,IN.uv_MainTex.xy);
-float4 Tex2D1=tex2D(_RampaColor,Sampled2D0.xy);
-float4 Split0=Tex2D1;
-float4 Lerp2=lerp(Sampled2D6,Sampled2D1,float4( Split0.x, Split0.x, Split0.x, Split0.x));
-float4 Sampled2D3=tex2D(_texMedium,IN.uv_texMedium.xy);
-float4 Lerp0=lerp(Lerp2,Sampled2D3,float4( Split0.y, Split0.y, Split0.y, Split0.y));
-float4 Sampled2D4=tex2D(_texMount,IN.uv_texMount.xy);
-float4 Lerp3=lerp(Lerp0,Sampled2D4,float4( Split0.z, Split0.z, Split0.z, Split0.z));
-float4 Sampled2D5=tex2D(_texTop,IN.uv_texTop.xy);
-float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.w, Split0.w, Split0.w, Split0.w);
-float4 Lerp4=lerp(Lerp3,Sampled2D5,Invert1);
+float4 Multiply3=_Time * _velocidadNubes.xxxx;
+float4 UV_Pan0=float4((IN.uv_baseNubes.xyxy).x + Multiply3.y,(IN.uv_baseNubes.xyxy).y,(IN.uv_baseNubes.xyxy).z,(IN.uv_baseNubes.xyxy).w);
+float4 Tex2D0=tex2D(_baseNubes,UV_Pan0.xy);
+float4 Multiply0=_ColorNubes * Tex2D0;
+float4 Subtract0=Tex2D0 - _CantidadNubes.xxxx;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Lerp4;
+clip( Subtract0 );
+o.Albedo = Multiply0;
 
 				o.Normal = normalize(o.Normal);
 			}
