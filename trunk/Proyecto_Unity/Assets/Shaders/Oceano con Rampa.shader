@@ -1,4 +1,4 @@
-Shader "Planet/Oceano"
+Shader "Planet/OceanoRamp"
 {
 	Properties 
 	{
@@ -24,9 +24,9 @@ _transparencia("_transparencia", Float) = 0
 	{
 		Tags
 		{
-"Queue"="Geometry"
+"Queue"="Overlay"
 "IgnoreProjector"="True"
-"RenderType"="Opaque"
+"RenderType"="Transparent"
 
 		}
 
@@ -35,12 +35,13 @@ Cull Back
 ZWrite On
 ZTest LEqual
 ColorMask RGB
+Blend SrcAlpha OneMinusSrcAlpha
 Fog{
 }
 
 
 		CGPROGRAM
-#pragma surface surf BlinnPhongEditor  vertex:vert
+#pragma surface surf BlinnPhongEditor  addshadow vertex:vert
 #pragma target 3.0
 
 
@@ -72,11 +73,11 @@ float _transparencia;
 			
 			inline half4 LightingBlinnPhongEditor_PrePass (EditorSurfaceOutput s, half4 light)
 			{
-half3 spec = light.a * s.Gloss;
-half4 c;
-c.rgb = (s.Albedo * light.rgb + light.rgb * spec);
-c.a = s.Alpha;
-return c;
+float4 Luminance0= Luminance( light.xyz ).xxxx;
+float4 Assemble0=float4(Luminance0.x, float4( 0.0, 0.0, 0.0, 0.0 ).y, float4( 0.0, 0.0, 0.0, 0.0 ).z, float4( 0.0, 0.0, 0.0, 0.0 ).w);
+float4 Tex2D0=tex2D(_Ilum,Assemble0.xy);
+float4 Multiply1=float4( s.Albedo.x, s.Albedo.y, s.Albedo.z, 1.0 ) * Tex2D0;
+return Multiply1;
 
 			}
 
@@ -100,8 +101,6 @@ return c;
 			struct Input {
 				float3 viewDir;
 float2 uv_MainTex;
-float3 simpleWorldRefl;
-float2 uv_bumpAnimControl;
 
 			};
 
@@ -111,7 +110,6 @@ float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
 float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 
-o.simpleWorldRefl = -reflect( normalize(WorldSpaceViewDir(v.vertex)), normalize(mul((float3x3)_Object2World, SCALED_NORMAL)));
 
 			}
 			
@@ -128,7 +126,7 @@ o.simpleWorldRefl = -reflect( normalize(WorldSpaceViewDir(v.vertex)), normalize(
 float4 Fresnel0_1_NoInput = float4(0,0,1,1);
 float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
 float4 Pow0=pow(_densidadAgua.xxxx,Fresnel0);
-float4 Lerp1=lerp(_ColorFar,_ColorNear,Pow0);
+float4 Lerp1=lerp(_ColorNear,_ColorFar,Pow0);
 float4 Tex2D2=tex2D(_MainTex,(IN.uv_MainTex.xyxy).xy);
 float4 Split0=Tex2D2;
 float4 Lerp3_0_NoInput = float4(0,0,0,0);
@@ -139,29 +137,14 @@ float4 Add0=Lerp3 + Lerp7;
 float4 Lerp0_0_NoInput = float4(0,0,0,0);
 float4 Lerp0=lerp(Lerp0_0_NoInput,_ColorPlaya,float4( Split0.z, Split0.z, Split0.z, Split0.z));
 float4 Add1=Add0 + Lerp0;
-float4 TexCUBE0=texCUBE(_ReflectionCubemap,float4( IN.simpleWorldRefl.x, IN.simpleWorldRefl.y,IN.simpleWorldRefl.z,1.0 ));
-float4 Multiply0=_ReflectionColor * TexCUBE0;
-float4 Split1=Tex2D2;
-float4 Add2=float4( Split1.x, Split1.x, Split1.x, Split1.x) + float4( Split1.y, Split1.y, Split1.y, Split1.y);
-float4 Lerp5_0_NoInput = float4(0,0,0,0);
-float4 Lerp5=lerp(Lerp5_0_NoInput,Multiply0,Add2);
-float4 Tex2D4=tex2D(_RefStrGloss,(IN.uv_bumpAnimControl.xyxy).xy);
-float4 Multiply2=_SeaSpd.xxxx * _Time;
-float4 UV_Pan1=float4(Tex2D4.x + Multiply2.x,Tex2D4.y + Multiply2.x,Tex2D4.z,Tex2D4.w);
-float4 Tex2D1=tex2D(_RefStrGloss,UV_Pan1.xy);
-float4 Lerp4_0_NoInput = float4(0,0,0,0);
-float4 Lerp4=lerp(Lerp4_0_NoInput,Tex2D1,Add2);
-float4 Multiply1=_Shininess.xxxx * _SpecularColor;
-float4 Lerp2_0_NoInput = float4(0,0,0,0);
-float4 Lerp2=lerp(Lerp2_0_NoInput,Multiply1,Add2);
 float4 Master0_1_NoInput = float4(0,0,1,1);
+float4 Master0_2_NoInput = float4(0,0,0,0);
+float4 Master0_3_NoInput = float4(0,0,0,0);
+float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
 o.Albedo = Add1;
-o.Emission = Lerp5;
-o.Specular = Lerp4;
-o.Gloss = Lerp2;
 
 				o.Normal = normalize(o.Normal);
 			}

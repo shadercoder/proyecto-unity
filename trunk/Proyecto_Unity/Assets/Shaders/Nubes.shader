@@ -1,9 +1,9 @@
-Shader "Clip"
+Shader "Atmosfera\Nubes"
 {
 	Properties 
 	{
 _ColorNubes("_ColorNubes", Color) = (1,0,0,1)
-_CantidadNubes("_CantidadNubes", Range(0,1) ) = 0.2516232
+_CantidadNubes("_CantidadNubes", Range(0.35,1) ) = 0.35
 _baseNubes("_baseNubes", 2D) = "black" {}
 _velocidadNubes("_velocidadNubes", Float) = 0
 _Ilum("_Ilum", 2D) = "black" {}

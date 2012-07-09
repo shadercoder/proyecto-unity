@@ -6,11 +6,17 @@ _MainTex("Mapa terreno Base", 2D) = "black" {}
 _RampaColor("Canales para cada Altura", 2D) = "black" {}
 _Ilum("Rampa de iluminación", 2D) = "black" {}
 _Amount("Extrusion por Shader", Float) = 0
+_tinteTop("_tinteTop", Color) = (1,1,1,1)
 _texTop("Cumbre", 2D) = "black" {}
+_tinteMount("_tinteMount", Color) = (1,1,1,1)
 _texMount("Montañas", 2D) = "black" {}
+_tinteMedium("_tinteMedium", Color) = (1,1,1,1)
 _texMedium("Altura Media", 2D) = "black" {}
+_tinteLow("_tinteLow", Color) = (1,1,1,1)
 _texLow("Baja Altura", 2D) = "black" {}
+_tinteBot("_tinteBot", Color) = (1,1,1,1)
 _texBot("Valles", 2D) = "black" {}
+_Emision("_Emision", Range(0,0.4) ) = 0
 
 	}
 	
@@ -42,11 +48,17 @@ sampler2D _MainTex;
 sampler2D _RampaColor;
 sampler2D _Ilum;
 float _Amount;
+float4 _tinteTop;
 sampler2D _texTop;
+float4 _tinteMount;
 sampler2D _texMount;
+float4 _tinteMedium;
 sampler2D _texMedium;
+float4 _tinteLow;
 sampler2D _texLow;
+float4 _tinteBot;
 sampler2D _texBot;
+float _Emision;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -119,26 +131,32 @@ v.vertex = Add0;
 				o.Custom = 0.0;
 				
 float4 Sampled2D6=tex2D(_texBot,IN.uv_texBot.xy);
+float4 Multiply0=Sampled2D6 * _tinteBot;
 float4 Sampled2D1=tex2D(_texLow,IN.uv_texLow.xy);
+float4 Multiply1=Sampled2D1 * _tinteLow;
 float4 Sampled2D0=tex2D(_MainTex,IN.uv_MainTex.xy);
 float4 Tex2D1=tex2D(_RampaColor,Sampled2D0.xy);
 float4 Split0=Tex2D1;
-float4 Lerp2=lerp(Sampled2D6,Sampled2D1,float4( Split0.x, Split0.x, Split0.x, Split0.x));
+float4 Lerp2=lerp(Multiply0,Multiply1,float4( Split0.x, Split0.x, Split0.x, Split0.x));
 float4 Sampled2D3=tex2D(_texMedium,IN.uv_texMedium.xy);
-float4 Lerp0=lerp(Lerp2,Sampled2D3,float4( Split0.y, Split0.y, Split0.y, Split0.y));
+float4 Multiply2=Sampled2D3 * _tinteMedium;
+float4 Lerp0=lerp(Lerp2,Multiply2,float4( Split0.y, Split0.y, Split0.y, Split0.y));
 float4 Sampled2D4=tex2D(_texMount,IN.uv_texMount.xy);
-float4 Lerp3=lerp(Lerp0,Sampled2D4,float4( Split0.z, Split0.z, Split0.z, Split0.z));
+float4 Multiply3=Sampled2D4 * _tinteMount;
+float4 Lerp3=lerp(Lerp0,Multiply3,float4( Split0.z, Split0.z, Split0.z, Split0.z));
 float4 Sampled2D5=tex2D(_texTop,IN.uv_texTop.xy);
+float4 Multiply4=Sampled2D5 * _tinteTop;
 float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.w, Split0.w, Split0.w, Split0.w);
-float4 Lerp4=lerp(Lerp3,Sampled2D5,Invert1);
+float4 Lerp4=lerp(Lerp3,Multiply4,Invert1);
+float4 Multiply5=Lerp4 * _Emision.xxxx;
 float4 Master0_1_NoInput = float4(0,0,1,1);
-float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
 o.Albedo = Lerp4;
+o.Emission = Multiply5;
 
 				o.Normal = normalize(o.Normal);
 			}
