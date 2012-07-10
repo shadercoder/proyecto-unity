@@ -2,7 +2,6 @@ Shader "Planet/Atmosfera2"
 {
 	Properties 
 	{
-_BaseNubes("_BaseNubes", 2D) = "black" {}
 _atmLejos("_atmLejos", Color) = (0,0.5481684,0.7761194,1)
 _atmCerca("_atmCerca", Color) = (1,1,1,1)
 _Espesor("_Espesor", Range(10,0) ) = 7.507936
@@ -38,7 +37,6 @@ Fog{
 #pragma target 3.0
 
 
-sampler2D _BaseNubes;
 float4 _atmLejos;
 float4 _atmCerca;
 float _Espesor;
