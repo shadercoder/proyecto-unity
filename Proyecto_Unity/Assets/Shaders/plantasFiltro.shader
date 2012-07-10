@@ -1,22 +1,15 @@
-Shader "Planet/Plantas"
+Shader "Planet/PlantasFiltro"
 {
 	Properties 
 	{
-_Ilum("_Ilum", 2D) = "black" {}
-_Emission("_Emission", Float) = 0
-_colorPlanta1("_colorPlanta1", Color) = (1,1,1,1)
-_planta1("_planta1", 2D) = "black" {}
-_colorPlanta2("_colorPlanta2", Color) = (1,1,1,1)
-_planta2("_planta2", 2D) = "black" {}
-_colorPlanta3("_colorPlanta3", Color) = (1,1,1,1)
-_planta3("_planta3", 2D) = "black" {}
-_colorPlanta4("_colorPlanta4", Color) = (1,1,1,1)
-_planta4("_planta4", 2D) = "black" {}
-_MainTex("Textura Plantas", 2D) = "black" {}
+_MainTex("_MainTex", 2D) = "black" {}
+_Emission("_Emission", Float) = 0.5
+_colorPlanta1("_colorPlanta1", Color) = (1,0,0,1)
+_colorPlanta2("_colorPlanta2", Color) = (0.090909,0,1,1)
+_colorPlanta3("_colorPlanta3", Color) = (0.2167833,1,0,1)
+_colorPlanta4("_colorPlanta4", Color) = (1,0.986014,0,1)
 _valorBlend("_valorBlend", Range(0.01,0.9) ) = 0.01
-_valorColorido("_valorColorido", Float) = 1.5
-_Relieve("Textura Relieve", 2D) = "black" {}
-_Amount("Extrusion", Range(-3,3) ) = 0.5
+_Relieve("_Relieve", 2D) = "black" {}
 
 	}
 	
@@ -40,25 +33,18 @@ Fog{
 
 
 		CGPROGRAM
-#pragma surface surf BlinnPhongEditor  addshadow fullforwardshadows vertex:vert
+#pragma surface surf BlinnPhongEditor  vertex:vert
 #pragma target 3.0
 
 
-sampler2D _Ilum;
+sampler2D _MainTex;
 float _Emission;
 float4 _colorPlanta1;
-sampler2D _planta1;
 float4 _colorPlanta2;
-sampler2D _planta2;
 float4 _colorPlanta3;
-sampler2D _planta3;
 float4 _colorPlanta4;
-sampler2D _planta4;
-sampler2D _MainTex;
 float _valorBlend;
-float _valorColorido;
 sampler2D _Relieve;
-float _Amount;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -72,11 +58,11 @@ float _Amount;
 			
 			inline half4 LightingBlinnPhongEditor_PrePass (EditorSurfaceOutput s, half4 light)
 			{
-float4 Luminance0= Luminance( light.xyz ).xxxx;
-float4 Assemble0=float4(Luminance0.x, float4( 0.0, 0.0, 0.0, 0.0 ).y, float4( 0.0, 0.0, 0.0, 0.0 ).z, float4( 0.0, 0.0, 0.0, 0.0 ).w);
-float4 Tex2D0=tex2D(_Ilum,Assemble0.xy);
-float4 Multiply0=float4( s.Albedo.x, s.Albedo.y, s.Albedo.z, 1.0 ) * Tex2D0;
-return Multiply0;
+half3 spec = light.a * s.Gloss;
+half4 c;
+c.rgb = (s.Albedo * light.rgb + light.rgb * spec);
+c.a = s.Alpha;
+return c;
 
 			}
 
@@ -98,11 +84,7 @@ return Multiply0;
 			}
 			
 			struct Input {
-				float2 uv_planta1;
-float2 uv_MainTex;
-float2 uv_planta2;
-float2 uv_planta3;
-float2 uv_planta4;
+				float2 uv_MainTex;
 
 			};
 
@@ -125,32 +107,23 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Sampled2D2=tex2D(_planta1,IN.uv_planta1.xy);
-float4 Multiply3=Sampled2D2 * _colorPlanta1;
 float4 Sampled2D6=tex2D(_MainTex,IN.uv_MainTex.xy);
 float4 Split0=Sampled2D6;
 float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.w, Split0.w, Split0.w, Split0.w);
 float4 Lerp4_1_NoInput = float4(0,0,0,0);
-float4 Lerp4=lerp(Multiply3,Lerp4_1_NoInput,Invert0);
-float4 Sampled2D5=tex2D(_planta2,IN.uv_planta2.xy);
-float4 Add1=Sampled2D5 + _colorPlanta2;
-float4 Lerp0=lerp(Lerp4,Add1,float4( Split0.x, Split0.x, Split0.x, Split0.x));
-float4 Sampled2D3=tex2D(_planta3,IN.uv_planta3.xy);
-float4 Multiply1=Sampled2D3 * _colorPlanta3;
-float4 Lerp1=lerp(Lerp0,Multiply1,float4( Split0.y, Split0.y, Split0.y, Split0.y));
-float4 Sampled2D1=tex2D(_planta4,IN.uv_planta4.xy);
-float4 Add0=Sampled2D1 + _colorPlanta4;
-float4 Lerp2=lerp(Lerp1,Add0,float4( Split0.z, Split0.z, Split0.z, Split0.z));
-float4 Multiply2=_valorColorido.xxxx * Lerp2;
-float4 Subtract0=Lerp2 - _valorBlend.xxxx;
+float4 Lerp4=lerp(_colorPlanta1,Lerp4_1_NoInput,Invert0);
+float4 Lerp0=lerp(Lerp4,_colorPlanta2,float4( Split0.x, Split0.x, Split0.x, Split0.x));
+float4 Lerp1=lerp(Lerp0,_colorPlanta3,float4( Split0.y, Split0.y, Split0.y, Split0.y));
+float4 Lerp2=lerp(Lerp1,_colorPlanta4,float4( Split0.z, Split0.z, Split0.z, Split0.z));
+float4 Multiply0=Lerp2 * _Emission.xxxx;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
-float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-clip( Subtract0 );
-o.Albedo = Multiply2;
-o.Emission = _Emission.xxxx;
+float4 Master0_6_NoInput = float4(1,1,1,1);
+o.Albedo = Lerp2;
+o.Emission = Multiply0;
+o.Alpha = Lerp2;
 
 				o.Normal = normalize(o.Normal);
 			}
