@@ -8,9 +8,9 @@ TextureImporter:
   npotScale: 1
   generateCubemap: 0
   isReadable: 0
-  textureType: 1
+  textureType: 5
   mipmaps:
-    generation: 1
+    generation: 0
     correctGamma: 0
     border: 0
     filter: 0

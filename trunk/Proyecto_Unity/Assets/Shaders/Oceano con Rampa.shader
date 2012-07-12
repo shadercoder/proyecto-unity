@@ -8,15 +8,7 @@ _colorPlayaAgua("_colorPlayaAgua", Color) = (0.7568628,0.8078431,0.3294118,1)
 _ColorPlaya("_ColorPlaya", Color) = (0.8039216,0.7450981,0.6156863,1)
 _densidadAgua("_densidadAgua", Range(0,0.05) ) = 0.004
 _MainTex("_MainTex", 2D) = "black" {}
-_RefStrGloss("_RefStrGloss", 2D) = "gray" {}
-_bumpAnimControl("_bumpAnimControl", 2D) = "black" {}
-_ReflectionCubemap("_ReflectionCubemap", Cube) = "black" {}
-_ReflectionColor("_ReflectionColor", Color) = (0.2980392,0.6666667,0.282353,1)
-_SpecularColor("_SpecularColor", Color) = (0.6470588,0.9960784,0.4313726,1)
-_Shininess("_Shininess", Range(0.1,4) ) = 1.814286
-_SeaSpd("_SeaSpd", Float) = 0.5
 _Ilum("_Ilum", 2D) = "black" {}
-_transparencia("_transparencia", Float) = 0
 
 	}
 	
@@ -24,7 +16,7 @@ _transparencia("_transparencia", Float) = 0
 	{
 		Tags
 		{
-"Queue"="Overlay"
+"Queue"="Geometry"
 "IgnoreProjector"="True"
 "RenderType"="Transparent"
 
@@ -32,7 +24,7 @@ _transparencia("_transparencia", Float) = 0
 
 		
 Cull Back
-ZWrite On
+ZWrite Off
 ZTest LEqual
 ColorMask RGB
 Blend SrcAlpha OneMinusSrcAlpha
@@ -51,15 +43,7 @@ float4 _colorPlayaAgua;
 float4 _ColorPlaya;
 float _densidadAgua;
 sampler2D _MainTex;
-sampler2D _RefStrGloss;
-sampler2D _bumpAnimControl;
-samplerCUBE _ReflectionCubemap;
-float4 _ReflectionColor;
-float4 _SpecularColor;
-float _Shininess;
-float _SeaSpd;
 sampler2D _Ilum;
-float _transparencia;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
