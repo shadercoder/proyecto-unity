@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 //using ;
 
@@ -36,6 +37,8 @@ public class Estados : MonoBehaviour {
 	private bool botonPequeSubir				= false;				//de la interfaz del menu izquierdo
 	private bool botonPequeBajar				= false;
 	private bool botonPequeAllanar				= false;
+		//Ventanas de visualizacion
+	private bool objetivoAlcanzado				= false;				//Si es true, muestra una ventana con informacion del objetivo pulsado
 	
 	//Privadas del script
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
@@ -56,6 +59,10 @@ public class Estados : MonoBehaviour {
 		//Filtro de elementos
 	private bool infoElems						= false;				//Indica si se muestra la info de los elementos de la casilla
 	private string infoElems_Elem;										//Primera linea a mostrar de la info de elementos
+		//Elemento seleccionado
+	private Ser seleccionado;											//El ser que se ha seleccionado (puede ser un animal o un edificio)
+	private bool tipoEdificio;											//True si es un edificio, false en otro caso (animal o planta)
+	private string infoSeleccionado				= "";					//La informacion referente al elemento seleccionado con el click izquierdo del raton.
 		//Algoritmo vida
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
 	private int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
@@ -141,6 +148,71 @@ public class Estados : MonoBehaviour {
 		}
 		else {
 			infoElems_Elem = "";
+		}
+	}
+	
+	public void getInfoSeresCasilla() {
+		if (objetivoAlcanzado)
+			return;
+		RaycastHit hit;
+		bool alcanzado = false;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+			Vector2 coordTemp = hit.textureCoord;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+			Casilla elem = vida.tablero[(int)coordTemp.y, (int)coordTemp.x];
+			if (elem.animal != null) {
+				infoSeleccionado = "";
+				infoSeleccionado += "\t Animal \n";		
+				infoSeleccionado += "Especie: " + elem.animal.especie.nombre + ".\n";
+				infoSeleccionado += "Vive en: ";
+				List<T_habitats> habitats = elem.animal.especie.habitats;
+				if (habitats.Count > 0) {
+					infoSeleccionado += habitats[0].ToString();
+					for(int i = 1; i < habitats.Count; i++) {
+						infoSeleccionado += ", " + habitats[i].ToString();
+					}
+				}
+				infoSeleccionado += ".\n";
+				infoSeleccionado += "Comida restante: " + elem.animal.reserva.ToString() + ".\n";
+				alcanzado = true;
+			} 
+			else if (elem.edificio != null) {
+				infoSeleccionado = "";
+				infoSeleccionado += "\t Edificio \n";		
+				infoSeleccionado += "Tipo: " + elem.edificio.tipo.nombre + ".\n";
+				/*
+				 * Aqui hay que añadir el acceso a las caracteristicas propias del edificio: sliders de produccion, tipo de
+				 * materiales recogidos, encendido/apagado, etc.
+				 * */
+				alcanzado = true;
+			}
+			else if (elem.vegetal != null) {
+				infoSeleccionado = "";
+				infoSeleccionado += "\t Vegetal \n";		
+				infoSeleccionado += "Especie: " + elem.vegetal.especie.nombre + ".\n";
+				infoSeleccionado += "Vive en: ";
+				List<T_habitats> habitats = elem.vegetal.especie.habitats;
+				if (habitats.Count > 0) {
+					infoSeleccionado += habitats[0].ToString();
+					for(int i = 1; i < habitats.Count; i++) {
+						infoSeleccionado += ", " + habitats[i].ToString();
+					}
+				}
+				infoSeleccionado += ".\n";
+				infoSeleccionado += "Poblacion: " + elem.vegetal.numVegetales.ToString() + ".\n";
+				alcanzado = true;
+			}
+			else {
+				infoSeleccionado = "";
+				alcanzado = false;
+			}
+		}
+		if (alcanzado) {
+			//Se activa la visualizacion de la correspondiente ventana
+			objetivoAlcanzado = true;
 		}
 	}
 	
@@ -263,6 +335,10 @@ public class Estados : MonoBehaviour {
 				break;
 				
 			case T_estados.principal:
+				//Controlamos los clicks de raton en este estado solamente
+				if (Input.GetMouseButtonDown(0)) {
+					getInfoSeresCasilla();
+				}
 				break;
 				
 			case T_estados.filtros:
@@ -324,6 +400,13 @@ public class Estados : MonoBehaviour {
 				actualizaInfoElems();
 			}
 		}
+		//Debug solo
+		if(Input.GetKeyDown(KeyCode.V)) 
+			if(algoritmoActivado)
+				algoritmoActivado = false;
+			else
+				algoritmoActivado = true;
+		
 	}
 	
 	//Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
@@ -342,6 +425,9 @@ public class Estados : MonoBehaviour {
 			case T_estados.principal:
 				GUI.skin = estiloGUI_Nuevo;
 				menuIzquierdaHex();
+				if (objetivoAlcanzado) {
+					ventanaInfo();
+				}
 				break;
 			case T_estados.guardar:
 				GUI.skin = estiloGUI;
@@ -362,7 +448,7 @@ public class Estados : MonoBehaviour {
 		}
 		
 		//Debug del algoritmo
-		if(GUI.Button(new Rect(cuantoW * 40, cuantoH * 24,cuantoW * 8,cuantoH * 1), "Activar/Desactivar")) 
+		if(GUI.Button(new Rect(cuantoW * 40, cuantoH * 24,cuantoW * 8,cuantoH * 1), "Activar/Desactivar") || Input.GetKeyDown(KeyCode.V)) 
 			if(algoritmoActivado)
 				algoritmoActivado = false;
 			else
@@ -668,5 +754,13 @@ public class Estados : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW * 40, cuantoH * 20, cuantoW * 8, cuantoH * 4), new GUIContent("", "Informacion de la casilla"));
 		GUI.Label(new Rect(cuantoW * 40, cuantoH * 20.2f, cuantoW * 8, cuantoH * 1.6f), infoElems_Elem);
 	}
-
+	
+	private void ventanaInfo() {
+		GUI.Box(new Rect(cuantoW * 16, cuantoH * 10, cuantoW * 16, cuantoH * 10), "");
+		GUI.Label(new Rect(cuantoW * 17, cuantoH * 11, cuantoW * 5, cuantoH * 5), new GUIContent("Imagen", "Imagen del Edificio/Animal/Planta"));
+		GUI.Label(new Rect(cuantoW * 17, cuantoH * 16, cuantoW * 14, cuantoH * 4), infoSeleccionado);
+		if (GUI.Button(new Rect(cuantoW * 31, cuantoH * 10, cuantoW * 1, cuantoH * 1), "X")) {
+			objetivoAlcanzado = false;
+		}
+	}
 }
