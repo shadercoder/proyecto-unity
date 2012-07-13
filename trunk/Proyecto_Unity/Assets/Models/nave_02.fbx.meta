@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: ee27c2c70d9a32f4fab975122200a762
+guid: d76f158e8b21bc54fa852fc75b6c43a4
 ModelImporter:
   importerVersion: 7
   meshes:
@@ -7,20 +7,20 @@ ModelImporter:
     useFileUnits: 1
     meshCompression: 3
     generateColliders: 0
-    swapUVs: 1
+    swapUVs: 0
   tangentSpace:
     normalImportMode: 0
-    tangentImportMode: 0
-    smoothingAngle: 0
+    tangentImportMode: 1
+    smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
     animationCompression: 1
     animationWrapMode: 0
-    splitAnimations: 0
+    splitAnimations: 1
   nodeInfo:
     //RootNode:
     - 100000
@@ -31,4 +31,4 @@ AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
     4300000: Nave
-    7400000: Default Take //// nave_01
+    7400000: Default Take //// nave_02

@@ -146,12 +146,12 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	private static float nivelAgua = 0.25f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
-	private static float tamanoPlaya = 0.05f;		//El tamaño de las playas
-//	private static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
-	private static float alturaColinas = 0.35f;		//La altura a partir de la cual se considera colina
-	private static float alturaMontana = 0.6f;		//La altura a partir de la cual se considera montaña
-	private static float temperatura = 0.0f;			//La temperatura del planeta, que influye en la rampa de color
+	private static float nivelAgua = 0.15f;					//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
+	private static float tamanoPlaya = nivelAgua/4.0f;		//El tamaño de las playas
+//	private static float atenuacionRelieve = 50f;			//Suaviza o acentua el efecto de sombreado
+	private static float alturaColinas = 0.35f;				//La altura a partir de la cual se considera colina
+	private static float alturaMontana = 0.6f;				//La altura a partir de la cual se considera montaña
+	private static float temperatura = 0.0f;				//La temperatura del planeta, que influye en la rampa de color
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
@@ -227,14 +227,24 @@ public class FuncTablero {
 	 * Verde: oceano
 	 * Azul: playa
 	 * */
+		float mezcla = tamanoPlaya/3.0f;
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		for (int l = 0; l < pixAgua.Length; l++) {
-			if (pix[l].grayscale < nivelAgua-tamanoPlaya){
-				pixAgua[l] = new Color (0, 0.5f+pix[l].g, 0, 0);
-			} else if ((nivelAgua-tamanoPlaya <= pix[l].grayscale)&& (pix[l].grayscale < nivelAgua )){
-				pixAgua[l] = new Color (0.5f+pix[l].r, 0, 0,  0);
-			} else if ((nivelAgua<= pix[l].grayscale)&& (pix[l].grayscale <nivelAgua+tamanoPlaya*4)){
-				pixAgua[l] = new Color (0, 0, 0.5f+pix[l].b, 0);
+			float color = pix[l].grayscale;
+			if (pix[l].grayscale < nivelAgua-tamanoPlaya-mezcla*2){
+				pixAgua[l] = new Color (color, 1, 0, 0);
+			} else if ((nivelAgua-tamanoPlaya-mezcla*2 <= color) && (color < nivelAgua-tamanoPlaya-mezcla*0.5 )){
+				pixAgua[l] = new Color (0.25f+color, 0.75f-color, 0,  0);
+			} else if ((nivelAgua-tamanoPlaya-mezcla*0.5 <= color) && (color < nivelAgua-tamanoPlaya-mezcla )){
+				pixAgua[l] = new Color (0.5f+color, 0.5f-color, 0,  0);
+			} else if ((nivelAgua-tamanoPlaya-mezcla <= color) && (color < nivelAgua-tamanoPlaya )){
+				pixAgua[l] = new Color (0.75f+color, 0.25f-color, 0,  0);
+			} else if ((nivelAgua-tamanoPlaya <= color) && (color < nivelAgua )){
+				pixAgua[l] = new Color (1, 0, 0,  0);
+			} else if ((nivelAgua<= color) && (color <nivelAgua+tamanoPlaya)){
+				pixAgua[l] = new Color (0.5f+color, 0, 0.5f-color, 0);
+			} else if ((nivelAgua+tamanoPlaya<= color)&& (color <nivelAgua+tamanoPlaya*4+mezcla)){	
+				pixAgua[l] = new Color (0, 0, 1, 0);
 			} else 
 				pixAgua[l] = Color.black;
 		}

@@ -99,7 +99,7 @@ public class Controles : MonoBehaviour {
 		nave.position = rotacionNave * new Vector3(0.0f, 0.0f, -distanciaObjetivo) + objetivo.position;
 		//TODO Rotar la nave con un Quaternion.Slerp para que vaya moviéndose en la dirección
 		//en la que avanza.
-		
+		nave.LookAt(objetivo.position);
 		//Si se pulsa el botón derecho del ratón, se rota en torno a la nave
 		if (Input.GetMouseButton(1)) {
 			xObjetivo += Input.GetAxis("Mouse X");
