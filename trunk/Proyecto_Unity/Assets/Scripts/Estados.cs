@@ -21,13 +21,22 @@ public class Estados : MonoBehaviour {
 	public float tiempoTooltip 					= 0.75f;				//Tiempo que tarda en aparecer el tooltip	
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
-		//Modelos
+	public int energia = 100;											//Cantidad de energia almacenada en la nave
+	public int energiaDif = 10;											//Incremento o decremento por turno de energia
+	public int componentesBasicos = 25;									//Cantidad de componentes basicos alojados en la nave
+	public int componentesBasicosDif = 0;								//Incremento o decremento por turno de componentes basicos
+	public int componentesAvanzados = 0;								//Cantidad de componentes avanzados alojados en la nave
+	public int componentesAvanzadosDif = 0;								//Incremento o decremento por turno de componentes avanzados
+	public int materialBiologico = 0;									//Cantidad de material biologico alojado en la nave
+	public int materialBiologicoDif = 0;								//Incremento o decremento por turno de material biologico
+	
+	//Modelos
 	public GameObject velociraptor;										//El modelo del velociraptor (velociraptor_lowPoly)
 	public GameObject planta1;											//El modelo de la planta numero 1
 	
 	//GUI	
-	private int cuantoW							= Screen.width / 48;	//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
-	private int cuantoH							= Screen.height / 30;	//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
+	private int cuantoW;												//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
+	private int cuantoH;													//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 		//Botones grandes
 	private bool menuAltera						= false;				//Variables de control de los botones grandes
 	private bool menuCamara						= false;				//de la interfaz del menu izquierdo
@@ -44,7 +53,7 @@ public class Estados : MonoBehaviour {
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
 	private Vida vida;													//Tablero lógico del algoritmo		
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
-	private float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
+	public float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 		//Pinceles
 	private bool activarPinceles				= false;				//Variable de control para pintar sobre la textura	
 	private int seleccionPincel 				= 0;					//la selección del pincel a utilizar
@@ -65,7 +74,7 @@ public class Estados : MonoBehaviour {
 	private string infoSeleccionado				= "";					//La informacion referente al elemento seleccionado con el click izquierdo del raton.
 		//Algoritmo vida
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
-	private int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
+	public int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
 	private bool algoritmoActivado				= false;				//Se encuentra activado el algoritmo de la vida?
 		
 	//Tooltips
@@ -411,7 +420,7 @@ public class Estados : MonoBehaviour {
 	
 	//Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
 	
-	void OnGUI() {
+	void OnGUIXXX() {
 		GUI.skin = estiloGUI;
 		switch (estado) {
 			case T_estados.inicial:
