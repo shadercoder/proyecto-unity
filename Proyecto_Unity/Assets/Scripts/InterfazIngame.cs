@@ -44,13 +44,13 @@ public class InterfazIngame : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW*0,cuantoH*0,cuantoW*73,cuantoH*3),"","BloqueSuperior");		
 		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),estados.numPasos.ToString(),"EtiquetaTiempo");
 		if(GUI.Button(new Rect(cuantoW*4,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Pausa el juego"),"BotonPausa"))
-			estados.escalaTiempo = 0;	
+			Time.timeScale = 0;//estados.escalaTiempo = 0;	
 		if(GUI.Button(new Rect(cuantoW*5,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad normal"),"BotonVelocidad1"))
-			estados.escalaTiempo = 1;	
+			Time.timeScale = 1;//estados.escalaTiempo = 1;	
 		if(GUI.Button(new Rect(cuantoW*6,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 2x"),"BotonVelocidad2"))
-			estados.escalaTiempo = 2;	
+			Time.timeScale = 2;//estados.escalaTiempo = 2;	
 		if(GUI.Button(new Rect(cuantoW*7,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
-			estados.escalaTiempo = 5;	
+			Time.timeScale = 5;//estados.escalaTiempo = 5;	
 		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*3),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
 			temp++;		
 		GUI.EndGroup();
@@ -103,13 +103,13 @@ public class InterfazIngame : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW*0,cuantoH*0,cuantoW*73,cuantoH*3),"","BloqueSuperior");		
 		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),estados.numPasos.ToString(),"EtiquetaTiempo");
 		if(GUI.Button(new Rect(cuantoW*4,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Pausa el juego"),"BotonPausa"))
-			estados.escalaTiempo = 0;	
+			Time.timeScale = 0;//estados.escalaTiempo = 0;	
 		if(GUI.Button(new Rect(cuantoW*5,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad normal"),"BotonVelocidad1"))
-			estados.escalaTiempo = 1;	
+			Time.timeScale = 1;//estados.escalaTiempo = 1;	
 		if(GUI.Button(new Rect(cuantoW*6,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 2x"),"BotonVelocidad2"))
-			estados.escalaTiempo = 2;	
+			Time.timeScale = 2;//estados.escalaTiempo = 2;	
 		if(GUI.Button(new Rect(cuantoW*7,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
-			estados.escalaTiempo = 5;	
+			Time.timeScale = 5;//estados.escalaTiempo = 5;	
 		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*3),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
 			temp++;		
 		GUI.EndGroup();
@@ -162,13 +162,13 @@ public class InterfazIngame : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW*0,cuantoH*0,cuantoW*73,cuantoH*3),"","BloqueSuperior");		
 		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),estados.numPasos.ToString(),"EtiquetaTiempo");
 		if(GUI.Button(new Rect(cuantoW*4,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Pausa el juego"),"BotonPausa"))
-			estados.escalaTiempo = 0;	
+			Time.timeScale = 0;//estados.escalaTiempo = 0;	
 		if(GUI.Button(new Rect(cuantoW*5,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad normal"),"BotonVelocidad1"))
-			estados.escalaTiempo = 1;	
+			Time.timeScale = 1;//estados.escalaTiempo = 1;	
 		if(GUI.Button(new Rect(cuantoW*6,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 2x"),"BotonVelocidad2"))
-			estados.escalaTiempo = 2;	
+			Time.timeScale = 2;//estados.escalaTiempo = 2;	
 		if(GUI.Button(new Rect(cuantoW*7,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
-			estados.escalaTiempo = 5;	
+			Time.timeScale = 5;//estados.escalaTiempo = 5;	
 		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*3),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
 			temp++;		
 		GUI.EndGroup();
