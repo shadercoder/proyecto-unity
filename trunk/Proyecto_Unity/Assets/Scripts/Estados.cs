@@ -36,7 +36,7 @@ public class Estados : MonoBehaviour {
 	
 	//GUI	
 	private int cuantoW;												//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
-	private int cuantoH;													//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
+	private int cuantoH;												//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
 		//Botones grandes
 	private bool menuAltera						= false;				//Variables de control de los botones grandes
 	private bool menuCamara						= false;				//de la interfaz del menu izquierdo
@@ -224,6 +224,34 @@ public class Estados : MonoBehaviour {
 			objetivoAlcanzado = true;
 		}
 	}
+	
+	//Introduce un ser en el tablero al hacer click
+	public void insertaSerTablero(Ser introducir) {
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+			Vector2 coordTemp = hit.textureCoord;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+			Casilla elem = vida.tablero[(int)coordTemp.y, (int)coordTemp.x];
+			if (elem.animal == null && elem.edificio == null && elem.vegetal != null) {
+				if (introducir is Animal) {
+					Animal animalTemp = (Animal)introducir;
+					vida.anadeAnimal(animalTemp.especie, (int)coordTemp.y, (int)coordTemp.x);
+				}
+				else if (introducir is Vegetal) {
+					Vegetal vegetalTemp = (Vegetal)introducir;
+					vida.anadeVegetal(vegetalTemp.especie, (int)coordTemp.y, (int)coordTemp.x);
+				}
+				else if (introducir is Edificio) {
+					Edificio edificioTemp = (Edificio)introducir;
+					vida.anadeEdificio(edificioTemp.tipo, (int)coordTemp.y, (int)coordTemp.x);
+				}
+			}
+		}
+	}
+	
 	
 	//Funciones principales ----------------------------------------------------------------------------------------------------------------------
 	private void creacionInicial() {
