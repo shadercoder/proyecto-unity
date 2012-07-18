@@ -33,6 +33,9 @@ public class Estados : MonoBehaviour {
 	//Modelos
 	public GameObject velociraptor;										//El modelo del velociraptor (velociraptor_lowPoly)
 	public GameObject planta1;											//El modelo de la planta numero 1
+	public GameObject planta2;											//El modelo de la planta numero 1
+	public GameObject planta3;											//El modelo de la planta numero 1
+	public GameObject planta4;											//El modelo de la planta numero 1
 	
 	//GUI	
 	private int cuantoW;												//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
@@ -322,13 +325,13 @@ public class Estados : MonoBehaviour {
 		int y = 0;
 		//ESPECIE VEGETAL => nombre numMaxVegetales numIniVegetales capacidadReproductiva capacidadMigracionLocal capacidadMigracionGlobal int radioMigracion T_habitats habitat canalTextura
 		
-		EspecieVegetal especie = new EspecieVegetal("musgo",1000,50,50,50,0.1f,8,T_habitats.plain,0,planta1);
+		EspecieVegetal especie = new EspecieVegetal("musgo",1000,50,50,50,0.1f,8,T_habitats.plain,0,planta3);
 		vida.anadeEspecieVegetal(especie);
 		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
 		vida.anadeVegetal(especie,x,y);	
 		Debug.Log("Introducido vegetal "+ especie.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie2 = new EspecieVegetal("musgo2",1000,50,50,20,0.1f,15,T_habitats.mountain,1,planta1);
+		EspecieVegetal especie2 = new EspecieVegetal("musgo2",1000,50,50,20,0.1f,15,T_habitats.mountain,1,planta2);
 		vida.anadeEspecieVegetal(especie2);
 		vida.buscaPosicionVaciaVegetal(T_habitats.mountain,ref x,ref y);
 		vida.anadeVegetal(especie2,x,y);	
@@ -340,7 +343,7 @@ public class Estados : MonoBehaviour {
 		vida.anadeVegetal(especie3,x,y);	
 		Debug.Log("Introducido vegetal "+ especie3.nombre +" en la posicion:   x: "+x+"   y: "+y);
 		
-		EspecieVegetal especie4 = new EspecieVegetal("musgo4",1000,50,50,20,0.1f,12,T_habitats.coast,3,planta1);
+		EspecieVegetal especie4 = new EspecieVegetal("musgo4",1000,50,50,20,0.1f,12,T_habitats.coast,3,planta4);
 		vida.anadeEspecieVegetal(especie4);
 		vida.buscaPosicionVaciaVegetal(T_habitats.coast,ref x,ref y);
 		vida.anadeVegetal(especie4,x,y);	

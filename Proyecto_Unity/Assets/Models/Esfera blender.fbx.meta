@@ -25,18 +25,9 @@ ModelImporter:
     //RootNode:
     - 100000
     - 400000
-    - 11100000
-    Camera:
-    - 100002
-    - 400002
-    Lamp:
-    - 100004
-    - 400004
-    Sphere:
-    - 100006
-    - 400006
     - 3300000
     - 2300000
+    - 11100000
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
