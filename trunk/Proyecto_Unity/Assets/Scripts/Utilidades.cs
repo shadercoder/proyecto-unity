@@ -146,17 +146,17 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	private static float nivelAgua = 0.15f;					//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
-	private static float tamanoPlaya = nivelAgua/4.0f;		//El tamaño de las playas
-//	private static float atenuacionRelieve = 50f;			//Suaviza o acentua el efecto de sombreado
-	private static float alturaColinas = 0.35f;				//La altura a partir de la cual se considera colina
-	private static float alturaMontana = 0.6f;				//La altura a partir de la cual se considera montaña
-	private static float temperatura = 0.0f;				//La temperatura del planeta, que influye en la rampa de color
+	private static float nivelAgua = 0.25f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
+	private static float tamanoPlaya = 0.05f;		//El tamaño de las playas
+//	private static float atenuacionRelieve = 50f;	//Suaviza o acentua el efecto de sombreado
+	private static float alturaColinas = 0.35f;		//La altura a partir de la cual se considera colina
+	private static float alturaMontana = 0.6f;		//La altura a partir de la cual se considera montaña
+	private static float temperatura = 0.0f;		//La temperatura del planeta, que influye en la rampa de color
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
-	public static int altoTablero = 128;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
-	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
+	public static int altoTablero = 64;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
+	public static int casillasPolos	= 1;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 	public static int margen = 50;					//El numero de pixeles que habrá en los polos intransitables
 	public static int altoTableroUtil;				//El alto del tablero una vez eliminadas las casillas de los polos
