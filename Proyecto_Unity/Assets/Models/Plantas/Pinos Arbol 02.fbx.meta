@@ -1,15 +1,15 @@
 fileFormatVersion: 1
-guid: 11585d00c1641064284a2f7808921bd0
+guid: d9a1ce59197217b48b298ad42a14e36f
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.3
+    scaleFactor: 0.5
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
     swapUVs: 0
   tangentSpace:
-    normalImportMode: 1
+    normalImportMode: 0
     tangentImportMode: 1
     smoothingAngle: 60
     splitTangents: 1
@@ -23,15 +23,14 @@ ModelImporter:
     splitAnimations: 1
   nodeInfo:
     //RootNode:
-    - 100000
-    - 400000
+    - 100008
+    - 400008
     - 3300000
     - 2300000
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Cylinder
-    4300002: central_energia_av
-    4300004: Central_Energia
-    7400000: Default Take //// edificio1
-    7400002: Default Take //// Centra de Energia
+    4300000: pino3
+    4300002: pino4
+    4300004: pino2
+    4300006: Pino1

@@ -267,11 +267,6 @@ public class Vida : MonoBehaviour
 			return false;
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, especie.modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
-		//----------------rotar y escalar random------------------------------------------------------------------------------------------------------------------------------------
-		vegetal.modelo.transform.Rotate(Vector3.forward*360*Random.value);
-		float escala = (Random.value + 1.0f)/2000.0f;
-		vegetal.modelo.transform.localScale = new Vector3(escala, escala, escala);
-		//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		idActualVegetal++;
 		seres.Add(vegetal);
 		vegetales.Add(vegetal);
