@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: e56210ca585264e4c9e54dc2e3091ece
+guid: 97be72e3591a2ca49b0a1992d62d59ea
 ModelImporter:
   importerVersion: 7
   meshes:
@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 1
+    generation: 2
   animations:
     generation: 0
     bakeAnimations: 0
@@ -30,4 +30,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Plane_004
+    4300000: pino3

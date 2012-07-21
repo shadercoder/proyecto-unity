@@ -7,10 +7,8 @@ _FiltroOn("_FiltroOn", Range(0,0.5) ) = 0
 _Tinte("_Tinte", Color) = (1,1,1,1)
 _Bump("_Bump", 2D) = "black" {}
 _Luces("_Luces", 2D) = "black" {}
-_Emision("_Emision", Float) = 0.5
-_Reflejado("_Reflejado", Color) = (1,0,0,1)
-_Fuerza("_Fuerza", Range(0,4) ) = 1.820106
-_Especular("_Especular", 2D) = "black" {}
+_Emision("_Emision", Float) = 1
+_Ramp("_Ramp", 2D) = "black" {}
 
 	}
 	
@@ -44,9 +42,7 @@ float4 _Tinte;
 sampler2D _Bump;
 sampler2D _Luces;
 float _Emision;
-float4 _Reflejado;
-float _Fuerza;
-sampler2D _Especular;
+sampler2D _Ramp;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -60,11 +56,11 @@ sampler2D _Especular;
 			
 			inline half4 LightingBlinnPhongEditor_PrePass (EditorSurfaceOutput s, half4 light)
 			{
-half3 spec = light.a * s.Gloss;
-half4 c;
-c.rgb = (s.Albedo * light.rgb + light.rgb * spec);
-c.a = s.Alpha;
-return c;
+float4 Luminance0= Luminance( light.xyz ).xxxx;
+float4 Assemble0=float4(Luminance0.x, float4( 0.0, 0.0, 0.0, 0.0 ).y, float4( 0.0, 0.0, 0.0, 0.0 ).z, float4( 0.0, 0.0, 0.0, 0.0 ).w);
+float4 Tex2D0=tex2D(_Ramp,Assemble0.xy);
+float4 Multiply0=float4( s.Albedo.x, s.Albedo.y, s.Albedo.z, 1.0 ) * Tex2D0;
+return Multiply0;
 
 			}
 
@@ -89,7 +85,6 @@ return c;
 				float2 uv_Difuso;
 float2 uv_Bump;
 float2 uv_Luces;
-float2 uv_Especular;
 
 			};
 
@@ -120,17 +115,14 @@ float4 Tex2D1=tex2D(_Luces,(IN.uv_Luces.xyxy).xy);
 float4 Multiply1=Tex2D1 * _Emision.xxxx;
 float4 Multiply0=_Tinte * _FiltroOn.xxxx;
 float4 Add1=Multiply1 + Multiply0;
-float4 Multiply3=_Reflejado * _Fuerza.xxxx;
-float4 Tex2D2=tex2D(_Especular,(IN.uv_Especular.xyxy).xy);
-float4 Multiply4=Multiply3 * Tex2D2;
+float4 Master0_3_NoInput = float4(0,0,0,0);
+float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
 o.Albedo = Multiply2;
 o.Normal = UnpackNormal0;
 o.Emission = Add1;
-o.Specular = Multiply4;
-o.Gloss = Multiply4;
 
 				o.Normal = normalize(o.Normal);
 			}
