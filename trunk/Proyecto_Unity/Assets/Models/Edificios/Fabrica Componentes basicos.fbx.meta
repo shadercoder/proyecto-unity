@@ -31,10 +31,10 @@ ModelImporter:
     - 400002
     - 3300000
     - 2300000
-    Lamp:
+    Camera:
     - 100004
     - 400004
-    Camera:
+    Lamp:
     - 100006
     - 400006
 AssetImporter:

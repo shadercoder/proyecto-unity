@@ -301,7 +301,7 @@ public class Estados : MonoBehaviour {
 		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
 		MeshFilter filter2 = objetoPlanta.GetComponent<MeshFilter>();
 		Mesh meshTemp = filter.mesh;
-		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
+		//meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
 		filter.mesh = meshTemp;
 		filter2.mesh = meshTemp;
 		estado = T_estados.principal;

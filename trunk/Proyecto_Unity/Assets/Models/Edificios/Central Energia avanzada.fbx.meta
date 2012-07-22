@@ -10,7 +10,7 @@ ModelImporter:
     swapUVs: 0
   tangentSpace:
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 2
     smoothingAngle: 60
     splitTangents: 1
   materials:
@@ -22,11 +22,18 @@ ModelImporter:
     animationWrapMode: 0
     splitAnimations: 1
   nodeInfo:
+    Lamp:
+    - 100000
+    - 400000
+    central_energia_av:
+    - 100002
+    - 400002
+    - 3300000
+    - 2300000
     //RootNode:
     - 100008
     - 400008
-    - 3300000
-    - 2300000
+    - 11100000
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
