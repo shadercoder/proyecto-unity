@@ -10,7 +10,7 @@ ModelImporter:
     swapUVs: 0
   tangentSpace:
     normalImportMode: 1
-    tangentImportMode: 1
+    tangentImportMode: 2
     smoothingAngle: 60
     splitTangents: 1
   materials:
