@@ -203,7 +203,7 @@ public class Vida : MonoBehaviour
 	{			
 		if(tiposEdificios.ContainsKey((string)tipoEdificio.nombre))
 			return false;
-		tipoEdificio.idTipoSer = numTiposEdificios;
+		tipoEdificio.idTipoEdificio = numTiposEdificios;
 		tiposEdificios.Add((string)tipoEdificio.nombre,tipoEdificio);
 		numTiposEdificios++;
 		return true;
@@ -286,6 +286,7 @@ public class Vida : MonoBehaviour
 		seres.Add(animal);
 		animales.Add(animal);		
 		tablero[posX,posY].animal = animal;
+		Debug.Log("Añadido animal");
 		return true;
 	}
 	
@@ -593,7 +594,7 @@ public class Vida : MonoBehaviour
 
 public class TipoEdificio
 {
-	public int idTipoSer;								//Identificador del tipo de ser
+	public int idTipoEdificio;							//Identificador del tipo de edificio
 	public string nombre;								//Nombre del tipo de ser
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
 	public GameObject modelo;							//El modelo de este tipo de edificio		
@@ -618,17 +619,15 @@ public class TipoEdificio
 		return habitats.Contains(habitat);
 	}
 	
-	public TipoEdificio(int idTipoSer,string nombre,T_habitats habitat,GameObject modelo)
+	public TipoEdificio(string nombre,T_habitats habitat,GameObject modelo)
 	{
 		habitats = new List<T_habitats>();
-		this.idTipoSer = idTipoSer;
 		this.nombre = nombre;
 		aniadirHabitat(habitat);
 		this.modelo = modelo;
 	}
-	public TipoEdificio(int idTipoSer,string nombre,List<T_habitats> habitats,GameObject modelo)
+	public TipoEdificio(string nombre,List<T_habitats> habitats,GameObject modelo)
 	{
-		this.idTipoSer = idTipoSer;
 		this.nombre = nombre;
 		this.habitats = habitats;
 		this.modelo = modelo;		

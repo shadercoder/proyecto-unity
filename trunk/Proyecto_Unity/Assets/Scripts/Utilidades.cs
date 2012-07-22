@@ -131,9 +131,9 @@ public class FuncTablero {
 	
 	//Variables ----------------------------------------------------------------------------------------------------------------------
 	
-	//Privadas para uso del script
-	private static int anchoTextura = 0;			//A cero inicialmente para detectar errores
-	private static int altoTextura = 0;				//A cero inicialmente para detectar errores
+	//Uso del script
+	public static int anchoTextura;					//Ancho de la textura en pixeles
+	public static int altoTextura;					//Alto de la textura en pixeles
 	private static int relTexTabAncho;				//Que relación hay entre el ancho de la textura y el ancho del tablero lógico
 	private static int relTexTabAlto;				//Lo mismo pero para el alto
 	private static Perlin perlin;					//Semilla
