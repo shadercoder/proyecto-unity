@@ -88,7 +88,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 					x = x * tex.width/ FuncTablero.getRelTexTabAncho();
 					double relTexTabAlto = FuncTablero.altoTextura / FuncTablero.altoTableroUtil;
-					y = y * tex.height/ relTexTabAlto;
+					y = (y * tex.height/ relTexTabAlto);// - 2;
 					if(x-0.5 < (int)x)
 						x = System.Math.Floor(x);
 					else

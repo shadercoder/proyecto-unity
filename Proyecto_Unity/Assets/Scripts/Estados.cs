@@ -301,7 +301,7 @@ public class Estados : MonoBehaviour {
 		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
 		MeshFilter filter2 = objetoPlanta.GetComponent<MeshFilter>();
 		Mesh meshTemp = filter.mesh;
-		//meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
+		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
 		filter.mesh = meshTemp;
 		filter2.mesh = meshTemp;
 		estado = T_estados.principal;
@@ -380,6 +380,11 @@ public class Estados : MonoBehaviour {
 		habitats1.Add(T_habitats.plain);
 		habitats1.Add(T_habitats.sand);
 		habitats1.Add(T_habitats.coast);
+		habitats1.Add(T_habitats.mountain);
+		habitats1.Add(T_habitats.hill);
+		habitats1.Add(T_habitats.sea);
+		habitats1.Add(T_habitats.volcanic);
+
 		
 		/* Edificios */
 		TipoEdificio tipoEdif1 = new TipoEdificio("fabricaCompBas",habitats1,edificio1);
