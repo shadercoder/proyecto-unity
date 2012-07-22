@@ -10,7 +10,7 @@ ModelImporter:
     swapUVs: 0
   tangentSpace:
     normalImportMode: 1
-    tangentImportMode: 2
+    tangentImportMode: 1
     smoothingAngle: 60
     splitTangents: 1
   materials:
@@ -25,18 +25,8 @@ ModelImporter:
     //RootNode:
     - 100000
     - 400000
-    - 11100000
-    Fabrica_Componentes_Basicos:
-    - 100002
-    - 400002
     - 3300000
     - 2300000
-    Camera:
-    - 100004
-    - 400004
-    Lamp:
-    - 100006
-    - 400006
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:

@@ -158,7 +158,7 @@ public class FuncTablero {
 	public static int altoTablero = 64;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
 	public static int casillasPolos	= 1;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
-	public static int margen = 50;					//El numero de pixeles que habrá en los polos intransitables
+	public static int margen = 0;//50;					//El numero de pixeles que habrá en los polos intransitables
 	public static int altoTableroUtil;				//El alto del tablero una vez eliminadas las casillas de los polos
 	
 		
