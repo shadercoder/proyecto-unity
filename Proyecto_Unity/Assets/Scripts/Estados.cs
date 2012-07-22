@@ -31,16 +31,34 @@ public class Estados : MonoBehaviour {
 	public int materialBiologicoDif = 0;								//Incremento o decremento por turno de material biologico
 	
 	//Modelos
-	public GameObject velociraptor;										//El modelo del velociraptor (velociraptor_lowPoly)
-	public GameObject planta1;											//El modelo de la planta numero 1
-	public GameObject planta2;											//El modelo de la planta numero 1
-	public GameObject planta3;											//El modelo de la planta numero 1
-	public GameObject planta4;											//El modelo de la planta numero 1
+	public GameObject edificio1;										//El modelo del edificio numero 1
+	public GameObject edificio2;										//El modelo del edificio numero 2
+	public GameObject edificio3;										//El modelo del edificio numero 3
+	public GameObject edificio4;										//El modelo del edificio numero 4
+	public GameObject edificio5;										//El modelo del edificio numero 5
+	public GameObject vegetal1;											//El modelo del vegetal numero 1
+	public GameObject vegetal2;											//El modelo del vegetal numero 2
+	public GameObject vegetal3;											//El modelo del vegetal numero 3
+	public GameObject vegetal4;											//El modelo del vegetal numero 4
+	public GameObject vegetal5;											//El modelo del vegetal numero 5
+	public GameObject vegetal6;											//El modelo del vegetal numero 6
+	public GameObject vegetal7;											//El modelo del vegetal numero 7
+	public GameObject vegetal8;											//El modelo del vegetal numero 8
+	public GameObject vegetal9;											//El modelo del vegetal numero 9
+	public GameObject vegetal10;										//El modelo del vegetal numero 10
+	public GameObject herbivoro1;										//El modelo del herbivoro numero 1
+	public GameObject herbivoro2;										//El modelo del herbivoro numero 2
+	public GameObject herbivoro3;										//El modelo del herbivoro numero 3
+	public GameObject herbivoro4;										//El modelo del herbivoro numero 4
+	public GameObject herbivoro5;										//El modelo del herbivoro numero 5
+	public GameObject carnivoro1;										//El modelo del carnivoro numero 1
+	public GameObject carnivoro2;										//El modelo del carnivoro numero 2
+	public GameObject carnivoro3;										//El modelo del carnivoro numero 3
+	public GameObject carnivoro4;										//El modelo del carnivoro numero 4
+	public GameObject carnivoro5;										//El modelo del carnivoro numero 5
+	//public GameObject[] modelos;										//Array con todos los modelos	
 	
-	//GUI	
-	private int cuantoW;												//Minima unidad de medida de la interfaz a lo ancho (formato 16/10)
-	private int cuantoH;												//Minima unidad de medida de la interfaz a lo alto (formato 16/10)
-		//Botones grandes
+	//Botones grandes
 	private bool menuAltera						= false;				//Variables de control de los botones grandes
 	private bool menuCamara						= false;				//de la interfaz del menu izquierdo
 	private bool menuOpcion						= false;
@@ -53,8 +71,10 @@ public class Estados : MonoBehaviour {
 	private bool objetivoAlcanzado				= false;				//Si es true, muestra una ventana con informacion del objetivo pulsado
 	
 	//Privadas del script
+	private float cuantoW;							//Minima unidad de medida de la interfaz a lo ancho
+	private float cuantoH;							//Minima unidad de medida de la interfaz a lo alto
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
-	private Vida vida;													//Tablero lógico del algoritmo		
+	public Vida vida;													//Tablero lógico del algoritmo		
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
 	public float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 		//Pinceles
@@ -77,7 +97,7 @@ public class Estados : MonoBehaviour {
 	private string infoSeleccionado				= "";					//La informacion referente al elemento seleccionado con el click izquierdo del raton.
 		//Algoritmo vida
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
-	public int numPasos						= 0;					//Numero de pasos del algoritmo ejecutados
+	public int numPasos							= 0;					//Numero de pasos del algoritmo ejecutados
 	private bool algoritmoActivado				= false;				//Se encuentra activado el algoritmo de la vida?
 		
 	//Tooltips
@@ -321,40 +341,103 @@ public class Estados : MonoBehaviour {
 		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, mesh);
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		
-		int x = 0;
-		int y = 0;
-		//ESPECIE VEGETAL => nombre numMaxVegetales numIniVegetales capacidadReproductiva capacidadMigracionLocal capacidadMigracionGlobal int radioMigracion T_habitats habitat canalTextura
-		
-		EspecieVegetal especie = new EspecieVegetal("musgo",1000,50,50,50,0.1f,8,T_habitats.plain,0,planta3);
-		vida.anadeEspecieVegetal(especie);
-		vida.buscaPosicionVaciaVegetal(T_habitats.plain,ref x,ref y);
-		vida.anadeVegetal(especie,x,y);	
-		Debug.Log("Introducido vegetal "+ especie.nombre +" en la posicion:   x: "+x+"   y: "+y);
-		
-		EspecieVegetal especie2 = new EspecieVegetal("musgo2",1000,50,50,20,0.1f,15,T_habitats.mountain,1,planta2);
-		vida.anadeEspecieVegetal(especie2);
-		vida.buscaPosicionVaciaVegetal(T_habitats.mountain,ref x,ref y);
-		vida.anadeVegetal(especie2,x,y);	
-		Debug.Log("Introducido vegetal "+ especie2.nombre +" en la posicion:   x: "+x+"   y: "+y);
-		
-		EspecieVegetal especie3 = new EspecieVegetal("musgo3",1000,50,50,20,0.1f,12,T_habitats.hill,2,planta1);
-		vida.anadeEspecieVegetal(especie3);
-		vida.buscaPosicionVaciaVegetal(T_habitats.hill,ref x,ref y);
-		vida.anadeVegetal(especie3,x,y);	
-		Debug.Log("Introducido vegetal "+ especie3.nombre +" en la posicion:   x: "+x+"   y: "+y);
-		
-		EspecieVegetal especie4 = new EspecieVegetal("musgo4",1000,50,50,20,0.1f,12,T_habitats.coast,3,planta4);
-		vida.anadeEspecieVegetal(especie4);
-		vida.buscaPosicionVaciaVegetal(T_habitats.coast,ref x,ref y);
-		vida.anadeVegetal(especie4,x,y);	
-		Debug.Log("Introducido vegetal "+ especie4.nombre +" en la posicion:   x: "+x+"   y: "+y);
-			
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
 		numSavesExtra = numSaves - 3;
 		if (numSavesExtra < 0)
-			numSavesExtra = 0;
+			numSavesExtra = 0;		
+		
+		/* DATOS */
+		/*modelos = new GameObject[25];
+		modelos[0] = edificio1;
+		modelos[1] = edificio2;
+		modelos[2] = edificio3;
+		modelos[3] = edificio4;
+		modelos[4] = edificio5;
+		modelos[5] = vegetal1;
+		modelos[6] = vegetal2;
+		modelos[7] = vegetal3;
+		modelos[8] = vegetal4;
+		modelos[9] = vegetal5;
+		modelos[10] = vegetal6;
+		modelos[11] = vegetal7;
+		modelos[12] = vegetal8;
+		modelos[13] = vegetal9;
+		modelos[14] = vegetal10;
+		modelos[15] = herbivoro1;
+		modelos[16] = herbivoro2;
+		modelos[17] = herbivoro3;
+		modelos[18] = herbivoro4;
+		modelos[19] = herbivoro5;
+		modelos[20] = carnivoro1;
+		modelos[21] = carnivoro2;
+		modelos[22] = carnivoro3;
+		modelos[23] = carnivoro4;
+		modelos[24] = carnivoro5;*/
+		
+		List<T_habitats> habitats1 = new List<T_habitats>();
+		habitats1.Add(T_habitats.plain);
+		habitats1.Add(T_habitats.sand);
+		habitats1.Add(T_habitats.coast);
+		
+		/* Edificios */
+		TipoEdificio tipoEdif1 = new TipoEdificio("fabricaCompBas",habitats1,edificio1);
+		vida.anadeTipoEdificio(tipoEdif1);
+		TipoEdificio tipoEdif2 = new TipoEdificio("centralEnergia",habitats1,edificio2);
+		vida.anadeTipoEdificio(tipoEdif2);
+		TipoEdificio tipoEdif3 = new TipoEdificio("granja",habitats1,edificio3);
+		vida.anadeTipoEdificio(tipoEdif3);
+		TipoEdificio tipoEdif4 = new TipoEdificio("fabricaCompAdv",habitats1,edificio4);
+		vida.anadeTipoEdificio(tipoEdif4);
+		TipoEdificio tipoEdif5 = new TipoEdificio("centralEnergiaAdv",habitats1,edificio5);
+		vida.anadeTipoEdificio(tipoEdif5);
+		
+		/* Vegetales */
+		EspecieVegetal especieV1 = new EspecieVegetal("vegetal1",1000,50,50,50,0.1f,8,habitats1,0,vegetal1);
+		vida.anadeEspecieVegetal(especieV1);
+		EspecieVegetal especieV2 = new EspecieVegetal("vegetal2",1000,50,50,20,0.1f,15,T_habitats.mountain,1,vegetal2);
+		vida.anadeEspecieVegetal(especieV2);
+		EspecieVegetal especieV3 = new EspecieVegetal("vegetal3",1000,50,50,20,0.1f,12,T_habitats.hill,2,vegetal3);
+		vida.anadeEspecieVegetal(especieV3);
+		EspecieVegetal especieV4 = new EspecieVegetal("vegetal4",1000,50,50,20,0.1f,12,T_habitats.coast,3,vegetal4);
+		vida.anadeEspecieVegetal(especieV4);
+		EspecieVegetal especieV5 = new EspecieVegetal("vegetal5",1000,50,50,20,0.1f,12,T_habitats.plain,3,vegetal5);
+		vida.anadeEspecieVegetal(especieV5);
+		EspecieVegetal especieV6 = new EspecieVegetal("vegetal6",1000,50,50,20,0.1f,12,T_habitats.coast,3,vegetal6);
+		vida.anadeEspecieVegetal(especieV6);
+		EspecieVegetal especieV7 = new EspecieVegetal("vegetal7",1000,50,50,20,0.1f,12,T_habitats.plain,3,vegetal7);
+		vida.anadeEspecieVegetal(especieV7);
+		EspecieVegetal especieV8 = new EspecieVegetal("vegetal8",1000,50,50,20,0.1f,12,T_habitats.coast,3,vegetal8);
+		vida.anadeEspecieVegetal(especieV8);
+		EspecieVegetal especieV9 = new EspecieVegetal("vegetal9",1000,50,50,20,0.1f,12,T_habitats.hill,3,vegetal9);
+		vida.anadeEspecieVegetal(especieV9);
+		EspecieVegetal especieV10 = new EspecieVegetal("vegetal10",1000,50,50,20,0.1f,12,T_habitats.mountain,3,vegetal10);
+		vida.anadeEspecieVegetal(especieV10);
+		
+		/* Herbivoros */
+		EspecieAnimal especieH1 = new EspecieAnimal("herbivoro1",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro1);
+		vida.anadeEspecieAnimal(especieH1);
+		EspecieAnimal especieH2 = new EspecieAnimal("herbivoro2",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro2);
+		vida.anadeEspecieAnimal(especieH2);
+		EspecieAnimal especieH3 = new EspecieAnimal("herbivoro3",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro3);
+		vida.anadeEspecieAnimal(especieH3);
+		EspecieAnimal especieH4 = new EspecieAnimal("herbivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro4);
+		vida.anadeEspecieAnimal(especieH4);
+		EspecieAnimal especieH5 = new EspecieAnimal("herbivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,T_habitats.hill,herbivoro5);
+		vida.anadeEspecieAnimal(especieH5);
+		
+		/* Carnivoros */
+		EspecieAnimal especieC1 = new EspecieAnimal("carnivoro1",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro1);
+		vida.anadeEspecieAnimal(especieC1);
+		EspecieAnimal especieC2 = new EspecieAnimal("carnivoro2",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro2);
+		vida.anadeEspecieAnimal(especieC2);
+		EspecieAnimal especieC3 = new EspecieAnimal("carnivoro3",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro3);
+		vida.anadeEspecieAnimal(especieC3);
+		EspecieAnimal especieC4 = new EspecieAnimal("carnivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro4);
+		vida.anadeEspecieAnimal(especieC4);
+		EspecieAnimal especieC5 = new EspecieAnimal("carnivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,T_habitats.hill,carnivoro5);
+		vida.anadeEspecieAnimal(especieC5);	
 	}
 	
 	void FixedUpdate() {
@@ -499,7 +582,7 @@ public class Estados : MonoBehaviour {
 		{
 			int x=0,y=0;
 			vida.buscaPosicionVaciaAnimal(T_habitats.plain,ref x,ref y);
-			EspecieAnimal especie = new EspecieAnimal("comemusgo"+vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain, velociraptor);//GameObject.FindGameObjectWithTag("velociraptor"));			
+			EspecieAnimal especie = new EspecieAnimal("comemusgo"+vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain, carnivoro1);//GameObject.FindGameObjectWithTag("velociraptor"));			
 			vida.anadeEspecieAnimal(especie);						
 			vida.anadeAnimal(especie,x,y);	
 			Debug.Log("Introducido animal "+especie.nombre+" en la posicion:   "+"x: "+x+"   y: "+y);		

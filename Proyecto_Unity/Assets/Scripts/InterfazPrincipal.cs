@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class InterfazIngame : MonoBehaviour {
+
+public class InterfazPrincipal : MonoBehaviour {
 
 	// Variables ---------------------------------------------------------------------------------------------------------------------------
 	public GUISkin estilo;
@@ -10,12 +12,21 @@ public class InterfazIngame : MonoBehaviour {
 	private float aspectRatioNumerico;				//Aspect ratio númerico de la ventana
 	private Estados estados;						//Acceso a los datos principales	
 	private bool mostrarBloqueIzquierdo = true;		//Visibilidad del bloque de opciones izquierdo
+	private bool mostrarInfo = true;
 	private enum taspectRatio						//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
 		{aspectRatio16_9,aspectRatio16_10,aspectRatio4_3};
-	private taspectRatio aspectRatio;
-	private enum tinsercion							//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
+	private taspectRatio aspectRatio;	
+	private enum taccion							//Acción que se esta realizando en el momento actual
+		{ninguna,seleccionarInsercion,insertar,mostrarInfoDetallada,mostrarMejoras,mostrarHabilidades}
+	private taccion accion = taccion.ninguna;
+	private enum tcategoriaInsercion				//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
 		{desactivada,animal,vegetal,edificio}
-	private tinsercion insercion = tinsercion.desactivada;
+	private tcategoriaInsercion categoriaInsercion = tcategoriaInsercion.desactivada;
+	private enum telementoInsercion							//Tipo de elemento seleccionado en un momento dado
+		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,vegetal1,vegetal2,vegetal3,vegetal4,vegetal5,vegetal6,vegetal7,vegetal8,vegetal9,vegetal10,
+		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}
+	private telementoInsercion elementoInsercion = telementoInsercion.ninguno;
+	
 	// Use this for initialization
 	void Start () {
 	}
@@ -52,7 +63,195 @@ public class InterfazIngame : MonoBehaviour {
 		bloqueSuperior();
 		bloqueIzquierdo();
 		bloqueSeleccion();
-		bloqueInformacion();	
+		bloqueInformacion();
+		
+		if(accion == taccion.insertar)
+		{	
+			//pintar modelo en tiempo real y area de efecto si es necesario
+			
+			if(Input.GetMouseButton(0))
+			{
+				//EspecieAnimal especie = new EspecieAnimal("comemusgo"+estados.vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain, estados.carnivoro1);
+				//estados.vida.anadeEspecieAnimal(especie);						
+				RaycastHit hit;
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (estados.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+				{
+					/*Vector2 coordTemp = hit.textureCoord;
+					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+					coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+					coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+					Casilla elem = estados.vida.tablero[(int)coordTemp.y, (int)coordTemp.x];*/	
+					double x = hit.textureCoord.x;
+					double y = hit.textureCoord.y;
+					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+					x = x * tex.width/ FuncTablero.getRelTexTabAncho();
+					double relTexTabAlto = FuncTablero.altoTextura / FuncTablero.altoTableroUtil;
+					y = y * tex.height/ relTexTabAlto;
+					if(x-0.5 < (int)x)
+						x = System.Math.Floor(x);
+					else
+						x = System.Math.Ceiling(x);
+					if(y-0.5 < (int)y)
+						y = System.Math.Floor(y);
+					else
+						y = System.Math.Ceiling(y);
+					int tipo = (int)elementoInsercion - 1;
+					if(tipo >= 0 && tipo < 5)				//Edificio
+					{
+						TipoEdificio[] tipos = new TipoEdificio[estados.vida.tiposEdificios.Count];
+						estados.vida.tiposEdificios.Values.CopyTo(tipos,0);
+						TipoEdificio tedif = tipos[tipo];
+						estados.vida.anadeEdificio(tedif,(int)y,(int)x);						
+						elementoInsercion = telementoInsercion.ninguno;
+						accion = taccion.ninguna;						
+					}					
+					else if(tipo >= 5 && tipo < 15)			//Vegetal
+					{
+						tipo -= 5;
+						Especie[] especies = new Especie[estados.vida.especies.Count];
+						estados.vida.especies.Values.CopyTo(especies,0);						
+						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
+						estados.vida.anadeVegetal(especie,(int)y,(int)x);
+						elementoInsercion = telementoInsercion.ninguno;
+						accion = taccion.ninguna;
+					}
+					else if(tipo >= 15 && tipo < 25)				//Animal (herbivoro o carnivoro)
+					{
+						tipo -= 5;	
+						Especie[] especies = new Especie[estados.vida.especies.Count];
+						estados.vida.especies.Values.CopyTo(especies,0);
+						EspecieAnimal especie = (EspecieAnimal)especies[tipo];
+						estados.vida.anadeAnimal(especie,(int)y,(int)x);
+						elementoInsercion = telementoInsercion.ninguno;
+						accion = taccion.ninguna;
+					}
+					else
+						return;
+				}
+				/*if(elementoInsercion == telementoInsercion.ninguno)
+					return;
+				RaycastHit hit;
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (estados.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+				{
+					Vector2 coordTemp = hit.textureCoord;
+					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+					coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+					coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+					int x = (int)coordTemp.x;
+					int y = (int)coordTemp.y; 
+					FuncTablero.convierteCoordenadas(ref x,ref y);
+					//Casilla elem = estados.vida.tablero[(int)coordTemp.x,(int)coordTemp.y];					
+					Casilla elem = estados.vida.tablero[x,y];					
+					int tipo = (int)elementoInsercion - 1;
+					if(tipo >= 0 && tipo < 5)				//Edificio
+					{
+						/*TipoEdificio[] tipos = new TipoEdificio[estados.vida.tiposEdificios.Count];
+						estados.vida.tiposEdificios.Values.CopyTo(tipos,0);
+						TipoEdificio tedif = tipos[tipo];
+						List<T_habitats> habitats1 = new List<T_habitats>();
+						habitats1.Add(T_habitats.plain);
+						habitats1.Add(T_habitats.sand);
+						habitats1.Add(T_habitats.coast);
+						EspecieVegetal especieV1 = new EspecieVegetal("vegetal1",1000,50,50,50,0.1f,8,habitats1,0,estados.vegetal1);
+						estados.vida.anadeVegetal(especieV1,x,y);
+						
+						//elementoInsercion = telementoInsercion.ninguno;
+						//accion = taccion.ninguna;
+						
+					}/*
+					else if(tipo >= 5 && tipo < 15)			//Vegetal
+					{
+						tipo -= 5;
+						Especie[] especies = new Especie[estados.vida.especies.Count];
+						estados.vida.especies.Values.CopyTo(especies,0);						
+						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
+						estados.vida.anadeVegetal(especie,x,y);
+						
+					}
+					else if(tipo >= 15 && tipo < 25)				//Animal (herbivoro o carnivoro)
+					{
+						tipo -= 5;	
+						Especie[] especies = new Especie[estados.vida.especies.Count];
+						estados.vida.especies.Values.CopyTo(especies,0);
+						EspecieAnimal especie = (EspecieAnimal)especies[tipo];
+						estados.vida.anadeAnimal(especie,x,y);						
+					}
+					else
+						return;
+				}*/								
+				/*switch (elementoInsercion)
+				{
+					case telementoInsercion.ninguno:						
+						return;
+					case telementoInsercion.fabricaCompBas:
+						
+						break;
+					case telementoInsercion.centralEnergia:
+						break;
+					case telementoInsercion.granja:
+						break;
+					case telementoInsercion.fabricaCompAdv:
+						break;
+					case telementoInsercion.centralEnergiaAdv:
+						break;
+					case telementoInsercion.vegetal1:
+						break;
+					case telementoInsercion.vegetal2:
+						break;
+					case telementoInsercion.vegetal3:
+						break;
+					case telementoInsercion.vegetal4:
+						break;
+					case telementoInsercion.vegetal5:
+						break;
+					case telementoInsercion.vegetal6:
+						break;
+					case telementoInsercion.vegetal7:
+						break;
+					case telementoInsercion.vegetal8:
+						break;
+					case telementoInsercion.vegetal9:
+						break;
+					case telementoInsercion.vegetal10:
+						break;
+					case telementoInsercion.herbivoro1:
+						break;
+					case telementoInsercion.herbivoro2:
+						break;
+					case telementoInsercion.herbivoro3:
+						break;
+					case telementoInsercion.herbivoro4:
+						break;
+					case telementoInsercion.herbivoro5:
+						break;
+					case telementoInsercion.carnivoro1:
+						break;
+					case telementoInsercion.carnivoro2:
+						break;
+					case telementoInsercion.carnivoro3:
+						break;
+					case telementoInsercion.carnivoro4:
+						break;
+					case telementoInsercion.carnivoro5:
+						break;
+					default:break;
+				}*/
+				/*EspecieAnimal especie = new EspecieAnimal("comemusgo"+estados.vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain, estados.velociraptor);
+				estados.vida.anadeEspecieAnimal(especie);						
+				RaycastHit hit;
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (estados.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+					Vector2 coordTemp = hit.textureCoord;
+					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+					coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+					coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+					Casilla elem = estados.vida.tablero[(int)coordTemp.y, (int)coordTemp.x];					
+					estados.vida.anadeAnimal(especie, (int)coordTemp.y, (int)coordTemp.x);
+				}*/					
+			}			
+		}
 	}
 	
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
@@ -95,15 +294,21 @@ public class InterfazIngame : MonoBehaviour {
 		{
 			GUILayout.BeginVertical(GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*2));			
 			if(GUILayout.Button(new GUIContent("","Accede al menu de insertar animales o vegetales"),"BotonInsertarVida"))
-				insercion = tinsercion.animal;		
+			{	
+				accion = taccion.seleccionarInsercion;
+				categoriaInsercion = tcategoriaInsercion.animal;		
+			}
 			if(GUILayout.Button(new GUIContent("","Accede al menu de construir edificios"),"BotonInsertarEdificios"))
-				insercion = tinsercion.edificio;		
+			{	
+				accion = taccion.seleccionarInsercion;
+				categoriaInsercion = tcategoriaInsercion.edificio;		
+			}
 			if(GUILayout.Button(new GUIContent("","Accede al menu de mejoras de la nave"),"BotonAccederMejoras"))
-				cuantoH = cuantoH;		
+				accion = taccion.mostrarMejoras;	
 			if(GUILayout.Button(new GUIContent("","Accede al menu de habilidades"),"BotonAccederHabilidades"))
-				cuantoH = cuantoH;		
+				accion = taccion.mostrarHabilidades;
 			if(GUILayout.Button(new GUIContent("","Cambia entre info y seleccionar"),"BotonInfoSelec"))
-				cuantoH = cuantoH;		
+				mostrarInfo = !mostrarInfo;
 			GUILayout.EndVertical();
 			if(GUILayout.Button(new GUIContent("","Pulsa para ocultar este menu"),"BotonOcultarBloqueIzquierdo",GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*1)))
 				mostrarBloqueIzquierdo = false;
@@ -119,7 +324,7 @@ public class InterfazIngame : MonoBehaviour {
 	//Dibuja el bloque seleccion de la ventana que contiene los diferentes edificios, animales o vegetales seleccionables según que botón se haya pulsado en el bloque izquierdo
 	void bloqueSeleccion()
 	{
-		if(insercion == tinsercion.desactivada)
+		if(categoriaInsercion == tcategoriaInsercion.desactivada)
 			return;
 		int posicionBloque = 0;
 		switch (aspectRatio)
@@ -132,37 +337,91 @@ public class InterfazIngame : MonoBehaviour {
 				posicionBloque = 55;break;
 			default:break;
 		}		
-		switch (insercion)
+		switch (categoriaInsercion)
 		{
-			case tinsercion.edificio:
+			case tcategoriaInsercion.edificio:
 				GUILayout.BeginArea(new Rect(cuantoW*32,cuantoH*posicionBloque,cuantoW*16,cuantoH*4),new GUIContent(),"BloqueSeleccionEdificios");
 				GUILayout.BeginVertical();
-				GUILayout.Space(cuantoH*1);				
+				GUILayout.Space(cuantoH);				
 				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Fabrica de componentes básicos"),"BotonInsertarFabComBas"))
-					insercion = insercion;		
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.fabricaCompBas;
+				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía"),"BotonInsertarCenEn"))
-					insercion = insercion;		
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.centralEnergia;
+				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Granja"),"BotonInsertarGranja"))
-					insercion = insercion;		
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.granja;
+				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
-					insercion = insercion;		
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.fabricaCompBas;
+				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía avanzada"),"BotonInsertarCenEnAdv"))
-					insercion = insercion;		
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.centralEnergiaAdv;
+				}		
 				GUILayout.Space(cuantoW);
 				GUILayout.EndHorizontal();
-				GUILayout.Space(cuantoH*1);				
+				GUILayout.Space(cuantoH);				
 				GUILayout.EndVertical();
 				GUILayout.EndArea();
 				break;
-			case tinsercion.animal:
+			case tcategoriaInsercion.animal:
+				/*GUILayout.BeginArea(new Rect(cuantoW*24.5,cuantoH*posicionBloque,cuantoW*31,cuantoH*4),new GUIContent(),"BloqueSeleccionEdificios");
+				GUILayout.BeginVertical();
+				GUILayout.Space(cuantoH);				
+				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Fabrica de componentes básicos"),"BotonInsertarFabComBas"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.fabricaCompBas;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Central de energía"),"BotonInsertarCenEn"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.centralEnergia;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Granja"),"BotonInsertarGranja"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.granja;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.fabricaCompBas;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Central de energía avanzada"),"BotonInsertarCenEnAdv"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.centralEnergiaAdv;
+				}		
+				GUILayout.Space(cuantoW);
+				GUILayout.EndHorizontal();
+				GUILayout.Space(cuantoH);				
+				GUILayout.EndVertical();
+				GUILayout.EndArea();*/
 				break;
-			case tinsercion.vegetal:
+			case tcategoriaInsercion.vegetal:
 				break;
 			default:break;
 		}
