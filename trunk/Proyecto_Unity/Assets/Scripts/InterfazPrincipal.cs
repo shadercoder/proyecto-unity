@@ -7,24 +7,25 @@ public class InterfazPrincipal : MonoBehaviour {
 
 	// Variables ---------------------------------------------------------------------------------------------------------------------------
 	public GUISkin estilo;
-	private float cuantoW;							//Minima unidad de medida de la interfaz a lo ancho
-	private float cuantoH;							//Minima unidad de medida de la interfaz a lo alto
-	private float aspectRatioNumerico;				//Aspect ratio númerico de la ventana
-	private Estados estados;						//Acceso a los datos principales	
-	private bool mostrarBloqueIzquierdo = true;		//Visibilidad del bloque de opciones izquierdo
-	private bool mostrarInfo = true;
-	private enum taspectRatio						//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
+	private float cuantoW;								//Minima unidad de medida de la interfaz a lo ancho
+	private float cuantoH;								//Minima unidad de medida de la interfaz a lo alto
+	private float aspectRatioNumerico;					//Aspect ratio númerico de la ventana
+	private Estados estados;							//Acceso a los datos principales	
+	private bool mostrarBloqueIzquierdo = true;			//Visibilidad del bloque de opciones izquierdo
+	private bool mostrarInfo = true;					//Información del puntero mostrada en la barra inferior
+	//private bool desplegableInsercionV_A = false;		//Deplegable que aparece al pinchar en insertar vida que permite elegir entre vegetales y animales
+	private enum taspectRatio							//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
 		{aspectRatio16_9,aspectRatio16_10,aspectRatio4_3};
 	private taspectRatio aspectRatio;	
-	private enum taccion							//Acción que se esta realizando en el momento actual
-		{ninguna,seleccionarInsercion,insertar,mostrarInfoDetallada,mostrarMejoras,mostrarHabilidades}
+	private enum taccion								//Acción que se esta realizando en el momento actual
+		{ninguna,desplegableInsercionV_A,seleccionarInsercion,insertar,mostrarInfoDetallada,mostrarMejoras,mostrarHabilidades}
 	private taccion accion = taccion.ninguna;
-	private enum tcategoriaInsercion				//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
+	private enum tcategoriaInsercion					//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
 		{desactivada,animal,vegetal,edificio}
 	private tcategoriaInsercion categoriaInsercion = tcategoriaInsercion.desactivada;
-	private enum telementoInsercion							//Tipo de elemento seleccionado en un momento dado
-		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,vegetal1,vegetal2,vegetal3,vegetal4,vegetal5,vegetal6,vegetal7,vegetal8,vegetal9,vegetal10,
-		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}
+	private enum telementoInsercion						//Tipo de elemento seleccionado en un momento dado
+		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,seta,flor,cana,arbusto,estromatolito,cactus,palmera,pino,cipres,pinoAlto,
+		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}	
 	private telementoInsercion elementoInsercion = telementoInsercion.ninguno;
 	
 	// Use this for initialization
@@ -237,19 +238,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					case telementoInsercion.carnivoro5:
 						break;
 					default:break;
-				}*/
-				/*EspecieAnimal especie = new EspecieAnimal("comemusgo"+estados.vida.numEspeciesAnimales,10,1000,0,5,5,5,tipoAlimentacionAnimal.herbivoro,T_habitats.plain, estados.velociraptor);
-				estados.vida.anadeEspecieAnimal(especie);						
-				RaycastHit hit;
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (estados.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
-					Vector2 coordTemp = hit.textureCoord;
-					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-					coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
-					coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
-					Casilla elem = estados.vida.tablero[(int)coordTemp.y, (int)coordTemp.x];					
-					estados.vida.anadeAnimal(especie, (int)coordTemp.y, (int)coordTemp.x);
-				}*/					
+				}*/								
 			}			
 		}
 	}
@@ -286,17 +275,29 @@ public class InterfazPrincipal : MonoBehaviour {
 			case taspectRatio.aspectRatio4_3:
 				posicionBloque = 25;break;
 			default:break;
-		}	
+		}
+		if(accion == taccion.desplegableInsercionV_A)
+		{
+			if(GUI.Button(new Rect(cuantoW*3,cuantoH*posicionBloque,cuantoW*3,cuantoH*1),new GUIContent("Vegetal","Insertar un vegetal"),"BotonesDeplegableV_A"))				
+			{
+				accion = taccion.seleccionarInsercion;
+				categoriaInsercion = tcategoriaInsercion.vegetal;
+			}
+			if(GUI.Button(new Rect(cuantoW*3,cuantoH*(posicionBloque+1),cuantoW*3,cuantoH*1),new GUIContent("Animal","Insertar un animal"),"BotonesDeplegableV_A"))				
+			{
+				accion = taccion.seleccionarInsercion;
+				categoriaInsercion = tcategoriaInsercion.animal;
+			}
+		}
 		
 		GUILayout.BeginArea(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*3,cuantoH*10),new GUIContent(),"BloqueIzquierdo");		
 		GUILayout.BeginHorizontal();
 		if(mostrarBloqueIzquierdo)
-		{
+		{			
 			GUILayout.BeginVertical(GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*2));			
 			if(GUILayout.Button(new GUIContent("","Accede al menu de insertar animales o vegetales"),"BotonInsertarVida"))
 			{	
-				accion = taccion.seleccionarInsercion;
-				categoriaInsercion = tcategoriaInsercion.animal;		
+				accion = taccion.desplegableInsercionV_A;
 			}
 			if(GUILayout.Button(new GUIContent("","Accede al menu de construir edificios"),"BotonInsertarEdificios"))
 			{	
@@ -311,7 +312,11 @@ public class InterfazPrincipal : MonoBehaviour {
 				mostrarInfo = !mostrarInfo;
 			GUILayout.EndVertical();
 			if(GUILayout.Button(new GUIContent("","Pulsa para ocultar este menu"),"BotonOcultarBloqueIzquierdo",GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*1)))
+			{			
 				mostrarBloqueIzquierdo = false;
+				if(accion == taccion.desplegableInsercionV_A)
+					accion = taccion.ninguna;
+			}
 		}
 		else
 			if(GUILayout.Button(new GUIContent("","Pulsa para mostrar el menu de acciones"),"BotonOcultarBloqueIzquierdoActivado",GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*1)))
@@ -381,47 +386,78 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUILayout.EndArea();
 				break;
 			case tcategoriaInsercion.animal:
-				/*GUILayout.BeginArea(new Rect(cuantoW*24.5,cuantoH*posicionBloque,cuantoW*31,cuantoH*4),new GUIContent(),"BloqueSeleccionEdificios");
+				
+				break;
+			case tcategoriaInsercion.vegetal:
+				GUILayout.BeginArea(new Rect(cuantoW*22,cuantoH*posicionBloque,cuantoW*36,cuantoH*4),new GUIContent(),"BloqueSeleccionVegetales");
 				GUILayout.BeginVertical();
 				GUILayout.Space(cuantoH);				
 				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
-				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Fabrica de componentes básicos"),"BotonInsertarFabComBas"))
+				GUILayout.Space(cuantoW*2.5f);
+				if(GUILayout.Button(new GUIContent("","Seta"),"BotonInsertarSeta"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.fabricaCompBas;
+					elementoInsercion = telementoInsercion.seta;
 				}
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Central de energía"),"BotonInsertarCenEn"))
+				if(GUILayout.Button(new GUIContent("","Flor"),"BotonInsertarFlor"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.centralEnergia;
+					elementoInsercion = telementoInsercion.flor;
 				}
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Granja"),"BotonInsertarGranja"))
+				if(GUILayout.Button(new GUIContent("","Caña"),"BotonInsertarCana"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.granja;
+					elementoInsercion = telementoInsercion.cana;
 				}
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
+				if(GUILayout.Button(new GUIContent("","Arbusto"),"BotonInsertarArbusto"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.fabricaCompBas;
+					elementoInsercion = telementoInsercion.arbusto;
 				}
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Central de energía avanzada"),"BotonInsertarCenEnAdv"))
+				if(GUILayout.Button(new GUIContent("","Estromatolito"),"BotonInsertarEstromatolito"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.centralEnergiaAdv;
+					elementoInsercion = telementoInsercion.estromatolito;
 				}		
 				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Cactus"),"BotonInsertarCactus"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.cactus;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Palmera"),"BotonInsertarPalmera"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.palmera;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Pino"),"BotonInsertarPino"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.pino;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Ciprés"),"BotonInsertarCipres"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.cipres;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Pino Alto"),"BotonInsertarPinoAlto"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.pinoAlto;
+				}		
+				GUILayout.Space(cuantoW*2.5f);
 				GUILayout.EndHorizontal();
 				GUILayout.Space(cuantoH);				
 				GUILayout.EndVertical();
-				GUILayout.EndArea();*/
-				break;
-			case tcategoriaInsercion.vegetal:
+				GUILayout.EndArea();
 				break;
 			default:break;
 		}
