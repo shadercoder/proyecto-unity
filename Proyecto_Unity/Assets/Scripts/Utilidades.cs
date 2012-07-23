@@ -141,7 +141,7 @@ public class FuncTablero {
 	//Ruido
 	private static int octavas	= 4;				//Octavas para la funcion de ruido de turbulencias
 	private static int octavas2	= 12;				//Octavas para la funcion de ruido de turbulencias
-	private static float lacunaridad	= 4.5f;			//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
+	private static float lacunaridad	= 4.5f;		//La lacunaridad (cuanto se desplazan las coordenadas en sucesivas "octavas")
 	private static float ganancia = 0.45f;			//El peso que se le da a cada nueva octava
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
@@ -156,10 +156,11 @@ public class FuncTablero {
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
 	public static int altoTablero = 64;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
-	public static int casillasPolos	= 1;			//El numero de casillas que serán intransitables en los polos
+	public static int casillasPolos	= 0;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
-	public static int margen = 0;//50;					//El numero de pixeles que habrá en los polos intransitables
-	public static int altoTableroUtil;				//El alto del tablero una vez eliminadas las casillas de los polos
+	public static int margen = 0;//50;				//El numero de pixeles que habrá en los polos intransitables
+	public static int altoTableroUtil = 
+		altoTablero - casillasPolos;				//El alto del tablero una vez eliminadas las casillas de los polos
 	
 		
 	//Funciones --------------------------------------------------------------------------------------------------------------------
