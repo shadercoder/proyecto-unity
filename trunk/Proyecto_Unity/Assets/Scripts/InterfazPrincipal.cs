@@ -83,27 +83,31 @@ public class InterfazPrincipal : MonoBehaviour {
 					coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
 					coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
 					Casilla elem = estados.vida.tablero[(int)coordTemp.y, (int)coordTemp.x];*/	
-					double x = hit.textureCoord.x;
-					double y = hit.textureCoord.y;
+					double xTemp = hit.textureCoord.x;
+					double yTemp = hit.textureCoord.y;
 					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-					x = x * tex.width/ FuncTablero.getRelTexTabAncho();
-					double relTexTabAlto = FuncTablero.altoTextura / FuncTablero.altoTableroUtil;
-					y = (y * tex.height/ relTexTabAlto);// - 2;
-					if(x-0.5 < (int)x)
-						x = System.Math.Floor(x);
+					xTemp = xTemp * tex.width/ FuncTablero.getRelTexTabAncho();
+					//double relTexTabAlto = FuncTablero.altoTextura / FuncTablero.altoTableroUtil;
+					//yTemp = (yTemp * tex.height/ relTexTabAlto) - 1;// - 2;
+					yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto()) - 0.5f;
+					/*if(xTemp-0.5 < (int)xTemp)
+						xTemp = System.Math.Floor(xTemp);
 					else
-						x = System.Math.Ceiling(x);
-					if(y-0.5 < (int)y)
-						y = System.Math.Floor(y);
+						xTemp = System.Math.Ceiling(xTemp);
+					if(yTemp-0.5 < (int)yTemp)
+						yTemp = System.Math.Floor(yTemp);
 					else
-						y = System.Math.Ceiling(y);
+						yTemp = System.Math.Ceiling(yTemp);*/
+					int x = (int)xTemp;
+					int y = (int)yTemp;
+					FuncTablero.convierteCoordenadas(ref y, ref x);
 					int tipo = (int)elementoInsercion - 1;
 					if(tipo >= 0 && tipo < 5)				//Edificio
 					{
 						TipoEdificio[] tipos = new TipoEdificio[estados.vida.tiposEdificios.Count];
 						estados.vida.tiposEdificios.Values.CopyTo(tipos,0);
 						TipoEdificio tedif = tipos[tipo];
-						estados.vida.anadeEdificio(tedif,(int)y,(int)x);						
+						estados.vida.anadeEdificio(tedif,y,x);						
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;						
 					}					
@@ -113,132 +117,132 @@ public class InterfazPrincipal : MonoBehaviour {
 						Especie[] especies = new Especie[estados.vida.especies.Count];
 						estados.vida.especies.Values.CopyTo(especies,0);						
 						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
-						estados.vida.anadeVegetal(especie,(int)y,(int)x);
+						estados.vida.anadeVegetal(especie,y,x);
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;
 					}
-					else if(tipo >= 15 && tipo < 25)				//Animal (herbivoro o carnivoro)
+					else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
 					{
 						tipo -= 5;	
 						Especie[] especies = new Especie[estados.vida.especies.Count];
 						estados.vida.especies.Values.CopyTo(especies,0);
 						EspecieAnimal especie = (EspecieAnimal)especies[tipo];
-						estados.vida.anadeAnimal(especie,(int)y,(int)x);
+						estados.vida.anadeAnimal(especie,y,x);
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;
 					}
 					else
 						return;
-				}
-				/*if(elementoInsercion == telementoInsercion.ninguno)
-					return;
-				RaycastHit hit;
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (estados.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
-				{
-					Vector2 coordTemp = hit.textureCoord;
-					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-					coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
-					coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
-					int x = (int)coordTemp.x;
-					int y = (int)coordTemp.y; 
-					FuncTablero.convierteCoordenadas(ref x,ref y);
-					//Casilla elem = estados.vida.tablero[(int)coordTemp.x,(int)coordTemp.y];					
-					Casilla elem = estados.vida.tablero[x,y];					
-					int tipo = (int)elementoInsercion - 1;
-					if(tipo >= 0 && tipo < 5)				//Edificio
-					{
-						/*TipoEdificio[] tipos = new TipoEdificio[estados.vida.tiposEdificios.Count];
-						estados.vida.tiposEdificios.Values.CopyTo(tipos,0);
-						TipoEdificio tedif = tipos[tipo];
-						List<T_habitats> habitats1 = new List<T_habitats>();
-						habitats1.Add(T_habitats.plain);
-						habitats1.Add(T_habitats.sand);
-						habitats1.Add(T_habitats.coast);
-						EspecieVegetal especieV1 = new EspecieVegetal("vegetal1",1000,50,50,50,0.1f,8,habitats1,0,estados.vegetal1);
-						estados.vida.anadeVegetal(especieV1,x,y);
-						
-						//elementoInsercion = telementoInsercion.ninguno;
-						//accion = taccion.ninguna;
-						
-					}/*
-					else if(tipo >= 5 && tipo < 15)			//Vegetal
-					{
-						tipo -= 5;
-						Especie[] especies = new Especie[estados.vida.especies.Count];
-						estados.vida.especies.Values.CopyTo(especies,0);						
-						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
-						estados.vida.anadeVegetal(especie,x,y);
-						
-					}
-					else if(tipo >= 15 && tipo < 25)				//Animal (herbivoro o carnivoro)
-					{
-						tipo -= 5;	
-						Especie[] especies = new Especie[estados.vida.especies.Count];
-						estados.vida.especies.Values.CopyTo(especies,0);
-						EspecieAnimal especie = (EspecieAnimal)especies[tipo];
-						estados.vida.anadeAnimal(especie,x,y);						
-					}
-					else
-						return;
-				}*/								
-				/*switch (elementoInsercion)
-				{
-					case telementoInsercion.ninguno:						
-						return;
-					case telementoInsercion.fabricaCompBas:
-						
-						break;
-					case telementoInsercion.centralEnergia:
-						break;
-					case telementoInsercion.granja:
-						break;
-					case telementoInsercion.fabricaCompAdv:
-						break;
-					case telementoInsercion.centralEnergiaAdv:
-						break;
-					case telementoInsercion.vegetal1:
-						break;
-					case telementoInsercion.vegetal2:
-						break;
-					case telementoInsercion.vegetal3:
-						break;
-					case telementoInsercion.vegetal4:
-						break;
-					case telementoInsercion.vegetal5:
-						break;
-					case telementoInsercion.vegetal6:
-						break;
-					case telementoInsercion.vegetal7:
-						break;
-					case telementoInsercion.vegetal8:
-						break;
-					case telementoInsercion.vegetal9:
-						break;
-					case telementoInsercion.vegetal10:
-						break;
-					case telementoInsercion.herbivoro1:
-						break;
-					case telementoInsercion.herbivoro2:
-						break;
-					case telementoInsercion.herbivoro3:
-						break;
-					case telementoInsercion.herbivoro4:
-						break;
-					case telementoInsercion.herbivoro5:
-						break;
-					case telementoInsercion.carnivoro1:
-						break;
-					case telementoInsercion.carnivoro2:
-						break;
-					case telementoInsercion.carnivoro3:
-						break;
-					case telementoInsercion.carnivoro4:
-						break;
-					case telementoInsercion.carnivoro5:
-						break;
-					default:break;
-				}*/								
+				}				
+//				if(elementoInsercion == telementoInsercion.ninguno)
+//					return;
+//				RaycastHit hit;
+//				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+//				if (estados.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+//				{
+//					Vector2 coordTemp = hit.textureCoord;
+//					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+//					coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+//					coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+//					int x = (int)coordTemp.x;
+//					int y = (int)coordTemp.y; 
+//					FuncTablero.convierteCoordenadas(ref x,ref y);
+//					//Casilla elem = estados.vida.tablero[(int)coordTemp.x,(int)coordTemp.y];					
+//					Casilla elem = estados.vida.tablero[x,y];					
+//					int tipo = (int)elementoInsercion - 1;
+//					if(tipo >= 0 && tipo < 5)				//Edificio
+//					{
+//						/*TipoEdificio[] tipos = new TipoEdificio[estados.vida.tiposEdificios.Count];
+//						estados.vida.tiposEdificios.Values.CopyTo(tipos,0);
+//						TipoEdificio tedif = tipos[tipo];
+//						List<T_habitats> habitats1 = new List<T_habitats>();
+//						habitats1.Add(T_habitats.plain);
+//						habitats1.Add(T_habitats.sand);
+//						habitats1.Add(T_habitats.coast);
+//						EspecieVegetal especieV1 = new EspecieVegetal("vegetal1",1000,50,50,50,0.1f,8,habitats1,0,estados.vegetal1);
+//						estados.vida.anadeVegetal(especieV1,x,y);
+//						
+//						//elementoInsercion = telementoInsercion.ninguno;
+//						//accion = taccion.ninguna;
+//						
+//					}/*
+//					else if(tipo >= 5 && tipo < 15)			//Vegetal
+//					{
+//						tipo -= 5;
+//						Especie[] especies = new Especie[estados.vida.especies.Count];
+//						estados.vida.especies.Values.CopyTo(especies,0);						
+//						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
+//						estados.vida.anadeVegetal(especie,x,y);
+//						
+//					}
+//					else if(tipo >= 15 && tipo < 25)				//Animal (herbivoro o carnivoro)
+//					{
+//						tipo -= 5;	
+//						Especie[] especies = new Especie[estados.vida.especies.Count];
+//						estados.vida.especies.Values.CopyTo(especies,0);
+//						EspecieAnimal especie = (EspecieAnimal)especies[tipo];
+//						estados.vida.anadeAnimal(especie,x,y);						
+//					}
+//					else
+//						return;
+//				}*/								
+//				/*switch (elementoInsercion)
+//				{
+//					case telementoInsercion.ninguno:						
+//						return;
+//					case telementoInsercion.fabricaCompBas:
+//						
+//						break;
+//					case telementoInsercion.centralEnergia:
+//						break;
+//					case telementoInsercion.granja:
+//						break;
+//					case telementoInsercion.fabricaCompAdv:
+//						break;
+//					case telementoInsercion.centralEnergiaAdv:
+//						break;
+//					case telementoInsercion.vegetal1:
+//						break;
+//					case telementoInsercion.vegetal2:
+//						break;
+//					case telementoInsercion.vegetal3:
+//						break;
+//					case telementoInsercion.vegetal4:
+//						break;
+//					case telementoInsercion.vegetal5:
+//						break;
+//					case telementoInsercion.vegetal6:
+//						break;
+//					case telementoInsercion.vegetal7:
+//						break;
+//					case telementoInsercion.vegetal8:
+//						break;
+//					case telementoInsercion.vegetal9:
+//						break;
+//					case telementoInsercion.vegetal10:
+//						break;
+//					case telementoInsercion.herbivoro1:
+//						break;
+//					case telementoInsercion.herbivoro2:
+//						break;
+//					case telementoInsercion.herbivoro3:
+//						break;
+//					case telementoInsercion.herbivoro4:
+//						break;
+//					case telementoInsercion.herbivoro5:
+//						break;
+//					case telementoInsercion.carnivoro1:
+//						break;
+//					case telementoInsercion.carnivoro2:
+//						break;
+//					case telementoInsercion.carnivoro3:
+//						break;
+//					case telementoInsercion.carnivoro4:
+//						break;
+//					case telementoInsercion.carnivoro5:
+//						break;
+//					default:break;
+//				}*/								
 			}			
 		}
 	}
