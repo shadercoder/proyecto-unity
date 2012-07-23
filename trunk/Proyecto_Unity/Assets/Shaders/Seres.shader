@@ -23,7 +23,7 @@ _Ramp("_Ramp", 2D) = "black" {}
 		}
 
 		
-Cull Back
+Cull Off
 ZWrite On
 ZTest LEqual
 ColorMask RGBA

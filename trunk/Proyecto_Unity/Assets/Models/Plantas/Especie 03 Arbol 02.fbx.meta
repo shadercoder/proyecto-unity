@@ -3,7 +3,7 @@ guid: c4eb35e2e6fc53345aeea8ba6a225710
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.1
+    scaleFactor: 0.2
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 1
+    generation: 2
   animations:
     generation: 0
     bakeAnimations: 0
