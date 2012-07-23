@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0

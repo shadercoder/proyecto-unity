@@ -3,7 +3,7 @@ guid: d196e37eaab719d44ae1f43fb0af01ca
 TextureImporter:
   importerVersion: 2
   maxTextureSize: 32
-  textureFormat: -1
+  textureFormat: -3
   grayscaleToAlpha: 0
   npotScale: 0
   generateCubemap: 0
