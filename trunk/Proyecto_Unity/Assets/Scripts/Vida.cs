@@ -38,7 +38,7 @@ public class Vida : MonoBehaviour
 	public List<Ser> seres;											//Listado de todos los seres
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
-	public List<Edificio> edificios;									//Listado de todos los edificios
+	public List<Edificio> edificios;								//Listado de todos los edificios
 	
 	
 	public int numEspecies;
@@ -265,7 +265,8 @@ public class Vida : MonoBehaviour
 	{
 		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, especie.modelo));
+		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count-1)];
+		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
 		idActualVegetal++;
 		seres.Add(vegetal);
@@ -280,7 +281,8 @@ public class Vida : MonoBehaviour
 	{
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, especie.modelo));
+		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count-1)];
+		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, modelo));
 		animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
 		idActualAnimal++;
 		seres.Add(animal);
@@ -295,7 +297,8 @@ public class Vida : MonoBehaviour
 	{
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert,tipoEdificio.modelo));
+		GameObject modelo = tipoEdificio.modelos[Random.Range(0,tipoEdificio.modelos.Count)];
+		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
 		idActualEdificio++;		
 		seres.Add(edificio);
@@ -597,7 +600,7 @@ public class TipoEdificio
 	public int idTipoEdificio;							//Identificador del tipo de edificio
 	public string nombre;								//Nombre del tipo de ser
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
-	public GameObject modelo;							//El modelo de este tipo de edificio		
+	public List<GameObject> modelos;					//Distintos modelos que pueden representar al edificio		
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
 	public bool aniadirHabitat(T_habitats habitat)
@@ -619,18 +622,43 @@ public class TipoEdificio
 		return habitats.Contains(habitat);
 	}
 	
+	//Devuelve true si ha conseguido introducir el modelo, false si ya ha sido introducido
+	public bool aniadirModelo(GameObject modelo)
+	{
+		if(modelos.Contains(modelo))
+			return false;
+		modelos.Add(modelo);
+		return true;
+	}
+	
 	public TipoEdificio(string nombre,T_habitats habitat,GameObject modelo)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
 		aniadirHabitat(habitat);
-		this.modelo = modelo;
+		modelos = new List<GameObject>();
+		modelos.Add(modelo);
 	}
 	public TipoEdificio(string nombre,List<T_habitats> habitats,GameObject modelo)
 	{
 		this.nombre = nombre;
 		this.habitats = habitats;
-		this.modelo = modelo;		
+		modelos = new List<GameObject>();
+		modelos.Add(modelo);
+	}
+	
+	public TipoEdificio(string nombre,T_habitats habitat,List<GameObject> modelos)
+	{
+		habitats = new List<T_habitats>();
+		this.nombre = nombre;
+		aniadirHabitat(habitat);
+		this.modelos = modelos;
+	}
+	public TipoEdificio(string nombre,List<T_habitats> habitats,List<GameObject> modelos)
+	{
+		this.nombre = nombre;
+		this.habitats = habitats;
+		this.modelos = modelos;		
 	}
 }
 
@@ -639,7 +667,7 @@ public class Especie
 	public int idEspecie;								//Identificador de la especie a la que pertenece	
 	public string nombre;								//Nombre de la especie
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
-	public GameObject modelo;							//El modelo a usar en la especie
+	public List<GameObject> modelos;					//Distintos modelos que pueden representar a la especie		
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
 	public bool aniadirHabitat(T_habitats habitat)
@@ -659,6 +687,14 @@ public class Especie
 	public bool tieneHabitat(T_habitats habitat)
 	{
 		return habitats.Contains(habitat);
+	}
+	//Devuelve true si ha conseguido introducir el modelo, false si ya ha sido introducido
+	public bool aniadirModelo(GameObject modelo)
+	{
+		if(modelos.Contains(modelo))
+			return false;
+		modelos.Add(modelo);
+		return true;
 	}	
 }
 
@@ -686,7 +722,8 @@ public class EspecieVegetal : Especie
 		this.radioMigracion = radioMigracion;
 		this.aniadirHabitat(habitat);
 		this.idTextura = idTextura;
-		this.modelo = modelo;
+		modelos = new List<GameObject>();
+		modelos.Add(modelo);
 	}
 	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, GameObject modelo)
 	{
@@ -699,7 +736,35 @@ public class EspecieVegetal : Especie
 		this.radioMigracion = radioMigracion;
 		this.habitats = habitats;
 		this.idTextura = idTextura;
-		this.modelo = modelo;
+		modelos = new List<GameObject>();
+		modelos.Add(modelo);
+	}
+	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, List<GameObject> modelos)
+	{
+		habitats = new List<T_habitats>();
+		this.nombre = nombre;
+		this.numMaxVegetales = numMaxVegetales;
+		this.numIniVegetales = numIniVegetales;
+		this.capacidadReproductiva = capacidadReproductiva;
+		this.capacidadMigracionLocal = capacidadMigracionLocal;
+		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
+		this.radioMigracion = radioMigracion;
+		this.aniadirHabitat(habitat);
+		this.idTextura = idTextura;
+		this.modelos = modelos;
+	}
+	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, List<GameObject> modelos)
+	{
+		this.nombre = nombre;
+		this.numMaxVegetales = numMaxVegetales;
+		this.numIniVegetales = numIniVegetales;
+		this.capacidadReproductiva = capacidadReproductiva;
+		this.capacidadMigracionLocal = capacidadMigracionLocal;
+		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
+		this.radioMigracion = radioMigracion;
+		this.habitats = habitats;
+		this.idTextura = idTextura;
+		this.modelos = modelos;
 	}
 }
 
@@ -726,7 +791,8 @@ public class EspecieAnimal : Especie
 		this.reproductibilidad = reproductibilidad;	
 		this.tipo = tipo;
 		this.aniadirHabitat(habitat);
-		this.modelo = modelo;
+		modelos = new List<GameObject>();
+		modelos.Add(modelo);
 	}		
 	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, GameObject modelo)
 	{
@@ -739,7 +805,35 @@ public class EspecieAnimal : Especie
 		this.reproductibilidad = reproductibilidad;	
 		this.tipo = tipo;
 		this.habitats = habitats;
-		this.modelo = modelo;
+		modelos = new List<GameObject>();
+		modelos.Add(modelo);
+	}	
+	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, List<GameObject> modelos)
+	{
+		habitats = new List<T_habitats>();
+		this.nombre = nombre;
+		this.consumo = consumo;
+		this.reservaMaxima = reservaMaxima;
+		this.alimentoQueProporciona = alimentoQueProporciona;
+		this.vision = vision;
+		this.velocidad = velocidad;
+		this.reproductibilidad = reproductibilidad;	
+		this.tipo = tipo;
+		this.aniadirHabitat(habitat);
+		this.modelos = modelos;
+	}		
+	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos)
+	{
+		this.nombre = nombre;
+		this.consumo = consumo;
+		this.reservaMaxima = reservaMaxima;
+		this.alimentoQueProporciona = alimentoQueProporciona;
+		this.vision = vision;
+		this.velocidad = velocidad;
+		this.reproductibilidad = reproductibilidad;	
+		this.tipo = tipo;
+		this.habitats = habitats;
+		this.modelos = modelos;
 	}	
 }
 

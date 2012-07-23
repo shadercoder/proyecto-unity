@@ -367,8 +367,8 @@ public class InterfazPrincipal : MonoBehaviour {
 						estados.vida.especies.Values.CopyTo(especies,0);						
 						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
 						estados.vida.anadeVegetal(especie,y,x);
-						elementoInsercion = telementoInsercion.ninguno;
-						accion = taccion.ninguna;
+						//elementoInsercion = telementoInsercion.ninguno;
+						//accion = taccion.ninguna;
 					}
 					else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
 					{
