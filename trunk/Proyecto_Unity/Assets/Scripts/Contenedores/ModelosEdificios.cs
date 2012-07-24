@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Edificios : MonoBehaviour 
+public class ModelosEdificios : MonoBehaviour 
 {
 	public GameObject fabCompBas;						//Modelo de la fábrica de componentes básicos
 	public GameObject centralEnergia;					//Modelo de la centra de energía

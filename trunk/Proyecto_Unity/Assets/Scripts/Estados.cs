@@ -29,12 +29,9 @@ public class Estados : MonoBehaviour {
 	public int componentesAvanzadosDif = 0;								//Incremento o decremento por turno de componentes avanzados
 	public int materialBiologico = 0;									//Cantidad de material biologico alojado en la nave
 	public int materialBiologicoDif = 0;								//Incremento o decremento por turno de material biologico
-	private Edificios edificiosModelos;
-	private Animales animalesModelos;
-	private Vegetales vegetalesModelos;
-	
+		
 	//Modelos
-	public GameObject edificio1;										//El modelo del edificio numero 1
+	/*public GameObject edificio1;										//El modelo del edificio numero 1
 	public GameObject edificio2;										//El modelo del edificio numero 2
 	public GameObject edificio3;										//El modelo del edificio numero 3
 	public GameObject edificio4;										//El modelo del edificio numero 4
@@ -90,7 +87,7 @@ public class Estados : MonoBehaviour {
 	public GameObject carnivoro4;										//El modelo del carnivoro numero 4
 	public GameObject carnivoro5;										//El modelo del carnivoro numero 5
 	//public GameObject[] modelos;										//Array con todos los modelos	
-	
+	*/
 	//Botones grandes
 	private bool menuAltera						= false;				//Variables de control de los botones grandes
 	private bool menuCamara						= false;				//de la interfaz del menu izquierdo
@@ -104,8 +101,7 @@ public class Estados : MonoBehaviour {
 	private bool objetivoAlcanzado				= false;				//Si es true, muestra una ventana con informacion del objetivo pulsado
 	
 	//Privadas del script
-	private float cuantoW;							//Minima unidad de medida de la interfaz a lo ancho
-	private float cuantoH;							//Minima unidad de medida de la interfaz a lo alto
+	private bool especiesCreadas = false;
 	private T_estados estado 					= T_estados.principal;	//Los estados por los que pasa el juego
 	public Vida vida;													//Tablero lógico del algoritmo		
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
@@ -342,7 +338,7 @@ public class Estados : MonoBehaviour {
 	
 	//Update y transiciones de estados -------------------------------------------------------------------------------------------------------
 	
-	void Start() {		
+	void Awake() {		
 		Random.seed = System.DateTime.Now.Millisecond;
 		contenedorTexturas = GameObject.FindGameObjectWithTag("Carga");
 		if (contenedorTexturas == null) {
@@ -380,117 +376,6 @@ public class Estados : MonoBehaviour {
 		numSavesExtra = numSaves - 3;
 		if (numSavesExtra < 0)
 			numSavesExtra = 0;	
-		
-		List<T_habitats> habitats1 = new List<T_habitats>();
-		habitats1.Add(T_habitats.plain);
-		habitats1.Add(T_habitats.sand);
-		habitats1.Add(T_habitats.coast);
-		habitats1.Add(T_habitats.mountain);
-		habitats1.Add(T_habitats.hill);
-		habitats1.Add(T_habitats.sea);
-		habitats1.Add(T_habitats.volcanic);
-
-		/*edificiosModelos = gameObject.GetComponent<Edificios>();		
-		vegetalesModelos = gameObject.GetComponent<Vegetales>();		
-		animalesModelos = gameObject.GetComponent<Animales>();	*/	
-		
-		/* Edificios */
-		/*TipoEdificio tipoEdif1 = new TipoEdificio("fabricaCompBas",habitats1,edificiosModelos.fabCompBas);
-		vida.anadeTipoEdificio(tipoEdif1);
-		TipoEdificio tipoEdif2 = new TipoEdificio("centralEnergia",habitats1,edificiosModelos.centralEnergia);
-		vida.anadeTipoEdificio(tipoEdif2);
-		TipoEdificio tipoEdif3 = new TipoEdificio("granja",habitats1,edificiosModelos.granja);
-		vida.anadeTipoEdificio(tipoEdif3);
-		TipoEdificio tipoEdif4 = new TipoEdificio("fabricaCompAdv",habitats1,edificiosModelos.fabCompAdv);
-		vida.anadeTipoEdificio(tipoEdif4);
-		TipoEdificio tipoEdif5 = new TipoEdificio("centralEnergiaAdv",habitats1,edificiosModelos.centralEnergiaAdv);
-		vida.anadeTipoEdificio(tipoEdif5);*/
-		TipoEdificio tipoEdif1 = new TipoEdificio("fabricaCompBas",habitats1,edificio1);
-		vida.anadeTipoEdificio(tipoEdif1);
-		TipoEdificio tipoEdif2 = new TipoEdificio("centralEnergia",habitats1,edificio2);
-		vida.anadeTipoEdificio(tipoEdif2);
-		TipoEdificio tipoEdif3 = new TipoEdificio("granja",habitats1,edificio3);
-		vida.anadeTipoEdificio(tipoEdif3);
-		TipoEdificio tipoEdif4 = new TipoEdificio("fabricaCompAdv",habitats1,edificio4);
-		vida.anadeTipoEdificio(tipoEdif4);
-		TipoEdificio tipoEdif5 = new TipoEdificio("centralEnergiaAdv",habitats1,edificio5);
-		vida.anadeTipoEdificio(tipoEdif5);
-		
-		/* Vegetales */
-		EspecieVegetal especieV1 = new EspecieVegetal("seta",1000,50,50,50,0.1f,8,habitats1,0,seta1);
-		especieV1.aniadirModelo(seta2);
-		especieV1.aniadirModelo(seta3);
-		especieV1.aniadirModelo(seta4);		
-		vida.anadeEspecieVegetal(especieV1);
-		EspecieVegetal especieV2 = new EspecieVegetal("flor",1000,50,50,20,0.1f,15,habitats1,1,flor1);
-		especieV2.aniadirModelo(flor2);
-		especieV2.aniadirModelo(flor3);
-		especieV2.aniadirModelo(flor4);
-		vida.anadeEspecieVegetal(especieV2);
-		EspecieVegetal especieV3 = new EspecieVegetal("caña",1000,50,50,20,0.1f,12,habitats1,2,cana1);
-		especieV3.aniadirModelo(cana2);
-		especieV3.aniadirModelo(cana3);
-		especieV3.aniadirModelo(cana4);
-		vida.anadeEspecieVegetal(especieV3);
-		EspecieVegetal especieV4 = new EspecieVegetal("arbusto",1000,50,50,20,0.1f,12,habitats1,3,arbusto1);
-		especieV4.aniadirModelo(arbusto2);
-		especieV4.aniadirModelo(arbusto3);
-		especieV4.aniadirModelo(arbusto4);
-		vida.anadeEspecieVegetal(especieV4);
-		EspecieVegetal especieV5 = new EspecieVegetal("Estromatolito",1000,50,50,20,0.1f,12,habitats1,3,estromatolito1);
-		especieV5.aniadirModelo(estromatolito2);
-		especieV5.aniadirModelo(estromatolito3);
-		especieV5.aniadirModelo(estromatolito4);
-		vida.anadeEspecieVegetal(especieV5);
-		EspecieVegetal especieV6 = new EspecieVegetal("Cactus",1000,50,50,20,0.1f,12,habitats1,3,cactus1);
-		especieV6.aniadirModelo(cactus2);
-		especieV6.aniadirModelo(cactus3);
-		especieV6.aniadirModelo(cactus4);
-		vida.anadeEspecieVegetal(especieV6);
-		EspecieVegetal especieV7 = new EspecieVegetal("Palmera",1000,50,50,20,0.1f,12,habitats1,3,palmera1);
-		especieV7.aniadirModelo(palmera2);
-		especieV7.aniadirModelo(palmera3);
-		especieV7.aniadirModelo(palmera4);
-		vida.anadeEspecieVegetal(especieV7);
-		EspecieVegetal especieV8 = new EspecieVegetal("Pino",1000,50,50,20,0.1f,12,habitats1,3,pino1);
-		especieV8.aniadirModelo(pino2);
-		especieV8.aniadirModelo(pino3);
-		especieV8.aniadirModelo(pino4);
-		vida.anadeEspecieVegetal(especieV8);
-		EspecieVegetal especieV9 = new EspecieVegetal("Ciprés",1000,50,50,20,0.1f,12,habitats1,3,cipres1);
-		especieV9.aniadirModelo(cipres2);
-		especieV9.aniadirModelo(cipres3);
-		especieV9.aniadirModelo(cipres4);
-		vida.anadeEspecieVegetal(especieV9);
-		EspecieVegetal especieV10 = new EspecieVegetal("Pino Alto",1000,50,50,20,0.1f,12,habitats1,3,pinoAlto1);
-		especieV10.aniadirModelo(pinoAlto2);
-		especieV10.aniadirModelo(pinoAlto3);
-		especieV10.aniadirModelo(pinoAlto4);
-		vida.anadeEspecieVegetal(especieV10);
-		
-		/* Herbivoros */
-		EspecieAnimal especieH1 = new EspecieAnimal("herbivoro1",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro1);
-		vida.anadeEspecieAnimal(especieH1);
-		EspecieAnimal especieH2 = new EspecieAnimal("herbivoro2",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro2);
-		vida.anadeEspecieAnimal(especieH2);
-		EspecieAnimal especieH3 = new EspecieAnimal("herbivoro3",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro3);
-		vida.anadeEspecieAnimal(especieH3);
-		EspecieAnimal especieH4 = new EspecieAnimal("herbivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,herbivoro4);
-		vida.anadeEspecieAnimal(especieH4);
-		EspecieAnimal especieH5 = new EspecieAnimal("herbivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,T_habitats.hill,herbivoro5);
-		vida.anadeEspecieAnimal(especieH5);
-		
-		/* Carnivoros */
-		EspecieAnimal especieC1 = new EspecieAnimal("carnivoro1",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro1);
-		vida.anadeEspecieAnimal(especieC1);
-		EspecieAnimal especieC2 = new EspecieAnimal("carnivoro2",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro2);
-		vida.anadeEspecieAnimal(especieC2);
-		EspecieAnimal especieC3 = new EspecieAnimal("carnivoro3",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro3);
-		vida.anadeEspecieAnimal(especieC3);
-		EspecieAnimal especieC4 = new EspecieAnimal("carnivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,carnivoro4);
-		vida.anadeEspecieAnimal(especieC4);
-		EspecieAnimal especieC5 = new EspecieAnimal("carnivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,T_habitats.hill,carnivoro5);
-		vida.anadeEspecieAnimal(especieC5);	
 	}
 	
 	void FixedUpdate() {
@@ -505,12 +390,17 @@ public class Estados : MonoBehaviour {
 	
 	void Update () {
 		
+		if(!especiesCreadas)
+		{
+			creacionEspeciesEdificios();
+			especiesCreadas = true;			
+		}
 		switch (estado) {
 			case T_estados.inicial:
 				creacionInicial();
 				break;
 				
-			case T_estados.principal:
+			case T_estados.principal:				
 				//Controlamos los clicks de raton en este estado solamente
 				if (Input.GetMouseButtonDown(0)) {
 					getInfoSeresCasilla();
@@ -585,8 +475,91 @@ public class Estados : MonoBehaviour {
 		
 	}
 	
+	void creacionEspeciesEdificios()
+	{		
+		List<T_habitats> habitats1 = new List<T_habitats>();
+		habitats1.Add(T_habitats.plain);
+		habitats1.Add(T_habitats.sand);
+		habitats1.Add(T_habitats.coast);
+		habitats1.Add(T_habitats.mountain);
+		habitats1.Add(T_habitats.hill);
+		habitats1.Add(T_habitats.sea);
+		habitats1.Add(T_habitats.volcanic);
+
+		ModelosEdificios modelosEdificios = GameObject.FindGameObjectWithTag("ModelosEdificios").GetComponent<ModelosEdificios>();		
+		ModelosVegetales modelosVegetales = GameObject.FindGameObjectWithTag("ModelosVegetales").GetComponent<ModelosVegetales>();		
+		ModelosAnimales modelosAnimales = GameObject.FindGameObjectWithTag("ModelosAnimales").GetComponent<ModelosAnimales>();		
+				
+		/* Edificios */
+		/*TipoEdificio tipoEdif1 = new TipoEdificio("fabricaCompBas",habitats1,edificiosModelos.fabCompBas);
+		vida.anadeTipoEdificio(tipoEdif1);
+		TipoEdificio tipoEdif2 = new TipoEdificio("centralEnergia",habitats1,edificiosModelos.centralEnergia);
+		vida.anadeTipoEdificio(tipoEdif2);
+		TipoEdificio tipoEdif3 = new TipoEdificio("granja",habitats1,edificiosModelos.granja);
+		vida.anadeTipoEdificio(tipoEdif3);
+		TipoEdificio tipoEdif4 = new TipoEdificio("fabricaCompAdv",habitats1,edificiosModelos.fabCompAdv);
+		vida.anadeTipoEdificio(tipoEdif4);
+		TipoEdificio tipoEdif5 = new TipoEdificio("centralEnergiaAdv",habitats1,edificiosModelos.centralEnergiaAdv);
+		vida.anadeTipoEdificio(tipoEdif5);*/
+		TipoEdificio tipoEdif1 = new TipoEdificio("fabricaCompBas",habitats1,modelosEdificios.fabCompBas);
+		vida.anadeTipoEdificio(tipoEdif1);
+		TipoEdificio tipoEdif2 = new TipoEdificio("centralEnergia",habitats1,modelosEdificios.centralEnergia);
+		vida.anadeTipoEdificio(tipoEdif2);
+		TipoEdificio tipoEdif3 = new TipoEdificio("granja",habitats1,modelosEdificios.granja);
+		vida.anadeTipoEdificio(tipoEdif3);
+		TipoEdificio tipoEdif4 = new TipoEdificio("fabricaCompAdv",habitats1,modelosEdificios.fabCompAdv);
+		vida.anadeTipoEdificio(tipoEdif4);
+		TipoEdificio tipoEdif5 = new TipoEdificio("centralEnergiaAdv",habitats1,modelosEdificios.centralEnergiaAdv);
+		vida.anadeTipoEdificio(tipoEdif5);
+		
+		/* Vegetales */
+		EspecieVegetal especieV1 = new EspecieVegetal("seta",1000,50,50,50,0.1f,8,habitats1,0,modelosVegetales.setas);
+		vida.anadeEspecieVegetal(especieV1);
+		EspecieVegetal especieV2 = new EspecieVegetal("flor",1000,50,50,20,0.1f,15,habitats1,1,modelosVegetales.flores);
+		vida.anadeEspecieVegetal(especieV2);
+		EspecieVegetal especieV3 = new EspecieVegetal("caña",1000,50,50,20,0.1f,12,habitats1,2,modelosVegetales.canas);
+		vida.anadeEspecieVegetal(especieV3);
+		EspecieVegetal especieV4 = new EspecieVegetal("arbusto",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.arbustos);
+		vida.anadeEspecieVegetal(especieV4);
+		EspecieVegetal especieV5 = new EspecieVegetal("estromatolito",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.estromatolitos);
+		vida.anadeEspecieVegetal(especieV5);
+		EspecieVegetal especieV6 = new EspecieVegetal("cactus",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.cactus);
+		vida.anadeEspecieVegetal(especieV6);
+		EspecieVegetal especieV7 = new EspecieVegetal("palmera",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.palmeras);
+		vida.anadeEspecieVegetal(especieV7);
+		EspecieVegetal especieV8 = new EspecieVegetal("pino",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.pinos);
+		vida.anadeEspecieVegetal(especieV8);
+		EspecieVegetal especieV9 = new EspecieVegetal("ciprés",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.cipreses);
+		vida.anadeEspecieVegetal(especieV9);
+		EspecieVegetal especieV10 = new EspecieVegetal("pino alto",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.pinosAltos);
+		vida.anadeEspecieVegetal(especieV10);
+		
+		/* Herbivoros */
+		EspecieAnimal especieH1 = new EspecieAnimal("herbivoro1",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,modelosAnimales.herbivoro1);
+		vida.anadeEspecieAnimal(especieH1);
+		EspecieAnimal especieH2 = new EspecieAnimal("herbivoro2",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,modelosAnimales.herbivoro2);
+		vida.anadeEspecieAnimal(especieH2);
+		EspecieAnimal especieH3 = new EspecieAnimal("herbivoro3",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,modelosAnimales.herbivoro3);
+		vida.anadeEspecieAnimal(especieH3);
+		EspecieAnimal especieH4 = new EspecieAnimal("herbivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,modelosAnimales.herbivoro4);
+		vida.anadeEspecieAnimal(especieH4);
+		EspecieAnimal especieH5 = new EspecieAnimal("herbivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,T_habitats.hill,modelosAnimales.herbivoro5);
+		vida.anadeEspecieAnimal(especieH5);
+		
+		/* Carnivoros */
+		EspecieAnimal especieC1 = new EspecieAnimal("carnivoro1",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,modelosAnimales.carnivoro1);
+		vida.anadeEspecieAnimal(especieC1);
+		EspecieAnimal especieC2 = new EspecieAnimal("carnivoro2",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,modelosAnimales.carnivoro2);
+		vida.anadeEspecieAnimal(especieC2);
+		EspecieAnimal especieC3 = new EspecieAnimal("carnivoro3",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,modelosAnimales.carnivoro3);
+		vida.anadeEspecieAnimal(especieC3);
+		EspecieAnimal especieC4 = new EspecieAnimal("carnivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,modelosAnimales.carnivoro4);
+		vida.anadeEspecieAnimal(especieC4);
+		EspecieAnimal especieC5 = new EspecieAnimal("carnivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,T_habitats.hill,modelosAnimales.carnivoro5);
+		vida.anadeEspecieAnimal(especieC5);	
+	}
 	//Funciones OnGUI---------------------------------------------------------------------------------------------------------------------------
-	
+	/*
 	void OnGUIXXX() {
 		GUI.skin = estiloGUI;
 		switch (estado) {
@@ -938,5 +911,5 @@ public class Estados : MonoBehaviour {
 		if (GUI.Button(new Rect(cuantoW * 31, cuantoH * 10, cuantoW * 1, cuantoH * 1), "X")) {
 			objetivoAlcanzado = false;
 		}
-	}
+	}*/
 }

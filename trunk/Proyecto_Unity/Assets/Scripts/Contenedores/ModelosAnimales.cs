@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class Animales : MonoBehaviour {
+public class ModelosAnimales : MonoBehaviour 
+{
 	public GameObject herbivoro1;										//El modelo del herbivoro numero 1
 	public GameObject herbivoro2;										//El modelo del herbivoro numero 2
 	public GameObject herbivoro3;										//El modelo del herbivoro numero 3
