@@ -3,7 +3,7 @@ guid: a74953a6c1b466d43ba831e7e1c81fa0
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.01
+    scaleFactor: 0.8
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
@@ -16,7 +16,7 @@ ModelImporter:
   materials:
     generation: 1
   animations:
-    generation: 3
+    generation: 0
     bakeAnimations: 0
     animationCompression: 1
     animationWrapMode: 0
@@ -27,7 +27,6 @@ ModelImporter:
     - 400000
     - 3300000
     - 2300000
-    - 11100000
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
