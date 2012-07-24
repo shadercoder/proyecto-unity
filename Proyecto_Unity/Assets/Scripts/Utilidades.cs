@@ -647,9 +647,13 @@ public class FuncTablero {
 	}
 	
 	public static void alteraPixelColor(Texture2D tex, int w, int h, Color valor, bool positivo){
-		if (h < 0 || h > tex.height) {
-			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan. w = " + w + " h = " + h);
-		}
+//		if (h < 0 || h > tex.height) {
+//			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan. w = " + w + " h = " + h);
+//		}
+		if (h >= tex.height)
+			h = tex.height - 1;
+		else if (h < 0)
+			h = 0;
 		if (w < 0)
 			w += tex.width;
 		w = w % tex.width;
