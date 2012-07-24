@@ -265,7 +265,7 @@ public class Vida : MonoBehaviour
 	{
 		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count-1)];
+		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
 		idActualVegetal++;
@@ -281,7 +281,7 @@ public class Vida : MonoBehaviour
 	{
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count-1)];
+		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
 		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, modelo));
 		animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
 		idActualAnimal++;
