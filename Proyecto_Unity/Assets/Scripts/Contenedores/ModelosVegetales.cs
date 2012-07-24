@@ -1,14 +1,24 @@
 using UnityEngine;
 using System.Collections;
-using UnityEditor;
+using System.Collections.Generic;
 
-public class Vegetales : MonoBehaviour {
-	public GameObject seta1;			//Modelos seta
+public class ModelosVegetales : MonoBehaviour 
+{
+	/*public GameObject seta1;			//Modelos seta
 	public GameObject seta2;			//Modelos seta
 	public GameObject seta3;			//Modelos seta
-	public GameObject seta4;			//Modelos seta
-	//public GameObject[seta1,seta2];
-	public GameObject flor1;			//Modelos flor
+	public GameObject seta4;			//Modelos seta*/
+	public List<GameObject> setas;
+	public List<GameObject> flores;
+	public List<GameObject> canas;
+	public List<GameObject> arbustos;
+	public List<GameObject> estromatolitos;
+	public List<GameObject> cactus;
+	public List<GameObject> palmeras;
+	public List<GameObject> pinos;
+	public List<GameObject> cipreses;
+	public List<GameObject> pinosAltos;
+	/*public GameObject flor1;			//Modelos flor
 	public GameObject flor2;			//Modelos flor
 	public GameObject flor3;			//Modelos flor
 	public GameObject flor4;			//Modelos flor
@@ -43,5 +53,5 @@ public class Vegetales : MonoBehaviour {
 	public GameObject pinoAlto1;		//Modelos pino alto
 	public GameObject pinoAlto2;		//Modelos pino alto
 	public GameObject pinoAlto3;		//Modelos pino alto
-	public GameObject pinoAlto4;		//Modelos pino alto
+	public GameObject pinoAlto4;		//Modelos pino alto*/	
 }
