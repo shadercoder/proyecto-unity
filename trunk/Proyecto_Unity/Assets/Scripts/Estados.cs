@@ -274,6 +274,12 @@ public class Estados : MonoBehaviour {
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
 		filter.mesh = meshTemp;
 		filter2.mesh = meshTemp;
+		
+		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
+		objetoRoca.AddComponent<MeshCollider>();
+		objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
+		//Fin del añadido a estados
+		
 		estado = T_estados.principal;
 	}
 	

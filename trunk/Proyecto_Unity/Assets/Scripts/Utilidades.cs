@@ -25,12 +25,24 @@ public class SaveData {
 
 }
 
-//Clase con los métodos a llamar para crear el savegame -------------------------------------------------------------------------------
+//Clase contenedora del archivo de indices ------------------------------------------------------------------------------------------------------
+[System.Serializable]
+public class SaveIndices {
+
+	//Variables a salvar
+	public int[] indices;
+
+  	public SaveIndices() {}
+
+}
+
+//Clase con los métodos a llamar para crear el savegame y otros archivos ---------------------------------------------------------------
 public class SaveLoad {
 	
 	public static string currentFileName = "SaveGame.hur";						
 	public static string currentFilePath = Application.persistentDataPath + "/Saves/";
 	
+	//Savegame
 	public static void Save (Texture2D tex) {							//Sobrecargado
 		Color[] colTemp = tex.GetPixels();
 		int tempLong = tex.width * tex.height;
@@ -76,6 +88,46 @@ public class SaveLoad {
 		try {
 		    BinaryFormatter bformatter = new BinaryFormatter();
 		    data = (SaveData)bformatter.Deserialize(stream);
+		}
+		catch (SerializationException e) {
+			Debug.LogError("Excepcion al deserializar el savegame. Datos: " + e.Message);
+		}
+		finally {
+			stream.Close();
+		}
+		return data;
+	}
+	
+	//Objeto con los indices
+	public static void SaveIndices (int[] indices)
+  	{ 
+	    SaveIndices save = new SaveIndices();
+		save.indices = indices;
+	    FileStream stream = new FileStream(Application.dataPath + "/Indices.bin", FileMode.Create);
+		Debug.Log("Archivo de indices guardado en: " + Application.dataPath);
+		try {
+		    BinaryFormatter bformatter = new BinaryFormatter();
+		    bformatter.Serialize(stream, save);
+		}
+		catch (SerializationException e) {
+			Debug.LogError("Excepcion al serializar el archivo de indices. Datos: " + e.Message);
+		}
+		finally {
+	    	stream.Close();
+		}
+  	}
+
+  	public static SaveIndices LoadIndices ()  {									//Sobrecargado
+		return LoadIndices(Application.dataPath + "/Indices.bin");
+	} 
+	
+  	public static SaveIndices LoadIndices(string filePath) 
+  	{
+	    SaveIndices data = new SaveIndices();
+	    FileStream stream = new FileStream(filePath, FileMode.Open);
+		try {
+		    BinaryFormatter bformatter = new BinaryFormatter();
+		    data = (SaveIndices)bformatter.Deserialize(stream);
 		}
 		catch (SerializationException e) {
 			Debug.LogError("Excepcion al deserializar el savegame. Datos: " + e.Message);
@@ -596,6 +648,31 @@ public class FuncTablero {
 		Vector3[] vertices = mesh.vertices;
 		Vector2[] uvs = mesh.uv;
 		T_habitats[] habitat = calculaHabitats(tex);
+		
+		int[] indices = SaveLoad.LoadIndices().indices;
+//		int[] indices = calculaIndicesVertices(tex.width, tex.height, uvs);
+//		SaveLoad.SaveIndices(indices);
+		int k = 0;
+		for (int i = 0; i < altoTableroUtil; i++) {
+			for (int j = 0; j < anchoTablero; j++) {
+				Vector2 cord = new Vector2(j * relTexTabAncho , (i + casillasPolos) * relTexTabAlto);
+
+				//Parche hasta que lo introduzcamos
+				T_elementos[] elems = new T_elementos[1];
+				elems[0] = T_elementos.carbono;
+				
+				tablero[i,j] = new Casilla(habitat[i * anchoTablero + j], elems, cord, vertices[indices[k]]);
+				k++;
+			}
+		}
+		tablero = mueveVertices(tablero);
+		return tablero;
+	}
+	
+	private static int[] calculaIndicesVertices(int width, int height, Vector2[] uvs) {
+		int[] resultado = new int[altoTableroUtil * anchoTablero];
+		int z = 0;
+		
 		for (int i = 0; i < altoTableroUtil; i++) {
 			for (int j = 0; j < anchoTablero; j++) {
 				//Las coordenadas de la casilla actual en la textura
@@ -605,8 +682,8 @@ public class FuncTablero {
 				int indice = -1;
 				for (int k = 0; k < uvs.Length; k++) {
 					Vector2 temp = uvs[k];
-					temp.x *= tex.width;
-					temp.y *= tex.height;
+					temp.x *= width;
+					temp.y *= height;
 					if (temp.x >= cord.x && temp.y >= cord.y && temp.x <= cord2.x && temp.y <= cord2.y) {
 						indice = k;
 						break;
@@ -615,14 +692,27 @@ public class FuncTablero {
 				if (indice == -1)
 					Debug.LogError("No se ha encontrado la coordenada por su UV en iniciaTablero(). Casilla: " + i + "," + j + ";");
 				
-				//Parche hasta que lo introduzcamos
-				T_elementos[] elems = new T_elementos[1];
-				elems[0] = T_elementos.carbono;
 				
-				tablero[i,j] = new Casilla(habitat[i * anchoTablero + j], elems, cord, vertices[indice]);
+				resultado[z] = indice;
+				z++;
 			}
 		}
-		return tablero;
+		
+		return resultado;
+	}
+	
+	private static Casilla[,] mueveVertices(Casilla[,] tableroIn) {
+		Casilla[,] tableroOut;
+		tableroOut = tableroIn;
+//		De momento lo dejo comentado porque es un cambio estetico y de momento lo podemos aparcar.
+//		for (int i = 0; i < altoTableroUtil; i++) {
+//			for (int j = 0; j < anchoTablero; j++) {
+//				Vector2 coordsTex = tableroIn[i,j].coordsTex;
+//				Vector3 coordsVert = tableroIn[i,j].coordsVert;
+//				
+//			}
+//		}
+		return tableroOut;
 	}
 	
 	public static void convierteCoordenadas(ref int x,ref int y)
