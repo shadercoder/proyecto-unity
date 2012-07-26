@@ -7,18 +7,23 @@ public class InterfazPrincipal : MonoBehaviour {
 
 	// Variables ---------------------------------------------------------------------------------------------------------------------------
 	public GUISkin estilo;
-	private float cuantoW;								//Minima unidad de medida de la interfaz a lo ancho
-	private float cuantoH;								//Minima unidad de medida de la interfaz a lo alto
-	private float aspectRatioNumerico;					//Aspect ratio númerico de la ventana
-	private Estados estados;							//Acceso a los datos principales	
-	private bool mostrarBloqueIzquierdo = true;			//Visibilidad del bloque de opciones izquierdo
-	private bool mostrarInfo = true;					//Información del puntero mostrada en la barra inferior	
+	private float cuantoW;									//Minima unidad de medida de la interfaz a lo ancho
+	private float cuantoH;									//Minima unidad de medida de la interfaz a lo alto
+	private float aspectRatioNumerico;						//Aspect ratio númerico de la ventana
+	private Principal principal;							//Acceso a los datos principales	
+	private bool mostrarBloqueIzquierdo = true;				//Visibilidad del bloque de opciones izquierdo
+	private bool mostrarInfoCasilla = true;					//Controla si se muestra la info básica de la casilla a la que estamos apuntando
+	private string infoCasilla = "";						//Información básica de la casilla mostrada en la barra de información inferior
+	private float tiempoUltimaInfoCasilla = 0.0f;			//Tiempo de la última comprobación de la info básica de una casilla
+	private float tiempoInfoCasilla = 0.25f;				//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
+	private Vector3 posicionMouseInfoCasilla = Vector3.zero;//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private bool mostrarMenu = false;						//Controla si se muestra el menu de opciones
 	
 	//Tooltips
-	private Vector3 posicionMouse = Vector3.zero;		//Guarda la ultima posicion del mouse		
-	private bool activarTooltip = false;				//Controla si se muestra o no el tooltip	
-	private float ultimoMov = 0.0f;						//Ultima vez que se movio el mouse		
-	public float tiempoTooltip = 0.75f;					//Tiempo que tarda en aparecer el tooltip	
+	private Vector3 posicionMouseTooltip = Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private bool activarTooltip = false;					//Controla si se muestra o no el tooltip	
+	private float ultimoMov = 0.0f;							//Ultima vez que se movio el mouse		
+	public float tiempoTooltip = 0.75f;						//Tiempo que tarda en aparecer el tooltip	
 	
 	//Enumerados
 	private enum taspectRatio							//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
@@ -41,13 +46,15 @@ public class InterfazPrincipal : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		principal = gameObject.GetComponent<Principal>();		
+		controlTooltip();
+		calculaInfoCasilla();		
 	}
 	
 	void OnGUI()
-	{
+	{		
 		GUI.skin = estilo;				
-		estados = gameObject.GetComponent<Estados>();		
+		principal = gameObject.GetComponent<Principal>();		
 		aspectRatioNumerico = (float)Screen.width/(float)Screen.height;		
 		
 		if(aspectRatioNumerico >= 1.69)			//16:9
@@ -67,14 +74,14 @@ public class InterfazPrincipal : MonoBehaviour {
 			aspectRatio = taspectRatio.aspectRatio4_3;			
 			cuantoW	= (float)Screen.width / 80;
 			cuantoH	= (float)Screen.height / 60;	
-		}	
+		}
 		bloqueSuperior();
 		bloqueIzquierdo();
 		bloqueSeleccion();
 		bloqueInformacion();
 		if(accion == taccion.insertar)
-			insertarElemento();
-		controlTooltip();
+			insertarElemento();			
+		mostrarToolTip();
 	}	
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
@@ -82,17 +89,17 @@ public class InterfazPrincipal : MonoBehaviour {
 	{
 		GUI.BeginGroup(new Rect(cuantoW*0,cuantoH*0,cuantoW*80,cuantoH*3));
 		GUI.Box(new Rect(cuantoW*0,cuantoH*0,cuantoW*73,cuantoH*3),"","BloqueSuperior");		
-		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),estados.numPasos.ToString(),"EtiquetaTiempo");
+		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),principal.numPasos.ToString(),"EtiquetaTiempo");
 		if(GUI.Button(new Rect(cuantoW*4,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Pausa el juego"),"BotonPausa"))
-			Time.timeScale = 0;	
+			principal.setEscalaTiempo(0.0f);
 		if(GUI.Button(new Rect(cuantoW*5,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad normal"),"BotonVelocidad1"))
-			Time.timeScale = 1;	
+			principal.setEscalaTiempo(1.0f);
 		if(GUI.Button(new Rect(cuantoW*6,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 2x"),"BotonVelocidad2"))
-			Time.timeScale = 2;	
+			principal.setEscalaTiempo(2.0f);
 		if(GUI.Button(new Rect(cuantoW*7,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
-			Time.timeScale = 5;	
+			principal.setEscalaTiempo(5.0f);
 		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*3),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
-			cuantoH = cuantoH;		
+			mostrarMenu = true;		
 		GUI.EndGroup();
 	}
 	
@@ -141,7 +148,7 @@ public class InterfazPrincipal : MonoBehaviour {
 			if(GUILayout.Button(new GUIContent("","Accede al menu de habilidades"),"BotonAccederHabilidades"))
 				accion = taccion.mostrarHabilidades;
 			if(GUILayout.Button(new GUIContent("","Cambia entre info y seleccionar"),"BotonInfoSelec"))
-				mostrarInfo = !mostrarInfo;
+				mostrarInfoCasilla = !mostrarInfoCasilla;
 			GUILayout.EndVertical();
 			if(GUILayout.Button(new GUIContent("","Pulsa para ocultar este menu"),"BotonOcultarBloqueIzquierdo",GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*1)))
 			{			
@@ -296,7 +303,51 @@ public class InterfazPrincipal : MonoBehaviour {
 		
 	}
 	
-	//Dibuja el bloque información de la ventana que proporciona información
+	//Obtiene la información básica de la casilla a mostrar en la barra de información inferior
+	void calculaInfoCasilla()
+	{
+		if(mostrarInfoCasilla)
+		{
+			if(Input.mousePosition != posicionMouseInfoCasilla && Time.realtimeSinceStartup > tiempoUltimaInfoCasilla + tiempoInfoCasilla)
+			{
+				posicionMouseInfoCasilla = Input.mousePosition;
+				tiempoUltimaInfoCasilla = Time.realtimeSinceStartup;
+			
+				RaycastHit hit;
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (principal.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+				{
+					double xTemp = hit.textureCoord.x;
+					double yTemp = hit.textureCoord.y;
+					Texture2D tex = principal.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+					xTemp = xTemp * tex.width/ FuncTablero.getRelTexTabAncho();
+					yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto()) - 0.5f;
+					int x = (int)xTemp;
+					int y = (int)yTemp;
+					FuncTablero.convierteCoordenadas(ref y, ref x);
+					
+					T_habitats habitat = principal.vida.tablero[y,x].habitat;
+					/* INFO METALES */					
+					Edificio edificio = principal.vida.tablero[y,x].edificio;
+					Vegetal vegetal = principal.vida.tablero[y,x].vegetal;
+					Animal animal = principal.vida.tablero[y,x].animal;
+										
+					infoCasilla = "Hábitat: " + habitat.ToString() + "\t\t";
+					/* INFO METALES	*/
+					if(edificio != null)
+						infoCasilla += "Edificio: " + edificio.tipo.nombre + "\t\t";
+					if(vegetal != null)
+						infoCasilla += "Vegetal: " + vegetal.especie.nombre + "\t\t";
+					if(animal != null)
+						infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";					
+				}			
+			}						
+		}	
+		else
+			infoCasilla = "";
+	}
+	
+	//Dibuja el bloque de información básica de la casilla a la que estamos apuntando
 	void bloqueInformacion()
 	{
 		int posicionBloque = 0;
@@ -309,8 +360,8 @@ public class InterfazPrincipal : MonoBehaviour {
 			case taspectRatio.aspectRatio4_3:
 				posicionBloque = 59;break;
 			default:break;
-		}		
-		GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),"","BloqueInformacion");
+		}
+		GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),infoCasilla,"BloqueInformacion");		
 	}
 	
 	void insertarElemento()	
@@ -323,11 +374,11 @@ public class InterfazPrincipal : MonoBehaviour {
 			{
 				RaycastHit hit;
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (estados.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+				if (principal.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
 				{
 					double xTemp = hit.textureCoord.x;
 					double yTemp = hit.textureCoord.y;
-					Texture2D tex = estados.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+					Texture2D tex = principal.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 					xTemp = xTemp * tex.width/ FuncTablero.getRelTexTabAncho();
 					yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto()) - 0.5f;
 					int x = (int)xTemp;
@@ -336,30 +387,30 @@ public class InterfazPrincipal : MonoBehaviour {
 					int tipo = (int)elementoInsercion - 1;
 					if(tipo >= 0 && tipo < 5)				//Edificio
 					{
-						TipoEdificio[] tipos = new TipoEdificio[estados.vida.tiposEdificios.Count];
-						estados.vida.tiposEdificios.Values.CopyTo(tipos,0);
+						TipoEdificio[] tipos = new TipoEdificio[principal.vida.tiposEdificios.Count];
+						principal.vida.tiposEdificios.Values.CopyTo(tipos,0);
 						TipoEdificio tedif = tipos[tipo];
-						estados.vida.anadeEdificio(tedif,y,x);						
+						principal.vida.anadeEdificio(tedif,y,x);						
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;						
 					}					
 					else if(tipo >= 5 && tipo < 15)			//Vegetal
 					{
 						tipo -= 5;
-						Especie[] especies = new Especie[estados.vida.especies.Count];
-						estados.vida.especies.Values.CopyTo(especies,0);						
+						Especie[] especies = new Especie[principal.vida.especies.Count];
+						principal.vida.especies.Values.CopyTo(especies,0);						
 						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
-						estados.vida.anadeVegetal(especie,y,x);
+						principal.vida.anadeVegetal(especie,y,x);
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;
 					}
 					else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
 					{
 						tipo -= 5;	
-						Especie[] especies = new Especie[estados.vida.especies.Count];
-						estados.vida.especies.Values.CopyTo(especies,0);
+						Especie[] especies = new Especie[principal.vida.especies.Count];
+						principal.vida.especies.Values.CopyTo(especies,0);
 						EspecieAnimal especie = (EspecieAnimal)especies[tipo];
-						estados.vida.anadeAnimal(especie,y,x);
+						principal.vida.anadeAnimal(especie,y,x);
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;
 					}
@@ -369,20 +420,25 @@ public class InterfazPrincipal : MonoBehaviour {
 							
 			}			
 		}
-	}
+	}	
 	
 	//Controla si se tiene que mostrar el tooltip o no
 	void controlTooltip()
 	{
-		if (Input.mousePosition != posicionMouse) 
+		if (Input.mousePosition != posicionMouseTooltip) 
 		{
-			posicionMouse = Input.mousePosition;
+			posicionMouseTooltip = Input.mousePosition;
 			activarTooltip = false;
 			ultimoMov = Time.realtimeSinceStartup;
 		}
 		else 
 			if (Time.realtimeSinceStartup >= ultimoMov + tiempoTooltip)
-				activarTooltip = true;
+				activarTooltip = true;		
+	}	
+	
+	//Muestra el tooltip si ha sido activado
+	void mostrarToolTip()
+	{
 		if(activarTooltip)
 		{	
 			float longitud = GUI.tooltip.Length;
@@ -401,6 +457,118 @@ public class InterfazPrincipal : MonoBehaviour {
 			Rect pos = new Rect(posx, Screen.height - posy, longitud, 25);
 			GUI.Box(pos, "");
 			GUI.Label(pos, GUI.tooltip);
-		}
+		}			
 	}	
+	
+	/*private void actualizaInfoEspecies() {
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+			Vector2 coordTemp = hit.textureCoord;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+			Vegetal veg = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].vegetal;
+			Animal anim = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].animal;
+			T_habitats hab = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].habitat;
+			infoEspecies_Hab = "Habitat: " + hab.ToString() + "";
+			infoEspecies_Esp = "";
+			if (anim != null)
+				infoEspecies_Esp += "Animal: " + anim.especie.nombre + "\n";
+			if (veg != null)
+				infoEspecies_Esp += "Planta: " + veg.especie.nombre;
+		}
+		else {
+			infoEspecies_Esp = "";
+			infoEspecies_Hab = "";
+		}
+	}
+	
+	private void actualizaInfoElems() {
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+			Vector2 coordTemp = hit.textureCoord;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+			T_elementos[] elem = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].elementos;
+			if (elem.Length > 0) {
+				infoElems_Elem = "Encontrado " + elem[0].ToString();
+				for (int i = 1; i < elem.Length; i++) {
+					infoElems_Elem += ", " + elem[i].ToString() + "\n";	
+				}
+			}
+			else 
+				infoElems_Elem = "";
+		}
+		else {
+			infoElems_Elem = "";
+		}
+	}*/
+	/*
+	public void getInfoSeresCasilla() {
+		if (objetivoAlcanzado)
+			return;
+		RaycastHit hit;
+		bool alcanzado = false;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
+			Vector2 coordTemp = hit.textureCoord;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
+			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
+			Casilla elem = vida.tablero[(int)coordTemp.y, (int)coordTemp.x];
+			if (elem.animal != null) {
+				infoSeleccionado = "";
+				infoSeleccionado += "\t Animal \n";		
+				infoSeleccionado += "Especie: " + elem.animal.especie.nombre + ".\n";
+				infoSeleccionado += "Vive en: ";
+				List<T_habitats> habitats = elem.animal.especie.habitats;
+				if (habitats.Count > 0) {
+					infoSeleccionado += habitats[0].ToString();
+					for(int i = 1; i < habitats.Count; i++) {
+						infoSeleccionado += ", " + habitats[i].ToString();
+					}
+				}
+				infoSeleccionado += ".\n";
+				infoSeleccionado += "Comida restante: " + elem.animal.reserva.ToString() + ".\n";
+				alcanzado = true;
+			} 
+			else if (elem.edificio != null) {
+				infoSeleccionado = "";
+				infoSeleccionado += "\t Edificio \n";		
+				infoSeleccionado += "Tipo: " + elem.edificio.tipo.nombre + ".\n";
+				/*
+				 * Aqui hay que añadir el acceso a las caracteristicas propias del edificio: sliders de produccion, tipo de
+				 * materiales recogidos, encendido/apagado, etc.
+				 * */
+				/*alcanzado = true;
+			}
+			else if (elem.vegetal != null) {
+				infoSeleccionado = "";
+				infoSeleccionado += "\t Vegetal \n";		
+				infoSeleccionado += "Especie: " + elem.vegetal.especie.nombre + ".\n";
+				infoSeleccionado += "Vive en: ";
+				List<T_habitats> habitats = elem.vegetal.especie.habitats;
+				if (habitats.Count > 0) {
+					infoSeleccionado += habitats[0].ToString();
+					for(int i = 1; i < habitats.Count; i++) {
+						infoSeleccionado += ", " + habitats[i].ToString();
+					}
+				}
+				infoSeleccionado += ".\n";
+				infoSeleccionado += "Poblacion: " + elem.vegetal.numVegetales.ToString() + ".\n";
+				alcanzado = true;
+			}
+			else {
+				infoSeleccionado = "";
+				alcanzado = false;
+			}
+		}
+		if (alcanzado) {
+			//Se activa la visualizacion de la correspondiente ventana
+			objetivoAlcanzado = true;
+		}
+	}*/
 }
