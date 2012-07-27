@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -107,6 +107,11 @@ public class Principal : MonoBehaviour {
 	
 	void Update () {
 		Time.timeScale = escalaTiempo;
+		if(Input.GetKeyDown(KeyCode.V)) 
+            if(algoritmoActivado)
+                    algoritmoActivado = false;
+            else
+                    algoritmoActivado = true;
 	}
 	
 	public void setEscalaTiempo(float nuevaEscala)
@@ -217,4 +222,25 @@ public class Principal : MonoBehaviour {
 		EspecieAnimal especieC5 = new EspecieAnimal("carnivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,T_habitats.hill,modelosAnimales.carnivoro5);
 		vida.anadeEspecieAnimal(especieC5);	
 	}	
+	
+	//Devuelve  true si se ha producido una colision con el planeta y además las coordenadas de la casilla del tablero en la que ha impactado el raycast (en caso de producirse)
+	public bool raycastRoca(Vector3 posicion,ref int x,ref int y)
+	{
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(posicion);
+		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+		{
+			double xTemp = hit.textureCoord.x;
+			double yTemp = hit.textureCoord.y;
+			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+			xTemp = xTemp * tex.width/ FuncTablero.getRelTexTabAncho();
+			yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto()) - 0.5f;
+			x = (int)xTemp;
+			y = (int)yTemp;
+			FuncTablero.convierteCoordenadas(ref y, ref x);
+			return true;
+		}	
+		else 
+			return false;		
+	}
 }
