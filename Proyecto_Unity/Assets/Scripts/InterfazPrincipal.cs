@@ -99,7 +99,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		if(GUI.Button(new Rect(cuantoW*7,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
 			principal.setEscalaTiempo(5.0f);
 		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*3),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
-			mostrarMenu = true;		
+			mostrarMenu = true;			
 		GUI.EndGroup();
 	}
 	
@@ -312,20 +312,10 @@ public class InterfazPrincipal : MonoBehaviour {
 			{
 				posicionMouseInfoCasilla = Input.mousePosition;
 				tiempoUltimaInfoCasilla = Time.realtimeSinceStartup;
-			
-				RaycastHit hit;
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (principal.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+				int x = 0;
+				int y = 0;
+				if(principal.raycastRoca(Input.mousePosition,ref x,ref y))
 				{
-					double xTemp = hit.textureCoord.x;
-					double yTemp = hit.textureCoord.y;
-					Texture2D tex = principal.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-					xTemp = xTemp * tex.width/ FuncTablero.getRelTexTabAncho();
-					yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto()) - 0.5f;
-					int x = (int)xTemp;
-					int y = (int)yTemp;
-					FuncTablero.convierteCoordenadas(ref y, ref x);
-					
 					T_habitats habitat = principal.vida.tablero[y,x].habitat;
 					/* INFO METALES */					
 					Edificio edificio = principal.vida.tablero[y,x].edificio;
@@ -372,18 +362,10 @@ public class InterfazPrincipal : MonoBehaviour {
 			
 			if(Input.GetMouseButton(0))
 			{
-				RaycastHit hit;
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (principal.objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
+				int x = 0;
+				int y = 0;
+				if(principal.raycastRoca(Input.mousePosition,ref x,ref y))
 				{
-					double xTemp = hit.textureCoord.x;
-					double yTemp = hit.textureCoord.y;
-					Texture2D tex = principal.objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-					xTemp = xTemp * tex.width/ FuncTablero.getRelTexTabAncho();
-					yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto()) - 0.5f;
-					int x = (int)xTemp;
-					int y = (int)yTemp;
-					FuncTablero.convierteCoordenadas(ref y, ref x);
 					int tipo = (int)elementoInsercion - 1;
 					if(tipo >= 0 && tipo < 5)				//Edificio
 					{
@@ -416,8 +398,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					}
 					else
 						return;
-				}				
-							
+				}			
 			}			
 		}
 	}	
@@ -459,116 +440,4 @@ public class InterfazPrincipal : MonoBehaviour {
 			GUI.Label(pos, GUI.tooltip);
 		}			
 	}	
-	
-	/*private void actualizaInfoEspecies() {
-		RaycastHit hit;
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
-			Vector2 coordTemp = hit.textureCoord;
-			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
-			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
-			Vegetal veg = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].vegetal;
-			Animal anim = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].animal;
-			T_habitats hab = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].habitat;
-			infoEspecies_Hab = "Habitat: " + hab.ToString() + "";
-			infoEspecies_Esp = "";
-			if (anim != null)
-				infoEspecies_Esp += "Animal: " + anim.especie.nombre + "\n";
-			if (veg != null)
-				infoEspecies_Esp += "Planta: " + veg.especie.nombre;
-		}
-		else {
-			infoEspecies_Esp = "";
-			infoEspecies_Hab = "";
-		}
-	}
-	
-	private void actualizaInfoElems() {
-		RaycastHit hit;
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
-			Vector2 coordTemp = hit.textureCoord;
-			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
-			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
-			T_elementos[] elem = vida.tablero[(int)coordTemp.x, (int)coordTemp.y].elementos;
-			if (elem.Length > 0) {
-				infoElems_Elem = "Encontrado " + elem[0].ToString();
-				for (int i = 1; i < elem.Length; i++) {
-					infoElems_Elem += ", " + elem[i].ToString() + "\n";	
-				}
-			}
-			else 
-				infoElems_Elem = "";
-		}
-		else {
-			infoElems_Elem = "";
-		}
-	}*/
-	/*
-	public void getInfoSeresCasilla() {
-		if (objetivoAlcanzado)
-			return;
-		RaycastHit hit;
-		bool alcanzado = false;
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) {
-			Vector2 coordTemp = hit.textureCoord;
-			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-			coordTemp.x = (int)((int)(coordTemp.x * tex.width) / FuncTablero.getRelTexTabAncho());
-			coordTemp.y = (int)((int)(coordTemp.y * tex.height) / FuncTablero.getRelTexTabAlto());
-			Casilla elem = vida.tablero[(int)coordTemp.y, (int)coordTemp.x];
-			if (elem.animal != null) {
-				infoSeleccionado = "";
-				infoSeleccionado += "\t Animal \n";		
-				infoSeleccionado += "Especie: " + elem.animal.especie.nombre + ".\n";
-				infoSeleccionado += "Vive en: ";
-				List<T_habitats> habitats = elem.animal.especie.habitats;
-				if (habitats.Count > 0) {
-					infoSeleccionado += habitats[0].ToString();
-					for(int i = 1; i < habitats.Count; i++) {
-						infoSeleccionado += ", " + habitats[i].ToString();
-					}
-				}
-				infoSeleccionado += ".\n";
-				infoSeleccionado += "Comida restante: " + elem.animal.reserva.ToString() + ".\n";
-				alcanzado = true;
-			} 
-			else if (elem.edificio != null) {
-				infoSeleccionado = "";
-				infoSeleccionado += "\t Edificio \n";		
-				infoSeleccionado += "Tipo: " + elem.edificio.tipo.nombre + ".\n";
-				/*
-				 * Aqui hay que añadir el acceso a las caracteristicas propias del edificio: sliders de produccion, tipo de
-				 * materiales recogidos, encendido/apagado, etc.
-				 * */
-				/*alcanzado = true;
-			}
-			else if (elem.vegetal != null) {
-				infoSeleccionado = "";
-				infoSeleccionado += "\t Vegetal \n";		
-				infoSeleccionado += "Especie: " + elem.vegetal.especie.nombre + ".\n";
-				infoSeleccionado += "Vive en: ";
-				List<T_habitats> habitats = elem.vegetal.especie.habitats;
-				if (habitats.Count > 0) {
-					infoSeleccionado += habitats[0].ToString();
-					for(int i = 1; i < habitats.Count; i++) {
-						infoSeleccionado += ", " + habitats[i].ToString();
-					}
-				}
-				infoSeleccionado += ".\n";
-				infoSeleccionado += "Poblacion: " + elem.vegetal.numVegetales.ToString() + ".\n";
-				alcanzado = true;
-			}
-			else {
-				infoSeleccionado = "";
-				alcanzado = false;
-			}
-		}
-		if (alcanzado) {
-			//Se activa la visualizacion de la correspondiente ventana
-			objetivoAlcanzado = true;
-		}
-	}*/
 }
