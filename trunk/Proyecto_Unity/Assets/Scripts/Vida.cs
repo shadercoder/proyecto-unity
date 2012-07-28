@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Casilla {
 	public T_habitats habitat;
-	public T_elementos[] elementos;
+	public T_elementos elementos;
 	public Vector2 coordsTex;
 	public Vector3 coordsVert;
 	public Vegetal vegetal;
@@ -12,7 +12,7 @@ public class Casilla {
 	public Edificio edificio;
 	public Vector2[] pinceladas;
 	
-	public Casilla(T_habitats hab, T_elementos[] elems, Vector2 coord, Vector3 vert) {
+	public Casilla(T_habitats hab, T_elementos elems, Vector2 coord, Vector3 vert) {
 		habitat = hab;
 		elementos = elems;
 		coordsTex = coord;
@@ -534,14 +534,14 @@ public class Vida : MonoBehaviour
 	public bool buscaPosicionVaciaVegetal(T_habitats habitat,ref int x,ref int y)
 	{
 		List<int> listaX = new List<int>();
-		for(int i = 0; i < FuncTablero.altoTableroUtil; i++)
+		for(int i = 0; i < FuncTablero.altoTablero; i++)
 			listaX.Add(i);
 		FuncTablero.randomLista(listaX);		
 		List<int> listaY = new List<int>();
 		for(int i = 0; i < FuncTablero.anchoTablero; i++)
 			listaY.Add(i);
 		FuncTablero.randomLista(listaY);
-		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
+		for(int i = 0; i < FuncTablero.altoTablero;i++)
 			for(int j = 0; j < FuncTablero.anchoTablero; j++)
 			{
 				x = listaX[i];
@@ -555,14 +555,14 @@ public class Vida : MonoBehaviour
 	public bool buscaPosicionVaciaAnimal(T_habitats habitat,ref int x,ref int y)
 	{
 		List<int> listaX = new List<int>();
-		for(int i = 0; i < FuncTablero.altoTableroUtil; i++)
+		for(int i = 0; i < FuncTablero.altoTablero; i++)
 			listaX.Add(i);
 		FuncTablero.randomLista(listaX);		
 		List<int> listaY = new List<int>();
 		for(int i = 0; i < FuncTablero.anchoTablero; i++)
 			listaY.Add(i);
 		FuncTablero.randomLista(listaY);
-		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
+		for(int i = 0; i < FuncTablero.altoTablero;i++)
 			for(int j = 0; j < FuncTablero.anchoTablero; j++)
 			{
 				x = listaX[i];
@@ -576,14 +576,14 @@ public class Vida : MonoBehaviour
 	public bool buscaPosicionVaciaEdificio(T_habitats habitat,ref int x,ref int y)
 	{
 		List<int> listaX = new List<int>();
-		for(int i = 0; i < FuncTablero.altoTableroUtil; i++)
+		for(int i = 0; i < FuncTablero.altoTablero; i++)
 			listaX.Add(i);
 		FuncTablero.randomLista(listaX);		
 		List<int> listaY = new List<int>();
 		for(int i = 0; i < FuncTablero.anchoTablero; i++)
 			listaY.Add(i);
 		FuncTablero.randomLista(listaY);
-		for(int i = 0; i < FuncTablero.altoTableroUtil;i++)
+		for(int i = 0; i < FuncTablero.altoTablero;i++)
 			for(int j = 0; j < FuncTablero.anchoTablero; j++)
 			{
 				x = listaX[i];
@@ -865,7 +865,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	{
 		this.idSer = idSer;
 		this.especie = especie;
-		this.posX = posX % FuncTablero.altoTableroUtil;
+		this.posX = posX % FuncTablero.altoTablero;
 		this.posY = posY % FuncTablero.anchoTablero;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);
 		this.numVegetales = numVegetales;

@@ -13,6 +13,7 @@ public class Principal : MonoBehaviour {
 	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
 	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
 	public GameObject objetoPlanta;										//El objeto que representa la esfera de las plantas
+	public GameObject objetoHabitats;									//El objeto que representa la textura con los habitats
 	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
@@ -77,8 +78,9 @@ public class Principal : MonoBehaviour {
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
 		
 		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+		Texture2D texHabitats = objetoHabitats.renderer.sharedMaterial.mainTexture as Texture2D;
 		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
-		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, mesh);
+		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, texHabitats, mesh);
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		
 		numSaves = SaveLoad.FileCount();
@@ -130,7 +132,7 @@ public class Principal : MonoBehaviour {
 		
 		pixels = FuncTablero.ruidoTextura();											//Se crea el ruido para la textura base y normales...
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);			//Se suaviza el borde lateral...
-		pixels = FuncTablero.suavizaPoloTex(pixels, texturaBase.height / 20);			//Se suavizan los polos...
+		pixels = FuncTablero.suavizaPoloTex(pixels);									//Se suavizan los polos...
 		
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();		
@@ -153,13 +155,13 @@ public class Principal : MonoBehaviour {
 	void creacionEspeciesEdificios()
 	{		
 		List<T_habitats> habitats1 = new List<T_habitats>();
-		habitats1.Add(T_habitats.plain);
-		habitats1.Add(T_habitats.sand);
-		habitats1.Add(T_habitats.coast);
-		habitats1.Add(T_habitats.mountain);
-		habitats1.Add(T_habitats.hill);
-		habitats1.Add(T_habitats.sea);
-		habitats1.Add(T_habitats.volcanic);
+		habitats1.Add(T_habitats.llanura);
+		habitats1.Add(T_habitats.desierto);
+//		habitats1.Add(T_habitats.costa);
+		habitats1.Add(T_habitats.montana);
+		habitats1.Add(T_habitats.colina);
+//		habitats1.Add(T_habitats.mar);
+//		habitats1.Add(T_habitats.volcanico);
 
 		ModelosEdificios modelosEdificios = GameObject.FindGameObjectWithTag("ModelosEdificios").GetComponent<ModelosEdificios>();		
 		ModelosVegetales modelosVegetales = GameObject.FindGameObjectWithTag("ModelosVegetales").GetComponent<ModelosVegetales>();		
@@ -207,7 +209,7 @@ public class Principal : MonoBehaviour {
 		vida.anadeEspecieAnimal(especieH3);
 		EspecieAnimal especieH4 = new EspecieAnimal("herbivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,habitats1,modelosAnimales.herbivoro4);
 		vida.anadeEspecieAnimal(especieH4);
-		EspecieAnimal especieH5 = new EspecieAnimal("herbivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,T_habitats.hill,modelosAnimales.herbivoro5);
+		EspecieAnimal especieH5 = new EspecieAnimal("herbivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,T_habitats.colina,modelosAnimales.herbivoro5);
 		vida.anadeEspecieAnimal(especieH5);
 		
 		/* Carnivoros */
@@ -219,7 +221,7 @@ public class Principal : MonoBehaviour {
 		vida.anadeEspecieAnimal(especieC3);
 		EspecieAnimal especieC4 = new EspecieAnimal("carnivoro4",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,habitats1,modelosAnimales.carnivoro4);
 		vida.anadeEspecieAnimal(especieC4);
-		EspecieAnimal especieC5 = new EspecieAnimal("carnivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,T_habitats.hill,modelosAnimales.carnivoro5);
+		EspecieAnimal especieC5 = new EspecieAnimal("carnivoro5",10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,T_habitats.colina,modelosAnimales.carnivoro5);
 		vida.anadeEspecieAnimal(especieC5);	
 	}	
 	
