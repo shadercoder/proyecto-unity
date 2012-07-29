@@ -12,8 +12,6 @@ public class Principal : MonoBehaviour {
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
 	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
 	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
-	public GameObject objetoPlanta;										//El objeto que representa la esfera de las plantas
-	public GameObject objetoHabitats;									//El objeto que representa la textura con los habitats
 	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
@@ -78,7 +76,8 @@ public class Principal : MonoBehaviour {
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
 		
 		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-		Texture2D texHabitats = objetoHabitats.renderer.sharedMaterial.mainTexture as Texture2D;
+		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 2ª posicion.
+		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
 		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
 		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, texHabitats, mesh);
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
@@ -142,13 +141,9 @@ public class Principal : MonoBehaviour {
 		texturaAgua.Apply();
 		
 		MeshFilter Roca = objetoRoca.GetComponent<MeshFilter>();
-		MeshFilter Planta = objetoPlanta.GetComponent<MeshFilter>();
-		MeshFilter Habitats = objetoHabitats.GetComponent<MeshFilter>();
 		Mesh meshTemp = Roca.mesh;
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
 		Roca.mesh = meshTemp;
-		Planta.mesh = meshTemp;
-		Habitats.mesh = meshTemp;
 		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
        	objetoRoca.AddComponent<MeshCollider>();
         objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
@@ -238,7 +233,7 @@ public class Principal : MonoBehaviour {
 			double yTemp = hit.textureCoord.y;
 			Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 			xTemp = xTemp * tex.width/ FuncTablero.getRelTexTabAncho();
-			yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto()) - 0.5f;
+			yTemp = (yTemp * tex.height/ FuncTablero.getRelTexTabAlto());
 			x = (int)xTemp;
 			y = (int)yTemp;
 			FuncTablero.convierteCoordenadas(ref y, ref x);
