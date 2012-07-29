@@ -5,7 +5,7 @@ TextureImporter:
   maxTextureSize: 1024
   textureFormat: -1
   grayscaleToAlpha: 0
-  npotScale: 2
+  npotScale: 0
   generateCubemap: 0
   isReadable: 1
   textureType: 5
