@@ -23,7 +23,7 @@ public class Casilla {
 	}
 }
  
-public class Vida : MonoBehaviour
+public class Vida
 {
 	//Referencia a la textura de las plantas
 	public Texture2D texturaPlantas;
