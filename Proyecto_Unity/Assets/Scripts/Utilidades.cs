@@ -295,7 +295,7 @@ public class FuncTablero {
 			} else if ((nivelAgua+tamanoPlaya<= color)&& (color <nivelAgua+tamanoPlaya*8+mezcla)){	
 				pixAgua[l] = new Color (0, 0, 1, 0);
 			} else 
-				pixAgua[l] = Color.black;
+				pixAgua[l] = Color.blue;
 		}
 		return pixAgua;
 	}

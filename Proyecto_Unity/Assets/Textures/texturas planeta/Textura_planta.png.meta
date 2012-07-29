@@ -23,6 +23,6 @@ TextureImporter:
     filter: 0
   textureSettings:
     filterMode: 1
-    anisoLevel: 3
+    anisoLevel: 1
     mipmapBias: 0
     wrapMode: 0
