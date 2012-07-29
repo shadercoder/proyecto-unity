@@ -5,20 +5,20 @@ using System.Collections.Generic;
 public class TiposSeres : MonoBehaviour {
 	
 	//Tipos de edificios
-	private TipoEdificio fabrica1;
-	private TipoEdificio fabrica2;
-	private TipoEdificio energia1;
-	private TipoEdificio energia2;
+	private TipoEdificio fabricaComBas;
+	private TipoEdificio energia;
 	private TipoEdificio granja;
+	private TipoEdificio fabricaComAdv;
+	private TipoEdificio energiaAdv;
 	
 	//Tipos de animales
-		//Herbivoros
+	//Herbivoros
 	private EspecieAnimal herbivoro1;
 	private EspecieAnimal herbivoro2;
 	private EspecieAnimal herbivoro3;
 	private EspecieAnimal herbivoro4;
 	private EspecieAnimal herbivoro5;
-		//Carnivoros
+	//Carnivoros
 	private EspecieAnimal carnivoro1;
 	private EspecieAnimal carnivoro2;
 	private EspecieAnimal carnivoro3;
@@ -57,11 +57,11 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.desierto);
 		listaHabs.Add(T_habitats.volcanico);
 		
-		fabrica1 = new TipoEdificio("Fábrica componentes básicos",listaHabs,modelosEdificios.fabCompBas);
-		energia1 = new TipoEdificio("Central de energía",listaHabs,modelosEdificios.centralEnergia);
+		fabricaComBas = new TipoEdificio("Fábrica componentes básicos",listaHabs,modelosEdificios.fabCompBas);
+		energia = new TipoEdificio("Central de energía",listaHabs,modelosEdificios.centralEnergia);
 		granja = new TipoEdificio("Granja",listaHabs,modelosEdificios.granja);
-		fabrica2 = new TipoEdificio("Fábrica de componentes avanzados",listaHabs,modelosEdificios.fabCompAdv);
-		energia2 = new TipoEdificio("Central de energía avanzada",listaHabs,modelosEdificios.centralEnergiaAdv);
+		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",listaHabs,modelosEdificios.fabCompAdv);
+		energiaAdv = new TipoEdificio("Central de energía avanzada",listaHabs,modelosEdificios.centralEnergiaAdv);
 		
 		listaHabs.Clear();
 		listaHabs.Add(T_habitats.llanura);
@@ -193,11 +193,11 @@ public class TiposSeres : MonoBehaviour {
 	void Start () {
 		
 		//Añadir a Vida los edificios
-		principal.anadeTipoEdificio(fabrica1);
-		principal.anadeTipoEdificio(fabrica2);
-		principal.anadeTipoEdificio(energia1);
-		principal.anadeTipoEdificio(energia2);
+		principal.anadeTipoEdificio(fabricaComBas);
+		principal.anadeTipoEdificio(energia);
 		principal.anadeTipoEdificio(granja);
+		principal.anadeTipoEdificio(fabricaComAdv);
+		principal.anadeTipoEdificio(energiaAdv);
 		
 		//Añadir a Vida los vegetales
 		principal.anadeEspecieVegetal(seta);
