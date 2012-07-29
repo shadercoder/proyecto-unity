@@ -69,7 +69,7 @@ public class InterfazPrincipal : MonoBehaviour {
 			cuantoW	= (float)Screen.width / 80;
 			cuantoH	= (float)Screen.height / 50;	
 		}
-		else 							//4:3
+		else 									//4:3
 		{
 			aspectRatio = taspectRatio.aspectRatio4_3;			
 			cuantoW	= (float)Screen.width / 80;
@@ -81,27 +81,70 @@ public class InterfazPrincipal : MonoBehaviour {
 		bloqueInformacion();
 		if(accion == taccion.insertar)
 			insertarElemento();			
-		mostrarToolTip();
+		if(activarTooltip)			
+			mostrarToolTip();
 	}	
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
 	void bloqueSuperior()
 	{
-		GUI.BeginGroup(new Rect(cuantoW*0,cuantoH*0,cuantoW*80,cuantoH*3));
-		GUI.Box(new Rect(cuantoW*0,cuantoH*0,cuantoW*73,cuantoH*3),"","BloqueSuperior");		
+		float ajusteRecursos = 0;
+		GUI.BeginGroup(new Rect(cuantoW*0,cuantoH*0,cuantoW*80,cuantoH*4));
+		GUI.Box(new Rect(cuantoW*0,cuantoH*0,cuantoW*73,cuantoH*4),"","BloqueSuperior");		
+		//Tiempo
 		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),principal.numPasos.ToString(),"EtiquetaTiempo");
-		if(GUI.Button(new Rect(cuantoW*4,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Pausa el juego"),"BotonPausa"))
+		//Velocidad
+		if(GUI.Button(new Rect(cuantoW*3,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Pausa el juego"),"BotonPausa"))
 			principal.setEscalaTiempo(0.0f);
-		if(GUI.Button(new Rect(cuantoW*5,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad normal"),"BotonVelocidad1"))
+		if(GUI.Button(new Rect(cuantoW*4,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad normal"),"BotonVelocidad1"))
 			principal.setEscalaTiempo(1.0f);
-		if(GUI.Button(new Rect(cuantoW*6,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 2x"),"BotonVelocidad2"))
+		if(GUI.Button(new Rect(cuantoW*5,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 2x"),"BotonVelocidad2"))
 			principal.setEscalaTiempo(2.0f);
-		if(GUI.Button(new Rect(cuantoW*7,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
-			principal.setEscalaTiempo(5.0f);
-		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*3),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
+		if(GUI.Button(new Rect(cuantoW*6,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
+			principal.setEscalaTiempo(5.0f);		
+		//Energia
+		GUI.Box(new Rect(cuantoW*12,cuantoH*0,cuantoW*2,cuantoH*2),"","IconoEnergia");
+		GUI.Box(new Rect(cuantoW*14,cuantoH*0,cuantoW*7,cuantoH*2),"","BoxEnergia");		
+		ajusteRecursos = (System.Math.Abs(principal.energiaDif) < 100)? 0: 0.5f;		
+		GUI.Label(new Rect(cuantoW*14,cuantoH*0,cuantoW*(5-ajusteRecursos),cuantoH*2),principal.energia.ToString(),"LabelEnergia");
+		if(principal.energiaDif >= 0)
+		   GUI.Label(new Rect(cuantoW*(19-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"+" + principal.energiaDif.ToString(),"LabelRecursosDifVerde");
+		else
+			GUI.Label(new Rect(cuantoW*(19-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"" + principal.energiaDif.ToString(),"LabelRecursosDifRojo");
+		//Componentes basicos
+		GUI.Box(new Rect(cuantoW*22,cuantoH*0,cuantoW*2,cuantoH*2),"","IconoCompBas");
+		GUI.Box(new Rect(cuantoW*24,cuantoH*0,cuantoW*7,cuantoH*2),"","BoxCompBas");
+		ajusteRecursos = (System.Math.Abs(principal.componentesBasicosDif) < 100)? 0: 0.5f;		
+		GUI.Label(new Rect(cuantoW*24,cuantoH*0,cuantoW*(5-ajusteRecursos),cuantoH*2),principal.componentesBasicos.ToString(),"LabelCompBas");
+		if(principal.componentesBasicosDif >= 0)
+		   GUI.Label(new Rect(cuantoW*(29-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"+" + principal.componentesBasicosDif.ToString(),"LabelRecursosDifVerde");
+		else
+			GUI.Label(new Rect(cuantoW*(29-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"" + principal.componentesBasicosDif.ToString(),"LabelRecursosDifRojo");
+		//Componentes avanzados
+		GUI.Box(new Rect(cuantoW*32,cuantoH*0,cuantoW*2,cuantoH*2),"","IconoCompAdv");
+		GUI.Box(new Rect(cuantoW*34,cuantoH*0,cuantoW*7,cuantoH*2),"","BoxCompAdv");
+		ajusteRecursos = (System.Math.Abs(principal.componentesAvanzadosDif) < 100)? 0: 0.5f;		
+		GUI.Label(new Rect(cuantoW*34,cuantoH*0,cuantoW*(5-ajusteRecursos),cuantoH*2),principal.componentesAvanzados.ToString(),"LabelCompAdv");
+		if(principal.componentesAvanzadosDif >= 0)
+		   GUI.Label(new Rect(cuantoW*(39-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"+" + principal.componentesAvanzadosDif.ToString(),"LabelRecursosDifVerde");
+		else
+			GUI.Label(new Rect(cuantoW*(39-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"" + principal.componentesAvanzadosDif.ToString(),"LabelRecursosDifRojo");
+		//Material biologico
+		GUI.Box(new Rect(cuantoW*42,cuantoH*0,cuantoW*2,cuantoH*2),"","IconoMatBio");
+		GUI.Box(new Rect(cuantoW*44,cuantoH*0,cuantoW*7,cuantoH*2),"","BoxMatBio");
+		ajusteRecursos = (System.Math.Abs(principal.materialBiologicoDif) < 100)? 0: 0.5f;		
+		GUI.Label(new Rect(cuantoW*44,cuantoH*0,cuantoW*(5-ajusteRecursos),cuantoH*2),principal.materialBiologico.ToString(),"LabelMatBio");
+		if(principal.materialBiologicoDif >= 0)
+		   GUI.Label(new Rect(cuantoW*(49-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"+" + principal.materialBiologicoDif.ToString(),"LabelRecursosDifVerde");
+		else
+			GUI.Label(new Rect(cuantoW*(49-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"" + principal.materialBiologicoDif.ToString(),"LabelRecursosDifRojo");		
+		//Menu
+		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*4),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
 			mostrarMenu = true;			
 		GUI.EndGroup();
 	}
+	
+	
 	
 	//Dibuja el bloque izquierdo de la ventana que contiene: insertar vegetales o animales, insertar edificios, mejoras de la nave, habilidades, info/seleccionar
 	void bloqueIzquierdo()
@@ -119,7 +162,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		}
 		if(accion == taccion.desplegableInsercionV_A)
 		{
-			if(GUI.Button(new Rect(cuantoW*3,cuantoH*posicionBloque,cuantoW*3,cuantoH*1),new GUIContent("Vegetal","Insertar un vegetal"),"BotonesDeplegableV_A"))				
+			if(GUI.Button(new Rect(cuantoW*3,cuantoH*posicionBloque,cuantoW*3,cuantoH*1),new GUIContent("Vegetal","Insertar un vegetal"),"BotonesDesplegableV_A"))				
 			{
 				accion = taccion.seleccionarInsercion;
 				categoriaInsercion = tcategoriaInsercion.vegetal;
@@ -427,24 +470,21 @@ public class InterfazPrincipal : MonoBehaviour {
 	//Muestra el tooltip si ha sido activado
 	void mostrarToolTip()
 	{
-		if(activarTooltip)
-		{	
-			float longitud = GUI.tooltip.Length;
-			if (longitud == 0.0f) 
-				return;			
-			else 
-				longitud *= 8.5f;			
-			float posx = Input.mousePosition.x;
-			float posy = Input.mousePosition.y;
-			if (posx > (Screen.width / 2)) 
-				posx -= 215;			
-			else 
-				posx += 15;				
-			if (posy > (Screen.height / 2)) 
-				posy += 20;					
-			Rect pos = new Rect(posx, Screen.height - posy, longitud, 25);
-			GUI.Box(pos, "");
-			GUI.Label(pos, GUI.tooltip);
-		}			
+		float longitud = GUI.tooltip.Length;
+		if (longitud == 0.0f) 
+			return;			
+		else 
+			longitud *= 8.5f;			
+		float posx = Input.mousePosition.x;
+		float posy = Input.mousePosition.y;
+		if (posx > (Screen.width / 2)) 
+			posx -= 215;			
+		else 
+			posx += 15;				
+		if (posy > (Screen.height / 2)) 
+			posy += 20;					
+		Rect pos = new Rect(posx, Screen.height - posy, longitud, 25);
+		GUI.Box(pos, "");
+		GUI.Label(pos, GUI.tooltip);					
 	}	
 }
