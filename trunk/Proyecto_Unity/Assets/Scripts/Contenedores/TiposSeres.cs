@@ -41,19 +41,33 @@ public class TiposSeres : MonoBehaviour {
 	private ModelosEdificios modelosEdificios;
 	private ModelosVegetales modelosVegetales;
 	private ModelosAnimales modelosAnimales;
+	private Principal principal;
 	
 	void Awake() {
 		modelosEdificios = GameObject.FindGameObjectWithTag("ModelosEdificios").GetComponent<ModelosEdificios>();		
 		modelosVegetales = GameObject.FindGameObjectWithTag("ModelosVegetales").GetComponent<ModelosVegetales>();		
 		modelosAnimales = GameObject.FindGameObjectWithTag("ModelosAnimales").GetComponent<ModelosAnimales>();
+		principal = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Principal>();
 		
 		List<T_habitats> listaHabs = new List<T_habitats>();
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Add(T_habitats.colina);
+		listaHabs.Add(T_habitats.tundra);
+		listaHabs.Add(T_habitats.desierto);
+		listaHabs.Add(T_habitats.volcanico);
 		
-		/* Vegetales */
+		fabrica1 = new TipoEdificio("Fábrica componentes básicos",listaHabs,modelosEdificios.fabCompBas);
+		energia1 = new TipoEdificio("Central de energía",listaHabs,modelosEdificios.centralEnergia);
+		granja = new TipoEdificio("Granja",listaHabs,modelosEdificios.granja);
+		fabrica2 = new TipoEdificio("Fábrica de componentes avanzados",listaHabs,modelosEdificios.fabCompAdv);
+		energia2 = new TipoEdificio("Central de energía avanzada",listaHabs,modelosEdificios.centralEnergiaAdv);
 		
+		listaHabs.Clear();
+		listaHabs.Add(T_habitats.llanura);
+		listaHabs.Add(T_habitats.montana);
+		listaHabs.Add(T_habitats.colina);
+		/* Vegetales */		
 		//Seta: habitats -> llanura, montaña y colina
 		seta = new EspecieVegetal("Seta",1000,50,50,50,0.1f,8,listaHabs,0,modelosVegetales.setas);
 		
@@ -179,36 +193,36 @@ public class TiposSeres : MonoBehaviour {
 	void Start () {
 		
 		//Añadir a Vida los edificios
-		Principal.anadeTipoEdificio(fabrica1);
-		Principal.anadeTipoEdificio(fabrica2);
-		Principal.anadeTipoEdificio(energia1);
-		Principal.anadeTipoEdificio(energia2);
-		Principal.anadeTipoEdificio(granja);
+		principal.anadeTipoEdificio(fabrica1);
+		principal.anadeTipoEdificio(fabrica2);
+		principal.anadeTipoEdificio(energia1);
+		principal.anadeTipoEdificio(energia2);
+		principal.anadeTipoEdificio(granja);
 		
 		//Añadir a Vida los vegetales
-		Principal.anadeEspecieVegetal(seta);
-		Principal.anadeEspecieVegetal(flor);
-		Principal.anadeEspecieVegetal(palo);
-		Principal.anadeEspecieVegetal(arbusto);
-		Principal.anadeEspecieVegetal(estrom);
-		Principal.anadeEspecieVegetal(cactus);
-		Principal.anadeEspecieVegetal(palmera);
-		Principal.anadeEspecieVegetal(pino);
-		Principal.anadeEspecieVegetal(cipres);
-		Principal.anadeEspecieVegetal(pinoAlto);
+		principal.anadeEspecieVegetal(seta);
+		principal.anadeEspecieVegetal(flor);
+		principal.anadeEspecieVegetal(palo);
+		principal.anadeEspecieVegetal(arbusto);
+		principal.anadeEspecieVegetal(estrom);
+		principal.anadeEspecieVegetal(cactus);
+		principal.anadeEspecieVegetal(palmera);
+		principal.anadeEspecieVegetal(pino);
+		principal.anadeEspecieVegetal(cipres);
+		principal.anadeEspecieVegetal(pinoAlto);
 		
 		//Añadir a Vida los herbivoros
-		Principal.anadeEspecieAnimal(herbivoro1);
-		Principal.anadeEspecieAnimal(herbivoro2);
-		Principal.anadeEspecieAnimal(herbivoro3);
-		Principal.anadeEspecieAnimal(herbivoro4);
-		Principal.anadeEspecieAnimal(herbivoro5);
+		principal.anadeEspecieAnimal(herbivoro1);
+		principal.anadeEspecieAnimal(herbivoro2);
+		principal.anadeEspecieAnimal(herbivoro3);
+		principal.anadeEspecieAnimal(herbivoro4);
+		principal.anadeEspecieAnimal(herbivoro5);
 		
 		//Añadir a Vida los carnivoros
-		Principal.anadeEspecieAnimal(carnivoro1);
-		Principal.anadeEspecieAnimal(carnivoro2);
-		Principal.anadeEspecieAnimal(carnivoro3);
-		Principal.anadeEspecieAnimal(carnivoro4);
-		Principal.anadeEspecieAnimal(carnivoro5);
+		principal.anadeEspecieAnimal(carnivoro1);
+		principal.anadeEspecieAnimal(carnivoro2);
+		principal.anadeEspecieAnimal(carnivoro3);
+		principal.anadeEspecieAnimal(carnivoro4);
+		principal.anadeEspecieAnimal(carnivoro5);
 	}
 }
