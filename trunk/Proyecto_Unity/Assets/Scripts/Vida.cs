@@ -309,7 +309,7 @@ public class Vida
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
-		Vector3 coordsVert = new Vector3(x,y,z);
+		Vector3 coordsVert = new Vector3(x,y,z);		
 		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,FuncTablero.creaMesh(coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
 		idActualEdificio++;		
