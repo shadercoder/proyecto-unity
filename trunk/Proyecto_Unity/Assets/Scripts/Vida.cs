@@ -266,7 +266,11 @@ public class Vida
 		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
-		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, modelo));
+		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
+		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
+		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
+		Vector3 coordsVert = new Vector3(x,y,z);
+		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(coordsVert, modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
 		idActualVegetal++;
 		seres.Add(vegetal);
@@ -282,7 +286,11 @@ public class Vida
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
-		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert, modelo));
+		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
+		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
+		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
+		Vector3 coordsVert = new Vector3(x,y,z);
+		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(coordsVert, modelo));
 		animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
 		idActualAnimal++;
 		seres.Add(animal);
@@ -298,7 +306,11 @@ public class Vida
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = tipoEdificio.modelos[Random.Range(0,tipoEdificio.modelos.Count)];
-		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,FuncTablero.creaMesh(tablero[posX,posY].coordsVert,modelo));
+		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
+		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
+		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
+		Vector3 coordsVert = new Vector3(x,y,z);
+		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,FuncTablero.creaMesh(coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
 		idActualEdificio++;		
 		seres.Add(edificio);
