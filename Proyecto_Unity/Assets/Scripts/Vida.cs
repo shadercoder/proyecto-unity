@@ -265,7 +265,8 @@ public class Vida
 	{
 		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
+		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];		
+		//Centro casilla
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
@@ -286,6 +287,7 @@ public class Vida
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
+		//Centro casilla
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
@@ -306,6 +308,7 @@ public class Vida
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = tipoEdificio.modelos[Random.Range(0,tipoEdificio.modelos.Count)];
+		//Centro casilla
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;

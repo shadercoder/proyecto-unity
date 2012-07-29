@@ -894,8 +894,7 @@ public class FuncTablero {
 		int k = 0;
 		for (int i = 0; i < altoTablero; i++) {
 			for (int j = 0; j < anchoTablero; j++) {
-				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
-				
+				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);	
 				tablero[i,j] = new Casilla(habitat[i * anchoTablero + j], elems[i * anchoTablero + j], cord, vertices[indices[k]]);
 				k++;
 			}
