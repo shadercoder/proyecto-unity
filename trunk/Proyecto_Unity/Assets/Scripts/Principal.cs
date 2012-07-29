@@ -141,12 +141,14 @@ public class Principal : MonoBehaviour {
 		texturaAgua.SetPixels(pixels);
 		texturaAgua.Apply();
 		
-		MeshFilter filter = objetoRoca.GetComponent<MeshFilter>();
-		MeshFilter filter2 = objetoPlanta.GetComponent<MeshFilter>();
-		Mesh meshTemp = filter.mesh;
+		MeshFilter Roca = objetoRoca.GetComponent<MeshFilter>();
+		MeshFilter Planta = objetoPlanta.GetComponent<MeshFilter>();
+		MeshFilter Habitats = objetoHabitats.GetComponent<MeshFilter>();
+		Mesh meshTemp = Roca.mesh;
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
-		filter.mesh = meshTemp;
-		filter2.mesh = meshTemp;
+		Roca.mesh = meshTemp;
+		Planta.mesh = meshTemp;
+		Habitats.mesh = meshTemp;
 		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
        	objetoRoca.AddComponent<MeshCollider>();
         objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
@@ -179,25 +181,25 @@ public class Principal : MonoBehaviour {
 		vida.anadeTipoEdificio(tipoEdif5);
 		
 		/* Vegetales */
-		EspecieVegetal especieV1 = new EspecieVegetal("Seta",1000,50,50,50,0.1f,8,habitats1,0,modelosVegetales.setas);
+		EspecieVegetal especieV1 = new EspecieVegetal("Seta",1000,50,50,50,0.1f,8,habitats1,1,modelosVegetales.setas);
 		vida.anadeEspecieVegetal(especieV1);
-		EspecieVegetal especieV2 = new EspecieVegetal("Flor",1000,50,50,20,0.1f,15,habitats1,1,modelosVegetales.flores);
+		EspecieVegetal especieV2 = new EspecieVegetal("Flor",1000,50,50,20,0.1f,15,habitats1,2,modelosVegetales.flores);
 		vida.anadeEspecieVegetal(especieV2);
-		EspecieVegetal especieV3 = new EspecieVegetal("Caña",1000,50,50,20,0.1f,12,habitats1,2,modelosVegetales.canas);
+		EspecieVegetal especieV3 = new EspecieVegetal("Caña",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.canas);
 		vida.anadeEspecieVegetal(especieV3);
-		EspecieVegetal especieV4 = new EspecieVegetal("Arbusto",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.arbustos);
+		EspecieVegetal especieV4 = new EspecieVegetal("Arbusto",1000,50,50,20,0.1f,12,habitats1,2,modelosVegetales.arbustos);
 		vida.anadeEspecieVegetal(especieV4);
 		EspecieVegetal especieV5 = new EspecieVegetal("Estromatolito",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.estromatolitos);
 		vida.anadeEspecieVegetal(especieV5);
-		EspecieVegetal especieV6 = new EspecieVegetal("Cactus",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.cactus);
+		EspecieVegetal especieV6 = new EspecieVegetal("Cactus",1000,50,50,20,0.1f,12,habitats1,0,modelosVegetales.cactus);
 		vida.anadeEspecieVegetal(especieV6);
 		EspecieVegetal especieV7 = new EspecieVegetal("Palmera",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.palmeras);
 		vida.anadeEspecieVegetal(especieV7);
-		EspecieVegetal especieV8 = new EspecieVegetal("Pino",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.pinos);
+		EspecieVegetal especieV8 = new EspecieVegetal("Pino",1000,50,50,20,0.1f,12,habitats1,2,modelosVegetales.pinos);
 		vida.anadeEspecieVegetal(especieV8);
-		EspecieVegetal especieV9 = new EspecieVegetal("Ciprés",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.cipreses);
+		EspecieVegetal especieV9 = new EspecieVegetal("Ciprés",1000,50,50,20,0.1f,12,habitats1,2,modelosVegetales.cipreses);
 		vida.anadeEspecieVegetal(especieV9);
-		EspecieVegetal especieV10 = new EspecieVegetal("Pino Alto",1000,50,50,20,0.1f,12,habitats1,3,modelosVegetales.pinosAltos);
+		EspecieVegetal especieV10 = new EspecieVegetal("Pino Alto",1000,50,50,20,0.1f,12,habitats1,1,modelosVegetales.pinosAltos);
 		vida.anadeEspecieVegetal(especieV10);
 		
 		/* Herbivoros */
