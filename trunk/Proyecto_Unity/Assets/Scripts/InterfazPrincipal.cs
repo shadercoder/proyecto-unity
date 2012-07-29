@@ -317,13 +317,20 @@ public class InterfazPrincipal : MonoBehaviour {
 				if(principal.raycastRoca(Input.mousePosition,ref x,ref y))
 				{
 					T_habitats habitat = principal.vida.tablero[y,x].habitat;
-					/* INFO METALES */					
+					T_elementos elem = principal.vida.tablero[y,x].elementos;					
 					Edificio edificio = principal.vida.tablero[y,x].edificio;
 					Vegetal vegetal = principal.vida.tablero[y,x].vegetal;
 					Animal animal = principal.vida.tablero[y,x].animal;
 										
-					infoCasilla = "Hábitat: " + habitat.ToString() + "\t\t";
-					/* INFO METALES	*/
+					if(habitat == T_habitats.montana)
+						infoCasilla = "Hábitat: montaña" + "\t\t";
+					else
+						infoCasilla = "Hábitat: " + habitat.ToString() + "\t\t";
+					if(elem == T_elementos.comunes)
+						infoCasilla += "Elementos: metales comunes" + "\t\t";
+					else if(elem == T_elementos.raros)
+						infoCasilla += "Elementos: metales raros" + "\t\t";					
+					
 					if(edificio != null)
 						infoCasilla += "Edificio: " + edificio.tipo.nombre + "\t\t";
 					if(vegetal != null)
