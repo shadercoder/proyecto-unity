@@ -97,13 +97,15 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				
 float4 Tex2D1=tex2D(_MainTex,(IN.uv_MainTex.xyxy).xy);
 float4 Multiply0=Tex2D1 * _FiltroOn.xxxx;
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - _FiltroOn.xxxx;
+float4 Subtract0=Multiply0 - Invert0;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Tex2D1;
+clip( Subtract0 );
+o.Albedo = Multiply0;
 o.Emission = Multiply0;
 
 				o.Normal = normalize(o.Normal);
