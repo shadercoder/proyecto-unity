@@ -3,7 +3,7 @@ guid: ebf1866e19d07484c8a7eee94c06947d
 TextureImporter:
   importerVersion: 2
   maxTextureSize: 2048
-  textureFormat: -3
+  textureFormat: 3
   grayscaleToAlpha: 1
   npotScale: 1
   generateCubemap: 0
@@ -22,7 +22,7 @@ TextureImporter:
     bumpyness: 0.25
     filter: 0
   textureSettings:
-    filterMode: -1
-    anisoLevel: -1
+    filterMode: 1
+    anisoLevel: 1
     mipmapBias: -1
-    wrapMode: -1
+    wrapMode: 0

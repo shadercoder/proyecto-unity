@@ -77,9 +77,11 @@ public class Principal : MonoBehaviour {
 		
 		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 2ª posicion.
-		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
+		Texture2D texElems = objetoRoca.renderer.sharedMaterials[4].mainTexture as Texture2D;
+		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
+		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
 		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
-		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, texHabitats, mesh);
+		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, texHabitats, texHabitatsEstetica, texElems, mesh);
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		
 		numSaves = SaveLoad.FileCount();
