@@ -75,8 +75,7 @@ public class TiposSeres : MonoBehaviour {
 
 		List<T_habitats> habFlor = new List<T_habitats>();
 		habFlor.Add(T_habitats.llanura);
-		habFlor.Add(T_habitats.colina);
-		//Flor: habitats -> llanura, colina
+		//Flor: habitats -> llanura
 		flor = new EspecieVegetal("Flor",1000,50,50,20,0.1f,15,habFlor,2,modelosVegetales.flores);
 		
 		List<T_habitats> habCana = new List<T_habitats>();
