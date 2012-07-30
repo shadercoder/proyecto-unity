@@ -49,84 +49,94 @@ public class TiposSeres : MonoBehaviour {
 		modelosAnimales = GameObject.FindGameObjectWithTag("ModelosAnimales").GetComponent<ModelosAnimales>();
 		principal = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Principal>();
 		
-		List<T_habitats> listaHabs = new List<T_habitats>();
-		listaHabs.Add(T_habitats.llanura);
-		listaHabs.Add(T_habitats.montana);
-		listaHabs.Add(T_habitats.colina);
-		listaHabs.Add(T_habitats.tundra);
-		listaHabs.Add(T_habitats.desierto);
-		listaHabs.Add(T_habitats.volcanico);
+		List<T_habitats> habsEdificios = new List<T_habitats>();
+		habsEdificios.Add(T_habitats.llanura);
+		habsEdificios.Add(T_habitats.colina);
 		
-		fabricaComBas = new TipoEdificio("Fábrica componentes básicos",listaHabs,modelosEdificios.fabCompBas);
-		energia = new TipoEdificio("Central de energía",listaHabs,modelosEdificios.centralEnergia);
-		granja = new TipoEdificio("Granja",listaHabs,modelosEdificios.granja);
-		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",listaHabs,modelosEdificios.fabCompAdv);
-		energiaAdv = new TipoEdificio("Central de energía avanzada",listaHabs,modelosEdificios.centralEnergiaAdv);
+		List<T_habitats> habsEdificiosAdv = new List<T_habitats>();
+		habsEdificiosAdv.Add(T_habitats.costa);
+		habsEdificiosAdv.Add(T_habitats.llanura);
+		habsEdificiosAdv.Add(T_habitats.colina);
+		habsEdificiosAdv.Add(T_habitats.tundra);
+		habsEdificiosAdv.Add(T_habitats.desierto);
 		
-		listaHabs.Clear();
-		listaHabs.Add(T_habitats.llanura);
-		listaHabs.Add(T_habitats.montana);
-		listaHabs.Add(T_habitats.colina);
+		fabricaComBas = new TipoEdificio("Fábrica componentes básicos",habsEdificios,modelosEdificios.fabCompBas);
+		energia = new TipoEdificio("Central de energía",habsEdificios,modelosEdificios.centralEnergia);
+		granja = new TipoEdificio("Granja",habsEdificios,modelosEdificios.granja);
+		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,modelosEdificios.fabCompAdv);
+		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,modelosEdificios.centralEnergiaAdv);
+		
+		List<T_habitats> habSeta = new List<T_habitats>();
+		habSeta.Add(T_habitats.montana);
 		/* Vegetales */		
-		//Seta: habitats -> llanura, montaña y colina
-		seta = new EspecieVegetal("Seta",1000,50,50,50,0.1f,8,listaHabs,1,modelosVegetales.setas);
+		//Seta: habitats -> montaña
+		seta = new EspecieVegetal("Seta",1000,50,50,20,0.1f,8,habSeta,1,modelosVegetales.setas);
 		
-		listaHabs.Remove(T_habitats.costa);
-		listaHabs.Remove(T_habitats.montana);
-		listaHabs.Add(T_habitats.tundra);
-		//Flor: habitats -> llanura, tundra y colina
-		flor = new EspecieVegetal("Flor",1000,50,50,20,0.1f,15,listaHabs,2,modelosVegetales.flores);
+
+		List<T_habitats> habFlor = new List<T_habitats>();
+		habFlor.Add(T_habitats.llanura);
+		habFlor.Add(T_habitats.colina);
+		//Flor: habitats -> llanura, colina
+		flor = new EspecieVegetal("Flor",1000,50,50,20,0.1f,15,habFlor,2,modelosVegetales.flores);
 		
-		listaHabs.Add(T_habitats.costa);
-		listaHabs.Add(T_habitats.desierto);
-		listaHabs.Remove(T_habitats.colina);
+		List<T_habitats> habCana = new List<T_habitats>();
+		habCana.Add(T_habitats.costa);
+		habCana.Add(T_habitats.desierto);
 		//Palo (Caña): habitats -> llanura, costa y desierto
-		palo = new EspecieVegetal("Caña",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.canas);
+		palo = new EspecieVegetal("Caña",1000,50,50,20,0.1f,12,habCana,3,modelosVegetales.canas);
 		
-		listaHabs.Remove(T_habitats.costa);
-		listaHabs.Remove(T_habitats.desierto);
-		listaHabs.Add(T_habitats.montana);
-		listaHabs.Add(T_habitats.colina);
-		listaHabs.Add(T_habitats.volcanico);
-		listaHabs.Add(T_habitats.tundra);
-		//Arbusto: habitats -> llanura, montaña, colina, tundra y volcanico
-		arbusto = new EspecieVegetal("Arbusto",1000,50,50,20,0.1f,12,listaHabs,2,modelosVegetales.arbustos);
+		List<T_habitats> habArbusto = new List<T_habitats>();
+		habArbusto.Add(T_habitats.llanura);
+		habArbusto.Add(T_habitats.colina);
+		habArbusto.Add(T_habitats.montana);
+		habArbusto.Add(T_habitats.tundra);
+		//Arbusto: habitats -> llanura, colina, montaña y tundra
+		arbusto = new EspecieVegetal("Arbusto",1000,50,50,20,0.1f,12,habArbusto,2,modelosVegetales.arbustos);
 		
-		listaHabs.Add(T_habitats.desierto);
-		listaHabs.Remove(T_habitats.llanura);
-		listaHabs.Remove(T_habitats.colina);
-		//Estrom (Estromatolito): habitats -> montaña, desierto y volcanico
-		estrom = new EspecieVegetal("Estromatolito",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.estromatolitos);
+		List<T_habitats> habEstrom = new List<T_habitats>();
+		habEstrom.Add(T_habitats.costa);
+		habEstrom.Add(T_habitats.montana);
+		habEstrom.Add(T_habitats.volcanico);
+		//Estrom (Estromatolito): habitats -> costa, desierto y volcanico
+		estrom = new EspecieVegetal("Estromatolito",1000,50,50,20,0.1f,12,habEstrom,4,modelosVegetales.estromatolitos);
 		
-		listaHabs.Remove(T_habitats.montana);
-		listaHabs.Remove(T_habitats.volcanico);
+		List<T_habitats> habCactus = new List<T_habitats>();
+		habCactus.Add(T_habitats.desierto);
+		//Cactus: habitats -> desierto
+		cactus = new EspecieVegetal("Cactus",1000,50,50,20,0.1f,12,habCactus,0,modelosVegetales.cactus);
+		
+		List<T_habitats> habPalm = new List<T_habitats>();
+		habPalm.Add(T_habitats.costa);
+		//Palmera: habitats -> costa
+		palmera = new EspecieVegetal("Palmera",1000,50,50,20,0.1f,12,habPalm,3,modelosVegetales.palmeras);
+		
+		List<T_habitats> habPino = new List<T_habitats>();
+		habPino.Add(T_habitats.montana);
+		habPino.Add(T_habitats.colina);
+		habPino.Add(T_habitats.tundra);
+		//Pino: habitats -> tundra, colina y montaña
+		pino = new EspecieVegetal("Pino",1000,50,50,20,0.1f,12,habPino,4,modelosVegetales.pinos);
+		
+		List<T_habitats> habCipres = new List<T_habitats>();
+		habCipres.Add(T_habitats.montana);
+		habCipres.Add(T_habitats.colina);
+		habCipres.Add(T_habitats.tundra);
+		//Ciprés: habitats -> tundra, colina y montaña
+		cipres = new EspecieVegetal("Ciprés",1000,50,50,20,0.1f,12,habCipres,4,modelosVegetales.cipreses);
+		
+		List<T_habitats> habPinoAlto = new List<T_habitats>();
+		habPinoAlto.Add(T_habitats.montana);
+		habPinoAlto.Add(T_habitats.tundra);
+		//Pino Alto: habitats -> tundra y montaña
+		pinoAlto = new EspecieVegetal("Pino Alto",1000,50,50,20,0.1f,12,habPinoAlto,1,modelosVegetales.pinosAltos);
+		
+		
+		List<T_habitats> listaHabs = new List<T_habitats>();
+		listaHabs.Add(T_habitats.costa);
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
-		//Cactus: habitats -> llanura, colina y desierto
-		cactus = new EspecieVegetal("Cactus",1000,50,50,20,0.1f,12,listaHabs,0,modelosVegetales.cactus);
-		
-		listaHabs.Add(T_habitats.costa);
-		listaHabs.Remove(T_habitats.desierto);
-		//Palmera: habitats -> costa, llanura y colina
-		palmera = new EspecieVegetal("Palmera",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.palmeras);
-		
-		listaHabs.Remove(T_habitats.costa);
-		listaHabs.Add(T_habitats.montana);
-		//Pino: habitats -> llanura, colina y montaña
-		pino = new EspecieVegetal("Pino",1000,50,50,20,0.1f,12,listaHabs,2,modelosVegetales.pinos);
-		
-		listaHabs.Remove(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
-		//Ciprés: habitats -> tundra, llanura y colina
-		cipres = new EspecieVegetal("Ciprés",1000,50,50,20,0.1f,12,listaHabs,2,modelosVegetales.cipreses);
-		
-		listaHabs.Remove(T_habitats.llanura);
-		listaHabs.Remove(T_habitats.costa);
-		listaHabs.Add(T_habitats.montana);
-		listaHabs.Add(T_habitats.tundra);
-		//Pino Alto: habitats -> colina, tundra y montaña
-		pinoAlto = new EspecieVegetal("Pino Alto",1000,50,50,20,0.1f,12,listaHabs,1,modelosVegetales.pinosAltos);
-		
+		listaHabs.Add(T_habitats.desierto);
 		
 		/* Herbivoros */
 		listaHabs.Clear();
