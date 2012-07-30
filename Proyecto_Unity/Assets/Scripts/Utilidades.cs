@@ -1168,7 +1168,7 @@ public class FuncTablero {
 			colorObjetivo = new Color(0.0f, 0.0f, 0.0f, 1.0f);
 			break;
 		default:
-			colorObjetivo = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+			colorObjetivo = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		}
 		Color colorTemp = colorObjetivo;
