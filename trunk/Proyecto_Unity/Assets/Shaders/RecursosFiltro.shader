@@ -1,9 +1,9 @@
-Shader "Planet/HabitatsFiltro"
+Shader "Planet/RecursosFiltro"
 {
 	Properties 
 	{
 _MainTex("Textura Habitats", 2D) = "gray" {}
-_FiltroOn("Filtro On/Off", Range(0,1) ) = 1
+_FiltroOn("Filtro On/Off", Range(0,1) ) = 0.5
 _Emision("Brillo del filtro", Float) = 0.5
 
 	}
@@ -14,7 +14,7 @@ _Emision("Brillo del filtro", Float) = 0.5
 		{
 "Queue"="Geometry"
 "IgnoreProjector"="False"
-"RenderType"="Opaque"
+"RenderType"="TransparentCutout"
 
 		}
 
@@ -99,8 +99,14 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				
 float4 Tex2D1=tex2D(_MainTex,(IN.uv_MainTex.xyxy).xy);
 float4 Multiply1=Tex2D1 * _Emision.xxxx;
+float4 Split0=Tex2D1;
+float4 Add0=float4( Split0.x, Split0.x, Split0.x, Split0.x) + float4( Split0.y, Split0.y, Split0.y, Split0.y);
+float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.w, Split0.w, Split0.w, Split0.w);
+float4 Add1=float4( Split0.z, Split0.z, Split0.z, Split0.z) + Invert1;
+float4 Add2=Add0 + Add1;
 float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - _FiltroOn.xxxx;
-float4 Subtract0=Tex2D1 - Invert0;
+float4 Add3=float4( 0.8,0.8,0.8,0.8 ) + Invert0;
+float4 Subtract0=Add2 - Add3;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);

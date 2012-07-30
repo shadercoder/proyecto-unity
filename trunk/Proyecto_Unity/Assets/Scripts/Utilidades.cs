@@ -422,7 +422,7 @@ public class FuncTablero {
 //	    return pixelsN;
 //	}
 	
-	private static T_habitats[] calculaHabitats(Texture2D texHeightmap, Texture2D texHabitats, out T_elementos[] elemsOut) {
+	private static T_habitats[] calculaHabitats(Texture2D texHeightmap, Texture2D texHabitats, Texture2D texHabitatsEstetica, Texture2D texElems, out T_elementos[] elemsOut) {
 		T_habitats[] habitats = new T_habitats[altoTablero*anchoTablero];
 		T_elementos[] elems = new T_elementos[altoTablero*anchoTablero];
 		for (int i = 0; i < altoTablero * anchoTablero; i++) {
@@ -430,6 +430,7 @@ public class FuncTablero {
 		}
 		Color[] pixels = texHeightmap.GetPixels();
 		Color[] pixelsHab = texHabitats.GetPixels();
+		Color[] pixelsElem = texElems.GetPixels();
 		int altoTableroUtil = altoTablero - casillasPolos * 2;
 		//Se divide el espacio en zonas (en este caso 3 franjas horizontales)
 		int limiteHab1 = altoTableroUtil / 3 + casillasPolos;
@@ -453,14 +454,17 @@ public class FuncTablero {
 			for (int j = 0; j < anchoTablero; j++) {
 				habitats[i * anchoTablero + j] = T_habitats.inhabitable;
 				elems[i * anchoTablero + j] = T_elementos.nada;
-				
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
 				Color color = new Color (0.0f, 0.0f, 0.0f, 0.0f);
-				pintaHabitatCasilla(pixelsHab, cord, color);
+				pintaPixelsCasilla(pixelsHab, cord, color);
 			}
-		}	
+		}
+		
 		//Se calcula la primera franja de izquierda a derecha y de arriba a abajo
-		//Esta franja representa la zona cercana al polo norte hasta el primer trópico
+		//Esta franja representa la zona cercana al polo SUR hasta el primer trópico
+		
+		//calculaFranja(casillasPolos, limiteHab1, pixels, pixelsHab, habitats, elems, texHabitatsEstetica);
+		
 		for (int i = casillasPolos; i < limiteHab1; i++) {
 			for (int j = 0; j < anchoTablero; j++) {
 				//Coordenadas de la casilla que estamos mirando
@@ -486,60 +490,72 @@ public class FuncTablero {
 					elemTemp = T_elementos.nada;
 				}
 				else if ((nivelAgua + tamanoPlaya <= media) && (media < alturaColinas)) {
-					//Area de llanuras. Habitats posibles: LLanura y tundra
-					//Con un 15% es tundra y con un 85% es llanura
-					float posibilidad = 0.15f;
+					//Area de colina. Habitats posibles: LLanura y tundra
+					//Con un 5% es desierto, con un 15% es tundra y con un 80% es llanura
+					float posDesierto = 0.05f;
+					float posTundra = 0.15f;;
 					
 					//TODO Esto es un planteamiento posible de como usar la temperatura
-					posibilidad -= temperatura * 0.1f;		//La temperatura hace que haya menos tundras
+					posTundra -= temperatura * 0.1f;		//La temperatura hace que haya menos tundras
+					posDesierto += temperatura * 0.1f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posibilidad += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
-					if (numero <= posibilidad) {
-						habitatTemp = T_habitats.tundra;
-						elemTemp = T_elementos.nada;
-					}
-					else {
+					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
+					posTundra += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.15f;
+					
+					if (numero > posTundra) {
 						habitatTemp = T_habitats.llanura;
-						if (UnityEngine.Random.Range(0,4) == 0)		//Una posibilidad entre 5, un 20%
+						if (UnityEngine.Random.Range(0,9) == 0)		//Una posibilidad entre 10, un 10%
 							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
 					}
-				}
-				else if ((alturaColinas <= media) && (media < alturaMontana)) {
-					//Área de colina. Habitats posibles: Colina, desierto y tundra
-					//Con un 15% es desierto, con un 25% es tundra y con un 60% es colina
-					float posDesierto = 0.15f;
-					float posTundra = 0.25f;
-					
-					//TODO Posible uso de temperatura
-					posDesierto += temperatura * 0.05f;
-					posTundra -= temperatura * 0.2f;
-					
-					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.25f;
-					posTundra += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.25f;
-					if (numero <= posDesierto) {
-						habitatTemp = T_habitats.desierto;
-						if (UnityEngine.Random.Range(0,2) == 0)		//Una posibilidad entre 3, un 33%
+					else {//(numero <= posTundra)
+						if (UnityEngine.Random.Range(0,21) == 0)		//Una posibilidad entre 20, un 5%
 							elemTemp = T_elementos.raros;
 						else
-							elemTemp = T_elementos.nada;
+							elemTemp = T_elementos.comunes;
+						
+						if (numero > posDesierto)
+							habitatTemp = T_habitats.tundra;
+						else
+							habitatTemp = T_habitats.desierto;
 					}
-					else if (numero <= posTundra + posDesierto) {
+				}
+				else if ((alturaColinas <= media) && (media < alturaMontana)) {
+					//Área de colina. Habitats posibles: Colina, tundra
+					//Con un 25% es tundra y con un 75% es colina
+					float posibilidad = 0.25f;
+					
+					//TODO Posible uso de temperatura
+					posibilidad += temperatura * 0.1f;
+					
+					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
+					posibilidad += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
+					posibilidad += numCasillasCercanasHabitat(T_habitats.montana, habitats, i, j) * 0.1f;
+					
+					if (numero <= posibilidad) {
 						habitatTemp = T_habitats.tundra;
-						elemTemp = T_elementos.nada;
+						int posElementos = UnityEngine.Random.Range(0,11);
+						if (posElementos == 0)		
+							elemTemp = T_elementos.raros;
+						else {
+							if (posElementos > 9)
+								elemTemp = T_elementos.comunes;
+							else {
+								elemTemp = T_elementos.nada;
+							}
+						}
 					}
 					else {
 						habitatTemp = T_habitats.colina;
-						if (UnityEngine.Random.Range(0,3) == 0)		//Una posibilidad entre 4, un 25%
+						if (UnityEngine.Random.Range(0,6) == 0)
 							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
 					}					
 				}
-				else /*if (alturaMontana < media)*/ {
+				else { //if (alturaMontana < media)
 					//Área de montaña. Habitats posibles: Mountain y Volcanic
 					//Con un 1% es volcanico y con un 99% es montaña
 					float posibilidad = 0.01f;
@@ -555,23 +571,29 @@ public class FuncTablero {
 					}
 					else {
 						habitatTemp = T_habitats.montana;
-						if (UnityEngine.Random.Range(0,1) == 0)
+						int posElementos = UnityEngine.Random.Range(0,11);
+						if (posElementos == 0)
 							elemTemp = T_elementos.raros;
+						else if (posElementos > 9)
+							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
 					}
 				}
 				Color colorTemp = getColorHabitat(habitatTemp);
-								
-				pintaHabitatCasilla(pixelsHab, cord, colorTemp);
+				Color colorTemp2 = getColorElem(elemTemp);
+				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp, false, true);			
+				pintaPixelsCasilla(pixelsHab, cord, colorTemp);
+				pintaPixelsCasilla(pixelsElem, cord, colorTemp2);
 				
 				habitats[i * anchoTablero + j] = habitatTemp;
 				elems[i * anchoTablero + j] = elemTemp;
 			}
 		}
 		
-		//Franja sur, que equivaldría como la primera a zonas mas cercanas a los polos
+		//Franja NORTE, que equivaldría como la primera a zonas mas cercanas a los polos
 		//Se calcula de derecha a izquierda y de abajo a arriba
+		
 		for (int i = altoTablero - 1 - casillasPolos; i >= limiteHab2; i--) {
 			for (int j = anchoTablero - 1; j >= 0; j--) {
 				//Coordenadas de la casilla que estamos mirando
@@ -597,66 +619,78 @@ public class FuncTablero {
 					elemTemp = T_elementos.nada;
 				}
 				else if ((nivelAgua + tamanoPlaya <= media) && (media < alturaColinas)) {
-					//Area de llanuras. Habitats posibles: LLanura y tundra
-					//Con un 15% es tundra y con un 85% es llanura
-					float posibilidad = 0.35f;
+					//Area de colina. Habitats posibles: LLanura y tundra
+					//Con un 5% es desierto, con un 15% es tundra y con un 80% es llanura
+					float posDesierto = 0.05f;
+					float posTundra = 0.15f;;
 					
-					//TODO Posible uso de temperatura
-					posibilidad -= temperatura * 0.2f;
+					//TODO Esto es un planteamiento posible de como usar la temperatura
+					posTundra -= temperatura * 0.1f;		//La temperatura hace que haya menos tundras
+					posDesierto += temperatura * 0.1f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posibilidad += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.35f;
-					if (numero <= posibilidad) {
-						habitatTemp = T_habitats.tundra;
-						elemTemp = T_elementos.nada;
-					}
-					else {
+					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
+					posTundra += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.15f;
+					
+					if (numero > posTundra) {
 						habitatTemp = T_habitats.llanura;
-						if (UnityEngine.Random.Range(0,4) == 0)		//Una posibilidad entre 5, un 20%
+						if (UnityEngine.Random.Range(0,9) == 0)		//Una posibilidad entre 10, un 10%
 							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
 					}
-				}
-				else if ((alturaColinas <= media) && (media < alturaMontana)) {
-					//Área de colina. Habitats posibles: Colina, desierto y tundra
-					//Con un 5% es desierto, con un 15% es tundra y con un 80% es colina
-					float posDesierto = 0.05f;
-					float posTundra = 0.15f;
-					
-					//TODO Posible uso de temperatura
-					posDesierto += temperatura * 0.1f;
-					posTundra -= temperatura * 0.1f;
-					
-					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.15f;
-					posTundra += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.25f;
-					if (numero <= posDesierto) {
-						habitatTemp = T_habitats.desierto;
-						if (UnityEngine.Random.Range(0,2) == 0)		//Una posibilidad entre 3, un 33%
+					else {//(numero <= posTundra)
+						if (UnityEngine.Random.Range(0,21) == 0)		//Una posibilidad entre 20, un 5%
 							elemTemp = T_elementos.raros;
 						else
-							elemTemp = T_elementos.nada;
+							elemTemp = T_elementos.comunes;
+						
+						if (numero > posDesierto)
+							habitatTemp = T_habitats.tundra;
+						else
+							habitatTemp = T_habitats.desierto;
 					}
-					else if (numero <= posTundra + posDesierto) {
+				}
+				else if ((alturaColinas <= media) && (media < alturaMontana)) {
+					//Área de colina. Habitats posibles: Colina, tundra
+					//Con un 25% es tundra y con un 75% es colina
+					float posibilidad = 0.25f;
+					
+					//TODO Posible uso de temperatura
+					posibilidad += temperatura * 0.1f;
+					
+					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
+					posibilidad += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
+					posibilidad += numCasillasCercanasHabitat(T_habitats.montana, habitats, i, j) * 0.1f;
+					
+					if (numero <= posibilidad) {
 						habitatTemp = T_habitats.tundra;
-						elemTemp = T_elementos.nada;
+						int posElementos = UnityEngine.Random.Range(0,11);
+						if (posElementos == 0)		
+							elemTemp = T_elementos.raros;
+						else {
+							if (posElementos > 9)
+								elemTemp = T_elementos.comunes;
+							else {
+								elemTemp = T_elementos.nada;
+							}
+						}
 					}
 					else {
 						habitatTemp = T_habitats.colina;
-						if (UnityEngine.Random.Range(0,3) == 0)		//Una posibilidad entre 4, un 25%
+						if (UnityEngine.Random.Range(0,6) == 0)
 							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
 					}					
 				}
-				else /*if (alturaMontana < media)*/ {
+				else { //if (alturaMontana < media)
 					//Área de montaña. Habitats posibles: Mountain y Volcanic
 					//Con un 1% es volcanico y con un 99% es montaña
 					float posibilidad = 0.01f;
 					
 					//TODO Posible uso de temperatura
-					posibilidad += temperatura * 0.1f;
+					posibilidad += temperatura * 0.01f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posibilidad += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.01f;
@@ -666,15 +700,20 @@ public class FuncTablero {
 					}
 					else {
 						habitatTemp = T_habitats.montana;
-						if (UnityEngine.Random.Range(0,1) == 0)
+						int posElementos = UnityEngine.Random.Range(0,11);
+						if (posElementos == 0)
 							elemTemp = T_elementos.raros;
+						else if (posElementos > 9)
+							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
 					}
 				}
 				Color colorTemp = getColorHabitat(habitatTemp);
-				
-				pintaHabitatCasilla(pixelsHab, cord, colorTemp);
+				Color colorTemp2 = getColorElem(elemTemp);
+				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp, false, true);			
+				pintaPixelsCasilla(pixelsHab, cord, colorTemp);
+				pintaPixelsCasilla(pixelsElem, cord, colorTemp2);
 				
 				habitats[i * anchoTablero + j] = habitatTemp;
 				elems[i * anchoTablero + j] = elemTemp;
@@ -708,29 +747,26 @@ public class FuncTablero {
 					elemTemp = T_elementos.nada;
 				}
 				else if ((nivelAgua + tamanoPlaya <= media) && (media < alturaColinas)) {
-					//Area de llanuras. Habitats posibles: LLanura, volcanico y desierto
-					//Con un 1% es volcanico, con un 10% es desierto y con un 89% es llanura
-					float posVolcanico = 0.01f;
+					//Area de llanuras. Habitats posibles: LLanura y desierto
+					//Con un 10% es desierto y con un 90% es llanura
 					float posDesierto = 0.1f;
 					
 					//TODO Posible uso de temperatura
 					posDesierto += temperatura * 0.25f;
-					posVolcanico += temperatura * 0.01f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posVolcanico += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.01f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.1f;
 					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.15f;
-					if (numero <= posVolcanico) {
-						habitatTemp = T_habitats.volcanico;
-						elemTemp = T_elementos.raros;
-					}
-					else if (numero <= posVolcanico + posDesierto) {
+					if (numero <= posDesierto) {
 						habitatTemp = T_habitats.desierto;
-						elemTemp = T_elementos.nada;
+						if (UnityEngine.Random.Range(0,11) == 0)
+							elemTemp = T_elementos.raros;
+						else
+							elemTemp = T_elementos.comunes;
 					}
 					else {
 						habitatTemp = T_habitats.llanura;
-						if (UnityEngine.Random.Range(0,4) == 0)
+						if (UnityEngine.Random.Range(0,9) == 0)
 							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
@@ -755,17 +791,20 @@ public class FuncTablero {
 					}
 					else if (numero <= posVolcanico + posDesierto) {
 						habitatTemp = T_habitats.desierto;
-						elemTemp = T_elementos.nada;
+						if (UnityEngine.Random.Range(0,11) == 0)
+							elemTemp = T_elementos.raros;
+						else
+							elemTemp = T_elementos.comunes;
 					}
 					else {
 						habitatTemp = T_habitats.colina;
-						if (UnityEngine.Random.Range(0,3) == 0)
+						if (UnityEngine.Random.Range(0,9) == 0)
 							elemTemp = T_elementos.comunes;
 						else
 							elemTemp = T_elementos.nada;
 					}					
 				}
-				else /*if (alturaMontana < media)*/ {
+				else { //if (alturaMontana < media)
 					//Área de montaña. Habitats posibles: montaña y volcanico
 					//Con un 1% es volcanico y con un 99% es montaña
 					float posibilidad = 0.1f;
@@ -781,37 +820,47 @@ public class FuncTablero {
 					}
 					else {
 						habitatTemp = T_habitats.montana;
-						if (UnityEngine.Random.Range(0,1) == 0)
+						int posElementos = UnityEngine.Random.Range(0,11);
+						if (posElementos == 0)
 							elemTemp = T_elementos.raros;
-						else
+						else if (posElementos > 9)
+							elemTemp = T_elementos.comunes;
+						else {
 							elemTemp = T_elementos.nada;
+						}
 					}
 				}
 				
 				Color colorTemp = getColorHabitat(habitatTemp);
-				
-				pintaHabitatCasilla(pixelsHab, cord, colorTemp);
+				Color colorTemp2 = getColorElem(elemTemp);
+				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp, false, true);
+				pintaPixelsCasilla(pixelsHab, cord, colorTemp);
+				pintaPixelsCasilla(pixelsElem,cord, colorTemp2);
 
 				habitats[i * anchoTablero + j] = habitatTemp;
 				elems[i * anchoTablero + j] = elemTemp;
 			}
 		}
+			
 		//Después de la ultima franja es inhabitable igual que antes que la primera.
 		for (int i = altoTablero - casillasPolos; i < altoTablero; i++) {
 			for (int j = 0; j < anchoTablero; j++) {
 				habitats[i * anchoTablero + j] = T_habitats.inhabitable;
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
 				Color color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-				pintaHabitatCasilla(pixelsHab, cord, color);
+				pintaPixelsCasilla(pixelsHab, cord, color);
 			}
 		}
 		texHabitats.SetPixels(pixelsHab);
+		texElems.SetPixels(pixelsElem);
 		texHabitats.Apply();
+		texHabitatsEstetica.Apply();
+		texElems.Apply();
 		elemsOut = elems; 
 		return habitats;
 	}
-	
-	private static void pintaHabitatCasilla(Color[] pixelsHab, Vector2 cord, Color color){
+		
+	private static void pintaPixelsCasilla(Color[] pixelsHab, Vector2 cord, Color color){
 		for (int x = 0; x < relTexTabAlto; x++)
 			for (int y = 0; y < relTexTabAncho; y++)
 				pixelsHab[((int)cord.y + x) * anchoTextura + (int)cord.x + y] = color;
@@ -821,28 +870,44 @@ public class FuncTablero {
 		Color colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 				switch (habitatTemp) {
 				case T_habitats.mar:
-					colorTemp = new Color(0.0f, 0.0f, 1.0f, 0.0f);
+					colorTemp = new Color(0.0f, 0.25f, 0.5f, 0.0f);
 					break;
 				case T_habitats.costa:
-					colorTemp = new Color(0.7f, 0.7f, 0.0f, 0.0f);
+					colorTemp = new Color(1.0f, 0.9f, 0.7f, 0.0f);
 					break;
 				case T_habitats.llanura:
-					colorTemp = new Color(0.1f, 0.5f, 0.0f, 0.0f);
+					colorTemp = new Color(0.5f, 0.75f, 0.15f, 0.0f);
 					break;
 				case T_habitats.tundra:
-					colorTemp = new Color(0.5f, 0.7f, 0.7f, 0.0f);
+					colorTemp = new Color(0.6f, 0.8f, 1.0f, 0.0f);
 					break;
 				case T_habitats.desierto:
-					colorTemp = new Color(1.0f, 1.0f, 0.3f, 0.0f);
+					colorTemp = new Color(1.0f, 0.9f, 0.3f, 0.0f);
 					break;
 				case T_habitats.colina:
-					colorTemp = new Color(0.3f, 0.7f, 0.0f, 0.0f);
+					colorTemp = new Color(0.4f, 0.65f, 0.05f, 0.0f);
 					break;
 				case T_habitats.volcanico:
 					colorTemp = new Color(1.0f, 0.0f, 0.0f, 0.0f);
 					break;
 				case T_habitats.montana:
-					colorTemp = new Color(0.2f, 0.7f, 0.6f, 0.0f);
+					colorTemp = new Color(0.5f, 0.5f, 0.55f, 0.0f);
+					break;
+				default:
+					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+					break;
+				}	
+		return colorTemp;
+	}
+	
+	private static Color getColorElem(T_elementos elemTemp){
+		Color colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+				switch (elemTemp) {
+				case T_elementos.comunes:
+					colorTemp = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+					break;
+				case T_elementos.raros:
+					colorTemp = new Color(0.0f, 0.0f, 1.0f, 0.0f);
 					break;
 				default:
 					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -873,11 +938,11 @@ public class FuncTablero {
 		return numCasillasIguales;
 	}
 	
-	public static Casilla[,] iniciaTablero(Texture2D texHeightmap, Texture2D texHabitats, Mesh mesh) {
+	public static Casilla[,] iniciaTablero(Texture2D texHeightmap, Texture2D texHabitats, Texture2D texHabitatsEstetica, Texture2D texElems, Mesh mesh) {
 		Casilla[,] tablero = new Casilla[altoTablero,anchoTablero];
 		Vector3[] vertices = mesh.vertices;
 		T_elementos[] elems = new T_elementos[altoTablero*anchoTablero];
-		T_habitats[] habitat = calculaHabitats(texHeightmap, texHabitats, out elems);
+		T_habitats[] habitat = calculaHabitats(texHeightmap, texHabitats, texHabitatsEstetica, texElems, out elems);
 		
 		//Generacion de indices ----------------------------------------------
 		
@@ -894,7 +959,8 @@ public class FuncTablero {
 		int k = 0;
 		for (int i = 0; i < altoTablero; i++) {
 			for (int j = 0; j < anchoTablero; j++) {
-				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);	
+				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
+				
 				tablero[i,j] = new Casilla(habitat[i * anchoTablero + j], elems[i * anchoTablero + j], cord, vertices[indices[k]]);
 				k++;
 			}
@@ -970,7 +1036,7 @@ public class FuncTablero {
 		tex.SetPixel(w,h,pix);
 	}
 	
-	public static void alteraPixelColor(Texture2D tex, int w, int h, Color valor, bool positivo){
+	public static void alteraPixelColor(Texture2D tex, int w, int h, Color valor, bool aditivo, bool positivo){
 //		if (h < 0 || h > tex.height) {
 //			Debug.LogError("Error en alteraPixel: los limites de la textura se sobrepasan. w = " + w + " h = " + h);
 //		}
@@ -982,8 +1048,13 @@ public class FuncTablero {
 			w += tex.width;
 		w = w % tex.width;
 		Color pix = tex.GetPixel(w,h);
-		if (positivo)
-			pix += valor;
+		if (positivo){
+			if (aditivo) 
+				pix += valor;
+			else
+				if (valor.r > 0 || valor.g > 0 || valor.b > 0)
+					pix = valor; 
+		}
 		else
 			pix -= valor;
 		tex.SetPixel(w,h,pix);
@@ -999,6 +1070,76 @@ public class FuncTablero {
 //	}
 	
 	
+	public static void pintaTexPincel(Texture2D objetivo, Vector2 cords, int pincel, Color colorObjetivo, bool aditivo, bool positivo) {
+		Pinceles temp = GameObject.FindGameObjectWithTag("Pinceles").GetComponent<Pinceles>();
+		Texture2D pincelTex;
+		switch (pincel) {
+		case 0: 
+			pincelTex = temp.crater;
+			break;
+		case 1:
+			pincelTex = temp.volcan;
+			break;
+		case 2:
+			pincelTex = temp.pincelDuro;
+			break;
+		case 3: 
+			pincelTex = temp.pincelRegular;
+			break;
+		case 4:			
+			pincelTex = temp.pincelIrregular;
+			break;
+		case 5:			
+			pincelTex = temp.pincelPlantas;
+			break;
+		case 6:			
+			pincelTex = temp.pincelHabitats1;
+			break;
+		case 7:			
+			pincelTex = temp.pincelHabitats2;
+			break;
+		case 8:			
+			pincelTex = temp.pincelHabitats3;
+			break;
+		case 9:			
+			pincelTex = temp.pincelHabitats4;
+			break;
+		case 10:			
+			pincelTex = temp.pincelHabitats5;
+			break;
+		case 11:			
+			pincelTex = temp.pincelHabitats6;
+			break;
+		case 12:			
+			pincelTex = temp.pincelHabitats7;
+			break;
+		case 13:			
+			pincelTex = temp.pincelHabitats8;
+			break;
+		default: 
+			pincelTex = temp.pincelRegular;
+			break;			
+		}		
+		int w = pincelTex.width;
+		int h = pincelTex.height;
+		Vector2 pos = cords;
+		
+		pos.x -= w/4;
+		pos.y -= h/4;
+		if (pos.y < 0)
+			pos.y = 0;
+		if (pos.y >= objetivo.height)
+			pos.y = objetivo.height - 1;
+		
+		Color colorTemp = colorObjetivo;
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				colorTemp = colorObjetivo;
+				colorTemp *= pincelTex.GetPixel(i,j);
+					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorTemp, aditivo, positivo);
+			}
+		}
+	}	
 	
 	public static void pintaPlantas(Texture2D objetivo, Vector2 coords, int idColor, bool positivo) {
 		Pinceles temp = GameObject.FindGameObjectWithTag("Pinceles").GetComponent<Pinceles>();
@@ -1035,7 +1176,7 @@ public class FuncTablero {
 			for (int j = 0; j < h; j++) {
 				colorTemp = colorObjetivo;
 				colorTemp *= pincelTex.GetPixel(i,j);
-					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorTemp, positivo);
+					alteraPixelColor(objetivo,(int)pos.x + i,(int)pos.y + j, colorTemp, true, positivo);
 			}
 		}
 	}

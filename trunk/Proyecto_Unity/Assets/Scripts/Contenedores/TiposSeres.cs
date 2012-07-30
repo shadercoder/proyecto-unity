@@ -5,20 +5,20 @@ using System.Collections.Generic;
 public class TiposSeres : MonoBehaviour {
 	
 	//Tipos de edificios
-	private TipoEdificio fabricaComBas;
-	private TipoEdificio energia;
+	private TipoEdificio fabrica1;
+	private TipoEdificio fabrica2;
+	private TipoEdificio energia1;
+	private TipoEdificio energia2;
 	private TipoEdificio granja;
-	private TipoEdificio fabricaComAdv;
-	private TipoEdificio energiaAdv;
 	
 	//Tipos de animales
-	//Herbivoros
+		//Herbivoros
 	private EspecieAnimal herbivoro1;
 	private EspecieAnimal herbivoro2;
 	private EspecieAnimal herbivoro3;
 	private EspecieAnimal herbivoro4;
 	private EspecieAnimal herbivoro5;
-	//Carnivoros
+		//Carnivoros
 	private EspecieAnimal carnivoro1;
 	private EspecieAnimal carnivoro2;
 	private EspecieAnimal carnivoro3;
@@ -57,11 +57,11 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.desierto);
 		listaHabs.Add(T_habitats.volcanico);
 		
-		fabricaComBas = new TipoEdificio("Fábrica componentes básicos",listaHabs,modelosEdificios.fabCompBas);
-		energia = new TipoEdificio("Central de energía",listaHabs,modelosEdificios.centralEnergia);
+		fabrica1 = new TipoEdificio("Fábrica componentes básicos",listaHabs,modelosEdificios.fabCompBas);
+		energia1 = new TipoEdificio("Central de energía",listaHabs,modelosEdificios.centralEnergia);
 		granja = new TipoEdificio("Granja",listaHabs,modelosEdificios.granja);
-		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",listaHabs,modelosEdificios.fabCompAdv);
-		energiaAdv = new TipoEdificio("Central de energía avanzada",listaHabs,modelosEdificios.centralEnergiaAdv);
+		fabrica2 = new TipoEdificio("Fábrica de componentes avanzados",listaHabs,modelosEdificios.fabCompAdv);
+		energia2 = new TipoEdificio("Central de energía avanzada",listaHabs,modelosEdificios.centralEnergiaAdv);
 		
 		listaHabs.Clear();
 		listaHabs.Add(T_habitats.llanura);
@@ -69,19 +69,19 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		/* Vegetales */		
 		//Seta: habitats -> llanura, montaña y colina
-		seta = new EspecieVegetal("Seta",1000,50,50,50,0.1f,8,listaHabs,0,modelosVegetales.setas);
+		seta = new EspecieVegetal("Seta",1000,50,50,50,0.1f,8,listaHabs,1,modelosVegetales.setas);
 		
 		listaHabs.Remove(T_habitats.costa);
 		listaHabs.Remove(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
 		//Flor: habitats -> llanura, tundra y colina
-		flor = new EspecieVegetal("Flor",1000,50,50,20,0.1f,15,listaHabs,1,modelosVegetales.flores);
+		flor = new EspecieVegetal("Flor",1000,50,50,20,0.1f,15,listaHabs,2,modelosVegetales.flores);
 		
 		listaHabs.Add(T_habitats.costa);
 		listaHabs.Add(T_habitats.desierto);
 		listaHabs.Remove(T_habitats.colina);
 		//Palo (Caña): habitats -> llanura, costa y desierto
-		palo = new EspecieVegetal("Caña",1000,50,50,20,0.1f,12,listaHabs,2,modelosVegetales.canas);
+		palo = new EspecieVegetal("Caña",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.canas);
 		
 		listaHabs.Remove(T_habitats.costa);
 		listaHabs.Remove(T_habitats.desierto);
@@ -90,7 +90,7 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.volcanico);
 		listaHabs.Add(T_habitats.tundra);
 		//Arbusto: habitats -> llanura, montaña, colina, tundra y volcanico
-		arbusto = new EspecieVegetal("Arbusto",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.arbustos);
+		arbusto = new EspecieVegetal("Arbusto",1000,50,50,20,0.1f,12,listaHabs,2,modelosVegetales.arbustos);
 		
 		listaHabs.Add(T_habitats.desierto);
 		listaHabs.Remove(T_habitats.llanura);
@@ -103,7 +103,7 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
 		//Cactus: habitats -> llanura, colina y desierto
-		cactus = new EspecieVegetal("Cactus",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.cactus);
+		cactus = new EspecieVegetal("Cactus",1000,50,50,20,0.1f,12,listaHabs,0,modelosVegetales.cactus);
 		
 		listaHabs.Add(T_habitats.costa);
 		listaHabs.Remove(T_habitats.desierto);
@@ -113,19 +113,19 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Remove(T_habitats.costa);
 		listaHabs.Add(T_habitats.montana);
 		//Pino: habitats -> llanura, colina y montaña
-		pino = new EspecieVegetal("Pino",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.pinos);
+		pino = new EspecieVegetal("Pino",1000,50,50,20,0.1f,12,listaHabs,2,modelosVegetales.pinos);
 		
 		listaHabs.Remove(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
 		//Ciprés: habitats -> tundra, llanura y colina
-		cipres = new EspecieVegetal("Ciprés",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.cipreses);
+		cipres = new EspecieVegetal("Ciprés",1000,50,50,20,0.1f,12,listaHabs,2,modelosVegetales.cipreses);
 		
 		listaHabs.Remove(T_habitats.llanura);
 		listaHabs.Remove(T_habitats.costa);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
 		//Pino Alto: habitats -> colina, tundra y montaña
-		pinoAlto = new EspecieVegetal("Pino Alto",1000,50,50,20,0.1f,12,listaHabs,3,modelosVegetales.pinosAltos);
+		pinoAlto = new EspecieVegetal("Pino Alto",1000,50,50,20,0.1f,12,listaHabs,1,modelosVegetales.pinosAltos);
 		
 		
 		/* Herbivoros */
@@ -193,11 +193,11 @@ public class TiposSeres : MonoBehaviour {
 	void Start () {
 		
 		//Añadir a Vida los edificios
-		principal.anadeTipoEdificio(fabricaComBas);
-		principal.anadeTipoEdificio(energia);
+		principal.anadeTipoEdificio(fabrica1);
+		principal.anadeTipoEdificio(energia1);
 		principal.anadeTipoEdificio(granja);
-		principal.anadeTipoEdificio(fabricaComAdv);
-		principal.anadeTipoEdificio(energiaAdv);
+		principal.anadeTipoEdificio(fabrica2);
+		principal.anadeTipoEdificio(energia2);
 		
 		//Añadir a Vida los vegetales
 		principal.anadeEspecieVegetal(seta);
