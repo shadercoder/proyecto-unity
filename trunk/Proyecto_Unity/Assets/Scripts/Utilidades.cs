@@ -372,56 +372,6 @@ public class FuncTablero {
 		return y;
 	}
 	
-//	[Obsolete("No es necesario usar este metodo")]
-//	public static Color[] realzarRelieve(Color[] pix, float media) {
-//		Color[] pixels = pix;
-//		for (int i = 0; i < pixels.Length; i++) {
-//			float valor = pixels[i].r;
-//			//Los valores por encima de la media * 2 seran maximos (0.85 sobre 1)
-//			//y de ahi hacia abajo linealmente descendentes (hasta 0)
-//			if (valor <= (media * 2.0f))
-//				valor = Mathf.Lerp(0.0f, 0.65f, valor / (media * 2.0f));
-//			else
-//				valor = Mathf.Lerp(0.65f, 1.0f, valor / (media * 6.5f));
-//			pixels[i] = new Color(valor, valor, valor);
-//		}
-//		return pixels;
-//	}
-	
-//	[Obsolete("No es necesario usar este metodo")]
-//	public static Color32[] creaNormalMap(Texture2D tex){
-//		Color32[] pixels = tex.GetPixels32();
-//		Color32[] pixelsN = new Color32[anchoTextura * altoTextura];
-//		Color c3;
-//		
-//		for (int y = 0; y < altoTextura; y++) {
-//	        int offset  = y * anchoTextura;
-//	        for (int x = 0; x < anchoTextura; x++)
-//	        {
-//	
-//	            float h0 = pixels[x + offset].r;
-//	            float h1 = pixels[x + (anchoTextura * safey(y + 1))].r;
-//	            float h2  = pixels[safex(x + 1) + offset].r;
-//	
-//	            float Nx = h0 - h2;
-//	            float Ny = h0 - h1;
-//				float Nz = atenuacionRelieve;
-//	
-//	            Vector3 normal = new Vector3(Nx,Ny,Nz);
-//				normal.Normalize();
-//	            normal /= 2;
-//				
-//	            byte cr = (byte)(128 + (255 * normal.x));
-//	            byte cg = (byte)(128 + (255 * normal.y));
-//	            byte cb = (byte)(128 + (255 * normal.z));
-//				c3 = new Color32(cr, cg, cb, 128);
-//	            
-//				pixelsN[x + offset] = c3;
-//	        }
-//	    }
-//	    return pixelsN;
-//	}
-	
 	private static T_habitats[] calculaHabitats(Texture2D texHeightmap, Texture2D texHabitats, Texture2D texHabitatsEstetica, Texture2D texElems, out T_elementos[] elemsOut) {
 		T_habitats[] habitats = new T_habitats[altoTablero*anchoTablero];
 		T_elementos[] elems = new T_elementos[altoTablero*anchoTablero];
@@ -471,12 +421,19 @@ public class FuncTablero {
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
 				//Se calcula la media de altura de la casilla
 				float media = 0;
-				for (int x = 0; x < relTexTabAlto; x++) {
-					for (int y = 0; y < relTexTabAncho; y++) {
-						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
-					}
-				}
-				media = media / (relTexTabAncho * relTexTabAlto);
+				//Contabilizar solo las esquinas de la casilla para la media
+				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
+				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
+				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				media = media / 4;
+				//Contabilizar todos los pixeles de la casilla
+//				for (int x = 0; x < relTexTabAlto; x++) {
+//					for (int y = 0; y < relTexTabAncho; y++) {
+//						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+//					}
+//				}
+//				media = media / (relTexTabAncho * relTexTabAlto);
 				
 				//Se calcula el habitat en el que va a estar la casilla
 				T_habitats habitatTemp;
@@ -600,12 +557,19 @@ public class FuncTablero {
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
 				//Se calcula la media de altura de la casilla
 				float media = 0;
-				for (int x = 0; x < relTexTabAlto; x++) {
-					for (int y = 0; y < relTexTabAncho; y++) {
-						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
-					}
-				}
-				media = media / (relTexTabAncho * relTexTabAlto);
+				//Contabilizar solo las esquinas de la casilla para la media
+				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
+				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
+				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				media = media / 4;
+				//Contabilizar todos los pixeles de la casilla
+//				for (int x = 0; x < relTexTabAlto; x++) {
+//					for (int y = 0; y < relTexTabAncho; y++) {
+//						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+//					}
+//				}
+//				media = media / (relTexTabAncho * relTexTabAlto);
 				
 				//Se calcula el habitat en el que va a estar la casilla
 				T_habitats habitatTemp;
@@ -728,12 +692,19 @@ public class FuncTablero {
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
 				//Se calcula la media de altura de la casilla
 				float media = 0;
-				for (int x = 0; x < relTexTabAlto; x++) {
-					for (int y = 0; y < relTexTabAncho; y++) {
-						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
-					}
-				}
-				media = media / (relTexTabAncho * relTexTabAlto);
+				//Contabilizar solo las esquinas de la casilla para la media
+				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
+				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
+				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				media = media / 4;
+				//Contabilizar todos los pixeles de la casilla
+//				for (int x = 0; x < relTexTabAlto; x++) {
+//					for (int y = 0; y < relTexTabAncho; y++) {
+//						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+//					}
+//				}
+//				media = media / (relTexTabAncho * relTexTabAlto);
 				
 				//Se calcula el habitat en el que va a estar la casilla
 				T_habitats habitatTemp;
