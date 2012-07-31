@@ -26,16 +26,16 @@ public class InterfazPrincipal : MonoBehaviour {
 	public float tiempoTooltip = 0.75f;						//Tiempo que tarda en aparecer el tooltip	
 	
 	//Enumerados
-	private enum taspectRatio							//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
+	private enum taspectRatio								//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
 		{aspectRatio16_9,aspectRatio16_10,aspectRatio4_3};
 	private taspectRatio aspectRatio;	
-	private enum taccion								//Acción que se esta realizando en el momento actual
+	private enum taccion									//Acción que se esta realizando en el momento actual
 		{ninguna,desplegableInsercionV_A,seleccionarInsercion,insertar,mostrarInfoDetallada,mostrarMejoras,mostrarHabilidades}
 	private taccion accion = taccion.ninguna;
-	private enum tcategoriaInsercion					//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
+	private enum tcategoriaInsercion						//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
 		{desactivada,animal,vegetal,edificio}
 	private tcategoriaInsercion categoriaInsercion = tcategoriaInsercion.desactivada;
-	private enum telementoInsercion						//Tipo de elemento seleccionado en un momento dado
+	private enum telementoInsercion							//Tipo de elemento seleccionado en un momento dado
 		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,seta,flor,cana,arbusto,estromatolito,cactus,palmera,pino,cipres,pinoAlto,
 		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}	
 	private telementoInsercion elementoInsercion = telementoInsercion.ninguno;
@@ -185,7 +185,7 @@ public class InterfazPrincipal : MonoBehaviour {
 			if(GUILayout.Button(new GUIContent("","Accede al menu de construir edificios"),"BotonInsertarEdificios"))
 			{	
 				accion = taccion.seleccionarInsercion;
-				categoriaInsercion = tcategoriaInsercion.edificio;		
+				categoriaInsercion = tcategoriaInsercion.edificio;	
 			}
 			if(GUILayout.Button(new GUIContent("","Accede al menu de mejoras de la nave"),"BotonAccederMejoras"))
 				accion = taccion.mostrarMejoras;	
@@ -236,31 +236,36 @@ public class InterfazPrincipal : MonoBehaviour {
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes básicos"),"BotonInsertarFabComBas"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.fabricaCompBas;
+					elementoInsercion = telementoInsercion.fabricaCompBas;			
+					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía"),"BotonInsertarCenEn"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.centralEnergia;
+					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Granja"),"BotonInsertarGranja"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.granja;
+					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.fabricaCompBas;
+					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía avanzada"),"BotonInsertarCenEnAdv"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.centralEnergiaAdv;
+					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
 				}		
 				GUILayout.Space(cuantoW);
 				GUILayout.EndHorizontal();
@@ -409,8 +414,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	{
 		if(accion == taccion.insertar)
 		{	
-			//pintar modelo en tiempo real y area de efecto si es necesario
-			
+			//pintar modelo en tiempo real y area de efecto si es necesario			
 			if(Input.GetMouseButton(0))
 			{
 				int x = 0;
@@ -423,9 +427,22 @@ public class InterfazPrincipal : MonoBehaviour {
 						TipoEdificio[] tipos = new TipoEdificio[principal.vida.tiposEdificios.Count];
 						principal.vida.tiposEdificios.Values.CopyTo(tipos,0);
 						TipoEdificio tedif = tipos[tipo];
-						principal.vida.anadeEdificio(tedif,y,x);						
+						if(principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,
+						                             tedif.matBioConsumidoAlCrear))
+						{							
+							if(principal.vida.anadeEdificio(tedif,y,x,0,0,0,0,10,10,10,10))
+							{
+								principal.modificaRecursosPorTurno(10,10,10,10);								
+							}
+							else									
+								;//Mostrar por pantalla que no se ha podido insertar por que el habitat no es el adecuado o xq ya existe un edificio ahi
+						}
+						else
+							//Mostrar por pantalla que no se ha podido insertar por falta de recursos
+						
 						elementoInsercion = telementoInsercion.ninguno;
-						accion = taccion.ninguna;						
+						accion = taccion.ninguna;	
+						principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 0);	
 					}					
 					else if(tipo >= 5 && tipo < 15)			//Vegetal
 					{

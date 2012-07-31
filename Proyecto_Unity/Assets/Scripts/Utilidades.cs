@@ -178,7 +178,7 @@ public class SaveLoad {
 //Clase para tratar la textura y el tablero -----------------------------------------------------------------------------------------
 public enum T_habitats {montana, llanura, colina, desierto, volcanico, mar, costa, tundra, inhabitable};	//Tipos de orografía
 public enum T_elementos {comunes, raros, nada};																//Se pueden añadir mas mas adelante
-
+	
 public class FuncTablero {
 	
 	//Variables ----------------------------------------------------------------------------------------------------------------------
@@ -207,7 +207,7 @@ public class FuncTablero {
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
 	public static int altoTablero = 64;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
-	public static int casillasPolos	= 0;			//El numero de casillas que serán intransitables en los polos
+	public static int casillasPolos	= 5;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
 		
@@ -958,9 +958,9 @@ public class FuncTablero {
 		int[] indices = SaveLoad.LoadIndices().indices;
 		
 		//Descomentar para generar indices nuevos---------
-//		Vector2[] uvs = mesh.uv;
-//		int[] indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
-//		SaveLoad.SaveIndices(indices);
+		//Vector2[] uvs = mesh.uv;
+		//int[] indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
+		//SaveLoad.SaveIndices(indices);
 		
 		//Generacion de indices ----------------------------------------------
 		

@@ -301,7 +301,8 @@ public class Vida
 	}
 	
 	//Devuelve false si el edificio ya existe (no se añade) y true si se añade correctamente	
-	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY)
+	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY,int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno,
+	                			int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno)
 	{
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
@@ -310,7 +311,8 @@ public class Vida
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
 		Vector3 coordsVert = new Vector3(x,y,z);		
-		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,FuncTablero.creaMesh(coordsVert,modelo));
+		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,energiaConsumidaPorTurno,compBasConsumidosPorTurno,compAvzConsumidosPorTurno,matBioConsumidoPorTurno,
+		                                 energiaProducidaPorTurno,compBasProducidosPorTurno,compAvzProducidosPorTurno,matBioProducidoPorTurno,FuncTablero.creaMesh(coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
 		idActualEdificio++;		
 		seres.Add(edificio);
@@ -503,6 +505,7 @@ public class Vida
 		Ser ser;
 		Vegetal vegetal;
 		Animal animal;
+		Edificio edificio;
 		for(int i = 0; i < seres.Count; i++)
 		{
 			ser = seres[i];
@@ -536,8 +539,7 @@ public class Vida
 			}	
 			else if(ser is Edificio)
 			{
-				
-				
+				edificio = (Edificio)ser;				
 			}
 		}
 		texturaPlantas.Apply();
@@ -611,7 +613,12 @@ public class TipoEdificio
 {
 	public int idTipoEdificio;							//Identificador del tipo de edificio
 	public string nombre;								//Nombre del tipo de ser
-	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
+	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar	
+	public int energiaConsumidaAlCrear;
+	public int compBasConsumidosAlCrear;
+	public int compAvzConsumidosAlCrear;
+	public int matBioConsumidoAlCrear;
+	public T_elementos elemNecesarioAlConstruir;
 	public List<GameObject> modelos;					//Distintos modelos que pueden representar al edificio		
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
@@ -643,33 +650,57 @@ public class TipoEdificio
 		return true;
 	}
 	
-	public TipoEdificio(string nombre,T_habitats habitat,GameObject modelo)
+	public TipoEdificio(string nombre,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	                    T_elementos elemNecesarioAlConstruir,GameObject modelo)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
 		aniadirHabitat(habitat);
+		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
+		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
+		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
+		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
+		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}
-	public TipoEdificio(string nombre,List<T_habitats> habitats,GameObject modelo)
+	public TipoEdificio(string nombre,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	                    T_elementos elemNecesarioAlConstruir,GameObject modelo)
 	{
 		this.nombre = nombre;
 		this.habitats = habitats;
+		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
+		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
+		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
+		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
+		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}
 	
-	public TipoEdificio(string nombre,T_habitats habitat,List<GameObject> modelos)
+	public TipoEdificio(string nombre,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	                    T_elementos elemNecesarioAlConstruir,List<GameObject> modelos)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
 		aniadirHabitat(habitat);
+		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
+		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
+		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
+		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
+		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
 		this.modelos = modelos;
 	}
-	public TipoEdificio(string nombre,List<T_habitats> habitats,List<GameObject> modelos)
+	public TipoEdificio(string nombre,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	                    T_elementos elemNecesarioAlConstruir,List<GameObject> modelos)
 	{
 		this.nombre = nombre;
 		this.habitats = habitats;
+		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
+		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
+		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
+		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
+		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
 		this.modelos = modelos;		
 	}
 }
@@ -980,14 +1011,33 @@ public class Animal : Ser
 public class Edificio : Ser
 {
 	public TipoEdificio tipo;
-	//public GameObject modelo;
-	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,GameObject modelo)
+	public int radioAccion;
+	public int[,] matrizRadioAccion;
+	public int energiaConsumidaPorTurno;
+	public int compBasConsumidosPorTurno;
+	public int compAvzConsumidosPorTurno;
+	public int matBioConsumidoPorTurno;
+	public int energiaProducidaPorTurno;
+	public int compBasProducidosPorTurno;
+	public int compAvzProducidosPorTurno;
+	public int matBioProducidoPorTurno;
+	
+	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno,
+	                int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.tipo = tipo;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
 		this.posX = posX;
 		this.posY = posY;
+		this.energiaConsumidaPorTurno = energiaConsumidaPorTurno;
+		this.compBasConsumidosPorTurno = compBasConsumidosPorTurno;
+		this.compAvzConsumidosPorTurno = compAvzConsumidosPorTurno;
+		this.matBioConsumidoPorTurno = matBioConsumidoPorTurno;
+		this.energiaProducidaPorTurno = energiaProducidaPorTurno;
+		this.compBasProducidosPorTurno = compBasProducidosPorTurno;
+		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
+		this.matBioProducidoPorTurno = matBioProducidoPorTurno;
 		this.modelo = modelo;
 	}
 }
