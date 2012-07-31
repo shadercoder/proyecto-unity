@@ -27,6 +27,10 @@ public class Principal : MonoBehaviour {
 	public int materialBiologico = 0;									//Cantidad de material biologico alojado en la nave
 	public int materialBiologicoDif = 0;								//Incremento o decremento por turno de material biologico
 	
+	public int energiaMax = 1000;										//Energía máxima que se puede almacenar
+	public int componentesBasicosMax = 250;								//Componentes básicos máximos que se pueden almacenar
+	public int componentesAvanzadosMax = 100;							//Componentes avanzados máximos que se pueden almacenar
+	public int materialBiologicoMax = 50;								//Material biológico máximo que se puede almacenar
 	
 	//Algoritmo vida
 	public Vida vida;													//Tablero lógico del algoritmo		
@@ -98,6 +102,7 @@ public class Principal : MonoBehaviour {
 		tiempoPaso += Time.deltaTime;		
 		if(algoritmoActivado && tiempoPaso > 1.0f) 		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
 		{		
+			actualizaRecursos();
 			vida.algoritmoVida();
 			numPasos++;
 			tiempoPaso = 0.0f;
@@ -180,5 +185,129 @@ public class Principal : MonoBehaviour {
 	
 	public void anadeEspecieAnimal(EspecieAnimal animal) {
 		vida.anadeEspecieAnimal(animal);
+	}
+	
+	//Devuelve true si es posible consumir la energía pedida y false si no hay suficiente
+	public bool consumeEnergia(int energiaAconsumir)
+	{
+		if(energia >= energiaAconsumir)
+		{
+			energia -= energiaAconsumir;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	//Devuelve true si es posible consumir los componentes básicos pedidos y false si no hay suficientes
+	public bool consumeComponentesBasicos(int componentesAconsumir)
+	{
+		if(componentesBasicos >= componentesAconsumir)
+		{
+			componentesBasicos -= componentesAconsumir;
+			return true;
+		}
+		else
+			return false;
+	}
+
+	//Devuelve true si es posible consumir los componentes avanzados pedidos y false si no hay suficientes
+	public bool consumeComponentesAvanzados(int componentesAconsumir)
+	{
+		if(componentesAvanzados >= componentesAconsumir)
+		{
+			componentesAvanzados -= componentesAconsumir;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	//Devuelve true si es posible consumir los componentes básicos pedidos y false si no hay suficientes	
+	public bool consumeMaterialBiologico(int materialAconsumir)
+	{
+		if(materialBiologico >= materialAconsumir)
+		{
+			materialBiologico -= materialAconsumir;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	//Modifica la cantidad de energia que se consume por turno
+	public void modificaEnergiaPorTurno(int energiaPorTurno)
+	{
+		energiaDif += energiaPorTurno;
+	}
+	
+	//Modifica la cantidad de componentes básicos que se consumen por turno
+	public void modificaComponentesBasicosPorTurno(int componentesPorTurno)
+	{
+		componentesBasicosDif += componentesPorTurno;
+	}
+	//Modifica la cantidad de componentes avanzados que se consumen por turno
+	public void modificaComponentesAvanzadosPorTurno(int componentesPorTurno)
+	{
+		componentesAvanzadosDif += componentesPorTurno;
+	}
+	
+	//Modifica la cantidad de material biológico que se consume por turno
+	public void modificaMaterialBiologicoPorTurno(int materialPorTurno)
+	{
+		materialBiologicoDif += materialPorTurno;
+	}
+	
+	
+	//Actualiza los recursos sumando o restando los consumidos por turno
+	public void actualizaRecursos()
+	{
+		energia += energiaDif;
+		if(energia > energiaMax)
+		{
+			energia = energiaMax;
+			//Avisar en el bloque de mensajes que la energía producida es superior a la que se puede almacenar
+		}
+		else if(energia < 0)
+		{
+			energia = 0;
+			//Desactivar cosas hasta que la energía sea >= 0 y avisarlo por el bloque de mensajes			
+		}
+		
+		componentesBasicos += componentesBasicosDif;
+		if(componentesBasicos > componentesBasicosMax)
+		{
+			componentesBasicos = componentesBasicosMax;
+			//Avisar en el bloque de mensajes que el número de componentes básicos producido es superior al que se puede almacenar
+		}
+		else if(componentesBasicos < 0)
+		{
+			componentesBasicos = 0;
+			//Desactivar cosas hasta que el número de componentes básicos sea >= 0 y avisarlo por el bloque de mensajes			
+		}
+		
+		componentesAvanzados += componentesAvanzadosDif;
+		if(componentesAvanzados > componentesAvanzadosMax)
+		{
+			componentesAvanzados = componentesAvanzadosMax;
+			//Avisar en el bloque de mensajes que el número de componentes avanzados producido es superior al que se puede almacenar
+		}
+		else if(componentesAvanzados < 0)
+		{
+			componentesAvanzados = 0;
+			//Desactivar cosas hasta que el número de componentes avanzados sea >= 0 y avisarlo por el bloque de mensajes			
+		}
+		
+		materialBiologico += materialBiologicoDif;
+		if(materialBiologico > materialBiologicoMax)
+		{
+			materialBiologico = materialBiologicoMax;
+			//Avisar en el bloque de mensajes que el número de material biológico producido es superior al que se puede almacenar
+		}
+		else if(materialBiologico < 0)
+		{
+			materialBiologico = 0;
+			//Desactivar cosas hasta que el número de material biológico sea >= 0 y avisarlo por el bloque de mensajes			
+		}		
 	}
 }
