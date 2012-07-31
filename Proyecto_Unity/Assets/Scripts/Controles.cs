@@ -20,8 +20,8 @@ public class Controles : MonoBehaviour {
 	//Posición y rotacion actuales
 	private float distanciaNave		= 5.0f;					//La distancia hasta la nave desde la camara
 	private float distanciaObjetivo = 7.0f;					//La distancia entre la nave y el objetivo
-	private int distanciaMin		= 3;					//La minima distancia a la que estara la camara
-	private int distanciaMax		= 20;					//La maxima distancia a la que estara la camara
+	private int distanciaMin		= 1;					//La minima distancia a la que estara la camara
+	private int distanciaMax		= 30;					//La maxima distancia a la que estara la camara
 	
 	private Quaternion rotCamara	= Quaternion.identity;	//Sirve para conservar la rotación de la nave correctamente
 	
@@ -30,7 +30,7 @@ public class Controles : MonoBehaviour {
 	private float velocidadY 		= 0.0f;					//Es cambiada por el método SmoothDamp de forma dinámica
 	private float xSuave 			= 0.0f;					//Dicta el movimiento con una trayectoria suavizada
 	private float ySuave 			= 0.0f;					//Dicta el movimiento con una trayectoria suavizada
-	private float velocidadMax		= 5.0f;					//La velocidad máxima a la que puede moverse la nave
+	public float velocidadMax		= 25.0f;				//La velocidad máxima a la que puede moverse la nave
 	
 	//Variables privadas y estados
 	private bool interaccion		= true;					//Dicta si la interacción está activada o desactivada
@@ -97,7 +97,7 @@ public class Controles : MonoBehaviour {
 		rotacionNave = Quaternion.Euler(ySuave, xSuave, 0);
 		//Y calculamos la posición a raiz de esta
 		nave.position = rotacionNave * new Vector3(0.0f, 0.0f, -distanciaObjetivo) + objetivo.position;
-		//TODO Rotar la nave con un Quaternion.Slerp para que vaya moviéndose en la dirección
+		//Rotar la nave para que vaya moviéndose en la dirección
 		//en la que avanza.
 		nave.LookAt(objetivo.position);
 		//Si se pulsa el botón derecho del ratón, se rota en torno a la nave
