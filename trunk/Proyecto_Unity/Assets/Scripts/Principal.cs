@@ -187,6 +187,23 @@ public class Principal : MonoBehaviour {
 		vida.anadeEspecieAnimal(animal);
 	}
 	
+	//Devuelve true si es posible consumir los recursos pedidosa y false si no hay suficiente de alguno de ellos
+	public bool consumeRecursos(int energiaAconsumir,int componentesBasAconsumir,int componentesAvzAconsumir,int materialAconsumir)
+	{
+		if(energia >= energiaAconsumir && componentesBasicos >= componentesBasAconsumir && componentesAvanzados >= componentesAvzAconsumir && 
+		   materialBiologico >= materialAconsumir)
+		{
+			energia -= energiaAconsumir;
+			componentesBasicos -= componentesBasAconsumir;
+			componentesAvanzados -= componentesAvzAconsumir;
+			materialBiologico -= materialAconsumir;		
+			return true;
+		}
+		else
+			return false;
+		
+	}
+	
 	//Devuelve true si es posible consumir la energía pedida y false si no hay suficiente
 	public bool consumeEnergia(int energiaAconsumir)
 	{
@@ -235,6 +252,15 @@ public class Principal : MonoBehaviour {
 			return false;
 	}
 	
+	//Modifica la cantidad de cada recurso que se consume por turno
+	public void modificaRecursosPorTurno(int energiaPorTurno,int componentesBasPorTurno,int componentesAvzPorTurno,int materialPorTurno)
+	{
+		energiaDif += energiaPorTurno;
+		componentesBasicosDif += componentesBasPorTurno;
+		componentesAvanzadosDif += componentesAvzPorTurno;
+		materialBiologicoDif += materialPorTurno;
+	}
+	
 	//Modifica la cantidad de energia que se consume por turno
 	public void modificaEnergiaPorTurno(int energiaPorTurno)
 	{
@@ -244,7 +270,6 @@ public class Principal : MonoBehaviour {
 	//Modifica la cantidad de componentes básicos que se consumen por turno
 	public void modificaComponentesBasicosPorTurno(int componentesPorTurno)
 	{
-		componentesBasicosDif += componentesPorTurno;
 	}
 	//Modifica la cantidad de componentes avanzados que se consumen por turno
 	public void modificaComponentesAvanzadosPorTurno(int componentesPorTurno)
