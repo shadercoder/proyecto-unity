@@ -14,8 +14,6 @@ _colorPlanta4("_colorPlanta4", Color) = (1,1,1,1)
 _planta4("_planta4", 2D) = "black" {}
 _MainTex("Textura Plantas", 2D) = "black" {}
 _valorBlend("_valorBlend", Range(0.01,0.9) ) = 0.01
-_Relieve("Textura Relieve", 2D) = "black" {}
-_Amount("Extrusion", Range(-3,3) ) = 0.5
 
 	}
 	
@@ -55,8 +53,6 @@ float4 _colorPlanta4;
 sampler2D _planta4;
 sampler2D _MainTex;
 float _valorBlend;
-sampler2D _Relieve;
-float _Amount;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -126,32 +122,34 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 float4 Sampled2D2=tex2D(_planta1,IN.uv_planta1.xy);
 float4 Multiply3=Sampled2D2 * _colorPlanta1;
 float4 Sampled2D6=tex2D(_MainTex,IN.uv_MainTex.xy);
-float4 Split0=Sampled2D6;
-float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.w, Split0.w, Split0.w, Split0.w);
-float4 Lerp4_1_NoInput = float4(0,0,0,0);
-float4 Lerp4=lerp(Multiply3,Lerp4_1_NoInput,Invert0);
+float4 Splat0=Sampled2D6.w;
+float4 Lerp4_0_NoInput = float4(0,0,0,0);
+float4 Lerp4=lerp(Lerp4_0_NoInput,Multiply3,Splat0);
 float4 Sampled2D5=tex2D(_planta2,IN.uv_planta2.xy);
 float4 Multiply4=Sampled2D5 * _colorPlanta2;
-float4 Lerp0=lerp(Lerp4,Multiply4,float4( Split0.x, Split0.x, Split0.x, Split0.x));
+float4 Splat1=Sampled2D6.z;
+float4 Lerp0=lerp(Lerp4,Multiply4,Splat1);
 float4 Sampled2D3=tex2D(_planta3,IN.uv_planta3.xy);
 float4 Multiply1=Sampled2D3 * _colorPlanta3;
-float4 Lerp1=lerp(Lerp0,Multiply1,float4( Split0.y, Split0.y, Split0.y, Split0.y));
+float4 Splat3=Sampled2D6.y;
+float4 Lerp1=lerp(Lerp0,Multiply1,Splat3);
 float4 Sampled2D1=tex2D(_planta4,IN.uv_planta4.xy);
 float4 Multiply0=Sampled2D1 * _colorPlanta4;
-float4 Lerp2=lerp(Lerp1,Multiply0,float4( Split0.z, Split0.z, Split0.z, Split0.z));
+float4 Splat2=Sampled2D6.x;
+float4 Lerp2=lerp(Lerp1,Multiply0,Splat2);
 float4 Multiply5=Lerp2 * _Emission.xxxx;
-float4 Add4=float4( Split0.x, Split0.x, Split0.x, Split0.x) + float4( Split0.z, Split0.z, Split0.z, Split0.z);
-float4 Add5=float4( Split0.z, Split0.z, Split0.z, Split0.z) + Sampled2D6.aaaa;
+float4 Add4=Splat0 + Splat1;
+float4 Add5=Splat3 + Splat2;
 float4 Add6=Add4 + Add5;
 float4 Subtract0=Add6 - _valorBlend.xxxx;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
+float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 clip( Subtract0 );
 o.Albedo = Lerp2;
 o.Emission = Multiply5;
-o.Alpha = Sampled2D6.aaaa;
 
 				o.Normal = normalize(o.Normal);
 			}
