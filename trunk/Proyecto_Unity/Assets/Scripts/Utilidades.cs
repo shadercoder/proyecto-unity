@@ -539,7 +539,8 @@ public class FuncTablero {
 				}
 				Color colorTemp = getColorHabitat(habitatTemp);
 				Color colorTemp2 = getColorElem(elemTemp);
-				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp, false, true);			
+				Color colorTemp3 = getColorHabitatShader(habitatTemp);
+				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp3, true, true);			
 				pintaPixelsCasilla(pixelsHab, cord, colorTemp);
 				pintaPixelsCasilla(pixelsElem, cord, colorTemp2);
 				
@@ -675,7 +676,8 @@ public class FuncTablero {
 				}
 				Color colorTemp = getColorHabitat(habitatTemp);
 				Color colorTemp2 = getColorElem(elemTemp);
-				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp, false, true);			
+				Color colorTemp3 = getColorHabitatShader(habitatTemp);
+				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp3, true, true);			
 				pintaPixelsCasilla(pixelsHab, cord, colorTemp);
 				pintaPixelsCasilla(pixelsElem, cord, colorTemp2);
 				
@@ -804,7 +806,8 @@ public class FuncTablero {
 				
 				Color colorTemp = getColorHabitat(habitatTemp);
 				Color colorTemp2 = getColorElem(elemTemp);
-				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp, false, true);
+				Color colorTemp3 = getColorHabitatShader(habitatTemp);
+				pintaTexPincel(texHabitatsEstetica, cord, UnityEngine.Random.Range(6,14), colorTemp3, true, true);
 				pintaPixelsCasilla(pixelsHab, cord, colorTemp);
 				pintaPixelsCasilla(pixelsElem,cord, colorTemp2);
 
@@ -863,6 +866,40 @@ public class FuncTablero {
 					break;
 				case T_habitats.montana:
 					colorTemp = new Color(0.5f, 0.5f, 0.55f, 0.0f);
+					break;
+				default:
+					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+					break;
+				}	
+		return colorTemp;
+	}
+	
+	private static Color getColorHabitatShader(T_habitats habitatTemp){
+		Color colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+				switch (habitatTemp) {
+				case T_habitats.mar:
+					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+					break;
+				case T_habitats.costa:
+					colorTemp = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+					break;
+				case T_habitats.llanura:
+					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+					break;
+				case T_habitats.tundra:
+					colorTemp = new Color(0.0f, 1.0f, 0.0f, 0.0f);
+					break;
+				case T_habitats.desierto:
+					colorTemp = new Color(0.0f, 0.0f, 1.0f, 0.0f);
+					break;
+				case T_habitats.colina:
+					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+					break;
+				case T_habitats.volcanico:
+					colorTemp = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+					break;
+				case T_habitats.montana:
+					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 					break;
 				default:
 					colorTemp = new Color(0.0f, 0.0f, 0.0f, 0.0f);

@@ -4,7 +4,7 @@ TextureImporter:
   importerVersion: 2
   maxTextureSize: 32
   textureFormat: -1
-  grayscaleToAlpha: 0
+  grayscaleToAlpha: 1
   npotScale: 0
   generateCubemap: 0
   isReadable: 1
