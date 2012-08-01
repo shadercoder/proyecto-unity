@@ -382,9 +382,12 @@ public class FuncTablero {
 		Color[] pixelsHab = texHabitats.GetPixels();
 		Color[] pixelsElem = texElems.GetPixels();
 		int altoTableroUtil = altoTablero - casillasPolos * 2;
+		
+		float tempeLineal = 0;
+		int casillasTempe = (int)Mathf.Lerp(0,altoTableroUtil / 4, temperatura);
 		//Se divide el espacio en zonas (en este caso 3 franjas horizontales)
-		int limiteHab1 = altoTableroUtil / 3 + casillasPolos;
-		int limiteHab2 = (altoTableroUtil / 3) * 2 + (altoTableroUtil % 3);
+		int limiteHab1 = altoTableroUtil / 3 + casillasPolos - (casillasTempe / 2);
+		int limiteHab2 = (altoTableroUtil / 3) * 2 + (altoTableroUtil % 3) + casillasTempe + (casillasTempe % 2);
 		
 		/* TODO A la hora de hacer aleatorio un habitat, se me ocurre un problema posible.
 		 * Una vez que empiece a haber una zona con un habitat, va a ser dificil que cambie a otro
@@ -416,6 +419,7 @@ public class FuncTablero {
 		//calculaFranja(casillasPolos, limiteHab1, pixels, pixelsHab, habitats, elems, texHabitatsEstetica);
 		
 		for (int i = casillasPolos; i < limiteHab1; i++) {
+			tempeLineal = Mathf.Lerp(0, temperatura / 2, (i - casillasPolos) / (limiteHab1 - casillasPolos));
 			for (int j = 0; j < anchoTablero; j++) {
 				//Coordenadas de la casilla que estamos mirando
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
@@ -453,8 +457,8 @@ public class FuncTablero {
 					float posTundra = 0.15f;;
 					
 					//TODO Esto es un planteamiento posible de como usar la temperatura
-					posTundra -= temperatura * 0.1f;		//La temperatura hace que haya menos tundras
-					posDesierto += temperatura * 0.1f;		//La temperatura hace que haya mas desiertos
+					posTundra -= tempeLineal * 0.1f;		//La temperatura hace que haya menos tundras
+					posDesierto += tempeLineal * 0.1f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
@@ -485,7 +489,7 @@ public class FuncTablero {
 					float posibilidad = 0.25f;
 					
 					//TODO Posible uso de temperatura
-					posibilidad += temperatura * 0.1f;
+					posibilidad += tempeLineal * 0.1f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posibilidad += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
@@ -518,7 +522,7 @@ public class FuncTablero {
 					float posibilidad = 0.01f;
 					
 					//TODO Posible uso de temperatura
-					posibilidad += temperatura * 0.01f;
+					posibilidad += tempeLineal * 0.01f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posibilidad += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.01f;
@@ -553,6 +557,7 @@ public class FuncTablero {
 		//Se calcula de derecha a izquierda y de abajo a arriba
 		
 		for (int i = altoTablero - 1 - casillasPolos; i >= limiteHab2; i--) {
+			tempeLineal = Mathf.Lerp(temperatura / 2, 0, (i - limiteHab2) / (altoTablero - casillasPolos - 1 - limiteHab2));
 			for (int j = anchoTablero - 1; j >= 0; j--) {
 				//Coordenadas de la casilla que estamos mirando
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
@@ -590,8 +595,8 @@ public class FuncTablero {
 					float posTundra = 0.15f;;
 					
 					//TODO Esto es un planteamiento posible de como usar la temperatura
-					posTundra -= temperatura * 0.1f;		//La temperatura hace que haya menos tundras
-					posDesierto += temperatura * 0.1f;		//La temperatura hace que haya mas desiertos
+					posTundra -= tempeLineal * 0.1f;		//La temperatura hace que haya menos tundras
+					posDesierto += tempeLineal * 0.1f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
@@ -622,7 +627,7 @@ public class FuncTablero {
 					float posibilidad = 0.25f;
 					
 					//TODO Posible uso de temperatura
-					posibilidad += temperatura * 0.1f;
+					posibilidad += tempeLineal * 0.1f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posibilidad += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
@@ -655,7 +660,7 @@ public class FuncTablero {
 					float posibilidad = 0.01f;
 					
 					//TODO Posible uso de temperatura
-					posibilidad += temperatura * 0.01f;
+					posibilidad += tempeLineal * 0.01f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posibilidad += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.01f;
@@ -689,6 +694,7 @@ public class FuncTablero {
 		//Franja central (en esta hay mas posibilidad de areas tropicales o desiertos (mas calor)
 		//TODO Sentido del cálculo???
 		for (int i = limiteHab1; i < limiteHab2; i++) {
+			tempeLineal = Mathf.Lerp(temperatura, temperatura / 2, Mathf.Abs((altoTablero / 2) - i));
 			for (int j = 0; j < anchoTablero; j++) {
 				//Coordenadas de la casilla que estamos mirando
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
@@ -725,7 +731,7 @@ public class FuncTablero {
 					float posDesierto = 0.1f;
 					
 					//TODO Posible uso de temperatura
-					posDesierto += temperatura * 0.25f;
+					posDesierto += tempeLineal * 0.25f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.1f;
@@ -752,8 +758,8 @@ public class FuncTablero {
 					float posDesierto = 0.15f;
 					
 					//TODO Posible uso de temperatura
-					posDesierto += temperatura * 0.15f;
-					posVolcanico += temperatura * 0.01f;
+					posDesierto += tempeLineal * 0.15f;
+					posVolcanico += tempeLineal * 0.01f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posVolcanico += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.01f;
@@ -779,11 +785,11 @@ public class FuncTablero {
 				}
 				else { //if (alturaMontana < media)
 					//Área de montaña. Habitats posibles: montaña y volcanico
-					//Con un 1% es volcanico y con un 99% es montaña
+					//Con un 10% es volcanico y con un 90% es montaña
 					float posibilidad = 0.1f;
 					
 					//TODO Posible uso de temperatura
-					posibilidad += temperatura * 0.05f;
+					posibilidad += tempeLineal * 0.05f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posibilidad += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.01f;
