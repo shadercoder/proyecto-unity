@@ -61,29 +61,36 @@ public class InterfazPrincipal : MonoBehaviour {
 		if(aspectRatioNumerico >= 1.69)			//16:9
 		{
 			aspectRatio = taspectRatio.aspectRatio16_9;
-			cuantoW	= (float)Screen.width / 80;
-			cuantoH	= (float)Screen.height / 45;		
+			cuantoW = (float)Screen.width / 80;
+			cuantoH = (float)Screen.height / 45;		
 		}
 		else if	(aspectRatioNumerico >= 1.47)	//16:10
 		{
 			aspectRatio = taspectRatio.aspectRatio16_10;
-			cuantoW	= (float)Screen.width / 80;
-			cuantoH	= (float)Screen.height / 50;	
+			cuantoW = (float)Screen.width / 80;
+			cuantoH = (float)Screen.height / 50;	
 		}
 		else 									//4:3
 		{
 			aspectRatio = taspectRatio.aspectRatio4_3;			
-			cuantoW	= (float)Screen.width / 80;
-			cuantoH	= (float)Screen.height / 60;	
+			cuantoW = (float)Screen.width / 80;
+			cuantoH = (float)Screen.height / 60;	
 		}
 		bloqueSuperior();
 		bloqueIzquierdo();
 		bloqueSeleccion();
-		bloqueInformacion();
-		if(accion == taccion.insertar)
-			insertarElemento();			
+		if(posicionFueraDeInterfaz(Input.mousePosition))
+		{
+			mostrarInfoCasilla = true;
+			if(accion == taccion.insertar)
+				insertarElemento();					
+		}
+		else
+			mostrarInfoCasilla = false;
+			
+		bloqueInformacion();			
 		if(activarTooltip)			
-			mostrarToolTip();
+			mostrarToolTip();			
 	}	
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
@@ -188,11 +195,20 @@ public class InterfazPrincipal : MonoBehaviour {
 				categoriaInsercion = tcategoriaInsercion.edificio;	
 			}
 			if(GUILayout.Button(new GUIContent("","Accede al menu de mejoras de la nave"),"BotonAccederMejoras"))
+			{	
 				accion = taccion.mostrarMejoras;	
+				categoriaInsercion = tcategoriaInsercion.desactivada;
+			}				
 			if(GUILayout.Button(new GUIContent("","Accede al menu de habilidades"),"BotonAccederHabilidades"))
+			{
 				accion = taccion.mostrarHabilidades;
+				categoriaInsercion = tcategoriaInsercion.desactivada;
+			}				
 			if(GUILayout.Button(new GUIContent("","Cambia entre info y seleccionar"),"BotonInfoSelec"))
+			{
 				mostrarInfoCasilla = !mostrarInfoCasilla;
+				categoriaInsercion = tcategoriaInsercion.desactivada;
+			}				
 			GUILayout.EndVertical();
 			if(GUILayout.Button(new GUIContent("","Pulsa para ocultar este menu"),"BotonOcultarBloqueIzquierdo",GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*1)))
 			{			
@@ -427,11 +443,13 @@ public class InterfazPrincipal : MonoBehaviour {
 						TipoEdificio[] tipos = new TipoEdificio[principal.vida.tiposEdificios.Count];
 						principal.vida.tiposEdificios.Values.CopyTo(tipos,0);
 						TipoEdificio tedif = tipos[tipo];
-						if(principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,
-						                             tedif.matBioConsumidoAlCrear))
+						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,
+						                             	tedif.matBioConsumidoAlCrear))
 						{							
 							if(principal.vida.anadeEdificio(tedif,y,x,0,0,0,0,10,10,10,10))
 							{
+								principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,
+								                         tedif.matBioConsumidoAlCrear);
 								principal.modificaRecursosPorTurno(10,10,10,10);								
 							}
 							else									
@@ -505,4 +523,55 @@ public class InterfazPrincipal : MonoBehaviour {
 		GUI.Box(pos, "");
 		GUI.Label(pos, GUI.tooltip);					
 	}	
+	
+	//Devuelve true si el raton está fuera de la interfaz y por tanto es válido y false si cae dentro de la interfaz dibujada en ese momento
+	public bool posicionFueraDeInterfaz(Vector3 posicionRaton)		
+	{
+		float xini,xfin,yini,yfin;		
+		yfin = Screen.height - cuantoH*4;				//Posición donde termina el bloque superior
+		if(mostrarBloqueIzquierdo)
+			xini = cuantoW*3;							//Posición donde termina el bloque izquierdo
+		else
+			xini = 0;									//Tamaño mínimo de la ventana
+		
+		//if(mostrarBloqueDerecho)
+			//xfin = ?									//Posición donde empieza el bloque derecho
+		//else
+		xfin = cuantoW*80;								//Tamaño máximo de la ventana
+		
+		if(categoriaInsercion != tcategoriaInsercion.desactivada)
+		{
+			int posicionBloqueSeleccion = 0;
+			switch (aspectRatio)
+			{
+				case taspectRatio.aspectRatio16_9:
+					posicionBloqueSeleccion = 40;break;
+				case taspectRatio.aspectRatio16_10:
+					posicionBloqueSeleccion = 45;break;
+				case taspectRatio.aspectRatio4_3:
+					posicionBloqueSeleccion = 55;break;
+				default:break;
+			}		
+			yini = Screen.height - cuantoH*posicionBloqueSeleccion;		//Posición donde empieza el bloque de seleccion	
+		}
+		else
+		{
+			int posicionBloqueInformacion = 0;
+			switch (aspectRatio)
+			{
+				case taspectRatio.aspectRatio16_9:
+					posicionBloqueInformacion = 44;break;
+				case taspectRatio.aspectRatio16_10:
+					posicionBloqueInformacion = 49;break;
+				case taspectRatio.aspectRatio4_3:
+					posicionBloqueInformacion = 59;break;
+				default:break;
+			}	
+			yini = Screen.height - cuantoH*posicionBloqueInformacion;	//Posición donde empieza el bloque de informacion	
+		}
+		if(posicionRaton.x > xini && posicionRaton.x < xfin && posicionRaton.y > yini && posicionRaton.y < yfin)
+			return true;
+		else 
+			return false;
+	}
 }
