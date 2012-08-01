@@ -18,7 +18,7 @@ public class Principal : MonoBehaviour {
 	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
 	
 	//Recursos
-	public int energia = 100;											//Cantidad de energia almacenada en la nave
+	public int energia = 1000;											//Cantidad de energia almacenada en la nave
 	public int energiaDif = 10;											//Incremento o decremento por turno de energia
 	public int componentesBasicos = 25;									//Cantidad de componentes basicos alojados en la nave
 	public int componentesBasicosDif = 0;								//Incremento o decremento por turno de componentes basicos
@@ -27,7 +27,7 @@ public class Principal : MonoBehaviour {
 	public int materialBiologico = 0;									//Cantidad de material biologico alojado en la nave
 	public int materialBiologicoDif = 0;								//Incremento o decremento por turno de material biologico
 	
-	public int energiaMax = 1000;										//Energía máxima que se puede almacenar
+	public int energiaMax = 2000;										//Energía máxima que se puede almacenar
 	public int componentesBasicosMax = 250;								//Componentes básicos máximos que se pueden almacenar
 	public int componentesAvanzadosMax = 100;							//Componentes avanzados máximos que se pueden almacenar
 	public int materialBiologicoMax = 50;								//Material biológico máximo que se puede almacenar
@@ -187,21 +187,23 @@ public class Principal : MonoBehaviour {
 		vida.anadeEspecieAnimal(animal);
 	}
 	
-	//Devuelve true si es posible consumir los recursos pedidosa y false si no hay suficiente de alguno de ellos
-	public bool consumeRecursos(int energiaAconsumir,int componentesBasAconsumir,int componentesAvzAconsumir,int materialAconsumir)
+	//Devuelve true si es posible consumir los recursos pedidos y false si no hay suficiente de alguno de ellos
+	public bool recursosSuficientes(int energiaAconsumir,int componentesBasAconsumir,int componentesAvzAconsumir,int materialAconsumir)
 	{
 		if(energia >= energiaAconsumir && componentesBasicos >= componentesBasAconsumir && componentesAvanzados >= componentesAvzAconsumir && 
-		   materialBiologico >= materialAconsumir)
-		{
-			energia -= energiaAconsumir;
-			componentesBasicos -= componentesBasAconsumir;
-			componentesAvanzados -= componentesAvzAconsumir;
-			materialBiologico -= materialAconsumir;		
-			return true;
-		}
+		   materialBiologico >= materialAconsumir)		
+			return true;		
 		else
-			return false;
-		
+			return false;		
+	}
+	
+	//Consume la cantidad de recursos que hay en los parametros. Se debe utilizar siempre antes el metodo recursosSuficientes para comprobar si los hay, y este cuando la inserción se haya completado
+	public void consumeRecursos(int energiaAconsumir,int componentesBasAconsumir,int componentesAvzAconsumir,int materialAconsumir)
+	{
+		energia -= energiaAconsumir;
+		componentesBasicos -= componentesBasAconsumir;
+		componentesAvanzados -= componentesAvzAconsumir;
+		materialBiologico -= materialAconsumir;
 	}
 	
 	//Devuelve true si es posible consumir la energía pedida y false si no hay suficiente
