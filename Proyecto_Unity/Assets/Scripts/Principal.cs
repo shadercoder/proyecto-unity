@@ -127,7 +127,6 @@ public class Principal : MonoBehaviour {
 		Debug.Log("Creando planeta de cero en creacionInicial");
 		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
 		Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-		Texture2D texturaAgua = objetoOceano.renderer.sharedMaterial.mainTexture as Texture2D;
 		
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
@@ -139,17 +138,24 @@ public class Principal : MonoBehaviour {
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();		
 		
-		pixels = FuncTablero.calculaTexAgua(pixels);
-		texturaAgua.SetPixels(pixels);
-		texturaAgua.Apply();
-		
+		float extrusion = 0.45f;
 		MeshFilter Roca = objetoRoca.GetComponent<MeshFilter>();
 		Mesh meshTemp = Roca.mesh;
-		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.5f, objetoRoca.transform.position);
+		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, extrusion, objetoRoca.transform.position);
 		Roca.mesh = meshTemp;
 		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
        	objetoRoca.AddComponent<MeshCollider>();
         objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
+		
+		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
+		MeshFilter Agua = objetoOceano.GetComponent<MeshFilter>();
+		Mesh meshAgua = Agua.mesh;
+		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, extrusion, objetoOceano.transform.position);
+		Agua.mesh = meshAgua;
+		//se ajusta la propiedad de ivel de agua del shader
+		objetoOceano.renderer.sharedMaterial.SetFloat("_nivelMar", FuncTablero.getNivelAgua());
+		objetoOceano.renderer.sharedMaterial.SetFloat("_tamPlaya", FuncTablero.getTamanoPlaya());
+		
 	}
 	
 	//Devuelve  true si se ha producido una colision con el planeta y además las coordenadas de la casilla del tablero en la que ha impactado el raycast (en caso de producirse)

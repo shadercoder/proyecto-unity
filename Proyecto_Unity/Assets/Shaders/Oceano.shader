@@ -106,10 +106,32 @@ float2 uv_bumpAnimControl;
 			};
 
 			void vert (inout appdata_full v, out Input o) {
-float4 VertexOutputMaster0_0_NoInput = float4(0,0,0,0);
-float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
-float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
-float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
+			
+//				#if !defined(SHADER_API_OPENGL)
+//				float4 tex = tex2Dlod (_MainTex, float4(v.texcoord.xyz,0));
+//				float4 Multiply2=_tamPlaya.xxxx * float4( 2,2,2,2 );
+//				float4 Add3=_nivelMar.xxxx + Multiply2;
+//				float4 Clamp0=clamp(tex,_nivelMar.xxxx,Add3);
+//				float4 Step0=step(Add3,Clamp0);
+//				float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Step0;
+//				float4 Subtract2=_nivelMar.xxxx - Multiply2;
+//				float4 Clamp1=clamp(tex,Subtract2,_nivelMar.xxxx);
+//				float4 Step1=step(_nivelMar.xxxx,Clamp1);
+//				float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - Step1;
+//				float4 Subtract0=Invert0 - Invert1;
+//				float4 Clamp2=clamp(tex,float4( 0.0, 0.0, 0.0, 0.0 ),Subtract2);
+//				float4 Step2=step(Subtract2,Clamp2);
+//				float4 Invert2= float4(1.0, 1.0, 1.0, 1.0) - Step2;
+//				float4 Subtract1=Invert1 - Invert2;
+//				float4 Add2=Subtract0 + Subtract1;
+//				float4 Add1=Add2 + Invert2;
+//				float4 Multiply0=float4( v.normal.x, v.normal.y, v.normal.z, 1.0 ) * Add1;
+//				float4 Add0=v.vertex + Multiply0;
+//				float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
+//				float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
+//				float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
+//				v.vertex = Add0;
+//				#endif
 
 o.simpleWorldRefl = -reflect( normalize(WorldSpaceViewDir(v.vertex)), normalize(mul((float3x3)_Object2World, SCALED_NORMAL)));
 
