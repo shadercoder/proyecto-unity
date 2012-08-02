@@ -13,6 +13,7 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private int faseCreacion 				= 0;				//Fases de la creacion del planeta
 	private bool trabajando 				= false;			//Para saber si está haciendo algo por debajo el script
+	private float progreso					= 0.0f;				//El progreso entre 0 y 1 del trabajo
 	private bool paso1Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 	
 		//Primera fase
@@ -137,6 +138,7 @@ public class EscenaCarga : MonoBehaviour {
 					ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 					temp.texturaBase = texturaBase;
 					temp.texturaBase.Apply();
+					temp.roca = rocaMesh;
 					temp.agua = aguaMesh;
 					temp.nivelAgua = nivelAguaInit;
 					temp.tamanoPlaya = tamanoPlayasInit;
@@ -171,7 +173,7 @@ public class EscenaCarga : MonoBehaviour {
 				break;		
 		}
 		if (trabajando) {
-			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
+			barraProgreso();
 		}
 		
 		//Tooltip
@@ -222,26 +224,61 @@ public class EscenaCarga : MonoBehaviour {
 		PlayerPrefs.SetFloat("SfxVol", sfxVol);
 	}
 	
-	private void creacionParte1() {
+	private IEnumerator creacionParte1() {
+		trabajando = true;
+		GUI.enabled = false;
+		progreso = 0.1f;
+		yield return null;
 		pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
+		progreso = 0.5f;
+		yield return null;
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
+		progreso = 0.7f;
+		yield return null;
 		pixels = FuncTablero.suavizaPoloTex(pixels);								//Se suavizan los polos...
+		progreso = 0.8f;
+		yield return null;
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
+		progreso = 1.0f;
+		yield return null;
+		progreso = 0.0f;
 		trabajando = false;
+		GUI.enabled = true;
+		paso1Completado = true;
 	}
 	
-	private void creacionParte2() {
+	private IEnumerator creacionParte2() {
+		trabajando = true;
+		GUI.enabled = false;
+		progreso = 0.1f;
+		yield return null;
 		Mesh meshTemp = GameObject.Instantiate(meshEsfera) as Mesh;
+		progreso = 0.2f;
+		yield return null;
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
+		progreso = 0.5f;
+		yield return null;
 		rocaMesh = meshTemp;
 		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
+		progreso = 0.7f;
+		yield return null;
 		Mesh meshAgua = GameObject.Instantiate(meshEsfera) as Mesh;
+		progreso = 0.8f;
+		yield return null;
 		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
 		aguaMesh = meshAgua;
+		progreso = 1.0f;
+		yield return null;
+		progreso = 0.0f;
+		trabajando = false;
+		GUI.enabled = true;
+		faseCreacion = 2;
 	}
 	
-	private void creacionParte3() {
+	private IEnumerator creacionParte3() {
+		trabajando = true;
+		yield return null;
 		trabajando = false;
 	}
 	
@@ -385,11 +422,8 @@ public class EscenaCarga : MonoBehaviour {
 			FuncTablero.setGanancia(gananciaInit);
 			FuncTablero.setLacunaridad(lacunaridadInit);
 			FuncTablero.setOctavas2((int)octavasFloat);
-			trabajando = true;
-			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
 			FuncTablero.reiniciaPerlin();
 			creacionParte1();
-			paso1Completado = true;
 		}
 		
 		GUILayout.EndVertical();
@@ -468,7 +502,6 @@ public class EscenaCarga : MonoBehaviour {
 			FuncTablero.setTemperatura(temperaturaInit);
 			FuncTablero.setTamanoPlaya(tamanoPlayasInit);
 			creacionParte2();
-			faseCreacion = 2;
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
@@ -483,9 +516,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Space(cuantoW * 28);
 		//Mejor si solo pulsando el boton de comenzar empiezas directamente
 		if (GUILayout.Button(new GUIContent("Comenzar", "Empezar el juego"))) {
-			trabajando = true;
-			GUI.Box(new Rect(cuantoW * 22, cuantoH * 13, cuantoW * 4, cuantoH * 4), "Generando\nEspere...");
-			creacionParte3();
+			if (!trabajando)
+				creacionParte3();
 			faseCreacion = 0;
 			estado = 1;	
 		}
@@ -513,6 +545,17 @@ public class EscenaCarga : MonoBehaviour {
 		valorOut = GUILayout.HorizontalSlider(valor, izq, der);
 		GUILayout.EndVertical();
 		return valorOut;
+	}
+	
+	private void barraProgreso() {
+		GUI.Label(new Rect(cuantoW * 22, cuantoH * 16, cuantoW * 4, cuantoH), "Cargando...");
+		//Debug solo
+		GUI.Label(new Rect(cuantoW * 22, cuantoH * 17, cuantoW * 4, cuantoH), "Progreso: " + progreso.ToString());
+		//fin debug
+        GUI.Box(new Rect(cuantoW * 19, cuantoH * 14, cuantoW * 10, cuantoH), "", "progressBarVacio");
+        GUI.BeginGroup(new Rect(cuantoW * 19, cuantoH * 14, (cuantoW * 10) * progreso, cuantoH));
+            GUI.Box(new Rect(0,0, cuantoW * 10, cuantoH), "", "progressBarLLeno");
+        GUI.EndGroup();
 	}
 
 }
