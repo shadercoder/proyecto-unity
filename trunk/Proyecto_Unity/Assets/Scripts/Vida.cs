@@ -752,8 +752,6 @@ public class EspecieVegetal : Especie
 	public float capacidadMigracionGlobal;				//Probabilidad que tiene la especie de migrar a otra casilla distanciada como máximo en radioMigración casillas. Se calcula en función del número de vegetales que posea (el valor viene indicado para numMaxVegetales y en tanto por 1)	
 	public int radioMigracion;							//Longitud máxima de migración de la especie
 	public int idTextura;
-	//public int capacidadEvolucion;					//Probabilidad de que la especie evolucione dentro de la casilla
-	//public int capacidadEvolucionMigracion;			//Probabilidad de que la especie evolucione al migrar (teoricamente mucho más alto que la normal)
 	
 	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, GameObject modelo)
 	{
@@ -963,7 +961,6 @@ public class Animal : Ser
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
 	public int reserva;								//Reserva de alimento que tiene
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
-	//public GameObject modelo;
 	
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY,GameObject modelo)
 	{

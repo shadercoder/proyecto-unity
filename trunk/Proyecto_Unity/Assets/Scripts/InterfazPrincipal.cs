@@ -290,7 +290,77 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUILayout.EndArea();
 				break;
 			case tcategoriaInsercion.animal:
-				
+				GUILayout.BeginArea(new Rect(cuantoW*22,cuantoH*posicionBloque,cuantoW*36,cuantoH*4),new GUIContent(),"BloqueSeleccionAnimales");
+				GUILayout.BeginVertical();
+				GUILayout.Space(cuantoH);				
+				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
+				GUILayout.Space(cuantoW*1.5f);
+				if(GUILayout.Button(new GUIContent("","Herbivoro1"),"BotonInsertarHerbivoro1"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.herbivoro1;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Herbivoro2"),"BotonInsertarHerbivoro2"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.herbivoro2;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Herbivoro3"),"BotonInsertarHerbivoro3"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.herbivoro3;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Herbivoro4"),"BotonInsertarHerbivoro4"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.herbivoro4;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Herbivoro5"),"BotonInsertarHerbivoro5"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.herbivoro5;
+				}	
+				GUILayout.Space(cuantoW);
+				GUILayout.Box("",GUILayout.Width(cuantoW*1),GUILayout.Height(cuantoH*2));
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Carnivoro1"),"BotonInsertarCarnivoro1"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.carnivoro1;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Carnivoro2"),"BotonInsertarCarnivoro2"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.carnivoro2;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Carnivoro3"),"BotonInsertarCarnivoro3"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.carnivoro3;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Carnivoro4"),"BotonInsertarCarnivoro4"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.carnivoro4;
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Carnivoro5"),"BotonInsertarCarnivoro5"))
+				{	
+					accion = taccion.insertar;
+					elementoInsercion = telementoInsercion.carnivoro5;
+				}		
+				GUILayout.Space(cuantoW*1.5f);
+				GUILayout.EndHorizontal();
+				GUILayout.Space(cuantoH);				
+				GUILayout.EndVertical();
+				GUILayout.EndArea();
 				break;
 			case tcategoriaInsercion.vegetal:
 				GUILayout.BeginArea(new Rect(cuantoW*22,cuantoH*posicionBloque,cuantoW*36,cuantoH*4),new GUIContent(),"BloqueSeleccionVegetales");
