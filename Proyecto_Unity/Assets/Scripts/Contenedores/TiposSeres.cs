@@ -12,13 +12,14 @@ public class TiposSeres : MonoBehaviour {
 	private TipoEdificio energiaAdv;
 	
 	//Tipos de animales
-		//Herbivoros
+	
+	//Herbivoros
 	private EspecieAnimal herbivoro1;
 	private EspecieAnimal herbivoro2;
 	private EspecieAnimal herbivoro3;
 	private EspecieAnimal herbivoro4;
 	private EspecieAnimal herbivoro5;
-		//Carnivoros
+	//Carnivoros
 	private EspecieAnimal carnivoro1;
 	private EspecieAnimal carnivoro2;
 	private EspecieAnimal carnivoro3;
@@ -201,6 +202,7 @@ public class TiposSeres : MonoBehaviour {
 	
 	void Start () {
 		
+		//NO CAMBIAR EL ORDEN CON EL QUE SE AÑADEN
 		//Añadir a Vida los edificios
 		principal.anadeTipoEdificio(fabricaComBas);
 		principal.anadeTipoEdificio(energia);
