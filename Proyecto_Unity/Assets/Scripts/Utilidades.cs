@@ -249,24 +249,6 @@ public class FuncTablero {
 		return pixels;
 	}
 	
-//	public static float calcularMedia(Color[] pix) {
-//		float med = 0f;
-//		float max = -1.0f;
-//		float min = 1.0f;
-//		for (int i = 0; i < pix.Length; i++) {
-//			med += pix[i].r;
-//			if (pix[i].r > max)
-//				max = pix[i].r;
-//			if (pix[i].r < min)
-//				min = pix[i].r;
-//		}
-//		med /= pix.Length;
-//		Debug.Log("Max = " + max.ToString());
-//		Debug.Log("Min = " + min.ToString());
-//		Debug.Log("Media = " + med.ToString());
-//		return med;
-//	}
-	
 	public static Texture2D calculaTexAgua(Texture2D texBase) {
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		Color[] pixBase = texBase.GetPixels();
