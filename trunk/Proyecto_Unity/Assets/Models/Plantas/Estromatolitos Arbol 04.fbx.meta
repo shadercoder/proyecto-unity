@@ -1,9 +1,9 @@
 fileFormatVersion: 1
-guid: c4eb35e2e6fc53345aeea8ba6a225710
+guid: 400e144d17e8149419e5966fec2aaecf
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.2
+    scaleFactor: 0.3
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
@@ -23,11 +23,17 @@ ModelImporter:
     splitAnimations: 1
   nodeInfo:
     //RootNode:
-    - 100000
-    - 400000
+    - 100016
+    - 400016
     - 3300000
     - 2300000
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Cylinder
+    4300000: Estrom4
+    4300002: Estrom2
+    4300004: Estrom1
+    4300006: Estrom3
+    4300008: Icosphere_001
+    4300010: Estrom6
+    7400000: Default Take //// Estromatolitos Arbol 04

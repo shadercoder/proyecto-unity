@@ -198,16 +198,16 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	private static float nivelAgua = 0.25f;			//El nivel sobre el que se pondrá agua. La media de altura suele ser 0.4
-	private static float tamanoPlaya = 0.02f;		//El tamaño de las playas
-	private static float alturaColinas = 0.35f;		//La altura a partir de la cual se considera colina
-	private static float alturaMontana = 0.6f;		//La altura a partir de la cual se considera montaña
-	private static float temperatura = 0.0f;		//La temperatura del planeta, que influye en la rampa de color
+	private static float nivelAgua = 0.25f;						//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
+	private static float tamanoPlaya = 0.05f;					//El tamaño de las playas. de 0.02 a 0.05 razonable
+	private static float alturaColinas = nivelAgua*1.5f;		//La altura a partir de la cual se considera colina
+	private static float alturaMontana = nivelAgua*2.0f;		//La altura a partir de la cual se considera montaña
+	private static float temperatura = 0.5f;					//La temperatura del planeta, que influye en la generacion de habitats
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
 	public static int altoTablero = 64;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
-	public static int casillasPolos	= 5;			//El numero de casillas que serán intransitables en los polos
+	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
 		
@@ -267,37 +267,15 @@ public class FuncTablero {
 //		return med;
 //	}
 	
-	public static Color[] calculaTexAgua(Color[] pix) {
-	/*Codigo de colores: 
-	 * Negro: no extrusion
-	 * tamañoPlaya?
-	 * Rojo: agua poco profunda
-	 * Punto medio - altura Costa
-	 * Verde: oceano
-	 * Azul: playa
-	 * */
-		float mezcla = tamanoPlaya/3.0f;
+	public static Texture2D calculaTexAgua(Texture2D texBase) {
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
-		for (int l = 0; l < pixAgua.Length; l++) {
-			float color = pix[l].grayscale;
-			if (pix[l].grayscale < nivelAgua-tamanoPlaya-mezcla*2){
-				pixAgua[l] = new Color (color, 1, 0, 0);
-			} else if ((nivelAgua-tamanoPlaya-mezcla*2 <= color) && (color < nivelAgua-tamanoPlaya-mezcla*0.5 )){
-				pixAgua[l] = new Color (0.25f+color, 0.75f-color, 0,  0);
-			} else if ((nivelAgua-tamanoPlaya-mezcla*0.5 <= color) && (color < nivelAgua-tamanoPlaya-mezcla )){
-				pixAgua[l] = new Color (0.5f+color, 0.5f-color, 0,  0);
-			} else if ((nivelAgua-tamanoPlaya-mezcla <= color) && (color < nivelAgua-tamanoPlaya )){
-				pixAgua[l] = new Color (0.75f+color, 0.25f-color, 0,  0);
-			} else if ((nivelAgua-tamanoPlaya <= color) && (color < nivelAgua )){
-				pixAgua[l] = new Color (1, 0, 0,  0);
-			} else if ((nivelAgua<= color) && (color <nivelAgua+tamanoPlaya)){
-				pixAgua[l] = new Color (0.5f+color, 0, 0.5f-color, 0);
-			} else if ((nivelAgua+tamanoPlaya<= color)&& (color <nivelAgua+tamanoPlaya*8+mezcla)){	
-				pixAgua[l] = new Color (0, 0, 1, 0);
-			} else 
-				pixAgua[l] = Color.blue;
-		}
-		return pixAgua;
+		Color[] pixBase = texBase.GetPixels();
+		for (int l = 0; l < pixAgua.Length; l++) 
+			if (pixBase[l].grayscale <= nivelAgua) pixAgua[l] = new Color(nivelAgua, nivelAgua, nivelAgua);
+		Texture2D textura = new Texture2D(anchoTextura,altoTextura);
+		textura.SetPixels(pixAgua);
+		textura.Apply();
+		return textura;
 	}
 	
 	public static Color[] suavizaBordeTex(Color[] pix, int tam) {
@@ -378,7 +356,12 @@ public class FuncTablero {
 		for (int i = 0; i < altoTablero * anchoTablero; i++) {
 			habitats[i] = T_habitats.inhabitable;
 		}
-		Color[] pixels = texHeightmap.GetPixels();
+		//reinicia la textura de habitats estetica
+		Color[] pixels = new Color[anchoTextura*altoTextura];
+		texHabitatsEstetica.SetPixels(pixels);
+		texHabitatsEstetica.Apply();
+		
+		pixels = texHeightmap.GetPixels();
 		Color[] pixelsHab = texHabitats.GetPixels();
 		Color[] pixelsElem = texElems.GetPixels();
 		int altoTableroUtil = altoTablero - casillasPolos * 2;
@@ -425,13 +408,24 @@ public class FuncTablero {
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
 				//Se calcula la media de altura de la casilla
 				float media = 0;
-				//Contabilizar solo las esquinas de la casilla para la media
-				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
-				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
-				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				media = media / 4;
-				//Contabilizar todos los pixeles de la casilla
+
+//--------------aqui valoramos diferentes metodos para determinar el habitat de la casilla:				
+//--------------Determinar el habitat por el valor maximo de color en la casilla				
+				
+				float[] esquinas = new float[4];
+				esquinas[0] = pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
+				esquinas[1] = pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				esquinas[2] = pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
+				esquinas[3] = pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+				media = Mathf.Min(esquinas);
+				
+//--------------Contabilizar solo las esquinas de la casilla para la media
+//				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
+//				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+//				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
+//				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+//				media = media / 4;
+//--------------Contabilizar todos los pixeles de la casilla
 //				for (int x = 0; x < relTexTabAlto; x++) {
 //					for (int y = 0; y < relTexTabAncho; y++) {
 //						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
@@ -446,11 +440,11 @@ public class FuncTablero {
 					habitatTemp = T_habitats.mar; 
 					elemTemp = T_elementos.nada;
 				} 
-				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya)) {
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya/4)) {
 					habitatTemp = T_habitats.costa;
 					elemTemp = T_elementos.nada;
 				}
-				else if ((nivelAgua + tamanoPlaya <= media) && (media < alturaColinas)) {
+				else if ((nivelAgua + tamanoPlaya/4 <= media) && (media < alturaColinas)) {
 					//Area de colina. Habitats posibles: LLanura y tundra
 					//Con un 5% es desierto, con un 15% es tundra y con un 80% es llanura
 					float posDesierto = 0.05f;
@@ -458,7 +452,7 @@ public class FuncTablero {
 					
 					//TODO Esto es un planteamiento posible de como usar la temperatura
 					posTundra -= tempeLineal * 0.1f;		//La temperatura hace que haya menos tundras
-					posDesierto += tempeLineal * 0.1f;		//La temperatura hace que haya mas desiertos
+					posDesierto += tempeLineal * 0.05f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
@@ -584,11 +578,11 @@ public class FuncTablero {
 					habitatTemp = T_habitats.mar; 
 					elemTemp = T_elementos.nada;
 				} 
-				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya)) {
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya/4)) {
 					habitatTemp = T_habitats.costa;
 					elemTemp = T_elementos.nada;
 				}
-				else if ((nivelAgua + tamanoPlaya <= media) && (media < alturaColinas)) {
+				else if ((nivelAgua + tamanoPlaya/4 <= media) && (media < alturaColinas)) {
 					//Area de colina. Habitats posibles: LLanura y tundra
 					//Con un 5% es desierto, con un 15% es tundra y con un 80% es llanura
 					float posDesierto = 0.05f;
@@ -596,11 +590,11 @@ public class FuncTablero {
 					
 					//TODO Esto es un planteamiento posible de como usar la temperatura
 					posTundra -= tempeLineal * 0.1f;		//La temperatura hace que haya menos tundras
-					posDesierto += tempeLineal * 0.1f;		//La temperatura hace que haya mas desiertos
+					posDesierto += tempeLineal * 0.05f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
-					posTundra += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.15f;
+					posTundra += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
 					
 					if (numero > posTundra) {
 						habitatTemp = T_habitats.llanura;
@@ -721,21 +715,21 @@ public class FuncTablero {
 					habitatTemp = T_habitats.mar; 
 					elemTemp = T_elementos.nada;
 				} 
-				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya)) {
+				else if ((nivelAgua - tamanoPlaya <= media) && (media < nivelAgua + tamanoPlaya/4)) {
 					habitatTemp = T_habitats.costa;
 					elemTemp = T_elementos.nada;
 				}
-				else if ((nivelAgua + tamanoPlaya <= media) && (media < alturaColinas)) {
+				else if ((nivelAgua + tamanoPlaya/4 <= media) && (media < alturaColinas)) {
 					//Area de llanuras. Habitats posibles: LLanura y desierto
-					//Con un 10% es desierto y con un 90% es llanura
+					//Con un 5% es desierto y con un 95% es llanura
 					float posDesierto = 0.1f;
 					
 					//TODO Posible uso de temperatura
-					posDesierto += tempeLineal * 0.25f;
+					posDesierto += tempeLineal * 0.05f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.1f;
-					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.15f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.05f;
 					if (numero <= posDesierto) {
 						habitatTemp = T_habitats.desierto;
 						if (UnityEngine.Random.Range(0,11) == 0)
@@ -753,17 +747,17 @@ public class FuncTablero {
 				}
 				else if ((alturaColinas <= media) && (media < alturaMontana)) {
 					//Área de colina. Habitats posibles: Colina, desierto y volcanico
-					//Con un 1% es volcanico, con un 15% es desierto y con un 89% es colina
+					//Con un 1% es volcanico, con un 10% es desierto y con un 89% es colina
 					float posVolcanico = 0.01f;
-					float posDesierto = 0.15f;
+					float posDesierto = 0.05f;
 					
 					//TODO Posible uso de temperatura
-					posDesierto += tempeLineal * 0.15f;
+					posDesierto += tempeLineal * 0.05f;
 					posVolcanico += tempeLineal * 0.01f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posVolcanico += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.01f;
-					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.15f;
+					posVolcanico += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.05f;
 					if (numero <= posVolcanico) {
 						habitatTemp = T_habitats.volcanico;
 						elemTemp = T_elementos.raros;
@@ -786,7 +780,7 @@ public class FuncTablero {
 				else { //if (alturaMontana < media)
 					//Área de montaña. Habitats posibles: montaña y volcanico
 					//Con un 10% es volcanico y con un 90% es montaña
-					float posibilidad = 0.1f;
+					float posibilidad = 0.05f;
 					
 					//TODO Posible uso de temperatura
 					posibilidad += tempeLineal * 0.05f;
@@ -1332,6 +1326,14 @@ public class FuncTablero {
 	public static void setTamanoPlaya(float entrada) {
 		if (entrada >= 0)
 			tamanoPlaya = entrada;
+	}
+	
+	public static float getNivelAgua() {
+		return nivelAgua;
+	}
+	
+	public static float getTamanoPlaya() {
+		return tamanoPlaya;
 	}
 	
 	public static void setAlturaColinas(float entrada) {
