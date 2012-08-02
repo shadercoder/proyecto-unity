@@ -228,20 +228,20 @@ public class EscenaCarga : MonoBehaviour {
 		trabajando = true;
 		GUI.enabled = false;
 		progreso = 0.1f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
 		progreso = 0.5f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		progreso = 0.7f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		pixels = FuncTablero.suavizaPoloTex(pixels);								//Se suavizan los polos...
 		progreso = 0.8f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 		progreso = 1.0f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		progreso = 0.0f;
 		trabajando = false;
 		GUI.enabled = true;
@@ -252,24 +252,24 @@ public class EscenaCarga : MonoBehaviour {
 		trabajando = true;
 		GUI.enabled = false;
 		progreso = 0.1f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		Mesh meshTemp = GameObject.Instantiate(meshEsfera) as Mesh;
 		progreso = 0.2f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
 		progreso = 0.5f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		rocaMesh = meshTemp;
 		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
 		progreso = 0.7f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		Mesh meshAgua = GameObject.Instantiate(meshEsfera) as Mesh;
 		progreso = 0.8f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
 		aguaMesh = meshAgua;
 		progreso = 1.0f;
-		yield return null;
+		yield return new WaitForEndOfFrame();
 		progreso = 0.0f;
 		trabajando = false;
 		GUI.enabled = true;
@@ -423,7 +423,7 @@ public class EscenaCarga : MonoBehaviour {
 			FuncTablero.setLacunaridad(lacunaridadInit);
 			FuncTablero.setOctavas2((int)octavasFloat);
 			FuncTablero.reiniciaPerlin();
-			creacionParte1();
+			StartCoroutine(creacionParte1());
 		}
 		
 		GUILayout.EndVertical();
@@ -501,7 +501,7 @@ public class EscenaCarga : MonoBehaviour {
 			FuncTablero.setNivelAgua(nivelAguaInit);
 			FuncTablero.setTemperatura(temperaturaInit);
 			FuncTablero.setTamanoPlaya(tamanoPlayasInit);
-			creacionParte2();
+			StartCoroutine(creacionParte2());
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
