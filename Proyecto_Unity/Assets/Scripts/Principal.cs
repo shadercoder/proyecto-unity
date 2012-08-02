@@ -15,7 +15,7 @@ public class Principal : MonoBehaviour {
 	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
-	private GameObject contenedorTexturas;								//El contenedor de las texturas de la primera escena
+	private GameObject contenedor;										//El contenedor de las texturas de la primera escena
 	
 	//Recursos
 	public int energia = 1000;											//Cantidad de energia almacenada en la nave
@@ -54,18 +54,18 @@ public class Principal : MonoBehaviour {
 	
 	void Awake() {		
 		Random.seed = System.DateTime.Now.Millisecond;
-		contenedorTexturas = GameObject.FindGameObjectWithTag("Carga");
-		if (contenedorTexturas == null) {
+		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando el script Principal...");
+		contenedor = GameObject.FindGameObjectWithTag("Carga");
+		if (contenedor == null) {
+			Debug.Log (FuncTablero.formateaTiempo() + ": No encontrado contenedor, iniciando creacion inicial...");
 			creacionInicial();
 		}
 		else {
-			//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez			
-			Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-			ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
-			texturaBase = temp.texturaBase;
-			texturaBase.Apply();
-			objetoOceano.transform.localScale = temp.escalaOceano;
+			Debug.Log (FuncTablero.formateaTiempo() + ": Encontrado contenedor, cargando...");
+			ValoresCarga cont = contenedor.GetComponent<ValoresCarga>();
+			creacionCarga(cont);
 		}
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta. Cargando opciones...");
 		Audio_Ambience ambiente = sonidoAmbiente.GetComponent<Audio_Ambience>();
 		Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
 		if (PlayerPrefs.GetInt("MusicaOn") == 1)
@@ -78,7 +78,7 @@ public class Principal : MonoBehaviour {
 		else
 			efectos.activado = false;
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
-		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando habitats y vida...");
 		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 2ª posicion.
 		Texture2D texElems = objetoRoca.renderer.sharedMaterials[4].mainTexture as Texture2D;
@@ -87,7 +87,7 @@ public class Principal : MonoBehaviour {
 		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
 		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, texHabitats, texHabitatsEstetica, texElems, mesh);
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
-		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
@@ -124,38 +124,70 @@ public class Principal : MonoBehaviour {
 	}
 
 	private void creacionInicial() {
-		Debug.Log("Creando planeta de cero en creacionInicial");
+		Debug.Log(FuncTablero.formateaTiempo() + ": Iniciando la creacion desde cero...");
 		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
 		Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
 		
 		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
-		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Creando ruido...");
 		pixels = FuncTablero.ruidoTextura();											//Se crea el ruido para la textura base y normales...
+		Debug.Log(FuncTablero.formateaTiempo() + ": Completado. Suavizando polos y bordes...");
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);			//Se suaviza el borde lateral...
 		pixels = FuncTablero.suavizaPoloTex(pixels);									//Se suavizan los polos...
-		
+		Debug.Log(FuncTablero.formateaTiempo() + ": Completado. Aplicando cambios...");
 		texturaBase.SetPixels(pixels);
-		texturaBase.Apply();		
-		
+		texturaBase.Apply();
+		Debug.Log(FuncTablero.formateaTiempo() + ": Completado. Extruyendo vertices de la roca...");
 		float extrusion = 0.45f;
 		MeshFilter Roca = objetoRoca.GetComponent<MeshFilter>();
 		Mesh meshTemp = Roca.mesh;
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, extrusion, objetoRoca.transform.position);
 		Roca.mesh = meshTemp;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Construyendo collider...");
 		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
        	objetoRoca.AddComponent<MeshCollider>();
         objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
-		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Calculando y extruyendo vertices del oceano...");
 		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
 		MeshFilter Agua = objetoOceano.GetComponent<MeshFilter>();
 		Mesh meshAgua = Agua.mesh;
 		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, extrusion, objetoOceano.transform.position);
 		Agua.mesh = meshAgua;
-		//se ajusta la propiedad de ivel de agua del shader
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Rellenando detalles...");
+		//se ajusta la propiedad de nivel de agua del shader
 		objetoOceano.renderer.sharedMaterial.SetFloat("_nivelMar", FuncTablero.getNivelAgua());
 		objetoOceano.renderer.sharedMaterial.SetFloat("_tamPlaya", FuncTablero.getTamanoPlaya());
-		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
+	}
+	
+	private void creacionCarga(ValoresCarga contenedor) {
+		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando el script de carga de valores...");
+		Texture2D texBase = contenedor.texturaBase;
+		Mesh rocaMesh = contenedor.roca;
+		Mesh aguaMesh = contenedor.agua;
+		float nivelAgua = contenedor.nivelAgua;
+		float tamanoPlaya = contenedor.tamanoPlaya;
+		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
+		Debug.Log (FuncTablero.formateaTiempo() + ": Aplicando textura de ruido...");
+		Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+		texturaBase = texBase;
+		texturaBase.Apply();		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Asignando Mesh a la roca...");
+		MeshFilter Roca = objetoRoca.GetComponent<MeshFilter>();
+		Roca.mesh = rocaMesh;
+		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
+		Debug.Log (FuncTablero.formateaTiempo() + ": Creando collider de la roca...");
+       	objetoRoca.AddComponent<MeshCollider>();
+        objetoRoca.GetComponent<MeshCollider>().sharedMesh = rocaMesh;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Asignando Mesh al oceano...");
+		MeshFilter Agua = objetoOceano.GetComponent<MeshFilter>();
+		Agua.mesh = aguaMesh;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completando detalles...");
+		//se ajusta la propiedad de nivel de agua del shader
+		objetoOceano.renderer.sharedMaterial.SetFloat("_nivelMar", nivelAgua);
+		objetoOceano.renderer.sharedMaterial.SetFloat("_tamPlaya", tamanoPlaya);
+		Debug.Log (FuncTablero.formateaTiempo() + ": Carga completada.");
 	}
 	
 	//Devuelve  true si se ha producido una colision con el planeta y además las coordenadas de la casilla del tablero en la que ha impactado el raycast (en caso de producirse)

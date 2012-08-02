@@ -270,8 +270,12 @@ public class FuncTablero {
 	public static Texture2D calculaTexAgua(Texture2D texBase) {
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		Color[] pixBase = texBase.GetPixels();
-		for (int l = 0; l < pixAgua.Length; l++) 
-			if (pixBase[l].grayscale <= nivelAgua) pixAgua[l] = new Color(nivelAgua, nivelAgua, nivelAgua);
+		for (int l = 0; l < pixAgua.Length; l++) {
+			if (pixBase[l].grayscale <= nivelAgua) 
+				pixAgua[l] = new Color(nivelAgua, nivelAgua, nivelAgua);
+			else 
+				pixAgua[l] = new Color(0, 0, 0);
+		}
 		Texture2D textura = new Texture2D(anchoTextura,altoTextura);
 		textura.SetPixels(pixAgua);
 		textura.Apply();
@@ -1364,4 +1368,14 @@ public class FuncTablero {
 		return relTexTabAlto;
 	}
 	
+	public static string formateaTiempo ()
+	{
+		string result = "";
+		int tiempo = (int)Time.realtimeSinceStartup;
+		int minutes = tiempo / 60;
+		int seconds = tiempo % 60;
+		int fraction = (tiempo * 100) % 100;
+		result = System.String.Format ("{0:00}:{1:00}:{2:00}", minutes, seconds, fraction);
+		return result;
+	} 
 }

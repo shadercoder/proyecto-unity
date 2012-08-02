@@ -24,6 +24,10 @@ public class EscenaCarga : MonoBehaviour {
 		//Segunda fase
 	public GameObject objetoOceano;
 	private Vector3 escalaBase 				= new Vector3(45.0f,45.0f,45.0f);	//La escala básica del océano
+	public Mesh meshEsfera;														//La esfera sobre la que se harán los cambios
+	private Mesh aguaMesh;														//El objeto con el Mesh extruido del agua
+	private Mesh rocaMesh;														//El objeto con el Mesh extruido de la roca
+	private float tamanoPlayasInit			= 0.1f;								//El tamaño de las playas
 	private float nivelAguaInit 			= 0.6f;								//El punto a partir del cual deja de haber mar en la orografía del planeta
 	private float temperaturaInit 			= 0.5f;								//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 	
@@ -133,7 +137,9 @@ public class EscenaCarga : MonoBehaviour {
 					ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
 					temp.texturaBase = texturaBase;
 					temp.texturaBase.Apply();
-					temp.escalaOceano = (escalaBase + new Vector3(nivelAguaInit, nivelAguaInit, nivelAguaInit)) * 1.0111f;
+					temp.agua = aguaMesh;
+					temp.nivelAgua = nivelAguaInit;
+					temp.tamanoPlaya = tamanoPlayasInit;
 					Application.LoadLevel("Escena_Principal");
 				break;
 			case 2:		//Opciones
@@ -223,6 +229,16 @@ public class EscenaCarga : MonoBehaviour {
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 		trabajando = false;
+	}
+	
+	private void creacionParte2() {
+		Mesh meshTemp = GameObject.Instantiate(meshEsfera) as Mesh;
+		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
+		rocaMesh = meshTemp;
+		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
+		Mesh meshAgua = GameObject.Instantiate(meshEsfera) as Mesh;
+		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
+		aguaMesh = meshAgua;
 	}
 	
 	private void creacionParte3() {
@@ -393,7 +409,7 @@ public class EscenaCarga : MonoBehaviour {
 		}
 		else {
 			if (GUILayout.Button(new GUIContent("Siguiente", "Generar un planeta primero"))) {
-				//Sonido de error, el boton con estilo diferente para estar en gris, etc.
+				//TODO Sonido de error, el boton con estilo diferente para estar en gris, etc.
 			}
 		}
 		
@@ -432,6 +448,13 @@ public class EscenaCarga : MonoBehaviour {
 		
 		GUILayout.Space(cuantoH * 2);
 		
+		GUILayout.Label("Longitud de las playas", "label_centrada");
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Min");
+		tamanoPlayasInit = GUILayout.HorizontalSlider(tamanoPlayasInit, 0.01f, 0.3f);
+		GUILayout.Label("Max");
+		GUILayout.EndHorizontal();
+		
 		GUILayout.EndVertical();
 		GUILayout.EndArea();
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
@@ -443,6 +466,8 @@ public class EscenaCarga : MonoBehaviour {
 		if (GUILayout.Button(new GUIContent("Siguiente", "Pasar a la tercera fase"))) {
 			FuncTablero.setNivelAgua(nivelAguaInit);
 			FuncTablero.setTemperatura(temperaturaInit);
+			FuncTablero.setTamanoPlaya(tamanoPlayasInit);
+			creacionParte2();
 			faseCreacion = 2;
 		}
 		GUILayout.EndHorizontal();
