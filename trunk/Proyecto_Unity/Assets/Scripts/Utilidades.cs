@@ -1332,11 +1332,6 @@ public class FuncTablero {
 			alturaMontana = entrada;
 	}
 	
-//	public static void setAtenuacionRelieve(float entrada) {
-//		if (entrada >= 0)
-//			atenuacionRelieve = entrada;
-//	}
-	
 	public static void setTemperatura(float entrada) {
 		if (entrada >= 0.0f && entrada <= 1.0f)
 			temperatura = entrada;
