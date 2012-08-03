@@ -3,7 +3,7 @@ guid: d76f158e8b21bc54fa852fc75b6c43a4
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.01
+    scaleFactor: 0.05
     useFileUnits: 1
     meshCompression: 3
     generateColliders: 0
@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 1
+    generation: 2
   animations:
     generation: 0
     bakeAnimations: 0
@@ -25,10 +25,28 @@ ModelImporter:
     //RootNode:
     - 100000
     - 400000
+    - 11100000
+    Brazos:
+    - 100002
+    - 400002
     - 3300000
     - 2300000
+    Nave:
+    - 100004
+    - 400004
+    - 3300002
+    - 2300002
+    Motores_T1:
+    - 100006
+    - 400006
+    - 3300004
+    - 2300004
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
     4300000: Nave
+    4300002: Cylinder_001
+    4300004: Cylinder
+    4300006: Motores_T1
+    4300008: Brazos
     7400000: Default Take //// nave_02
