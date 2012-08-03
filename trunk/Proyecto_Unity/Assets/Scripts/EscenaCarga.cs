@@ -554,8 +554,7 @@ public class EscenaCarga : MonoBehaviour {
 		//fin debug
         GUI.Box(new Rect(cuantoW * 19, cuantoH * 14, cuantoW * 10, cuantoH), "", "progressBarVacio");
         GUI.BeginGroup(new Rect(cuantoW * 19, cuantoH * 14, (cuantoW * 10) * progreso, cuantoH));
-            GUI.Box(new Rect(0,0, cuantoW * 10, cuantoH), "", "progressBarLLeno");
+            GUI.Box(new Rect(0,0, cuantoW * 10, cuantoH), "", "progressBarLleno");
         GUI.EndGroup();
 	}
-
 }
