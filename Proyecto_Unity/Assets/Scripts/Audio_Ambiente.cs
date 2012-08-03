@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Audio_Ambience : MonoBehaviour {
+public class Audio_Ambiente : MonoBehaviour {
 
 	public bool activado;
 	public float volumen;
