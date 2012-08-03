@@ -226,22 +226,24 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private IEnumerator creacionParte1() {
 		trabajando = true;
+		progreso = 0.0f;
 		GUI.enabled = false;
+		yield return new WaitForSeconds(0.1f);
 		progreso = 0.1f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
-		progreso = 0.5f;
-		yield return new WaitForEndOfFrame();
-		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		progreso = 0.7f;
-		yield return new WaitForEndOfFrame();
-		pixels = FuncTablero.suavizaPoloTex(pixels);								//Se suavizan los polos...
+		yield return new WaitForSeconds(0.01f);
+		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		progreso = 0.8f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
+		pixels = FuncTablero.suavizaPoloTex(pixels);								//Se suavizan los polos...
+		progreso = 0.9f;
+		yield return new WaitForSeconds(0.01f);
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 		progreso = 1.0f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		progreso = 0.0f;
 		trabajando = false;
 		GUI.enabled = true;
@@ -250,26 +252,28 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private IEnumerator creacionParte2() {
 		trabajando = true;
+		progreso = 0.0f;
 		GUI.enabled = false;
+		yield return new WaitForSeconds(0.1f);
 		progreso = 0.1f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		Mesh meshTemp = GameObject.Instantiate(meshEsfera) as Mesh;
 		progreso = 0.2f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
 		progreso = 0.5f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		rocaMesh = meshTemp;
 		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
 		progreso = 0.7f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		Mesh meshAgua = GameObject.Instantiate(meshEsfera) as Mesh;
 		progreso = 0.8f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
 		aguaMesh = meshAgua;
 		progreso = 1.0f;
-		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(0.01f);
 		progreso = 0.0f;
 		trabajando = false;
 		GUI.enabled = true;
