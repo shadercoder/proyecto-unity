@@ -66,7 +66,7 @@ public class Principal : MonoBehaviour {
 			creacionCarga(cont);
 		}
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta. Cargando opciones...");
-		Audio_Ambience ambiente = sonidoAmbiente.GetComponent<Audio_Ambience>();
+		Audio_Ambiente ambiente = sonidoAmbiente.GetComponent<Audio_Ambiente>();
 		Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
 		if (PlayerPrefs.GetInt("MusicaOn") == 1)
 			ambiente.activado = true;

@@ -17,7 +17,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	private float tiempoUltimaInfoCasilla = 0.0f;			//Tiempo de la última comprobación de la info básica de una casilla
 	private float tiempoInfoCasilla = 0.25f;				//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
 	private Vector3 posicionMouseInfoCasilla = Vector3.zero;//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
+	private float escalaTiempoAntesMenu;					//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
 	
 	//Tooltips
 	private Vector3 posicionMouseTooltip = Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
@@ -42,6 +42,17 @@ public class InterfazPrincipal : MonoBehaviour {
 		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,seta,flor,cana,arbusto,estromatolito,cactus,palmera,pino,cipres,pinoAlto,
 		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}	
 	private telementoInsercion elementoInsercion = telementoInsercion.ninguno;
+	
+	//Menus para guardar
+    private Vector2 posicionScroll = Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
+    private int numSaves = 0;								//El numero de saves diferentes que hay en el directorio respectivo
+    private int numSavesExtra = 0;							//Numero de saves que hay que no se ven al primer vistazo en la scrollview
+    private string[] nombresSaves;							//Los nombres de los ficheros de savegames guardados
+	
+	//Sonido
+	private float musicaVol = 1.0f;							//A que volumen?
+	private float sfxVol = 1.0f;							//A que volumen?
+	
 	
 	// Use this for initialization
 	void Start () {
@@ -92,7 +103,8 @@ public class InterfazPrincipal : MonoBehaviour {
 				insertarElemento();					
 		}
 		else
-			mostrarInfoCasilla = false;				
+			mostrarInfoCasilla = false;	
+		
 		if(activarTooltip)			
 			mostrarToolTip();		
 	}	
@@ -155,12 +167,11 @@ public class InterfazPrincipal : MonoBehaviour {
 		{			
 			escalaTiempoAntesMenu = principal.escalaTiempo;
 			principal.setEscalaTiempo(0);
-			accion = InterfazPrincipal.taccion.mostrarMenu;					
+			accion = InterfazPrincipal.taccion.mostrarMenu;		
+			accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
 		}
 		GUI.EndGroup();
 	}
-	
-	
 	
 	//Dibuja el bloque izquierdo de la ventana que contiene: insertar vegetales o animales, insertar edificios, mejoras de la nave, habilidades, info/seleccionar
 	void bloqueIzquierdo()
@@ -446,47 +457,6 @@ public class InterfazPrincipal : MonoBehaviour {
 		
 	}
 	
-	//Obtiene la información básica de la casilla a mostrar en la barra de información inferior
-	void calculaInfoCasilla()
-	{
-		if(mostrarInfoCasilla)
-		{
-			if(Input.mousePosition != posicionMouseInfoCasilla && Time.realtimeSinceStartup > tiempoUltimaInfoCasilla + tiempoInfoCasilla)
-			{
-				posicionMouseInfoCasilla = Input.mousePosition;
-				tiempoUltimaInfoCasilla = Time.realtimeSinceStartup;
-				int x = 0;
-				int y = 0;
-				if(principal.raycastRoca(Input.mousePosition,ref x,ref y))
-				{
-					T_habitats habitat = principal.vida.tablero[y,x].habitat;
-					T_elementos elem = principal.vida.tablero[y,x].elementos;					
-					Edificio edificio = principal.vida.tablero[y,x].edificio;
-					Vegetal vegetal = principal.vida.tablero[y,x].vegetal;
-					Animal animal = principal.vida.tablero[y,x].animal;
-										
-					if(habitat == T_habitats.montana)
-						infoCasilla = "Hábitat: montaña" + "\t\t";
-					else
-						infoCasilla = "Hábitat: " + habitat.ToString() + "\t\t";
-					if(elem == T_elementos.comunes)
-						infoCasilla += "Elementos: metales comunes" + "\t\t";
-					else if(elem == T_elementos.raros)
-						infoCasilla += "Elementos: metales raros" + "\t\t";					
-					
-					if(edificio != null)
-						infoCasilla += "Edificio: " + edificio.tipo.nombre + "\t\t";
-					if(vegetal != null)
-						infoCasilla += "Vegetal: " + vegetal.especie.nombre + "\t\t";
-					if(animal != null)
-						infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";					
-				}			
-			}						
-		}	
-		else
-			infoCasilla = "";
-	}
-	
 	//Dibuja el bloque de información básica de la casilla a la que estamos apuntando
 	void bloqueInformacion()
 	{
@@ -517,17 +487,44 @@ public class InterfazPrincipal : MonoBehaviour {
 			case taspectRatio.aspectRatio4_3:
 				posicionBloque = 21;break;
 			default:break;
-		}		
+		}	
+		float posicionConfirmar = 0;
+		switch (aspectRatio)
+		{
+			case taspectRatio.aspectRatio16_9:
+				posicionConfirmar = 19.5f;break;
+			case taspectRatio.aspectRatio16_10:
+				posicionConfirmar = 22;break;
+			case taspectRatio.aspectRatio4_3:
+				posicionConfirmar = 27;break;			
+			default:break;
+		}
+		float posicionAudio = 0;
+		switch (aspectRatio)
+		{
+			case taspectRatio.aspectRatio16_9:
+				posicionAudio = 20f;break;
+			case taspectRatio.aspectRatio16_10:
+				posicionAudio = 22.5f;break;
+			case taspectRatio.aspectRatio4_3:
+				posicionAudio = 27.5f;break;			
+			default:break;
+		}
+		
 		switch(accionMenu)
 		{
-			case taccionMenu.mostrarMenu:
-				GUILayout.BeginArea(new Rect(cuantoW*32.5f,cuantoH*posicionBloque,cuantoW*15,cuantoH*19),new GUIContent(),"BloqueMenu");
+			case taccionMenu.mostrarMenu:				
+				GUILayout.BeginArea(new Rect(cuantoW*32.5f,cuantoH*posicionBloque,cuantoW*15,cuantoH*18),new GUIContent(),"BloqueMenu");
 				GUILayout.BeginVertical();
-				GUILayout.Space(cuantoH*3);
-				GUILayout.Button(new GUIContent("Guardar partida","Lleva al menu de guardar partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
-				GUILayout.Button(new GUIContent("Opciones de audio","Lleva al menu de opciones de audio"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
-				GUILayout.Button(new GUIContent("Menu principal","Lleva al menu principal del juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
-				GUILayout.Button(new GUIContent("Salir del juego","Cierra completamente el juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
+				GUILayout.Space(cuantoH*2);
+				if(GUILayout.Button(new GUIContent("Guardar partida","Lleva al menu de guardar partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))									
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;				
+				if(GUILayout.Button(new GUIContent("Opciones de audio","Lleva al menu de opciones de audio"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarOpcionesAudio;
+				if(GUILayout.Button(new GUIContent("Menu principal","Lleva al menu principal del juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarSalirMenuPrincipal;
+				if(GUILayout.Button(new GUIContent("Salir del juego","Cierra completamente el juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarSalirJuego;
 				if(GUILayout.Button(new GUIContent("Volver","Vuelve a la partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
 				{
 					accion = InterfazPrincipal.taccion.ninguna;
@@ -540,24 +537,96 @@ public class InterfazPrincipal : MonoBehaviour {
 				break;
 			
 			case taccionMenu.mostrarGuardar:
-				
-			
+				/*Control_Raton script;
+		        GUI.Box(new Rect(cuantoW * 14, cuantoH * 7, cuantoW * 20, cuantoH * 16), "");
+		        posicionScroll = GUI.BeginScrollView(new Rect(cuantoW * 14, cuantoH * 8, cuantoW * 20, cuantoH * 14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
+		        if (GUI.Button(new Rect(cuantoW, 0, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) 
+				{
+		            ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
+		            string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
+		            SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
+		            int tempLong = temp.texturaBase.width * temp.texturaBase.height;
+		            float[] data = new float[tempLong];
+		            Color[] pixels = temp.texturaBase.GetPixels();
+		            for (int i = 0; i < tempLong; i++) {
+		                    data[i] = pixels[i].r;
+		            }                       
+		            SaveLoad.Save(data,temp.texturaBase.width, temp.texturaBase.height);
+		            //Recuperar estado normal
+		            Time.timeScale = 1.0f;
+		            script = transform.parent.GetComponent<Control_Raton>();
+		            script.setInteraccion(true);
+		            estado = T_estados.principal;
+		        }
+		        for (int i = 0; i < numSaves; i++) {
+		                if (GUI.Button(new Rect(cuantoW, (i + 1) * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
+		                        ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
+		                        SaveLoad.cambiaFileName(nombresSaves[i]);               
+		                        SaveLoad.Save(temp.texturaBase);
+		                        //Recuperar estado normal
+		                        Time.timeScale = 1.0f;
+		                        script = transform.parent.GetComponent<Control_Raton>();
+		                        script.setInteraccion(true);
+		                        estado = T_estados.principal;
+		                }
+		        }
+		        GUI.EndScrollView();
+		        if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
+		                //Recuperar estado normal
+		                Time.timeScale = 1.0f;
+		                escalaTiempo = 1.0f;
+		                script = transform.parent.GetComponent<Control_Raton>();
+		                script.setInteraccion(true);
+		                estado = T_estados.principal;
+		        }*/			
 				break;
 			case taccionMenu.mostrarOpcionesAudio:
+				GUI.Box(new Rect(cuantoW*35f,cuantoH*posicionAudio,cuantoW*10,cuantoH*8),new GUIContent());
+				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+0.5f),cuantoW*9,cuantoH*2),new GUIContent("Sonido"));
+				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+2.5f),cuantoW*5,cuantoH*1),new GUIContent("Volumen"));
+				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+3.5f),cuantoW*4,cuantoH*1),new GUIContent("Música"));
+				float musicaTemp = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+3.5f),cuantoW*6,cuantoH*1),musicaVol,0,1.0f);	
+				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+4.5f),cuantoW*4,cuantoH*1),new GUIContent("Efectos"));
+				float sfxTemp = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+4.5f),cuantoW*6,cuantoH*1),sfxVol,0,1.0f);
+				if(GUI.Button(new Rect(cuantoW*42.5f,cuantoH*(posicionAudio+5.5f),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Volver","Pulsa aquí para volver al menu de opciones")))
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;			
 				
-			
+				if(musicaTemp != musicaVol)
+				{
+					musicaVol = musicaTemp;					
+					//Audio_Ambiente musica = GameObject.FindGameObjectWithTag("Audio_Ambiente").GetComponent<Audio_Ambiente>();
+					//musica.volumen = musicaVol;
+				}
+				if(sfxTemp != sfxVol)
+				{
+					sfxVol = sfxTemp;
+					//AudioSource opSonido = miObjeto.GetComponent<AudioSource>();
+					//opSonido.volume = sfxVol;
+				}
+				
+				
 				break;
 			case taccionMenu.mostrarSalirMenuPrincipal:
-				
-			
+				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent());
+				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
+				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir al menu principal")))
+					Application.LoadLevel("Escena_Inicial");
+				if(GUI.Button(new Rect(cuantoW*40.5f,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("No","Pulsa aquí para volver al menu de opciones")))
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
 				break;
 			case taccionMenu.mostrarSalirJuego:			
-			
+				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent());
+				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
+				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir del juego")))
+					Application.Quit();
+				if(GUI.Button(new Rect(cuantoW*40.5f,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("No","Pulsa aquí para volver al menu de opciones")))
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;				
 				break;
 			default:break;			
 		}
 		
 	}
+	
 	void insertarElemento()	
 	{
 		if(accion == taccion.insertar)
@@ -620,6 +689,46 @@ public class InterfazPrincipal : MonoBehaviour {
 			}			
 		}
 	}	
+	//Obtiene la información básica de la casilla a mostrar en la barra de información inferior
+	void calculaInfoCasilla()
+	{
+		if(mostrarInfoCasilla)
+		{
+			if(Input.mousePosition != posicionMouseInfoCasilla && Time.realtimeSinceStartup > tiempoUltimaInfoCasilla + tiempoInfoCasilla)
+			{
+				posicionMouseInfoCasilla = Input.mousePosition;
+				tiempoUltimaInfoCasilla = Time.realtimeSinceStartup;
+				int x = 0;
+				int y = 0;
+				if(principal.raycastRoca(Input.mousePosition,ref x,ref y))
+				{
+					T_habitats habitat = principal.vida.tablero[y,x].habitat;
+					T_elementos elem = principal.vida.tablero[y,x].elementos;					
+					Edificio edificio = principal.vida.tablero[y,x].edificio;
+					Vegetal vegetal = principal.vida.tablero[y,x].vegetal;
+					Animal animal = principal.vida.tablero[y,x].animal;
+										
+					if(habitat == T_habitats.montana)
+						infoCasilla = "Hábitat: montaña" + "\t\t";
+					else
+						infoCasilla = "Hábitat: " + habitat.ToString() + "\t\t";
+					if(elem == T_elementos.comunes)
+						infoCasilla += "Elementos: metales comunes" + "\t\t";
+					else if(elem == T_elementos.raros)
+						infoCasilla += "Elementos: metales raros" + "\t\t";					
+					
+					if(edificio != null)
+						infoCasilla += "Edificio: " + edificio.tipo.nombre + "\t\t";
+					if(vegetal != null)
+						infoCasilla += "Vegetal: " + vegetal.especie.nombre + "\t\t";
+					if(animal != null)
+						infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";					
+				}			
+			}						
+		}	
+		else
+			infoCasilla = "";
+	}
 	
 	//Controla si se tiene que mostrar el tooltip o no
 	void controlTooltip()
