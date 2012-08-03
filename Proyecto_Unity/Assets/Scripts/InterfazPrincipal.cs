@@ -17,7 +17,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	private float tiempoUltimaInfoCasilla = 0.0f;			//Tiempo de la última comprobación de la info básica de una casilla
 	private float tiempoInfoCasilla = 0.25f;				//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
 	private Vector3 posicionMouseInfoCasilla = Vector3.zero;//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private bool mostrarMenu = false;						//Controla si se muestra el menu de opciones
+	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
 	
 	//Tooltips
 	private Vector3 posicionMouseTooltip = Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
@@ -30,8 +30,11 @@ public class InterfazPrincipal : MonoBehaviour {
 		{aspectRatio16_9,aspectRatio16_10,aspectRatio4_3};
 	private taspectRatio aspectRatio;	
 	private enum taccion									//Acción que se esta realizando en el momento actual
-		{ninguna,desplegableInsercionV_A,seleccionarInsercion,insertar,mostrarInfoDetallada,mostrarMejoras,mostrarHabilidades}
+		{ninguna,desplegableInsercionV_A,seleccionarInsercion,insertar,mostrarInfoDetallada,mostrarMejoras,mostrarHabilidades,mostrarMenu}
 	private taccion accion = taccion.ninguna;
+	private enum taccionMenu								//Acción que se esta realizando en el menu
+		{mostrarMenu,mostrarGuardar,mostrarOpcionesAudio,mostrarSalirMenuPrincipal,mostrarSalirJuego};
+	private taccionMenu accionMenu = taccionMenu.mostrarMenu;
 	private enum tcategoriaInsercion						//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
 		{desactivada,animal,vegetal,edificio}
 	private tcategoriaInsercion categoriaInsercion = tcategoriaInsercion.desactivada;
@@ -76,9 +79,12 @@ public class InterfazPrincipal : MonoBehaviour {
 			cuantoW = (float)Screen.width / 80;
 			cuantoH = (float)Screen.height / 60;	
 		}
+		if(accion == InterfazPrincipal.taccion.mostrarMenu)			
+			bloqueMenu();
 		bloqueSuperior();
 		bloqueIzquierdo();
 		bloqueSeleccion();
+		bloqueInformacion();
 		if(posicionFueraDeInterfaz(Input.mousePosition))
 		{
 			mostrarInfoCasilla = true;
@@ -86,11 +92,9 @@ public class InterfazPrincipal : MonoBehaviour {
 				insertarElemento();					
 		}
 		else
-			mostrarInfoCasilla = false;
-			
-		bloqueInformacion();			
+			mostrarInfoCasilla = false;				
 		if(activarTooltip)			
-			mostrarToolTip();			
+			mostrarToolTip();		
 	}	
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
@@ -148,7 +152,11 @@ public class InterfazPrincipal : MonoBehaviour {
 			GUI.Label(new Rect(cuantoW*(49-ajusteRecursos),cuantoH*0,cuantoW*(2+ajusteRecursos),cuantoH*2),"" + principal.materialBiologicoDif.ToString(),"LabelRecursosDifRojo");		
 		//Menu
 		if(GUI.Button(new Rect(cuantoW*73,cuantoH*0,cuantoW*7,cuantoH*4),new GUIContent("","Accede al menu del juego"),"BotonMenu"))
-			mostrarMenu = true;			
+		{			
+			escalaTiempoAntesMenu = principal.escalaTiempo;
+			principal.setEscalaTiempo(0);
+			accion = InterfazPrincipal.taccion.mostrarMenu;					
+		}
 		GUI.EndGroup();
 	}
 	
@@ -228,7 +236,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	//Dibuja el bloque seleccion de la ventana que contiene los diferentes edificios, animales o vegetales seleccionables según que botón se haya pulsado en el bloque izquierdo
 	void bloqueSeleccion()
 	{
-		if(categoriaInsercion == tcategoriaInsercion.desactivada)
+		if(accion != taccion.seleccionarInsercion)
 			return;
 		int posicionBloque = 0;
 		switch (aspectRatio)
@@ -496,6 +504,60 @@ public class InterfazPrincipal : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),infoCasilla,"BloqueInformacion");		
 	}
 	
+	//Dibuja el menu de opciones que contiene Guardar, Opciones de audio, Menu Principal, Salir, Volver
+	void bloqueMenu()
+	{
+		float posicionBloque = 0;
+		switch (aspectRatio)
+		{
+			case taspectRatio.aspectRatio16_9:
+				posicionBloque = 13.5f;break;
+			case taspectRatio.aspectRatio16_10:
+				posicionBloque = 16;break;
+			case taspectRatio.aspectRatio4_3:
+				posicionBloque = 21;break;
+			default:break;
+		}		
+		switch(accionMenu)
+		{
+			case taccionMenu.mostrarMenu:
+				GUILayout.BeginArea(new Rect(cuantoW*32.5f,cuantoH*posicionBloque,cuantoW*15,cuantoH*19),new GUIContent(),"BloqueMenu");
+				GUILayout.BeginVertical();
+				GUILayout.Space(cuantoH*3);
+				GUILayout.Button(new GUIContent("Guardar partida","Lleva al menu de guardar partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
+				GUILayout.Button(new GUIContent("Opciones de audio","Lleva al menu de opciones de audio"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
+				GUILayout.Button(new GUIContent("Menu principal","Lleva al menu principal del juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
+				GUILayout.Button(new GUIContent("Salir del juego","Cierra completamente el juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
+				if(GUILayout.Button(new GUIContent("Volver","Vuelve a la partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+				{
+					accion = InterfazPrincipal.taccion.ninguna;
+					principal.setEscalaTiempo(escalaTiempoAntesMenu);
+				}	
+			    GUILayout.EndVertical();
+				GUILayout.EndArea();
+				if(GUI.Button(new Rect(0,0,cuantoW*80,cuantoH*60),new GUIContent(),""))
+					;//CLINK		
+				break;
+			
+			case taccionMenu.mostrarGuardar:
+				
+			
+				break;
+			case taccionMenu.mostrarOpcionesAudio:
+				
+			
+				break;
+			case taccionMenu.mostrarSalirMenuPrincipal:
+				
+			
+				break;
+			case taccionMenu.mostrarSalirJuego:			
+			
+				break;
+			default:break;			
+		}
+		
+	}
 	void insertarElemento()	
 	{
 		if(accion == taccion.insertar)
@@ -597,6 +659,8 @@ public class InterfazPrincipal : MonoBehaviour {
 	//Devuelve true si el raton está fuera de la interfaz y por tanto es válido y false si cae dentro de la interfaz dibujada en ese momento
 	public bool posicionFueraDeInterfaz(Vector3 posicionRaton)		
 	{
+		if(accion == taccion.mostrarMenu)
+			return false;
 		float xini,xfin,yini,yfin;		
 		yfin = Screen.height - cuantoH*4;				//Posición donde termina el bloque superior
 		if(mostrarBloqueIzquierdo)

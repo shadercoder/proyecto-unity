@@ -50,6 +50,7 @@ public class Vida
 	public int idActualAnimal;
 	public int idActualEdificio;
 	
+	public int contadorPintarTexturaPlantas = 0;
 	
 	public Vida()
 	{
@@ -544,7 +545,12 @@ public class Vida
 				edificio = (Edificio)ser;				
 			}
 		}
-		texturaPlantas.Apply();
+		contadorPintarTexturaPlantas++;
+		if(contadorPintarTexturaPlantas == 5)
+		{
+			texturaPlantas.Apply();
+			contadorPintarTexturaPlantas = 0;
+		}
 	}
 	
 	public bool buscaPosicionVaciaVegetal(T_habitats habitat,ref int x,ref int y)
