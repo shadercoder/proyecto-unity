@@ -272,35 +272,35 @@ public class InterfazPrincipal : MonoBehaviour {
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.fabricaCompBas;			
-					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
+					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía"),"BotonInsertarCenEn"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.centralEnergia;
-					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
+					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Granja"),"BotonInsertarGranja"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.granja;
-					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
+					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.fabricaCompBas;
-					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
+					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía avanzada"),"BotonInsertarCenEnAdv"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.centralEnergiaAdv;
-					principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 1);	
+					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}		
 				GUILayout.Space(cuantoW);
 				GUILayout.EndHorizontal();
@@ -661,7 +661,7 @@ public class InterfazPrincipal : MonoBehaviour {
 						
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;	
-						principal.objetoRoca.renderer.sharedMaterials[4].SetFloat("_FiltroOn", 0);	
+						principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 0);	
 					}					
 					else if(tipo >= 5 && tipo < 15)			//Vegetal
 					{

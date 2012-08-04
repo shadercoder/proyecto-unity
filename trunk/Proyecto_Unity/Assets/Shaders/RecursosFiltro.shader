@@ -2,7 +2,7 @@ Shader "Planet/RecursosFiltro"
 {
 	Properties 
 	{
-_MainTex("Textura Habitats", 2D) = "gray" {}
+_MainTex("Textura Recursos", 2D) = "gray" {}
 _FiltroOn("Filtro On/Off", Range(0,1) ) = 0.5
 _Emision("Brillo del filtro", Float) = 0.5
 
