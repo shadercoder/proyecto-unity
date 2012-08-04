@@ -12,7 +12,7 @@ public class Principal : MonoBehaviour {
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
 	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
 	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
-	private Texture2D texPlantas;										//La textura donde se pintan las plantas 
+//	private Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
 	private GameObject contenedor;										//El contenedor de las texturas de la primera escena
@@ -55,17 +55,20 @@ public class Principal : MonoBehaviour {
 	void Awake() {		
 		Random.seed = System.DateTime.Now.Millisecond;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando el script Principal...");
+		//Se busca el objeto con los valores guardados en la escena inicial, si lo hubiera
 		contenedor = GameObject.FindGameObjectWithTag("Carga");
-		if (contenedor == null) {
+		if (contenedor == null) {		//Si el objeto no existe, crear el planeta de cero
 			Debug.Log (FuncTablero.formateaTiempo() + ": No encontrado contenedor, iniciando creacion inicial...");
 			creacionInicial();
 		}
-		else {
+		else {							//Si el objeto existe, cargar los valores necesarios
 			Debug.Log (FuncTablero.formateaTiempo() + ": Encontrado contenedor, cargando...");
 			ValoresCarga cont = contenedor.GetComponent<ValoresCarga>();
 			creacionCarga(cont);
+			vida.setObjetoRoca(objetoRoca.transform);
 		}
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta. Cargando opciones...");
+		//Opciones de sonido guardadas en PlayerPrefs
 		Audio_Ambiente ambiente = sonidoAmbiente.GetComponent<Audio_Ambiente>();
 		Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
 		if (PlayerPrefs.GetInt("MusicaOn") == 1)
@@ -78,17 +81,9 @@ public class Principal : MonoBehaviour {
 		else
 			efectos.activado = false;
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
-		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando habitats y vida...");
-		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 1ª posicion.
-		Texture2D texElems = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
-		texPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
-		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
-		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
-		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
-		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, texHabitats, texHabitatsEstetica, texElems, mesh);
-		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
-		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la carga de opciones. Cargando informacion de saves...");
+		//Cargar la información del numero de saves que hay
+		SaveLoad.compruebaRuta();
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
@@ -159,6 +154,17 @@ public class Principal : MonoBehaviour {
 		//se ajusta la propiedad de nivel de agua del shader
 		objetoOceano.renderer.sharedMaterial.SetFloat("_nivelMar", FuncTablero.getNivelAgua());
 		objetoOceano.renderer.sharedMaterial.SetFloat("_tamPlaya", FuncTablero.getTamanoPlaya());
+		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Cargando texturas de habitats...");
+		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 1ª posicion.
+		Texture2D texElems = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
+		Texture2D texPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
+		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
+		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando el tablero...");
+		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.mesh);
+		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando Vida...");
+		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
 	}
 	
@@ -188,6 +194,16 @@ public class Principal : MonoBehaviour {
 		//se ajusta la propiedad de nivel de agua del shader
 		objetoOceano.renderer.sharedMaterial.SetFloat("_nivelMar", nivelAgua);
 		objetoOceano.renderer.sharedMaterial.SetFloat("_tamPlaya", tamanoPlaya);
+		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Cargando texturas de habitats...");
+		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 1ª posicion.
+		objetoRoca.renderer.sharedMaterials[3].mainTexture = contenedor.texturaElementos;
+		objetoRoca.renderer.sharedMaterials[2].mainTexture = contenedor.texturaPlantas;
+		objetoRoca.renderer.sharedMaterials[1].mainTexture = contenedor.texturaHabsEstetica;
+		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
+		texHabitats = contenedor.texturaHabitats;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Cargando la vida...");
+		vida = new Vida(contenedor.vida);
 		Debug.Log (FuncTablero.formateaTiempo() + ": Carga completada.");
 	}
 	

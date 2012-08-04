@@ -644,20 +644,16 @@ public class InterfazPrincipal : MonoBehaviour {
 						TipoEdificio[] tipos = new TipoEdificio[principal.vida.tiposEdificios.Count];
 						principal.vida.tiposEdificios.Values.CopyTo(tipos,0);
 						TipoEdificio tedif = tipos[tipo];
-						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,
-						                             	tedif.matBioConsumidoAlCrear))
-						{							
-							if(principal.vida.anadeEdificio(tedif,y,x,0,0,0,0,10,10,10,10))
-							{
-								principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,
-								                         tedif.matBioConsumidoAlCrear);
+						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear)) {							
+							if(principal.vida.anadeEdificio(tedif,y,x,0,0,0,0,10,10,10,10)) {
+								principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear);
 								principal.modificaRecursosPorTurno(10,10,10,10);								
 							}
 							else									
 								;//Mostrar por pantalla que no se ha podido insertar por que el habitat no es el adecuado o xq ya existe un edificio ahi
 						}
 						else
-							//Mostrar por pantalla que no se ha podido insertar por falta de recursos
+							;//Mostrar por pantalla que no se ha podido insertar por falta de recursos
 						
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;	

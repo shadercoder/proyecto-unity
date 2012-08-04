@@ -92,8 +92,29 @@ public class Vida
 		objetoRoca = objeto;
 	}
 	
+	public Vida(Casilla[,] tablero, Texture2D texPlantas)
+	{
+		this.tablero = tablero;
+		especies = new Dictionary<string, Especie>();
+		especiesVegetales = new Dictionary<string, EspecieVegetal>();
+		especiesAnimales = new Dictionary<string, EspecieAnimal>();
+		tiposEdificios = new Dictionary<string, TipoEdificio>();
+		seres = new List<Ser>();	
+		vegetales = new List<Vegetal>();
+		animales = new List<Animal>();
+		edificios = new List<Edificio>();
+		numEspecies = 0;
+		numEspeciesVegetales = 0;
+		numEspeciesAnimales = 0;
+		idActualVegetal = 0;
+		idActualAnimal = 0;
+		idActualEdificio = 0;
+		texturaPlantas = texPlantas;
+	}
+	
 	public Vida(Vida vida)
 	{
+		objetoRoca = vida.objetoRoca;
 		tablero = vida.tablero;
 		especies = vida.especies;
 		especiesVegetales = vida.especiesVegetales;
@@ -111,6 +132,11 @@ public class Vida
 		idActualAnimal = vida.idActualAnimal;
 		idActualEdificio = vida.idActualEdificio;
 		texturaPlantas = vida.texturaPlantas;
+	}
+	
+	//Necesario para cuando se crea Vida desde la escena inicial, donde el objeto roca no está creado aun
+	public void setObjetoRoca(Transform objeto) {
+		objetoRoca = objeto;
 	}
 	
 	private void pintaPlantasTex(int posX,int posY) {
