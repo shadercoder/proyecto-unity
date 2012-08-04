@@ -32,6 +32,13 @@ public class EscenaCarga : MonoBehaviour {
 	private float nivelAguaInit 			= 0.6f;								//El punto a partir del cual deja de haber mar en la orografía del planeta
 	private float temperaturaInit 			= 0.5f;								//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 	
+		//Tercera fase
+	private Texture2D texElems;									//Textura donde se representan los elementos del terreno
+	private Texture2D texPlantas;								//Textura donde se pintan las plantas del planeta
+	private Texture2D texHabitatsEstetica;						//Textura donde se pintan los habitats a mostrar
+	private Texture2D texHabitats;								//Textura donde se pintan los habitats para filtros
+	private Vida vida;											//El algoritmo de vida
+	
 	//Opciones
 	private bool musicaOn 					= true;				//Está la música activada?
 	private float musicaVol 				= 0.5f;				//A que volumen?
@@ -62,10 +69,11 @@ public class EscenaCarga : MonoBehaviour {
 	private string[] nombresSaves;									//Los nombres de los ficheros de savegames guardados
 	private SaveData saveGame;										//El contenido de la partida salvada cargada
 	
-																			
+	
 	//Funciones basicas ----------------------------------------------------------------------------------------------------------------------
 	
 	void Awake() {
+		Debug.Log("Iniciando el script de EscenaCarga.Awake");
 		miObjeto = this.transform;
 		GameObject[] cadena = GameObject.FindGameObjectsWithTag("Carga");
 		if (cadena.Length > 1) {
@@ -102,6 +110,7 @@ public class EscenaCarga : MonoBehaviour {
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
 		objetoOceano.transform.localScale = escalaBase + new Vector3(nivelAguaInit, nivelAguaInit, nivelAguaInit);
+		Debug.Log("Terminando el script de EscenaCarga.Awake");
 	}
 	
 	void Update() {
@@ -142,6 +151,11 @@ public class EscenaCarga : MonoBehaviour {
 					temp.agua = aguaMesh;
 					temp.nivelAgua = nivelAguaInit;
 					temp.tamanoPlaya = tamanoPlayasInit;
+					temp.texturaElementos = texElems;
+					temp.texturaHabitats = texHabitats;
+					temp.texturaHabsEstetica = texHabitatsEstetica;
+					temp.texturaPlantas = texPlantas;
+					temp.vida = vida;
 					Application.LoadLevel("Escena_Principal");
 				break;
 			case 2:		//Opciones
@@ -282,8 +296,26 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private IEnumerator creacionParte3() {
 		trabajando = true;
-		yield return null;
+		progreso = 0.0f;
+		GUI.enabled = false;
+		yield return new WaitForSeconds(0.1f);
+		texElems = new Texture2D(2048,1024);
+		texPlantas = new Texture2D(2048,1024);
+		texHabitatsEstetica = new Texture2D(2048,1024);
+		texHabitats = new Texture2D(2048,1024);
+		progreso = 0.1f;
+		yield return new WaitForSeconds(0.01f);
+		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, rocaMesh);
+		progreso = 0.7f;
+		yield return new WaitForSeconds(0.01f);
+		vida = new Vida(tablero, texPlantas);
+		progreso = 1.0f;
+		yield return new WaitForSeconds(0.01f);
+		progreso = 0.0f;
+		GUI.enabled = true;
 		trabajando = false;
+		faseCreacion = 0;
+		estado = 1;	
 	}
 	
 	private void cargarJuego() {		
@@ -520,10 +552,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Space(cuantoW * 28);
 		//Mejor si solo pulsando el boton de comenzar empiezas directamente
 		if (GUILayout.Button(new GUIContent("Comenzar", "Empezar el juego"))) {
-			if (!trabajando)
-				creacionParte3();
-			faseCreacion = 0;
-			estado = 1;	
+			StartCoroutine(creacionParte3());
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
