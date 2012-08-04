@@ -16,9 +16,32 @@ using System.Collections.Generic;
 public class SaveData {
 
 	//Variables a salvar
-	public int width;
-	public int height;
-	public float[] data;
+	public int heightmapW;
+	public int heightmapH;
+	public float[] heightmapData;
+	public int elementosW;
+	public int elementosH;
+	public float[] elementosData;
+	public int plantasW;
+	public int plantasH;
+	public float[] plantasData;
+	public int habitatsW;
+	public int habitatsH;
+	public float[] habitatsData;
+	public int esteticaW;
+	public int esteticaH;
+	public float[] esteticaData;
+	public Vida vidaData;
+	public float[] rocaVertices;
+	public float[] rocaNormals;
+	public float[] rocaUVs;
+	public int[] rocaTriangulos;
+	public float[] aguaVertices;
+	public float[] aguaNormals;
+	public float[] aguaUVs;
+	public int[] aguaTriangulos;
+	public float nivelAgua;
+	public float tamanoPlaya;
 
 
   	public SaveData () {}
@@ -43,27 +66,13 @@ public class SaveLoad {
 	public static string currentFilePath = Application.persistentDataPath + "/Saves/";
 	
 	//Savegame
-	public static void Save (Texture2D tex) {							//Sobrecargado
-		Color[] colTemp = tex.GetPixels();
-		int tempLong = tex.width * tex.height;
-		float[] data = new float[tempLong];
-		for (int i = 0; i < tempLong; i++) {
-			data[i] = colTemp[i].r;
-		}
-		Save(data, tex.width, tex.height);
+	public static void Save (ValoresCarga contenedor) {					//Sobrecargado
+		Save(currentFilePath + currentFileName, contenedor);
 	}
 	
-  	public static void Save (float[] data, int width, int height)  		//Sobrecargado
-  	{
-    	Save (currentFilePath + currentFileName, data, width, height);
-  	}
-	
-  	public static void Save (string filePath, float[] data, int width, int height)
+  	public static void Save (string filePath, ValoresCarga contenedor)
   	{ 
-	    SaveData save = new SaveData ();
-		save.data = data;
-		save.width = width;
-		save.height = height;
+	    SaveData save = generarValores(contenedor);
 	    FileStream stream = new FileStream(filePath, FileMode.Create);
 		try {
 		    BinaryFormatter bformatter = new BinaryFormatter();
@@ -96,6 +105,237 @@ public class SaveLoad {
 			stream.Close();
 		}
 		return data;
+	}
+	
+	private static SaveData generarValores(ValoresCarga contenedor) {
+		SaveData resultado = new SaveData();
+		//Textura Heightmap (Textura_Planeta)
+		resultado.heightmapW = contenedor.texturaBase.width;
+		resultado.heightmapH = contenedor.texturaBase.height;
+		Color[] temp1 = contenedor.texturaBase.GetPixels();
+		resultado.heightmapData = new float[temp1.Length];
+		for (int i = 0; i < temp1.Length; i++) {
+			resultado.heightmapData[i] = temp1[i].r;
+		}
+		//Textura elementos (Textura_Recursos)
+		resultado.elementosW = contenedor.texturaElementos.width;
+		resultado.elementosH = contenedor.texturaElementos.height;
+		Color[] temp2 = contenedor.texturaElementos.GetPixels();
+		resultado.elementosData = new float[temp2.Length * 4];
+		for (int i = 0; i < temp2.Length; i++) {
+			resultado.elementosData[i * 4] = temp2[i].r;
+			resultado.elementosData[i * 4 + 1] = temp2[i].g;
+			resultado.elementosData[i * 4 + 2] = temp2[i].b;
+			resultado.elementosData[i * 4 + 3] = temp2[i].a;
+		}
+		//Textura plantas (Textura_planta)
+		resultado.plantasW = contenedor.texturaPlantas.width;
+		resultado.plantasH = contenedor.texturaPlantas.height;
+		Color[] temp3 = contenedor.texturaPlantas.GetPixels();
+		resultado.plantasData = new float[temp3.Length * 4];
+		for (int i = 0; i < temp3.Length; i++) {
+			resultado.plantasData[i * 4] = temp3[i].r;
+			resultado.plantasData[i * 4 + 1] = temp3[i].g;
+			resultado.plantasData[i * 4 + 2] = temp3[i].b;
+			resultado.plantasData[i * 4 + 3] = temp3[i].a;
+		}
+		//Textura habitats (Textura_Habitats)
+		resultado.habitatsW = contenedor.texturaHabitats.width;
+		resultado.habitatsH = contenedor.texturaHabitats.height;
+		Color[] temp4 = contenedor.texturaHabitats.GetPixels();
+		resultado.habitatsData = new float[temp4.Length * 4];
+		for (int i = 0; i < temp4.Length; i++) {
+			resultado.habitatsData[i * 4] = temp4[i].r;
+			resultado.habitatsData[i * 4 + 1] = temp4[i].g;
+			resultado.habitatsData[i * 4 + 2] = temp4[i].b;
+			resultado.habitatsData[i * 4 + 3] = temp4[i].a;
+		}
+		//Textura habitats estetica (Textura_Habitats_Estetica)
+		resultado.esteticaW = contenedor.texturaHabsEstetica.width;
+		resultado.esteticaH = contenedor.texturaHabsEstetica.height;
+		Color[] temp5 = contenedor.texturaHabsEstetica.GetPixels();
+		resultado.esteticaData = new float[temp5.Length * 4];
+		for (int i = 0; i < temp5.Length; i++) {
+			resultado.esteticaData[i * 4] = temp5[i].r;
+			resultado.esteticaData[i * 4 + 1] = temp5[i].g;
+			resultado.esteticaData[i * 4 + 2] = temp5[i].b;
+			resultado.esteticaData[i * 4 + 3] = temp5[i].a;
+		}
+		//Clase Vida
+		resultado.vidaData = contenedor.vida;
+		//Mesh Roca
+		Vector3[] temp6 = contenedor.roca.vertices;
+		Vector3[] temp7 = contenedor.roca.normals;
+		resultado.rocaVertices = new float[temp6.Length * 3];
+		resultado.rocaNormals = new float[temp7.Length * 3];
+		for (int i = 0; i < temp6.Length; i++) {
+			resultado.rocaVertices[i * 3] = temp6[i].x;
+			resultado.rocaVertices[i * 3 + 1] = temp6[i].y;
+			resultado.rocaVertices[i * 3 + 2] = temp6[i].z;
+			resultado.rocaNormals[i * 3] = temp7[i].x;
+			resultado.rocaNormals[i * 3 + 1] = temp7[i].y;
+			resultado.rocaNormals[i * 3 + 2] = temp7[i].z;
+		}
+		Vector2[] temp8 = contenedor.roca.uv;
+		resultado.rocaUVs = new float[temp8.Length * 2];
+		for (int i = 0; i < temp8.Length; i++) {
+			resultado.rocaUVs[i * 2] = temp8[i].x;
+			resultado.rocaUVs[i * 2 + 1] = temp8[i].y;
+		}
+		int[] temp9 = contenedor.roca.triangles;
+		resultado.rocaTriangulos = new int[temp9.Length];
+		for (int i = 0; i < temp9.Length; i++) {
+			resultado.rocaTriangulos[i] = temp9[i];
+		}
+		//Mesh Agua
+		Vector3[] temp10 = contenedor.agua.vertices;
+		Vector3[] temp11 = contenedor.agua.normals;
+		resultado.aguaVertices = new float[temp10.Length * 3];
+		resultado.aguaNormals = new float[temp11.Length * 3];
+		for (int i = 0; i < temp10.Length; i++) {
+			resultado.aguaVertices[i * 3] = temp10[i].x;
+			resultado.aguaVertices[i * 3 + 1] = temp10[i].y;
+			resultado.aguaVertices[i * 3 + 2] = temp10[i].z;
+			resultado.aguaNormals[i * 3] = temp11[i].x;
+			resultado.aguaNormals[i * 3 + 1] = temp11[i].y;
+			resultado.aguaNormals[i * 3 + 2] = temp11[i].z;
+		}
+		Vector2[] temp12 = contenedor.agua.uv;
+		resultado.aguaUVs = new float[temp12.Length * 2];
+		for (int i = 0; i < temp12.Length; i++) {
+			resultado.aguaUVs[i * 2] = temp12[i].x;
+			resultado.aguaUVs[i * 2 + 1] = temp12[i].y;
+		}
+		int[] temp13 = contenedor.agua.triangles;
+		resultado.aguaTriangulos = new int[temp13.Length];
+		for (int i = 0; i < temp13.Length; i++) {
+			resultado.aguaTriangulos[i] = temp13[i];
+		}
+		//Otras variables
+		resultado.nivelAgua = contenedor.nivelAgua;
+		resultado.tamanoPlaya = contenedor.tamanoPlaya;
+		//Fin
+		return resultado;
+	}
+	
+	public static void rehacerScript(SaveData save, ValoresCarga contenedor) {
+		//Textura Heightmap (Textura_Planeta)
+		Texture2D temp1 = new Texture2D(save.heightmapW, save.heightmapH);
+		Color[] temp1a = new Color[save.heightmapData.Length];
+		for (int i = 0; i < save.heightmapData.Length; i++) {
+			temp1a[i].r = save.heightmapData[i];
+			temp1a[i].g = save.heightmapData[i];
+			temp1a[i].b = save.heightmapData[i];
+		}
+		temp1.SetPixels(temp1a);
+		temp1.Apply();
+		contenedor.texturaBase = temp1;
+		//Textura elementos (Textura_Recursos)
+		Texture2D temp2 = new Texture2D(save.elementosW, save.elementosH);
+		Color[] temp2a = new Color[save.elementosData.Length / 4];
+		for (int i = 0; i < temp2a.Length; i++) {
+			temp2a[i].r = save.elementosData[i * 4];
+			temp2a[i].g = save.elementosData[i * 4 + 1];
+			temp2a[i].b = save.elementosData[i * 4 + 2];
+			temp2a[i].a = save.elementosData[i * 4 + 3];
+		}
+		temp2.SetPixels(temp2a);
+		temp2.Apply();
+		contenedor.texturaElementos = temp2;
+		//Textura plantas (Textura_planta)
+		Texture2D temp3 = new Texture2D(save.plantasW, save.plantasH);
+		Color[] temp3a = new Color[save.plantasData.Length / 4];
+		for (int i = 0; i < temp3a.Length; i++) {
+			temp3a[i].r = save.plantasData[i * 4];
+			temp3a[i].g = save.plantasData[i * 4 + 1];
+			temp3a[i].b = save.plantasData[i * 4 + 2];
+			temp3a[i].a = save.plantasData[i * 4 + 3];
+		}
+		temp3.SetPixels(temp3a);
+		temp3.Apply();
+		contenedor.texturaPlantas = temp3;
+		//Textura habitats (Textura_Habitats)		
+		Texture2D temp4 = new Texture2D(save.habitatsW, save.habitatsH);
+		Color[] temp4a = new Color[save.habitatsData.Length / 4];
+		for (int i = 0; i < temp4a.Length; i++) {
+			temp4a[i].r = save.plantasData[i * 4];
+			temp4a[i].g = save.plantasData[i * 4 + 1];
+			temp4a[i].b = save.plantasData[i * 4 + 2];
+			temp4a[i].a = save.plantasData[i * 4 + 3];
+		}
+		temp4.SetPixels(temp4a);
+		temp4.Apply();
+		contenedor.texturaHabitats = temp4;
+		//Textura habitats estetica (Textura_Habitats_Estetica)		
+		Texture2D temp5 = new Texture2D(save.esteticaW, save.esteticaH);
+		Color[] temp5a = new Color[save.esteticaData.Length / 4];
+		for (int i = 0; i < temp5a.Length; i++) {
+			temp5a[i].r = save.esteticaData[i * 4];
+			temp5a[i].g = save.esteticaData[i * 4 + 1];
+			temp5a[i].b = save.esteticaData[i * 4 + 2];
+			temp5a[i].a = save.esteticaData[i * 4 + 3];
+		}
+		temp5.SetPixels(temp5a);
+		temp5.Apply();
+		contenedor.texturaHabsEstetica = temp5;
+		//Clase Vida
+		contenedor.vida = save.vidaData;
+		//Mesh Roca
+		Mesh temp6 = new Mesh();
+		Vector3[] temp6v = new Vector3[save.rocaVertices.Length / 3];
+		Vector3[] temp6n = new Vector3[save.rocaNormals.Length / 3];
+		for (int i = 0; i < temp6v.Length; i++) {
+			temp6v[i].x = save.rocaVertices[i * 3];
+			temp6v[i].y = save.rocaVertices[i * 3 + 1];
+			temp6v[i].z = save.rocaVertices[i * 3 + 2];
+			temp6n[i].x = save.rocaNormals[i * 3];
+			temp6n[i].y = save.rocaNormals[i * 3 + 1];
+			temp6n[i].z = save.rocaNormals[i * 3 + 2];
+		}
+		temp6.vertices = temp6v;
+		temp6.normals = temp6n;
+		Vector2[] temp6u = new Vector2[save.rocaUVs.Length / 2];
+		for (int i = 0; i < temp6u.Length; i++) {
+			temp6u[i].x = save.rocaUVs[i * 2];
+			temp6u[i].y = save.rocaUVs[i * 2 + 1];
+		}
+		temp6.uv = temp6u;
+		int[] temp6t = new int[save.rocaTriangulos.Length];
+		for (int i = 0; i < temp6t.Length; i++) {
+			temp6t[i] = save.rocaTriangulos[i];
+		}
+		temp6.triangles = temp6t;
+		contenedor.roca = temp6;
+		//Mesh Agua
+		Mesh temp7 = new Mesh();
+		Vector3[] temp7v = new Vector3[save.aguaVertices.Length / 3];
+		Vector3[] temp7n = new Vector3[save.aguaNormals.Length / 3];
+		for (int i = 0; i < temp7v.Length; i++) {
+			temp7v[i].x = save.aguaVertices[i * 3];
+			temp7v[i].y = save.aguaVertices[i * 3 + 1];
+			temp7v[i].z = save.aguaVertices[i * 3 + 2];
+			temp7n[i].x = save.aguaNormals[i * 3];
+			temp7n[i].y = save.aguaNormals[i * 3 + 1];
+			temp7n[i].z = save.aguaNormals[i * 3 + 2];
+		}
+		temp7.vertices = temp7v;
+		temp7.normals = temp7n;
+		Vector2[] temp7u = new Vector2[save.aguaUVs.Length / 2];
+		for (int i = 0; i < temp7u.Length; i++) {
+			temp7u[i].x = save.aguaUVs[i * 2];
+			temp7u[i].y = save.aguaUVs[i * 2 + 1];
+		}
+		temp7.uv = temp7u;
+		int[] temp7t = new int[save.aguaTriangulos.Length];
+		for (int i = 0; i < temp7t.Length; i++) {
+			temp7t[i] = save.aguaTriangulos[i];
+		}
+		temp7.triangles = temp7t;
+		contenedor.agua = temp7;
+		//Otras variables
+		contenedor.nivelAgua = save.nivelAgua;
+		contenedor.tamanoPlaya = save.tamanoPlaya;
+		//Fin
 	}
 	
 	//Objeto con los indices
@@ -198,11 +438,11 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	private static float nivelAgua = 0.27f;								//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
-	private static float tamanoPlaya = 0.05f;							//El tamaño de las playas. de 0.02 a 0.05 razonable
-	private static float alturaColinas = nivelAgua+(1-nivelAgua)*0.3f;	//La altura a partir de la cual se considera colina (situada a 33% de lo que resta de tierra al establecer el nivel del agua)
-	private static float alturaMontana = nivelAgua+(1-nivelAgua)*0.6f;	//La altura a partir de la cual se considera montaña (situada a 66% de lo que resta de tierra al establecer el nivel del agua)
-	private static float temperatura = 0.5f;							//La temperatura del planeta, que influye en la generacion de habitats
+       private static float nivelAgua = 0.27f;								//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
+       private static float tamanoPlaya = 0.05f;							//El tamaño de las playas. de 0.02 a 0.05 razonable
+       private static float alturaColinas = nivelAgua+(1-nivelAgua)*0.3f;	//La altura a partir de la cual se considera colina (situada a 33% de lo que resta de tierra al establecer el nivel del agua)
+       private static float alturaMontana = nivelAgua+(1-nivelAgua)*0.6f;	//La altura a partir de la cual se considera montaña (situada a 66% de lo que resta de tierra al establecer el nivel del agua)
+       private static float temperatura = 0.5f;								//La temperatura del planeta, que influye en la generacion de habitats
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)

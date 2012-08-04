@@ -19,7 +19,7 @@ public class EscenaCarga : MonoBehaviour {
 		//Primera fase
 	private float gananciaInit 				= 0.5f;				//La ganancia a pasar al script de creación del ruido
 	private float escalaInit 				= 0.003f;			//La escala a pasar al script de creación del ruido
-	private float lacunaridadInit			= 3.5f;				//La lacunaridad a pasar al script de creacion del ruido
+	private float lacunaridadInit			= 3.51284702f;		//La lacunaridad a pasar al script de creacion del ruido
 	private float octavasFloat				= 6.0f;				//Las octavas a pasar al script de creacion del ruido
 	
 		//Segunda fase
@@ -313,11 +313,11 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void cargarJuego() {		
-		int w = saveGame.width;
-		int h = saveGame.height;
+		int w = saveGame.heightmapW;
+		int h = saveGame.heightmapH;
 		Color[] pixels = new Color[w * h];
 		for (int i = 0; i < w * h; i++) {
-			float temp = saveGame.data[i];
+			float temp = saveGame.heightmapData[i];
 			pixels[i] = new Color(temp, temp, temp);
 		}	
 		if (texturaBase.width != w || texturaBase.height != h) {
@@ -370,6 +370,9 @@ public class EscenaCarga : MonoBehaviour {
 			if (GUI.Button(new Rect(cuantoW, i * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Cargar partida num. " + i))) {
 				SaveLoad.cambiaFileName(nombresSaves[i]);
 				saveGame = SaveLoad.Load();
+				GameObject temp = GameObject.FindGameObjectWithTag("Carga");
+				ValoresCarga contenedor = temp.GetComponent<ValoresCarga>();
+				SaveLoad.rehacerScript(saveGame, contenedor);
 				estado = 7;
 			}
 		}
@@ -416,7 +419,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Min");
 		gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.45f, 0.55f);
 		GUILayout.Label("Max " + gananciaInit);
-		GUILayout.EndHorizontal();			
+		GUILayout.EndHorizontal();
 		
 		GUILayout.Space(cuantoH);
 		

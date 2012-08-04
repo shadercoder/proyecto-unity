@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -22,7 +23,8 @@ public class Casilla {
 		coordsVert = vert;
 	}
 }
- 
+
+[System.Serializable] 
 public class Vida
 {
 	//Referencia a la textura de las plantas
@@ -150,8 +152,8 @@ public class Vida
 						arrayPos[j] = tablero[posX,posY].pinceladas[j];
 					}
 					for (int i = tablero[posX,posY].pinceladas.Length; i < temp; i++) {
-						int tempX = (int)(tablero[posX,posY].coordsTex.x + Random.Range(0, FuncTablero.getRelTexTabAncho()));
-						int tempY =  (int)(tablero[posX,posY].coordsTex.y + Random.Range(0, FuncTablero.getRelTexTabAlto()));
+						int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()));
+						int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()));
 						Vector2 posTemp = new Vector2(tempX, tempY);
 						arrayPos[i] = posTemp;
 						FuncTablero.pintaPlantas(texturaPlantas, posTemp, veg.especie.idTextura, true);
@@ -172,8 +174,8 @@ public class Vida
 			else {
 				tablero[posX,posY].pinceladas = new Vector2[temp];
 				for (int i = 0; i < temp; i++) {
-					int tempX = (int)(tablero[posX,posY].coordsTex.x + Random.Range(0, FuncTablero.getRelTexTabAncho()));
-					int tempY =  (int)(tablero[posX,posY].coordsTex.y + Random.Range(0, FuncTablero.getRelTexTabAlto()));
+					int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()));
+					int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()));
 					tablero[posX,posY].pinceladas[i] = new Vector2(tempX, tempY);
 					FuncTablero.pintaPlantas(texturaPlantas, tablero[posX,posY].pinceladas[i], veg.especie.idTextura, true);
 				}
@@ -292,7 +294,7 @@ public class Vida
 	{
 		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
+		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
@@ -312,7 +314,7 @@ public class Vida
 	{
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = especie.modelos[Random.Range(0,especie.modelos.Count)];
+		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
@@ -333,7 +335,7 @@ public class Vida
 	{
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = tipoEdificio.modelos[Random.Range(0,tipoEdificio.modelos.Count)];
+		GameObject modelo = tipoEdificio.modelos[UnityEngine.Random.Range(0,tipoEdificio.modelos.Count)];
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
@@ -383,8 +385,8 @@ public class Vida
 	//Devuelve true si consigue migrar una especie a una nueva posicion y false si no
 	public bool migraVegetal(EspecieVegetal especie,int posX,int posY,int radio)
 	{
-		int nposX = posX + Random.Range(-radio,radio);
-		int nposY = posY + Random.Range(-radio,radio);				
+		int nposX = posX + UnityEngine.Random.Range(-radio,radio);
+		int nposY = posY + UnityEngine.Random.Range(-radio,radio);				
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);		
 		return anadeVegetal(especie,nposX,nposY);
 	}
@@ -419,8 +421,8 @@ public class Vida
 	//Devuelve true si consigue crear un nuevo animal colindante a la posición de entrada y false si no lo consigue
 	public bool reproduceAnimal(EspecieAnimal especie,int posX,int posY)
 	{
-		int nposX = posX + Random.Range(-1,1);
-		int nposY = posY + Random.Range(-1,1);
+		int nposX = posX + UnityEngine.Random.Range(-1,1);
+		int nposY = posY + UnityEngine.Random.Range(-1,1);
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
 		return anadeAnimal(especie,nposX,nposY);
 	}
@@ -509,8 +511,8 @@ public class Vida
 	
 	public bool movimientoAleatorio(Animal animal)
 	{
-		int x = Random.Range(-1, 1);            
-	    int y = Random.Range(-1, 1);
+		int x = UnityEngine.Random.Range(-1, 1);            
+	    int y = UnityEngine.Random.Range(-1, 1);
 	    /*      Sacamos la nueva posición en función de la velocidad (numero de posiciones que se puede mover por turno) y la direccion haciendo un random
 	     * entre -1, 0 y 1 de x y de y. La dirección viene dada según lo siguiente:
 	     * arriba                       => x = 0, y = -1
@@ -976,14 +978,14 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionLocal()
 	{
-		int r = Random.Range(0, numVegetales);
+		int r = UnityEngine.Random.Range(0, numVegetales);
 		return (r < (especie.capacidadMigracionLocal/100.0f) * numVegetales);
 	}	
 	
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionGlobal()
 	{
-		int r = Random.Range(0, numVegetales);
+		int r = UnityEngine.Random.Range(0, numVegetales);
 		return (r < (especie.capacidadMigracionGlobal/100.0f) * numVegetales);
 	}	
 }
