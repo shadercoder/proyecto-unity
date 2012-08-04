@@ -1,4 +1,4 @@
-Shader "Planet/SeresFiltro"
+Shader "Planet/EdificiosFiltro"
 {
 	Properties 
 	{
@@ -108,7 +108,6 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Custom = 0.0;
 				
 float4 Tex2D0=tex2D(_Difuso,(IN.uv_Difuso.xyxy).xy);
-float4 Multiply2=_Tinte * Tex2D0;
 float4 Tex2DNormal0=float4(UnpackNormal( tex2D(_Bump,(IN.uv_Bump.xyxy).xy)).xyz, 1.0 );
 float4 UnpackNormal0=float4(UnpackNormal(Tex2DNormal0).xyz, 1.0);
 float4 Tex2D1=tex2D(_Luces,(IN.uv_Luces.xyxy).xy);
@@ -120,7 +119,7 @@ float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Multiply2;
+o.Albedo = Tex2D0;
 o.Normal = UnpackNormal0;
 o.Emission = Add1;
 

@@ -12,7 +12,7 @@ public class Principal : MonoBehaviour {
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
 	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
 	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
-	public Texture2D texPlantas;										//La textura donde se pintan las plantas 
+	private Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	public GameObject sonidoAmbiente;									//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;											//El objeto que va a contener la fuente de efectos de audio
 	private GameObject contenedor;										//El contenedor de las texturas de la primera escena
@@ -80,10 +80,11 @@ public class Principal : MonoBehaviour {
 		efectos.volumen = PlayerPrefs.GetFloat("SfxVol");
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando habitats y vida...");
 		Texture2D tex = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 2ª posicion.
-		Texture2D texElems = objetoRoca.renderer.sharedMaterials[4].mainTexture as Texture2D;
-		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
+		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 1ª posicion.
+		Texture2D texElems = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
+		texPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
 		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
+		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
 		Mesh mesh = objetoRoca.GetComponent<MeshFilter>().sharedMesh;
 		Casilla[,] tablero = FuncTablero.iniciaTablero(tex, texHabitats, texHabitatsEstetica, texElems, mesh);
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				

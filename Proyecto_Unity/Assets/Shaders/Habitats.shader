@@ -10,7 +10,9 @@ _Emision("_Emision", Range(0.05,1) ) = 0.5
 _tundra("_tundra", 2D) = "black" {}
 _desierto("_desierto", 2D) = "black" {}
 _costa("_costa", 2D) = "black" {}
-_crop("_crop", Range(0,1) ) = 0.5
+_crop("Suavizado del recorte", Range(0,1) ) = 0.5
+_FiltroTex("_FiltroTex", 2D) = "black" {}
+_FiltroOn("_FiltroOn", Float) = 0
 
 	}
 	
@@ -47,6 +49,8 @@ sampler2D _tundra;
 sampler2D _desierto;
 sampler2D _costa;
 float _crop;
+sampler2D _FiltroTex;
+float _FiltroOn;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -91,6 +95,7 @@ float2 uv_MainTex;
 float2 uv_tundra;
 float2 uv_desierto;
 float2 uv_costa;
+float2 uv_FiltroTex;
 float2 uv_volcanicoEmision;
 
 			};
@@ -114,6 +119,7 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - _FiltroOn.xxxx;
 float4 Sampled2D4=tex2D(_volcanico,IN.uv_volcanico.xy);
 float4 Sampled2D0=tex2D(_MainTex,IN.uv_MainTex.xy);
 float4 Splat3=Sampled2D0.x;
@@ -128,11 +134,18 @@ float4 Lerp1=lerp(Lerp2,Sampled2D2,Splat2);
 float4 Sampled2D1=tex2D(_costa,IN.uv_costa.xy);
 float4 Splat1=Sampled2D0.w;
 float4 Lerp0=lerp(Lerp1,Sampled2D1,Splat1);
+float4 Multiply1=Invert0 * Lerp0;
+float4 Tex2D0=tex2D(_FiltroTex,(IN.uv_FiltroTex.xyxy).xy);
+float4 Multiply2=Tex2D0 * _FiltroOn.xxxx;
+float4 Add3=Multiply1 + Multiply2;
 float4 Sampled2D5=tex2D(_volcanicoEmision,IN.uv_volcanicoEmision.xy);
 float4 Splat8=Sampled2D0.x;
 float4 Lerp4_0_NoInput = float4(0,0,0,0);
 float4 Lerp4=lerp(Lerp4_0_NoInput,Sampled2D5,Splat8);
 float4 Multiply0=Lerp4 * _Emision.xxxx;
+float4 Multiply3=Multiply0 * Invert0;
+float4 Multiply5=float4( 0.2,0.2,0.2,0.2 ) * Multiply2;
+float4 Add4=Multiply3 + Multiply5;
 float4 Splat4=Sampled2D0.x;
 float4 Splat5=Sampled2D0.y;
 float4 Add1=Splat4 + Splat5;
@@ -141,14 +154,15 @@ float4 Splat7=Sampled2D0.w;
 float4 Add2=Splat6 + Splat7;
 float4 Add0=Add1 + Add2;
 float4 Subtract0=Add0 - _crop.xxxx;
+float4 Multiply4=Invert0 * Subtract0;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-clip( Subtract0 );
-o.Albedo = Lerp0;
-o.Emission = Multiply0;
+clip( Multiply4 );
+o.Albedo = Add3;
+o.Emission = Add4;
 
 				o.Normal = normalize(o.Normal);
 			}

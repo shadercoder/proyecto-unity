@@ -2,21 +2,19 @@ Shader "Planet/Oceano"
 {
 	Properties 
 	{
-_ColorNear("_ColorNear", Color) = (0.3411765,0.7215686,0.1764706,1)
-_ColorFar("_ColorFar", Color) = (0,0.2666667,0.1647059,1)
-_colorPlayaAgua("_colorPlayaAgua", Color) = (0.7568628,0.8078431,0.3294118,1)
-_ColorPlaya("_ColorPlaya", Color) = (0.8039216,0.7450981,0.6156863,1)
-_densidadAgua("_densidadAgua", Range(0,0.05) ) = 0.004
 _MainTex("_MainTex", 2D) = "black" {}
-_RefStrGloss("_RefStrGloss", 2D) = "gray" {}
-_bumpAnimControl("_bumpAnimControl", 2D) = "black" {}
-_ReflectionCubemap("_ReflectionCubemap", Cube) = "black" {}
-_ReflectionColor("_ReflectionColor", Color) = (0.2980392,0.6666667,0.282353,1)
-_SpecularColor("_SpecularColor", Color) = (0.6470588,0.9960784,0.4313726,1)
-_Shininess("_Shininess", Range(0.1,4) ) = 1.814286
-_SeaSpd("_SeaSpd", Float) = 0.5
-_Ilum("_Ilum", 2D) = "black" {}
-_transparencia("_transparencia", Float) = 0
+_Ilum("textura de luz", 2D) = "black" {}
+_ColorNear("agua cercana a la superficie", Color) = (0.3411765,0.7215686,0.1764706,1)
+_ColorFar("agua profunda", Color) = (0,0.2666667,0.1647059,1)
+_ColorPlayaAgua("agua superficial", Color) = (0.7568628,0.8078431,0.3294118,1)
+_ColorPlaya("playa", Color) = (0.8039216,0.7450981,0.6156863,1)
+_densidadAgua("cantidad de refraccion", Range(0,0.05) ) = 0.004
+_nivelMar("Nivel del Agua", Float) = 0
+_tamPlaya("Tamaño Playa", Float) = 0
+_Mar("Textura Olas", 2D) = "black" {}
+_velVer("velocidad", Float) = 0
+_costa("Textura de la costa", 2D) = "black" {}
+_Brillo("Brillo General. [0,5 - 1]", Float) = 0
 
 	}
 	
@@ -25,7 +23,7 @@ _transparencia("_transparencia", Float) = 0
 		Tags
 		{
 "Queue"="Geometry"
-"IgnoreProjector"="True"
+"IgnoreProjector"="False"
 "RenderType"="Opaque"
 
 		}
@@ -34,7 +32,7 @@ _transparencia("_transparencia", Float) = 0
 Cull Back
 ZWrite On
 ZTest LEqual
-ColorMask RGB
+ColorMask RGBA
 Fog{
 }
 
@@ -44,21 +42,19 @@ Fog{
 #pragma target 3.0
 
 
+sampler2D _MainTex;
+sampler2D _Ilum;
 float4 _ColorNear;
 float4 _ColorFar;
-float4 _colorPlayaAgua;
+float4 _ColorPlayaAgua;
 float4 _ColorPlaya;
 float _densidadAgua;
-sampler2D _MainTex;
-sampler2D _RefStrGloss;
-sampler2D _bumpAnimControl;
-samplerCUBE _ReflectionCubemap;
-float4 _ReflectionColor;
-float4 _SpecularColor;
-float _Shininess;
-float _SeaSpd;
-sampler2D _Ilum;
-float _transparencia;
+float _nivelMar;
+float _tamPlaya;
+sampler2D _Mar;
+float _velVer;
+sampler2D _costa;
+float _Brillo;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -72,11 +68,11 @@ float _transparencia;
 			
 			inline half4 LightingBlinnPhongEditor_PrePass (EditorSurfaceOutput s, half4 light)
 			{
-half3 spec = light.a * s.Gloss;
-half4 c;
-c.rgb = (s.Albedo * light.rgb + light.rgb * spec);
-c.a = s.Alpha;
-return c;
+float4 Luminance0= Luminance( light.xyz ).xxxx;
+float4 Assemble0=float4(Luminance0.x, float4( 0.0, 0.0, 0.0, 0.0 ).y, float4( 0.0, 0.0, 0.0, 0.0 ).z, float4( 0.0, 0.0, 0.0, 0.0 ).w);
+float4 Tex2D0=tex2D(_Ilum,Assemble0.xy);
+float4 Multiply1=float4( s.Albedo.x, s.Albedo.y, s.Albedo.z, 1.0 ) * Tex2D0;
+return Multiply1;
 
 			}
 
@@ -98,42 +94,40 @@ return c;
 			}
 			
 			struct Input {
-				float3 viewDir;
+				float2 uv_Mar;
+float3 viewDir;
 float2 uv_MainTex;
-float3 simpleWorldRefl;
-float2 uv_bumpAnimControl;
+float2 uv_costa;
 
 			};
 
 			void vert (inout appdata_full v, out Input o) {
-			
-//				#if !defined(SHADER_API_OPENGL)
-//				float4 tex = tex2Dlod (_MainTex, float4(v.texcoord.xyz,0));
-//				float4 Multiply2=_tamPlaya.xxxx * float4( 2,2,2,2 );
-//				float4 Add3=_nivelMar.xxxx + Multiply2;
-//				float4 Clamp0=clamp(tex,_nivelMar.xxxx,Add3);
-//				float4 Step0=step(Add3,Clamp0);
-//				float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Step0;
-//				float4 Subtract2=_nivelMar.xxxx - Multiply2;
-//				float4 Clamp1=clamp(tex,Subtract2,_nivelMar.xxxx);
-//				float4 Step1=step(_nivelMar.xxxx,Clamp1);
-//				float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - Step1;
-//				float4 Subtract0=Invert0 - Invert1;
-//				float4 Clamp2=clamp(tex,float4( 0.0, 0.0, 0.0, 0.0 ),Subtract2);
-//				float4 Step2=step(Subtract2,Clamp2);
-//				float4 Invert2= float4(1.0, 1.0, 1.0, 1.0) - Step2;
-//				float4 Subtract1=Invert1 - Invert2;
-//				float4 Add2=Subtract0 + Subtract1;
-//				float4 Add1=Add2 + Invert2;
-//				float4 Multiply0=float4( v.normal.x, v.normal.y, v.normal.z, 1.0 ) * Add1;
-//				float4 Add0=v.vertex + Multiply0;
-//				float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
-//				float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
-//				float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
-//				v.vertex = Add0;
-//				#endif
+float4 Add3_1_NoInput = float4(0,0,0,0);
+float4 Add3=_nivelMar.xxxx + Add3_1_NoInput;
+float4 Clamp0_0_NoInput = float4(0,0,0,0);
+float4 Clamp0=clamp(Clamp0_0_NoInput,_nivelMar.xxxx,Add3);
+float4 Step0=step(Add3,Clamp0);
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Step0;
+float4 Subtract2=_nivelMar.xxxx - _tamPlaya.xxxx;
+float4 Clamp1_0_NoInput = float4(0,0,0,0);
+float4 Clamp1=clamp(Clamp1_0_NoInput,Subtract2,_nivelMar.xxxx);
+float4 Step1=step(_nivelMar.xxxx,Clamp1);
+float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - Step1;
+float4 Subtract0=Invert0 - Invert1;
+float4 Clamp2_0_NoInput = float4(0,0,0,0);
+float4 Clamp2=clamp(Clamp2_0_NoInput,float4( 0.0, 0.0, 0.0, 0.0 ),Subtract2);
+float4 Step2=step(Subtract2,Clamp2);
+float4 Invert2= float4(1.0, 1.0, 1.0, 1.0) - Step2;
+float4 Subtract1=Invert1 - Invert2;
+float4 Add2=Subtract0 + Subtract1;
+float4 Add1=Add2 + Invert2;
+float4 Multiply0=float4( v.normal.x, v.normal.y, v.normal.z, 1.0 ) * Add1;
+float4 Add0=v.vertex + Multiply0;
+float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
+float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
+float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
+v.vertex = Add0;
 
-o.simpleWorldRefl = -reflect( normalize(WorldSpaceViewDir(v.vertex)), normalize(mul((float3x3)_Object2World, SCALED_NORMAL)));
 
 			}
 			
@@ -147,43 +141,56 @@ o.simpleWorldRefl = -reflect( normalize(WorldSpaceViewDir(v.vertex)), normalize(
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
+float4 Tex2D1=tex2D(_Mar,(IN.uv_Mar.xyxy).xy);
+float4 Multiply6=_velVer.xxxx * _Time;
+float4 UV_Pan2=float4(Tex2D1.x + Multiply6.x,Tex2D1.y + Multiply6.x,Tex2D1.z,Tex2D1.w);
+float4 Tex2D0=tex2D(_Mar,UV_Pan2.xy);
+float4 Multiply0=_ColorNear * Tex2D0;
+float4 Multiply1=Tex2D0 * _ColorFar;
 float4 Fresnel0_1_NoInput = float4(0,0,1,1);
 float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
 float4 Pow0=pow(_densidadAgua.xxxx,Fresnel0);
-float4 Lerp1=lerp(_ColorFar,_ColorNear,Pow0);
-float4 Tex2D2=tex2D(_MainTex,(IN.uv_MainTex.xyxy).xy);
-float4 Split0=Tex2D2;
+float4 Lerp1=lerp(Multiply0,Multiply1,Pow0);
+float4 Add2=_nivelMar.xxxx + _tamPlaya.xxxx;
+float4 Sampled2D1=tex2D(_MainTex,IN.uv_MainTex.xy);
+float4 Clamp2=clamp(Sampled2D1,_nivelMar.xxxx,Add2);
+float4 Step2=step(Add2,Clamp2);
+float4 Invert2= float4(1.0, 1.0, 1.0, 1.0) - Step2;
+float4 Subtract0=_nivelMar.xxxx - _tamPlaya.xxxx;
+float4 Clamp1=clamp(Sampled2D1,Subtract0,_nivelMar.xxxx);
+float4 Step1=step(_nivelMar.xxxx,Clamp1);
+float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - Step1;
+float4 Subtract2=Invert2 - Invert1;
+float4 Clamp0=clamp(Sampled2D1,float4( 0.0, 0.0, 0.0, 0.0 ),Subtract0);
+float4 Step0=step(Subtract0,Clamp0);
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Step0;
+float4 Subtract1=Invert1 - Invert0;
+float4 Assemble0_3_NoInput = float4(0,0,0,0);
+float4 Assemble0=float4(Subtract2.x, Subtract1.y, Invert0.z, Assemble0_3_NoInput.w);
+float4 Add3=_Brillo.xxxx + Sampled2D1;
+float4 Multiply4=Assemble0 * Add3;
+float4 Split0=Multiply4;
 float4 Lerp3_0_NoInput = float4(0,0,0,0);
-float4 Lerp3=lerp(Lerp3_0_NoInput,Lerp1,float4( Split0.y, Split0.y, Split0.y, Split0.y));
+float4 Lerp3=lerp(Lerp3_0_NoInput,Lerp1,float4( Split0.z, Split0.z, Split0.z, Split0.z));
+float4 Multiply2=Tex2D0 * _ColorPlayaAgua;
 float4 Lerp7_0_NoInput = float4(0,0,0,0);
-float4 Lerp7=lerp(Lerp7_0_NoInput,_colorPlayaAgua,float4( Split0.x, Split0.x, Split0.x, Split0.x));
+float4 Lerp7=lerp(Lerp7_0_NoInput,Multiply2,float4( Split0.y, Split0.y, Split0.y, Split0.y));
 float4 Add0=Lerp3 + Lerp7;
+float4 Sampled2D0=tex2D(_costa,IN.uv_costa.xy);
+float4 Multiply3=Sampled2D0 * _ColorPlaya;
 float4 Lerp0_0_NoInput = float4(0,0,0,0);
-float4 Lerp0=lerp(Lerp0_0_NoInput,_ColorPlaya,float4( Split0.z, Split0.z, Split0.z, Split0.z));
+float4 Lerp0=lerp(Lerp0_0_NoInput,Multiply3,float4( Split0.x, Split0.x, Split0.x, Split0.x));
 float4 Add1=Add0 + Lerp0;
-float4 TexCUBE0=texCUBE(_ReflectionCubemap,float4( IN.simpleWorldRefl.x, IN.simpleWorldRefl.y,IN.simpleWorldRefl.z,1.0 ));
-float4 Multiply0=_ReflectionColor * TexCUBE0;
-float4 Split1=Tex2D2;
-float4 Add2=float4( Split1.x, Split1.x, Split1.x, Split1.x) + float4( Split1.y, Split1.y, Split1.y, Split1.y);
-float4 Lerp5_0_NoInput = float4(0,0,0,0);
-float4 Lerp5=lerp(Lerp5_0_NoInput,Multiply0,Add2);
-float4 Tex2D4=tex2D(_RefStrGloss,(IN.uv_bumpAnimControl.xyxy).xy);
-float4 Multiply2=_SeaSpd.xxxx * _Time;
-float4 UV_Pan1=float4(Tex2D4.x + Multiply2.x,Tex2D4.y + Multiply2.x,Tex2D4.z,Tex2D4.w);
-float4 Tex2D1=tex2D(_RefStrGloss,UV_Pan1.xy);
-float4 Lerp4_0_NoInput = float4(0,0,0,0);
-float4 Lerp4=lerp(Lerp4_0_NoInput,Tex2D1,Add2);
-float4 Multiply1=_Shininess.xxxx * _SpecularColor;
-float4 Lerp2_0_NoInput = float4(0,0,0,0);
-float4 Lerp2=lerp(Lerp2_0_NoInput,Multiply1,Add2);
+float4 Multiply7=Multiply3 * Step2;
+float4 Add4=Add1 + Multiply7;
 float4 Master0_1_NoInput = float4(0,0,1,1);
+float4 Master0_2_NoInput = float4(0,0,0,0);
+float4 Master0_3_NoInput = float4(0,0,0,0);
+float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Add1;
-o.Emission = Lerp5;
-o.Specular = Lerp4;
-o.Gloss = Lerp2;
+o.Albedo = Add4;
 
 				o.Normal = normalize(o.Normal);
 			}

@@ -1,4 +1,4 @@
-Shader "Planet/Atmosfera2"
+Shader "Planet/Atmosfera"
 {
 	Properties 
 	{

@@ -198,7 +198,7 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	private static float nivelAgua = 0.25f;						//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
+	private static float nivelAgua = 0.27f;						//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
 	private static float tamanoPlaya = 0.05f;					//El tamaño de las playas. de 0.02 a 0.05 razonable
 	private static float alturaColinas = nivelAgua*1.5f;		//La altura a partir de la cual se considera colina
 	private static float alturaMontana = nivelAgua*2.0f;		//La altura a partir de la cual se considera montaña
@@ -253,7 +253,7 @@ public class FuncTablero {
 		Color[] pixAgua = new Color[anchoTextura * altoTextura];
 		Color[] pixBase = texBase.GetPixels();
 		for (int l = 0; l < pixAgua.Length; l++) {
-			if (pixBase[l].grayscale <= nivelAgua) 
+			if (pixBase[l].grayscale < nivelAgua) 
 				pixAgua[l] = new Color(nivelAgua, nivelAgua, nivelAgua);
 			else 
 				pixAgua[l] = new Color(0, 0, 0);
@@ -336,6 +336,40 @@ public class FuncTablero {
 		return y;
 	}
 	
+	private static float calculaMediaCasilla(Vector2 cord, Color[] pixels){
+		float media = 0;
+
+		//--------------aqui valoramos diferentes metodos para determinar el habitat de la casilla:				
+		//--------------Determinar el habitat por el valor min de color en la casilla				
+
+//		float[] esquinas = new float[4];
+//		esquinas[0] = pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
+//		esquinas[1] = pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+//		esquinas[2] = pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
+//		esquinas[3] = pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+//		media = Mathf.Min(esquinas);
+		
+		//--------------pixel del vertice(?)
+
+
+		//--------------Contabilizar solo las esquinas de la casilla para la media
+		media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
+		media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+		media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
+		media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
+		media = media / 4;
+		
+//		//--------------Contabilizar todos los pixeles de la casilla
+//		for (int x = 0; x < relTexTabAlto; x++) {
+//			for (int y = 0; y < relTexTabAncho; y++) {
+//				media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
+//			}
+//		}
+//		media = media / (relTexTabAncho * relTexTabAlto);	
+		
+		return media;		
+	}
+	
 	private static T_habitats[] calculaHabitats(Texture2D texHeightmap, Texture2D texHabitats, Texture2D texHabitatsEstetica, Texture2D texElems, out T_elementos[] elemsOut) {
 		T_habitats[] habitats = new T_habitats[altoTablero*anchoTablero];
 		T_elementos[] elems = new T_elementos[altoTablero*anchoTablero];
@@ -384,40 +418,16 @@ public class FuncTablero {
 		
 		//Se calcula la primera franja de izquierda a derecha y de arriba a abajo
 		//Esta franja representa la zona cercana al polo SUR hasta el primer trópico
-		
-		//calculaFranja(casillasPolos, limiteHab1, pixels, pixelsHab, habitats, elems, texHabitatsEstetica);
-		
+				
 		for (int i = casillasPolos; i < limiteHab1; i++) {
 			tempeLineal = Mathf.Lerp(0, temperatura / 2, (i - casillasPolos) / (limiteHab1 - casillasPolos));
 			for (int j = 0; j < anchoTablero; j++) {
+				
 				//Coordenadas de la casilla que estamos mirando
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
+				
 				//Se calcula la media de altura de la casilla
-				float media = 0;
-
-//--------------aqui valoramos diferentes metodos para determinar el habitat de la casilla:				
-//--------------Determinar el habitat por el valor maximo de color en la casilla				
-				
-				float[] esquinas = new float[4];
-				esquinas[0] = pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
-				esquinas[1] = pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				esquinas[2] = pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
-				esquinas[3] = pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				media = Mathf.Min(esquinas);
-				
-//--------------Contabilizar solo las esquinas de la casilla para la media
-//				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
-//				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-//				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
-//				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-//				media = media / 4;
-//--------------Contabilizar todos los pixeles de la casilla
-//				for (int x = 0; x < relTexTabAlto; x++) {
-//					for (int y = 0; y < relTexTabAncho; y++) {
-//						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
-//					}
-//				}
-//				media = media / (relTexTabAncho * relTexTabAlto);
+				float media = calculaMediaCasilla(cord, pixels);
 				
 				//Se calcula el habitat en el que va a estar la casilla
 				T_habitats habitatTemp;
@@ -539,23 +549,12 @@ public class FuncTablero {
 		for (int i = altoTablero - 1 - casillasPolos; i >= limiteHab2; i--) {
 			tempeLineal = Mathf.Lerp(temperatura / 2, 0, (i - limiteHab2) / (altoTablero - casillasPolos - 1 - limiteHab2));
 			for (int j = anchoTablero - 1; j >= 0; j--) {
+				
 				//Coordenadas de la casilla que estamos mirando
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
+				
 				//Se calcula la media de altura de la casilla
-				float media = 0;
-				//Contabilizar solo las esquinas de la casilla para la media
-				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
-				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
-				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				media = media / 4;
-				//Contabilizar todos los pixeles de la casilla
-//				for (int x = 0; x < relTexTabAlto; x++) {
-//					for (int y = 0; y < relTexTabAncho; y++) {
-//						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
-//					}
-//				}
-//				media = media / (relTexTabAncho * relTexTabAlto);
+				float media = calculaMediaCasilla(cord, pixels);
 				
 				//Se calcula el habitat en el que va a estar la casilla
 				T_habitats habitatTemp;
@@ -676,23 +675,12 @@ public class FuncTablero {
 		for (int i = limiteHab1; i < limiteHab2; i++) {
 			tempeLineal = Mathf.Lerp(temperatura, temperatura / 2, Mathf.Abs((altoTablero / 2) - i));
 			for (int j = 0; j < anchoTablero; j++) {
+				
 				//Coordenadas de la casilla que estamos mirando
 				Vector2 cord = new Vector2(j * relTexTabAncho , i * relTexTabAlto);
+				
 				//Se calcula la media de altura de la casilla
-				float media = 0;
-				//Contabilizar solo las esquinas de la casilla para la media
-				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x].r;
-				media += pixels[((int)cord.y) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x].r;
-				media += pixels[((int)cord.y + relTexTabAlto - 1) * anchoTextura + (int)cord.x + relTexTabAncho - 1].r;
-				media = media / 4;
-				//Contabilizar todos los pixeles de la casilla
-//				for (int x = 0; x < relTexTabAlto; x++) {
-//					for (int y = 0; y < relTexTabAncho; y++) {
-//						media += pixels[((int)cord.y + x) * anchoTextura + (int)cord.x + y].r;
-//					}
-//				}
-//				media = media / (relTexTabAncho * relTexTabAlto);
+				float media = calculaMediaCasilla(cord, pixels);
 				
 				//Se calcula el habitat en el que va a estar la casilla
 				T_habitats habitatTemp;
