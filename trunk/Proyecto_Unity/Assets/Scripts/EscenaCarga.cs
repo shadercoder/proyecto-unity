@@ -33,10 +33,10 @@ public class EscenaCarga : MonoBehaviour {
 	private float temperaturaInit 			= 0.5f;								//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 	
 		//Tercera fase
-	private Texture2D texElems;									//Textura donde se representan los elementos del terreno
-	private Texture2D texPlantas;								//Textura donde se pintan las plantas del planeta
-	private Texture2D texHabitatsEstetica;						//Textura donde se pintan los habitats a mostrar
-	private Texture2D texHabitats;								//Textura donde se pintan los habitats para filtros
+	public Texture2D texElems;									//Textura donde se representan los elementos del terreno
+	public Texture2D texPlantas;								//Textura donde se pintan las plantas del planeta
+	public Texture2D texHabitatsEstetica;						//Textura donde se pintan los habitats a mostrar
+	public Texture2D texHabitats;								//Textura donde se pintan los habitats para filtros
 	private Vida vida;											//El algoritmo de vida
 	
 	//Opciones
@@ -299,12 +299,6 @@ public class EscenaCarga : MonoBehaviour {
 		progreso = 0.0f;
 		GUI.enabled = false;
 		yield return new WaitForSeconds(0.1f);
-		texElems = new Texture2D(2048,1024);
-		texPlantas = new Texture2D(2048,1024);
-		texHabitatsEstetica = new Texture2D(2048,1024);
-		texHabitats = new Texture2D(2048,1024);
-		progreso = 0.1f;
-		yield return new WaitForSeconds(0.01f);
 		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, rocaMesh);
 		progreso = 0.7f;
 		yield return new WaitForSeconds(0.01f);
