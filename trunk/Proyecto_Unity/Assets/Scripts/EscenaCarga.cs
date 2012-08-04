@@ -17,19 +17,19 @@ public class EscenaCarga : MonoBehaviour {
 	private bool paso1Completado 			= false;			//Si se han completado los pasos suficientes para pasar a la siguiente fase
 	
 		//Primera fase
-	private float gananciaInit 				= 0.35f;			//La ganancia a pasar al script de creación del ruido
-	private float escalaInit 				= 0.004f;			//La escala a pasar al script de creación del ruido
+	private float gananciaInit 				= 0.5f;				//La ganancia a pasar al script de creación del ruido
+	private float escalaInit 				= 0.003f;			//La escala a pasar al script de creación del ruido
 	private float lacunaridadInit			= 3.5f;				//La lacunaridad a pasar al script de creacion del ruido
-	private float octavasFloat				= 12.0f;			//Las octavas a pasar al script de creacion del ruido
+	private float octavasFloat				= 6.0f;				//Las octavas a pasar al script de creacion del ruido
 	
 		//Segunda fase
 	public GameObject objetoOceano;
-	private Vector3 escalaBase 				= new Vector3(45.0f,45.0f,45.0f);	//La escala básica del océano
+	private Vector3 escalaBase 				= new Vector3(50.0f,50.0f,50.0f);	//La escala básica del océano
 	public Mesh meshEsfera;														//La esfera sobre la que se harán los cambios
 	private Mesh aguaMesh;														//El objeto con el Mesh extruido del agua
 	private Mesh rocaMesh;														//El objeto con el Mesh extruido de la roca
-	private float tamanoPlayasInit			= 0.1f;								//El tamaño de las playas
-	private float nivelAguaInit 			= 0.6f;								//El punto a partir del cual deja de haber mar en la orografía del planeta
+	private float tamanoPlayasInit			= 0.035f;							//Entre 0.02 y 0.05 El tamaño de las playas
+	private float nivelAguaInit 			= 0.3f;								//El punto a partir del cual deja de haber mar en la orografía del planeta
 	private float temperaturaInit 			= 0.5f;								//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
 	
 		//Tercera fase
@@ -414,8 +414,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Ganancia", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
-		gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.1f, 0.6f);
-		GUILayout.Label("Max");
+		gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.45f, 0.55f);
+		GUILayout.Label("Max " + gananciaInit);
 		GUILayout.EndHorizontal();			
 		
 		GUILayout.Space(cuantoH);
@@ -423,8 +423,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Escala", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Max");
-		escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.007f, 0.001f);
-		GUILayout.Label("Min");
+		escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.0055f, 0.001f);
+		GUILayout.Label("Min " + escalaInit);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.Space(cuantoH);
@@ -432,8 +432,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Octavas", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
-		octavasFloat = GUILayout.HorizontalSlider(octavasFloat, 4.0f, 16.0f);
-		GUILayout.Label("Max");
+		octavasFloat = GUILayout.HorizontalSlider(octavasFloat, 2.0f, 10.0f);
+		GUILayout.Label("Max " + octavasFloat);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.Space(cuantoH);
@@ -441,8 +441,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Lacunaridad", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
-		lacunaridadInit = GUILayout.HorizontalSlider(lacunaridadInit, 2.0f, 6.5f);
-		GUILayout.Label("Max");
+		lacunaridadInit = GUILayout.HorizontalSlider(lacunaridadInit, 1.4f, 3.1f);
+		GUILayout.Label("Max " + lacunaridadInit);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.Space(cuantoH);
@@ -493,8 +493,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Nivel del agua", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
-		nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.2f, 1.0f);
-		GUILayout.Label("Max");
+		nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.15f, 0.45f);
+		GUILayout.Label("Max " + nivelAguaInit);
 		GUILayout.EndHorizontal();
 		
 		if (GUI.changed) {			
@@ -507,7 +507,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
 		temperaturaInit = GUILayout.HorizontalSlider(temperaturaInit, 0.0f, 1.0f);
-		GUILayout.Label("Max");
+		GUILayout.Label("Max " + temperaturaInit);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.Space(cuantoH * 2);
@@ -515,8 +515,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Longitud de las playas", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
-		tamanoPlayasInit = GUILayout.HorizontalSlider(tamanoPlayasInit, 0.01f, 0.3f);
-		GUILayout.Label("Max");
+		tamanoPlayasInit = GUILayout.HorizontalSlider(tamanoPlayasInit, 0.02f, 0.06f);
+		GUILayout.Label("Max " + tamanoPlayasInit);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.EndVertical();
