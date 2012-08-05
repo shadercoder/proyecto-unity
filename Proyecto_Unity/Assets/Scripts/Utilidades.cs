@@ -438,11 +438,11 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-       private static float nivelAgua = 0.27f;								//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
-       private static float tamanoPlaya = 0.05f;							//El tamaño de las playas. de 0.02 a 0.05 razonable
-       private static float alturaColinas = nivelAgua+(1-nivelAgua)*0.3f;	//La altura a partir de la cual se considera colina (situada a 33% de lo que resta de tierra al establecer el nivel del agua)
-       private static float alturaMontana = nivelAgua+(1-nivelAgua)*0.6f;	//La altura a partir de la cual se considera montaña (situada a 66% de lo que resta de tierra al establecer el nivel del agua)
-       private static float temperatura = 0.5f;								//La temperatura del planeta, que influye en la generacion de habitats
+	private static float nivelAgua = 0.27f;								//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
+	private static float tamanoPlaya = 0.05f;							//El tamaño de las playas. de 0.02 a 0.05 razonable
+	private static float alturaColinas = nivelAgua+(1-nivelAgua)*0.3f;	//La altura a partir de la cual se considera colina (situada a 33% de lo que resta de tierra al establecer el nivel del agua)
+	private static float alturaMontana = nivelAgua+(1-nivelAgua)*0.6f;	//La altura a partir de la cual se considera montaña (situada a 66% de lo que resta de tierra al establecer el nivel del agua)
+	private static float temperatura = 0.5f;								//La temperatura del planeta, que influye en la generacion de habitats
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
