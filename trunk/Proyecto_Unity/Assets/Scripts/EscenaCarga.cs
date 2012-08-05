@@ -23,7 +23,7 @@ public class EscenaCarga : MonoBehaviour {
 	private float octavasFloat				= 6.0f;				//Las octavas a pasar al script de creacion del ruido
 	
 		//Segunda fase
-	public GameObject objetoOceano;
+	public GameObject objetoRoca;
 	private Vector3 escalaBase 				= new Vector3(50.0f,50.0f,50.0f);	//La escala básica del océano
 	public Mesh meshEsfera;														//La esfera sobre la que se harán los cambios
 	private Mesh aguaMesh;														//El objeto con el Mesh extruido del agua
@@ -69,6 +69,9 @@ public class EscenaCarga : MonoBehaviour {
 	private string[] nombresSaves;									//Los nombres de los ficheros de savegames guardados
 	private SaveData saveGame;										//El contenido de la partida salvada cargada
 	
+	//Nave
+	public GameObject nave;
+	
 	
 	//Funciones basicas ----------------------------------------------------------------------------------------------------------------------
 	
@@ -109,7 +112,8 @@ public class EscenaCarga : MonoBehaviour {
 		numSaves = SaveLoad.FileCount();
 		nombresSaves = new string[numSaves];
 		nombresSaves = SaveLoad.getFileNames();
-		objetoOceano.transform.localScale = escalaBase + new Vector3(nivelAguaInit, nivelAguaInit, nivelAguaInit);
+		objetoRoca.renderer.sharedMaterials[1].SetFloat("_nivelMar", nivelAguaInit);
+		objetoRoca.renderer.sharedMaterials[1].SetFloat("_tamPlaya", tamanoPlayasInit);
 		Debug.Log("Terminando el script de EscenaCarga.Awake");
 	}
 	
@@ -125,6 +129,8 @@ public class EscenaCarga : MonoBehaviour {
 				activarTooltip = true;
 			}
 		}
+		//animacion idle de la nave
+		naveIdle();
 	}
 	
 	void FixedUpdate() {
@@ -331,13 +337,14 @@ public class EscenaCarga : MonoBehaviour {
 	//Menus personalizados --------------------------------------------------------------------------------------------------------------------
 	
 	private void menuPrincipal() {
-		GUILayout.BeginArea(new Rect((float)cuantoW * 20.5f, cuantoH * 25, cuantoW * 7, cuantoH * 5));
+		GUILayout.BeginArea(new Rect((float)cuantoW * 20.5f, cuantoH * 20, cuantoW * 7, cuantoH * 5));
 		GUILayout.BeginVertical();
 		if (GUILayout.Button(new GUIContent("Comenzar juego", "Comenzar un juego nuevo"), "boton_menu_1")) {
 			pixels = new Color[texturaBase.width * texturaBase.height];
 			FuncTablero.inicializa(texturaBase);
 			faseCreacion = 0;
 			paso1Completado = false;
+			objetoRoca.renderer.enabled = true;
 			Camera.main.animation.Play("AcercarseHolograma");
 			estado = 5;
 		}
@@ -465,7 +472,8 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Volver", "Volver al men\u00fa principal"))) {
 			faseCreacion = 0;
-			estado = 0;	
+			estado = 0;
+			objetoRoca.renderer.enabled = false;
 			Camera.main.animation.Play("AlejarseHolograma");
 		}
 		GUILayout.Space(cuantoW * 28);
@@ -501,7 +509,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.EndHorizontal();
 		
 		if (GUI.changed) {			
-			objetoOceano.transform.localScale = escalaBase + new Vector3(nivelAguaInit, nivelAguaInit, nivelAguaInit);
+			objetoRoca.renderer.sharedMaterials[1].SetFloat("_nivelMar", nivelAguaInit);
 		}
 		
 		GUILayout.Space(cuantoH * 2);
@@ -521,6 +529,10 @@ public class EscenaCarga : MonoBehaviour {
 		tamanoPlayasInit = GUILayout.HorizontalSlider(tamanoPlayasInit, 0.02f, 0.06f);
 		GUILayout.Label("Max " + tamanoPlayasInit);
 		GUILayout.EndHorizontal();
+		
+		if (GUI.changed) {			
+			objetoRoca.renderer.sharedMaterials[1].SetFloat("_tamPlaya", tamanoPlayasInit);
+		}
 		
 		GUILayout.EndVertical();
 		GUILayout.EndArea();
@@ -587,4 +599,16 @@ public class EscenaCarga : MonoBehaviour {
             GUI.Box(new Rect(0,0, cuantoW * 10, cuantoH), "", "progressBarLleno");
         GUI.EndGroup();
 	}
+	
+	//funciones de animacion de la escna inicial
+	private void naveIdle(){
+		Vector3 posicion = nave.transform.position;
+		posicion.y += Mathf.Sin(Time.time)*0.0013f + Mathf.Cos(Time.time)*0.0037f;
+		posicion.x += Mathf.Cos(Time.time)*0.0023f + Mathf.Sin(Time.time)*0.0017f;
+		float rotacion = Mathf.Sin(Time.time)*0.05f;
+		nave.transform.Rotate(Vector3.forward,rotacion);
+		
+		nave.transform.position = posicion;
+	}
+	
 }
