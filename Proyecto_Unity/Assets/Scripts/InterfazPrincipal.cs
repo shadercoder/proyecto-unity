@@ -7,71 +7,102 @@ public class InterfazPrincipal : MonoBehaviour {
 
 	// Variables ---------------------------------------------------------------------------------------------------------------------------
 	public GUISkin estilo;
-	private float cuantoW;									//Minima unidad de medida de la interfaz a lo ancho
-	private float cuantoH;									//Minima unidad de medida de la interfaz a lo alto
-	private float aspectRatioNumerico;						//Aspect ratio númerico de la ventana
-	private Principal principal;							//Acceso a los datos principales	
-	private bool mostrarBloqueIzquierdo = true;				//Visibilidad del bloque de opciones izquierdo
-	private bool mostrarInfoCasilla = true;					//Controla si se muestra la info básica de la casilla a la que estamos apuntando
-	private string infoCasilla = "";						//Información básica de la casilla mostrada en la barra de información inferior
-	private float tiempoUltimaInfoCasilla = 0.0f;			//Tiempo de la última comprobación de la info básica de una casilla
-	private float tiempoInfoCasilla = 0.25f;				//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
-	private Vector3 posicionMouseInfoCasilla = Vector3.zero;//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private float escalaTiempoAntesMenu;					//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
+	private float cuantoW;										//Minima unidad de medida de la interfaz a lo ancho
+	private float cuantoH;										//Minima unidad de medida de la interfaz a lo alto
+	private float aspectRatioNumerico;							//Aspect ratio númerico de la ventana
+	private Principal principal;								//Acceso a los datos principales	
+	private bool mostrarBloqueIzquierdo 		= true;			//Visibilidad del bloque de opciones izquierdo
+	private bool mostrarInfoCasilla 			= true;			//Controla si se muestra la info básica de la casilla a la que estamos apuntando
+	private string infoCasilla 					= "";			//Información básica de la casilla mostrada en la barra de información inferior
+	private float tiempoUltimaInfoCasilla 		= 0.0f;			//Tiempo de la última comprobación de la info básica de una casilla
+	private float tiempoInfoCasilla 			= 0.25f;		//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
+	private Vector3 posicionMouseInfoCasilla 	= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
 	
 	//Tooltips
-	private Vector3 posicionMouseTooltip = Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private bool activarTooltip = false;					//Controla si se muestra o no el tooltip	
-	private float ultimoMov = 0.0f;							//Ultima vez que se movio el mouse		
-	public float tiempoTooltip = 0.75f;						//Tiempo que tarda en aparecer el tooltip	
+	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private bool activarTooltip 				= false;		//Controla si se muestra o no el tooltip	
+	private float ultimoMov 					= 0.0f;			//Ultima vez que se movio el mouse		
+	public float tiempoTooltip 					= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
 	
 	//Enumerados
 	private enum taspectRatio								//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
-		{aspectRatio16_9,aspectRatio16_10,aspectRatio4_3};
-	private taspectRatio aspectRatio;	
+		{aspectRatio16_9, aspectRatio16_10, aspectRatio4_3};
+	private taspectRatio aspectRatio;
+	
 	private enum taccion									//Acción que se esta realizando en el momento actual
 		{ninguna,desplegableInsercionV_A,seleccionarInsercion,insertar,mostrarInfoDetallada,mostrarMejoras,mostrarHabilidades,mostrarMenu}
 	private taccion accion = taccion.ninguna;
+	
 	private enum taccionMenu								//Acción que se esta realizando en el menu
 		{mostrarMenu,mostrarGuardar,mostrarOpcionesAudio,mostrarSalirMenuPrincipal,mostrarSalirJuego};
 	private taccionMenu accionMenu = taccionMenu.mostrarMenu;
+	
 	private enum tcategoriaInsercion						//Desactivado indica que no hay insercion en curso, otro valor indica la categoria de la insercion
 		{desactivada,animal,vegetal,edificio}
 	private tcategoriaInsercion categoriaInsercion = tcategoriaInsercion.desactivada;
+	
 	private enum telementoInsercion							//Tipo de elemento seleccionado en un momento dado
 		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,seta,flor,cana,arbusto,estromatolito,cactus,palmera,pino,cipres,pinoAlto,
 		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}	
 	private telementoInsercion elementoInsercion = telementoInsercion.ninguno;
 	
 	//Menus para guardar
-    private Vector2 posicionScroll = Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
-    private int numSaves = 0;								//El numero de saves diferentes que hay en el directorio respectivo
-    private int numSavesExtra = 0;							//Numero de saves que hay que no se ven al primer vistazo en la scrollview
+    private Vector2 posicionScroll 		= Vector2.zero;		//La posicion en la que se encuentra la ventana con scroll
+    private int numSaves 				= 0;				//El numero de saves diferentes que hay en el directorio respectivo
+    private int numSavesExtra 			= 0;				//Numero de saves que hay que no se ven al primer vistazo en la scrollview
     private string[] nombresSaves;							//Los nombres de los ficheros de savegames guardados
 	
 	//Sonido
-	private float musicaVol = 1.0f;							//A que volumen?
-	private float sfxVol = 1.0f;							//A que volumen?
+	private float musicaVol 			= 1.0f;				//A que volumen la musica?
+	private float sfxVol 				= 1.0f;				//A que volumen los efectos?
+	public GameObject sonidoAmbiente;						//El objeto que va a contener la fuente del audio de ambiente
+	public GameObject sonidoFX;								//El objeto que va a contener la fuente de efectos de audio
 	
-	
-	// Use this for initialization
-	void Start () {
+	void Start() {
+		principal = gameObject.GetComponent<Principal>();
+		//Cargar la información del numero de saves que hay
+		SaveLoad.compruebaRuta();
+		numSaves = SaveLoad.FileCount();
+		nombresSaves = new string[numSaves];
+		nombresSaves = SaveLoad.getFileNames();
+		numSavesExtra = numSaves - 3;
+		if (numSavesExtra < 0)
+			numSavesExtra = 0;
+		//Cargar la informacion del sonido que hay en PlayerPrefs
+		
+		if (PlayerPrefs.HasKey("MusicaVol"))
+			musicaVol = PlayerPrefs.GetFloat("MusicaVol");
+		if (PlayerPrefs.HasKey("SfxVol"))
+			sfxVol = PlayerPrefs.GetFloat("SfxVol");
+		if (PlayerPrefs.HasKey("MusicaOn") && (PlayerPrefs.GetInt("MusicaOn") == 0))
+			musicaVol = 0.0f;
+		if (PlayerPrefs.HasKey("SfxOn") && (PlayerPrefs.GetInt("SfxOn") == 0))
+			sfxVol = 0.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () 
-	{
-		principal = gameObject.GetComponent<Principal>();		
+	{	
 		controlTooltip();
 		calculaInfoCasilla();		
 	}
 	
 	void OnGUI()
 	{		
-		GUI.skin = estilo;				
-		principal = gameObject.GetComponent<Principal>();		
+		GUI.skin = estilo;
+		/*[Aris]
+		 * Muevo esta linea al método Start porque no es necesario hacerlo cada poco tiempo (no se modifica
+		 * en ninguna parte y es una variable privada)
+		 * */
+//		principal = gameObject.GetComponent<Principal>();		
 		aspectRatioNumerico = (float)Screen.width/(float)Screen.height;		
 		
+		/*[Aris]
+		 * El calculo del aspect ratio tambien lo moveria al método Start, porque no necesitas que se ejecute
+		 * mas de una vez. Si acaso, poner en el update una condicion de "si el tamaño de la pantalla se modifica..."
+		 * Pero lo dejo aqui de momento, para no molestarte :)
+		 * */
 		if(aspectRatioNumerico >= 1.69)			//16:9
 		{
 			aspectRatio = taspectRatio.aspectRatio16_9;
@@ -96,6 +127,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		bloqueIzquierdo();
 		bloqueSeleccion();
 		bloqueInformacion();
+		
 		if(posicionFueraDeInterfaz(Input.mousePosition))
 		{
 			mostrarInfoCasilla = true;
@@ -110,7 +142,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	}	
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
-	void bloqueSuperior()
+	private void bloqueSuperior()
 	{
 		float ajusteRecursos = 0;
 		GUI.BeginGroup(new Rect(cuantoW*0,cuantoH*0,cuantoW*80,cuantoH*4));
@@ -174,19 +206,24 @@ public class InterfazPrincipal : MonoBehaviour {
 	}
 	
 	//Dibuja el bloque izquierdo de la ventana que contiene: insertar vegetales o animales, insertar edificios, mejoras de la nave, habilidades, info/seleccionar
-	void bloqueIzquierdo()
+	private void bloqueIzquierdo()
 	{
 		int posicionBloque = 0;
 		switch (aspectRatio)
 		{
 			case taspectRatio.aspectRatio16_9:
-				posicionBloque = 17;break;
+				posicionBloque = 17;
+				break;
 			case taspectRatio.aspectRatio16_10:
-				posicionBloque = 20;break;
+				posicionBloque = 20;
+				break;
 			case taspectRatio.aspectRatio4_3:
-				posicionBloque = 25;break;
-			default:break;
+				posicionBloque = 25;
+				break;
+			default:
+				break;
 		}
+		
 		if(accion == taccion.desplegableInsercionV_A)
 		{
 			if(GUI.Button(new Rect(cuantoW*3,cuantoH*posicionBloque,cuantoW*3,cuantoH*1),new GUIContent("Vegetal","Insertar un vegetal"),"BotonesDesplegableV_A"))				
@@ -245,21 +282,27 @@ public class InterfazPrincipal : MonoBehaviour {
 	}
 	
 	//Dibuja el bloque seleccion de la ventana que contiene los diferentes edificios, animales o vegetales seleccionables según que botón se haya pulsado en el bloque izquierdo
-	void bloqueSeleccion()
+	private void bloqueSeleccion()
 	{
 		if(accion != taccion.seleccionarInsercion)
 			return;
 		int posicionBloque = 0;
+		
 		switch (aspectRatio)
 		{
 			case taspectRatio.aspectRatio16_9:
-				posicionBloque = 40;break;
+				posicionBloque = 40;
+				break;
 			case taspectRatio.aspectRatio16_10:
-				posicionBloque = 45;break;
+				posicionBloque = 45;
+				break;
 			case taspectRatio.aspectRatio4_3:
-				posicionBloque = 55;break;
-			default:break;
-		}		
+				posicionBloque = 55;
+				break;
+			default:
+				break;
+		}
+		
 		switch (categoriaInsercion)
 		{
 			case tcategoriaInsercion.edificio:
@@ -286,7 +329,11 @@ public class InterfazPrincipal : MonoBehaviour {
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.granja;
-					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
+				/* [Aris]
+				 * Yo quitaría esta linea de activar filtro de aqui, porque las granjas no
+				 * necesitan recursos para funcionar, no? 
+				 * */
+					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
@@ -452,63 +499,72 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUILayout.EndVertical();
 				GUILayout.EndArea();
 				break;
-			default:break;
+			default:
+				break;
 		}
 		
 	}
 	
 	//Dibuja el bloque de información básica de la casilla a la que estamos apuntando
-	void bloqueInformacion()
+	private void bloqueInformacion()
 	{
+		/* [Aris]
+		 * En algunos sitios he visto que haces esto, hacer un switch para conseguir
+		 * la posicion que es un cuantoH justo por encima del final de la pantalla.
+		 * Creo que es más facil conseguirla con esta formula:
+		 	* Screen.Height - CuantoH
+	 	 * Es básicamente lo mismo que lo que haces con el switch y luego poner
+	 	 * cuantoH * posicionBloque.
+	 	 * Es una sugerencia nada mas ;)
+		 * */
 		int posicionBloque = 0;
 		switch (aspectRatio)
 		{
 			case taspectRatio.aspectRatio16_9:
-				posicionBloque = 44;break;
+				posicionBloque = 44;
+				break;
 			case taspectRatio.aspectRatio16_10:
-				posicionBloque = 49;break;
+				posicionBloque = 49;
+				break;
 			case taspectRatio.aspectRatio4_3:
-				posicionBloque = 59;break;
-			default:break;
+				posicionBloque = 59;
+				break;
+			default:
+				break;
 		}
 		GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),infoCasilla,"BloqueInformacion");		
 	}
 	
 	//Dibuja el menu de opciones que contiene Guardar, Opciones de audio, Menu Principal, Salir, Volver
-	void bloqueMenu()
+	private void bloqueMenu()
 	{
+		/* [Aris]
+		 * Aqui tenias tres bloques switch sobre la misma variable, asi que los he combinado en uno solo
+		 * mas que nada porque es una perdida de lineas de codigo para hacer lo mismo...
+		 * Si tienes otras razones, volvemos para atras y fuera. 
+		 * */
 		float posicionBloque = 0;
-		switch (aspectRatio)
-		{
-			case taspectRatio.aspectRatio16_9:
-				posicionBloque = 13.5f;break;
-			case taspectRatio.aspectRatio16_10:
-				posicionBloque = 16;break;
-			case taspectRatio.aspectRatio4_3:
-				posicionBloque = 21;break;
-			default:break;
-		}	
 		float posicionConfirmar = 0;
-		switch (aspectRatio)
-		{
-			case taspectRatio.aspectRatio16_9:
-				posicionConfirmar = 19.5f;break;
-			case taspectRatio.aspectRatio16_10:
-				posicionConfirmar = 22;break;
-			case taspectRatio.aspectRatio4_3:
-				posicionConfirmar = 27;break;			
-			default:break;
-		}
 		float posicionAudio = 0;
 		switch (aspectRatio)
 		{
 			case taspectRatio.aspectRatio16_9:
-				posicionAudio = 20f;break;
+				posicionBloque = 13.5f;
+				posicionConfirmar = 19.5f;
+				posicionAudio = 20f;
+				break;
 			case taspectRatio.aspectRatio16_10:
-				posicionAudio = 22.5f;break;
+				posicionBloque = 16;
+				posicionConfirmar = 22;
+				posicionAudio = 22.5f;
+				break;
 			case taspectRatio.aspectRatio4_3:
-				posicionAudio = 27.5f;break;			
-			default:break;
+				posicionBloque = 21;
+				posicionConfirmar = 27;
+				posicionAudio = 27.5f;
+				break;
+			default:
+				break;
 		}
 		
 		switch(accionMenu)
@@ -518,7 +574,7 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUILayout.BeginVertical();
 				GUILayout.Space(cuantoH*2);
 				if(GUILayout.Button(new GUIContent("Guardar partida","Lleva al menu de guardar partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))									
-					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;				
+					accionMenu = InterfazPrincipal.taccionMenu.mostrarGuardar;				
 				if(GUILayout.Button(new GUIContent("Opciones de audio","Lleva al menu de opciones de audio"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarOpcionesAudio;
 				if(GUILayout.Button(new GUIContent("Menu principal","Lleva al menu principal del juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
@@ -533,78 +589,78 @@ public class InterfazPrincipal : MonoBehaviour {
 			    GUILayout.EndVertical();
 				GUILayout.EndArea();
 				if(GUI.Button(new Rect(0,0,cuantoW*80,cuantoH*60),new GUIContent(),""))
-					;//CLINK		
+				{
+					;//CLINK -> Control para que no se pulse fuera del menú (Buena idea!)
+				}
 				break;
 			
 			case taccionMenu.mostrarGuardar:
-				/*Control_Raton script;
+			/* [Aris]
+			 * Re-escrito. Deberia funcionar ahora, al menos esta parte esta bien escrita.
+			 * Otra cosa será que no funcione la parte de guardar... Pero esto es solo interfaz
+			 * con poca lógica asociada. 
+			 * */
 		        GUI.Box(new Rect(cuantoW * 14, cuantoH * 7, cuantoW * 20, cuantoH * 16), "");
 		        posicionScroll = GUI.BeginScrollView(new Rect(cuantoW * 14, cuantoH * 8, cuantoW * 20, cuantoH * 14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
 		        if (GUI.Button(new Rect(cuantoW, 0, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) 
 				{
-		            ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
+					GameObject contenedor = GameObject.FindGameObjectWithTag("Carga");
+		            ValoresCarga temp = contenedor.GetComponent<ValoresCarga>();
+					principal.rellenaContenedor(ref temp);
 		            string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
 		            SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
-		            int tempLong = temp.texturaBase.width * temp.texturaBase.height;
-		            float[] data = new float[tempLong];
-		            Color[] pixels = temp.texturaBase.GetPixels();
-		            for (int i = 0; i < tempLong; i++) {
-		                    data[i] = pixels[i].r;
-		            }                       
-		            SaveLoad.Save(data,temp.texturaBase.width, temp.texturaBase.height);
+		            SaveLoad.Save(temp);
 		            //Recuperar estado normal
-		            Time.timeScale = 1.0f;
-		            script = transform.parent.GetComponent<Control_Raton>();
-		            script.setInteraccion(true);
-		            estado = T_estados.principal;
+		           	accion = InterfazPrincipal.taccion.ninguna;
+					principal.setEscalaTiempo(escalaTiempoAntesMenu);
 		        }
 		        for (int i = 0; i < numSaves; i++) {
-		                if (GUI.Button(new Rect(cuantoW, (i + 1) * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
-		                        ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
-		                        SaveLoad.cambiaFileName(nombresSaves[i]);               
-		                        SaveLoad.Save(temp.texturaBase);
-		                        //Recuperar estado normal
-		                        Time.timeScale = 1.0f;
-		                        script = transform.parent.GetComponent<Control_Raton>();
-		                        script.setInteraccion(true);
-		                        estado = T_estados.principal;
-		                }
+	                if (GUI.Button(new Rect(cuantoW, (i + 1) * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
+                        GameObject contenedor = GameObject.FindGameObjectWithTag("Carga");
+		            	ValoresCarga temp = contenedor.GetComponent<ValoresCarga>();
+						principal.rellenaContenedor(ref temp);
+                        SaveLoad.cambiaFileName(nombresSaves[i]);               
+                        SaveLoad.Save(temp);
+                        //Recuperar estado normal
+                        accion = InterfazPrincipal.taccion.ninguna;
+						principal.setEscalaTiempo(escalaTiempoAntesMenu);
+	                }
 		        }
 		        GUI.EndScrollView();
 		        if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
-		                //Recuperar estado normal
-		                Time.timeScale = 1.0f;
-		                escalaTiempo = 1.0f;
-		                script = transform.parent.GetComponent<Control_Raton>();
-		                script.setInteraccion(true);
-		                estado = T_estados.principal;
-		        }*/			
+	                //Recuperar estado normal
+	                accion = InterfazPrincipal.taccion.ninguna;
+					principal.setEscalaTiempo(escalaTiempoAntesMenu);
+		        }		
 				break;
 			case taccionMenu.mostrarOpcionesAudio:
 				GUI.Box(new Rect(cuantoW*35f,cuantoH*posicionAudio,cuantoW*10,cuantoH*8),new GUIContent());
 				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+0.5f),cuantoW*9,cuantoH*2),new GUIContent("Sonido"));
 				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+2.5f),cuantoW*5,cuantoH*1),new GUIContent("Volumen"));
 				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+3.5f),cuantoW*4,cuantoH*1),new GUIContent("Música"));
-				float musicaTemp = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+3.5f),cuantoW*6,cuantoH*1),musicaVol,0,1.0f);	
+				musicaVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+3.5f),cuantoW*6,cuantoH*1),musicaVol,0,1.0f);	
 				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+4.5f),cuantoW*4,cuantoH*1),new GUIContent("Efectos"));
-				float sfxTemp = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+4.5f),cuantoW*6,cuantoH*1),sfxVol,0,1.0f);
+				sfxVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+4.5f),cuantoW*6,cuantoH*1),sfxVol,0,1.0f);
 				if(GUI.Button(new Rect(cuantoW*42.5f,cuantoH*(posicionAudio+5.5f),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Volver","Pulsa aquí para volver al menu de opciones")))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;			
 				
-				if(musicaTemp != musicaVol)
+				if(GUI.changed)
 				{
-					musicaVol = musicaTemp;					
-					//Audio_Ambiente musica = GameObject.FindGameObjectWithTag("Audio_Ambiente").GetComponent<Audio_Ambiente>();
-					//musica.volumen = musicaVol;
-				}
-				if(sfxTemp != sfxVol)
-				{
-					sfxVol = sfxTemp;
-					//AudioSource opSonido = miObjeto.GetComponent<AudioSource>();
-					//opSonido.volume = sfxVol;
-				}
-				
-				
+					//Volumen del audio ambiente
+					Audio_Ambiente ambiente = sonidoAmbiente.GetComponent<Audio_Ambiente>();
+					if (musicaVol == 0)
+						ambiente.activado = false;
+					else
+						ambiente.activado = true;
+					ambiente.volumen = musicaVol;
+					//Volumen del audio de efectos
+					Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
+					if (sfxVol == 0)
+						efectos.activado = false;
+					else
+						efectos.activado = true;
+					efectos.volumen = sfxVol;
+				}				
 				break;
 			case taccionMenu.mostrarSalirMenuPrincipal:
 				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent());
@@ -622,16 +678,25 @@ public class InterfazPrincipal : MonoBehaviour {
 				if(GUI.Button(new Rect(cuantoW*40.5f,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("No","Pulsa aquí para volver al menu de opciones")))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;				
 				break;
-			default:break;			
+			default:
+				break;			
 		}
 		
 	}
 	
-	void insertarElemento()	
+	private void insertarElemento()	
 	{
 		if(accion == taccion.insertar)
 		{	
-			//pintar modelo en tiempo real y area de efecto si es necesario			
+			//pintar modelo en tiempo real y area de efecto si es necesario
+			/* [Aris]
+			 * Recomendación: En vez de sacar el GetMouseButton, creo que es mejor seguir el 
+			 * GetMouseButtonDown(0), de forma que solo tenga en cuenta el click en si mismo, para 
+			 * evitar que la condicion se pueda producir mas de una vez (GetMouseButton se cumple mientras
+			 * siga pulsado, lo que puede ser 0.3 segundos perfectamente y eso en un método que se refresca
+			 * unas 100 veces por segundo o mas... puede dar problemas no? Porque al menos un par pueden
+			 * pasar...
+			 * */
 			if(Input.GetMouseButton(0))
 			{
 				int x = 0;
@@ -649,12 +714,13 @@ public class InterfazPrincipal : MonoBehaviour {
 								principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear);
 								principal.modificaRecursosPorTurno(10,10,10,10);								
 							}
-							else									
+							else {								
 								;//Mostrar por pantalla que no se ha podido insertar por que el habitat no es el adecuado o xq ya existe un edificio ahi
+							}
 						}
-						else
+						else {
 							;//Mostrar por pantalla que no se ha podido insertar por falta de recursos
-						
+						}						
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;	
 						principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 0);	
@@ -686,7 +752,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		}
 	}	
 	//Obtiene la información básica de la casilla a mostrar en la barra de información inferior
-	void calculaInfoCasilla()
+	private void calculaInfoCasilla()
 	{
 		if(mostrarInfoCasilla)
 		{
@@ -727,7 +793,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	}
 	
 	//Controla si se tiene que mostrar el tooltip o no
-	void controlTooltip()
+	private void controlTooltip()
 	{
 		if (Input.mousePosition != posicionMouseTooltip) 
 		{
@@ -741,17 +807,29 @@ public class InterfazPrincipal : MonoBehaviour {
 	}	
 	
 	//Muestra el tooltip si ha sido activado
-	void mostrarToolTip()
+	private void mostrarToolTip()
 	{
 		float longitud = GUI.tooltip.Length;
 		if (longitud == 0.0f) 
 			return;			
-		else 
-			longitud *= 8.5f;			
+		else {
+			/* [Aris] 
+			 * Hago aqui un pequeño añadido para mejorar la longitud del tooltip, que antes
+			 * salia un poco mal, sobretodo en las muy pequeñas como por ejemplo el tooltip 
+			 * de los recursos del bloque superior.
+			 * */
+			if (longitud < 8)
+				longitud *= 10.0f;
+			else if (longitud < 15)
+				longitud *= 9.0f;
+			else
+				longitud *= 8.0f;
+		}
+					
 		float posx = Input.mousePosition.x;
 		float posy = Input.mousePosition.y;
 		if (posx > (Screen.width / 2)) 
-			posx -= 215;			
+			posx -= (longitud + 20);			
 		else 
 			posx += 15;				
 		if (posy > (Screen.height / 2)) 
@@ -764,6 +842,30 @@ public class InterfazPrincipal : MonoBehaviour {
 	//Devuelve true si el raton está fuera de la interfaz y por tanto es válido y false si cae dentro de la interfaz dibujada en ese momento
 	public bool posicionFueraDeInterfaz(Vector3 posicionRaton)		
 	{
+		/* [Aris] 
+		 * Esto es solo una sugerencia, pero... sería mucho mas preciso y mas fácil,
+		 * al menos en mi cabeza, que lo hicieras comprobando por zonas de Rect().
+		 * Es la forma que usan en todos los sitios que he mirado y es muy sencilla 
+		 * de hacer porque esos Rect ya tienen que estar creados por ahi... Es tan facil
+		 * como crear unos rectangulos Rect que representen los bloques que hay activos
+		 * de la interfaz, y llevar una variable booleana que nos diga si el cursor
+		 * se encuentra dentro de alguno de ellos. Para comprobarlo, basta con lanzar la 
+		 * funcion Rect.Contains(Input.mousePosition), o en este caso
+		 * Rect.Contains(posicionRaton). Eso devuelve true si se encuentra dentro.
+		 * 
+		 * Te pongo un ejemplo de código por si te animas a hacerlo:
+		 
+		 	bool dentro = false;
+		 	Rect temp = new Rect(0,0,cuantoW*80, cuantoH*4);						//Bloque superior
+		 	if (temp.Contains(posicionRaton))
+		 		dentro = true;
+		 	temp = new Rect(0, Screen.height - cuantoH, cuantoW * 80, cuantoH);		//Barra informacion inferior
+		 	if (temp.Contains(posicionRaton))
+		 		dentro = true;
+		 
+		 * Y así sucesivamente...
+		 * 
+		 * */
 		if(accion == taccion.mostrarMenu)
 			return false;
 		float xini,xfin,yini,yfin;		
@@ -784,11 +886,14 @@ public class InterfazPrincipal : MonoBehaviour {
 			switch (aspectRatio)
 			{
 				case taspectRatio.aspectRatio16_9:
-					posicionBloqueSeleccion = 40;break;
+					posicionBloqueSeleccion = 40;
+					break;
 				case taspectRatio.aspectRatio16_10:
-					posicionBloqueSeleccion = 45;break;
+					posicionBloqueSeleccion = 45;
+					break;
 				case taspectRatio.aspectRatio4_3:
-					posicionBloqueSeleccion = 55;break;
+					posicionBloqueSeleccion = 55;
+					break;
 				default:break;
 			}		
 			yini = Screen.height - cuantoH*posicionBloqueSeleccion;		//Posición donde empieza el bloque de seleccion	
@@ -799,11 +904,14 @@ public class InterfazPrincipal : MonoBehaviour {
 			switch (aspectRatio)
 			{
 				case taspectRatio.aspectRatio16_9:
-					posicionBloqueInformacion = 44;break;
+					posicionBloqueInformacion = 44;
+					break;
 				case taspectRatio.aspectRatio16_10:
-					posicionBloqueInformacion = 49;break;
+					posicionBloqueInformacion = 49;
+					break;
 				case taspectRatio.aspectRatio4_3:
-					posicionBloqueInformacion = 59;break;
+					posicionBloqueInformacion = 59;
+					break;
 				default:break;
 			}	
 			yini = Screen.height - cuantoH*posicionBloqueInformacion;	//Posición donde empieza el bloque de informacion	

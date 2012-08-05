@@ -32,6 +32,9 @@ public class Audio_Ambiente : MonoBehaviour {
 			ultimaCancion = temp;
 			source.Play();
 		}
+		source.volume = volumen;
+		if (!activado)
+			source.Pause();
 	}
 	
 }
