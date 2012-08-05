@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 //Clase contenedora del savegame ------------------------------------------------------------------------------------------------------
+
 [System.Serializable]
 public class SaveData {
 
@@ -31,7 +32,7 @@ public class SaveData {
 	public int esteticaW;
 	public int esteticaH;
 	public float[] esteticaData;
-	public Vida vidaData;
+	public VidaSerializable vidaData;
 	public float[] rocaVertices;
 	public float[] rocaNormals;
 	public float[] rocaUVs;
@@ -46,6 +47,50 @@ public class SaveData {
 
   	public SaveData () {}
 
+}
+
+//Clase contenedora de la información de la clase Vida ----------------------------------------------------------------------------------
+[System.Serializable]
+public class VidaSerializable {
+
+	public CasillaSerializable[,] tablero;
+	public Dictionary<string, Especie> especies;
+	public Dictionary<string, EspecieVegetal> especiesVegetales;
+	public Dictionary<string, EspecieAnimal> especiesAnimales;
+	public Dictionary<string, TipoEdificio> tiposEdificios;
+	public List<Ser> seres;
+	public List<Vegetal> vegetales;
+	public List<Animal> animales;
+	public List<Edificio> edificios;	
+	public int numEspecies;
+	public int numEspeciesVegetales;
+	public int numEspeciesAnimales;
+	public int numTiposEdificios;	
+	public int idActualVegetal;
+	public int idActualAnimal;
+	public int idActualEdificio;	
+	public int contadorPintarTexturaPlantas;
+	
+	public VidaSerializable() {}
+}
+
+//Clase contenedora de la información de la clase Casilla ----------------------------------------------------------------------------------
+[System.Serializable]
+public class CasillaSerializable {
+
+	public T_habitats habitat;
+	public T_elementos elementos;
+	public float coordsTexX;
+	public float coordsTexY;
+	public float coordsVertX;
+	public float coordsVertY;
+	public float coordsVertZ;
+	public Vegetal vegetal;
+	public Animal animal;
+	public Edificio edificio;
+	public float[] pinceladas;
+	
+	public CasillaSerializable() {}
 }
 
 //Clase contenedora del archivo de indices ------------------------------------------------------------------------------------------------------
@@ -162,7 +207,7 @@ public class SaveLoad {
 			resultado.esteticaData[i * 4 + 3] = temp5[i].a;
 		}
 		//Clase Vida
-		resultado.vidaData = contenedor.vida;
+		generarVidaSerializable(contenedor.vida, ref resultado.vidaData);
 		//Mesh Roca
 		Vector3[] temp6 = contenedor.roca.vertices;
 		Vector3[] temp7 = contenedor.roca.normals;
@@ -279,7 +324,7 @@ public class SaveLoad {
 		temp5.Apply();
 		contenedor.texturaHabsEstetica = temp5;
 		//Clase Vida
-		contenedor.vida = save.vidaData;
+		rehacerVida(ref contenedor.vida, save.vidaData);
 		//Mesh Roca
 		Mesh temp6 = new Mesh();
 		Vector3[] temp6v = new Vector3[save.rocaVertices.Length / 3];
@@ -336,6 +381,100 @@ public class SaveLoad {
 		contenedor.nivelAgua = save.nivelAgua;
 		contenedor.tamanoPlaya = save.tamanoPlaya;
 		//Fin
+	}
+	
+	private static void generarVidaSerializable(Vida vida, ref VidaSerializable vidaSerializable) {
+		vidaSerializable = new VidaSerializable();
+		vidaSerializable.animales = vida.animales;
+		vidaSerializable.contadorPintarTexturaPlantas = vida.contadorPintarTexturaPlantas;
+		vidaSerializable.edificios = vida.edificios;
+		vidaSerializable.especies = vida.especies;
+		vidaSerializable.especiesAnimales = vida.especiesAnimales;
+		vidaSerializable.especiesVegetales = vida.especiesVegetales;
+		vidaSerializable.idActualAnimal = vida.idActualAnimal;
+		vidaSerializable.idActualEdificio = vida.idActualEdificio;
+		vidaSerializable.idActualVegetal = vida.idActualVegetal;
+		vidaSerializable.numEspecies = vida.numEspecies;
+		vidaSerializable.numEspeciesAnimales = vida.numEspeciesAnimales;
+		vidaSerializable.numEspeciesVegetales = vida.numEspeciesVegetales;
+		vidaSerializable.numTiposEdificios = vida.numTiposEdificios;
+		vidaSerializable.seres = vida.seres;
+		generarTableroSerializable(vida.tablero, ref vidaSerializable.tablero);
+		vidaSerializable.tiposEdificios = vida.tiposEdificios;
+		vidaSerializable.vegetales = vida.vegetales;
+	}
+	
+	private static void rehacerVida(ref Vida vida, VidaSerializable vidaSerializable) {
+		vida.animales = vidaSerializable.animales;
+		vida.contadorPintarTexturaPlantas = vidaSerializable.contadorPintarTexturaPlantas;
+		vida.edificios = vidaSerializable.edificios;
+		vida.especies = vidaSerializable.especies;
+		vida.especiesAnimales = vidaSerializable.especiesAnimales;
+		vida.especiesVegetales = vidaSerializable.especiesVegetales;
+		vida.idActualAnimal = vidaSerializable.idActualAnimal;
+		vida.idActualEdificio = vidaSerializable.idActualEdificio;
+		vida.idActualVegetal = vidaSerializable.idActualVegetal;
+		vida.numEspecies = vidaSerializable.numEspecies;
+		vida.numEspeciesAnimales = vidaSerializable.numEspeciesAnimales;
+		vida.numEspeciesVegetales = vidaSerializable.numEspeciesVegetales;
+		vida.numTiposEdificios = vidaSerializable.numTiposEdificios;
+		vida.seres = vidaSerializable.seres;
+		rehacerTablero(vidaSerializable.tablero, ref vida.tablero);
+		vida.tiposEdificios = vidaSerializable.tiposEdificios;
+		vida.vegetales = vidaSerializable.vegetales;
+	}
+	
+	private static void generarTableroSerializable(Casilla[,] tablero, ref CasillaSerializable[,] tableroSerializable){
+		tableroSerializable = new CasillaSerializable[tablero.GetLength(0), tablero.GetLength(1)];
+		for (int i = 0; i < tablero.GetLength(0); i++) {
+			for (int j = 0; j < tablero.GetLength(1); j++) {
+				CasillaSerializable temp = new CasillaSerializable();
+				temp.animal = tablero[i,j].animal;
+				temp.coordsTexX = tablero[i,j].coordsTex.x;
+				temp.coordsTexY = tablero[i,j].coordsTex.y;
+				temp.coordsVertX = tablero[i,j].coordsVert.x;
+				temp.coordsVertY = tablero[i,j].coordsVert.y;
+				temp.coordsVertZ = tablero[i,j].coordsVert.z;
+				temp.edificio = tablero[i,j].edificio;
+				temp.elementos = tablero[i,j].elementos;
+				temp.habitat = tablero[i,j].habitat;
+				if (tablero[i,j].pinceladas != null) {
+					temp.pinceladas = new float[tablero[i,j].pinceladas.Length * 2];
+					for (int k = 0; k < tablero[i,j].pinceladas.Length; k++) {
+						temp.pinceladas[k * 2] = tablero[i,j].pinceladas[k].x;
+						temp.pinceladas[k * 2 + 1] = tablero[i,j].pinceladas[k].y;
+					}
+				}
+				temp.vegetal = tablero[i,j].vegetal;
+				tableroSerializable[i,j] = temp;
+			}
+		}
+	}
+	
+	private static void rehacerTablero(CasillaSerializable[,] tableroSerializable, ref Casilla[,] tablero) {
+		tablero = new Casilla[tableroSerializable.GetLength(0), tableroSerializable.GetLength(1)];
+		for (int i = 0; i < tablero.GetLength(0); i++) {
+			for (int j = 0; j < tablero.GetLength(1); j++) {			
+				Casilla temp = new Casilla();
+				temp.animal = tableroSerializable[i,j].animal;
+				Vector2 vect = new Vector2(tableroSerializable[i,j].coordsTexX, tableroSerializable[i,j].coordsTexY);
+				temp.coordsTex = vect;
+				Vector3 vect3 = new Vector3(tableroSerializable[i,j].coordsVertX, tableroSerializable[i,j].coordsVertY, tableroSerializable[i,j].coordsVertZ);
+				temp.coordsVert = vect3;
+				temp.edificio = tableroSerializable[i,j].edificio;
+				temp.elementos = tableroSerializable[i,j].elementos;
+				temp.habitat = tableroSerializable[i,j].habitat;
+				if (tablero[i,j].pinceladas != null) {
+					temp.pinceladas = new Vector2[tablero[i,j].pinceladas.Length / 2];
+					for (int k = 0; k < tablero[i,j].pinceladas.Length; k++) {
+						Vector2 vect2 = new Vector2(tableroSerializable[i,j].pinceladas[k * 2], tableroSerializable[i,j].pinceladas[k * 2 + 1]);
+						temp.pinceladas[k] = vect2;
+					}
+				}
+				temp.vegetal = tableroSerializable[i,j].vegetal;
+				tablero[i,j] = temp;
+			}
+		}
 	}
 	
 	//Objeto con los indices
