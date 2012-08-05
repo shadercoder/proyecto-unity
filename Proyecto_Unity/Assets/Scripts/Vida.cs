@@ -23,6 +23,8 @@ public class Casilla {
 		edificio = null;
 		coordsVert = vert;
 	}
+	
+	public Casilla() {}
 }
 
 [System.Serializable] 
@@ -646,6 +648,7 @@ public class Vida
 	}
 }
 
+[System.Serializable]
 public class TipoEdificio
 {
 	public int idTipoEdificio;							//Identificador del tipo de edificio
@@ -742,6 +745,7 @@ public class TipoEdificio
 	}
 }
 
+[System.Serializable]
 public class Especie
 {
 	public int idEspecie;								//Identificador de la especie a la que pertenece	
@@ -778,6 +782,7 @@ public class Especie
 	}	
 }
 
+[System.Serializable]
 public class EspecieVegetal : Especie
 {	
 	public int numMaxVegetales;							//Número de vegetales máximos por casilla
@@ -846,7 +851,9 @@ public class EspecieVegetal : Especie
 	}
 }
 
-public enum tipoAlimentacionAnimal {herbivoro,carnivoro};	
+public enum tipoAlimentacionAnimal {herbivoro,carnivoro};
+
+[System.Serializable]
 public class EspecieAnimal : Especie
 {
 	public int consumo;									//Alimento que consume por turno
@@ -915,6 +922,7 @@ public class EspecieAnimal : Especie
 	}	
 }
 
+[System.Serializable]
 public class Ser
 {
 	public int idSer;								//Id del ser
@@ -923,6 +931,7 @@ public class Ser
 	public GameObject modelo;
 }
 
+[System.Serializable]
 public class Vegetal : Ser 							//Representa una población de vegetales de una especie vegetal
 {
 	public EspecieVegetal especie;				//Especie vegetal a la que pertenece
@@ -991,6 +1000,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	}	
 }
 
+[System.Serializable]
 public class Animal : Ser
 {
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
@@ -1042,6 +1052,7 @@ public class Animal : Ser
 	}		
 }
 
+[System.Serializable]
 public class Edificio : Ser
 {
 	public TipoEdificio tipo;
