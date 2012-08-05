@@ -218,7 +218,7 @@ public class SaveLoad {
 		return resultado;
 	}
 	
-	public static void rehacerScript(SaveData save, ValoresCarga contenedor) {
+	public static void rehacerScript(SaveData save, ref ValoresCarga contenedor) {
 		//Textura Heightmap (Textura_Planeta)
 		Texture2D temp1 = new Texture2D(save.heightmapW, save.heightmapH);
 		Color[] temp1a = new Color[save.heightmapData.Length];

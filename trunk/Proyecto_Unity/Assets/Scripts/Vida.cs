@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable] 
 public class Casilla {
 	public T_habitats habitat;
 	public T_elementos elementos;
@@ -314,7 +315,7 @@ public class Vida
 	{
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
+		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,(especie.modelos.Count - 1))];
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;

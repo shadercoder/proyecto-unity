@@ -24,7 +24,7 @@ public class EscenaCarga : MonoBehaviour {
 	
 		//Segunda fase
 	public GameObject objetoRoca;
-	private Vector3 escalaBase 				= new Vector3(50.0f,50.0f,50.0f);	//La escala básica del océano
+//	private Vector3 escalaBase 				= new Vector3(50.0f,50.0f,50.0f);	//La escala básica del océano
 	public Mesh meshEsfera;														//La esfera sobre la que se harán los cambios
 	private Mesh aguaMesh;														//El objeto con el Mesh extruido del agua
 	private Mesh rocaMesh;														//El objeto con el Mesh extruido de la roca
@@ -379,7 +379,7 @@ public class EscenaCarga : MonoBehaviour {
 				saveGame = SaveLoad.Load();
 				GameObject temp = GameObject.FindGameObjectWithTag("Carga");
 				ValoresCarga contenedor = temp.GetComponent<ValoresCarga>();
-				SaveLoad.rehacerScript(saveGame, contenedor);
+				SaveLoad.rehacerScript(saveGame, ref contenedor);
 				estado = 7;
 			}
 		}
@@ -425,37 +425,41 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
 		gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.45f, 0.55f);
-		GUILayout.Label("Max " + gananciaInit);
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
+		GUILayout.Label(gananciaInit.ToString());
 		
-		GUILayout.Space(cuantoH);
+//		GUILayout.Space(cuantoH);
 		
 		GUILayout.Label("Escala", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Max");
 		escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.0055f, 0.001f);
-		GUILayout.Label("Min " + escalaInit);
+		GUILayout.Label("Min");
 		GUILayout.EndHorizontal();
+		GUILayout.Label(escalaInit.ToString());
 		
-		GUILayout.Space(cuantoH);
+//		GUILayout.Space(cuantoH);
 		
 		GUILayout.Label("Octavas", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
 		octavasFloat = GUILayout.HorizontalSlider(octavasFloat, 2.0f, 10.0f);
-		GUILayout.Label("Max " + octavasFloat);
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
+		GUILayout.Label(octavasFloat.ToString());
 		
-		GUILayout.Space(cuantoH);
+//		GUILayout.Space(cuantoH);
 		
 		GUILayout.Label("Lacunaridad", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
 		lacunaridadInit = GUILayout.HorizontalSlider(lacunaridadInit, 1.4f, 3.1f);
-		GUILayout.Label("Max " + lacunaridadInit);
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
+		GUILayout.Label(lacunaridadInit.ToString());
 		
-		GUILayout.Space(cuantoH);
+//		GUILayout.Space(cuantoH);
 		
 		if (GUILayout.Button(new GUIContent("Generar", "Genera un nuevo planeta"))) {	
 			FuncTablero.setEscala(escalaInit);
@@ -499,36 +503,39 @@ public class EscenaCarga : MonoBehaviour {
 		//cantidad de agua, etc.
 		//Despues de este paso se colorea el mapa creado.
 		
-		GUILayout.Space(cuantoH * 2);
+//		GUILayout.Space(cuantoH * 2);
 		
 		GUILayout.Label("Nivel del agua", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
 		nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.15f, 0.45f);
-		GUILayout.Label("Max " + nivelAguaInit);
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
+		GUILayout.Label(nivelAguaInit.ToString());
 		
 		if (GUI.changed) {			
 			objetoRoca.renderer.sharedMaterials[1].SetFloat("_nivelMar", nivelAguaInit);
 		}
 		
-		GUILayout.Space(cuantoH * 2);
+//		GUILayout.Space(cuantoH * 2);
 		
 		GUILayout.Label("Temperatura del planeta", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
 		temperaturaInit = GUILayout.HorizontalSlider(temperaturaInit, 0.0f, 1.0f);
-		GUILayout.Label("Max " + temperaturaInit);
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
+		GUILayout.Label(temperaturaInit.ToString());
 		
-		GUILayout.Space(cuantoH * 2);
+//		GUILayout.Space(cuantoH * 2);
 		
 		GUILayout.Label("Longitud de las playas", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
 		tamanoPlayasInit = GUILayout.HorizontalSlider(tamanoPlayasInit, 0.02f, 0.06f);
-		GUILayout.Label("Max " + tamanoPlayasInit);
+		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
+		GUILayout.Label(tamanoPlayasInit.ToString());
 		
 		if (GUI.changed) {			
 			objetoRoca.renderer.sharedMaterials[1].SetFloat("_tamPlaya", tamanoPlayasInit);
