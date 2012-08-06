@@ -934,7 +934,7 @@ public class Ser
 [System.Serializable]
 public class Vegetal : Ser 							//Representa una población de vegetales de una especie vegetal
 {
-	public EspecieVegetal especie;				//Especie vegetal a la que pertenece
+	public EspecieVegetal especie;					//Especie vegetal a la que pertenece
 	public int numVegetales;						//Número de vegetales de la población
 	
 	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY,GameObject modelo)
@@ -1013,6 +1013,18 @@ public class Animal : Ser
 		this.especie = especie;
 		this.reserva = especie.reservaMaxima/2;
 		this.turnosParaReproduccion = especie.reproductibilidad;		
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
+		this.posX = posX;
+		this.posY = posY;
+		this.modelo = modelo;
+	}
+	
+	public Animal(int idSer,EspecieAnimal especie,int posX,int posY, int res, int turnos, GameObject modelo)
+	{
+		this.idSer = idSer;
+		this.especie = especie;
+		this.reserva = res;
+		this.turnosParaReproduccion = turnos;		
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
 		this.posX = posX;
 		this.posY = posY;

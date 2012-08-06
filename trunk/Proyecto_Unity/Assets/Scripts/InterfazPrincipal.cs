@@ -608,7 +608,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		            ValoresCarga temp = contenedor.GetComponent<ValoresCarga>();
 					principal.rellenaContenedor(ref temp);
 		            string fecha = System.DateTime.Now.ToString().Replace("\\","").Replace("/","").Replace(" ", "").Replace(":","");
-		            SaveLoad.cambiaFileName("Partida" + fecha + ".hur");
+		            SaveLoad.cambiaFileName("Partida" + fecha + ".hur"); 
 		            SaveLoad.Save(temp);
 		            //Recuperar estado normal
 		           	accion = InterfazPrincipal.taccion.ninguna;
