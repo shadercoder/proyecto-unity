@@ -79,6 +79,19 @@ public class InterfazPrincipal : MonoBehaviour {
 			musicaVol = 0.0f;
 		if (PlayerPrefs.HasKey("SfxOn") && (PlayerPrefs.GetInt("SfxOn") == 0))
 			sfxVol = 0.0f;
+		Audio_Ambiente ambiente = sonidoAmbiente.GetComponent<Audio_Ambiente>();
+		if (PlayerPrefs.HasKey("MusicaOn") && (PlayerPrefs.GetInt("MusicaOn") == 0))
+			ambiente.activado = false;
+		else
+			ambiente.activado = true;
+		ambiente.volumen = musicaVol;
+		//Volumen del audio de efectos
+		Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
+		if (PlayerPrefs.HasKey("SfxOn") && (PlayerPrefs.GetInt("SfxOn") == 0))
+			efectos.activado = false;
+		else
+			efectos.activado = true;
+		efectos.volumen = sfxVol;
 	}
 	
 	// Update is called once per frame
@@ -823,7 +836,7 @@ public class InterfazPrincipal : MonoBehaviour {
 			else if (longitud < 15)
 				longitud *= 9.0f;
 			else
-				longitud *= 8.0f;
+				longitud *= 8.5f;
 		}
 					
 		float posx = Input.mousePosition.x;
