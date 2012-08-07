@@ -54,8 +54,8 @@ public class InterfazPrincipal : MonoBehaviour {
     private string[] nombresSaves;							//Los nombres de los ficheros de savegames guardados
 	
 	//Sonido
-	private float musicaVol 			= 1.0f;				//A que volumen la musica?
-	private float sfxVol 				= 1.0f;				//A que volumen los efectos?
+	private float musicaVol 			= 0.0f;				//A que volumen la musica?
+	private float sfxVol 				= 0.0f;				//A que volumen los efectos?
 	public GameObject sonidoAmbiente;						//El objeto que va a contener la fuente del audio de ambiente
 	public GameObject sonidoFX;								//El objeto que va a contener la fuente de efectos de audio
 	
@@ -107,14 +107,21 @@ public class InterfazPrincipal : MonoBehaviour {
 		/*[Aris]
 		 * Muevo esta linea al método Start porque no es necesario hacerlo cada poco tiempo (no se modifica
 		 * en ninguna parte y es una variable privada)
+		 * 
+		 * [Marcos]
+		 * Yo supose que sería un puntero y que tendría coste 0, pero vamos ni lo pense al ponerlo, 
+		 * así que lo movemos a start y si vemos que no falla nada pues guay.
 		 * */
-//		principal = gameObject.GetComponent<Principal>();		
 		aspectRatioNumerico = (float)Screen.width/(float)Screen.height;		
 		
 		/*[Aris]
 		 * El calculo del aspect ratio tambien lo moveria al método Start, porque no necesitas que se ejecute
 		 * mas de una vez. Si acaso, poner en el update una condicion de "si el tamaño de la pantalla se modifica..."
 		 * Pero lo dejo aqui de momento, para no molestarte :)
+		 * 
+		 * [Marcos] 
+		 * Hacer esa condición con un if y tal puede que llegue incluso a ser más costoso en tiempo. 
+		 * Y como la mejora (de haberla) sería totalmente ridicula dejamos eso ahí y ya esta.
 		 * */
 		if(aspectRatioNumerico >= 1.69)			//16:9
 		{
@@ -345,6 +352,11 @@ public class InterfazPrincipal : MonoBehaviour {
 				/* [Aris]
 				 * Yo quitaría esta linea de activar filtro de aqui, porque las granjas no
 				 * necesitan recursos para funcionar, no? 
+				 * 
+				 * [Marcos] 
+				 * La puse en su momento para activar los recursos (xq no estaban activados)
+				 * para ver donde insertar los edificios. En realidad habria que hacer que si no es
+				 * de tipo granja se active. En cualquier caso falta tb ponerle lo del radio de acción.
 				 * */
 					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);
 				}
@@ -529,6 +541,14 @@ public class InterfazPrincipal : MonoBehaviour {
 	 	 * Es básicamente lo mismo que lo que haces con el switch y luego poner
 	 	 * cuantoH * posicionBloque.
 	 	 * Es una sugerencia nada mas ;)
+	 	 * 
+	 	 * [Marcos] 
+	 	 * Sólo lo has visto aquí y es así porque el bloque de información tiene
+	 	 * un cuanto de alto y está abajo de todo. Si hacemos lo que tu dices tendríamos 
+	 	 * mayor coste porque habria que hacer:
+	 	 * 		Screen.Height /numCuantos (que depende de cada aspect ratio) - CuantoH
+	 	 * Y en caso de querer poner el bloque en otra parte (por lo que fuera) habría que
+	 	 * cambiar todo.
 		 * */
 		int posicionBloque = 0;
 		switch (aspectRatio)
@@ -555,26 +575,34 @@ public class InterfazPrincipal : MonoBehaviour {
 		 * Aqui tenias tres bloques switch sobre la misma variable, asi que los he combinado en uno solo
 		 * mas que nada porque es una perdida de lineas de codigo para hacer lo mismo...
 		 * Si tienes otras razones, volvemos para atras y fuera. 
+		 * 
+		 * [Marcos]
+		 * Está puesto en 3 switch porque lo hice deprisa y corriendo antes de irme al pueblo. Evidentemente
+		 * con un sólo switch está mucho mejor y te agradezco enormemente la observación.
 		 * */
 		float posicionBloque = 0;
 		float posicionConfirmar = 0;
 		float posicionAudio = 0;
+		float posicionGuardar = 0;
 		switch (aspectRatio)
 		{
 			case taspectRatio.aspectRatio16_9:
 				posicionBloque = 13.5f;
 				posicionConfirmar = 19.5f;
-				posicionAudio = 20f;
+				posicionAudio = 16.5f;
+				posicionGuardar = 14.5f;
 				break;
 			case taspectRatio.aspectRatio16_10:
 				posicionBloque = 16;
 				posicionConfirmar = 22;
-				posicionAudio = 22.5f;
+				posicionAudio = 19;
+				posicionGuardar = 17; 
 				break;
 			case taspectRatio.aspectRatio4_3:
 				posicionBloque = 21;
 				posicionConfirmar = 27;
-				posicionAudio = 27.5f;
+				posicionAudio = 24;
+				posicionGuardar = 22;
 				break;
 			default:
 				break;
@@ -583,18 +611,18 @@ public class InterfazPrincipal : MonoBehaviour {
 		switch(accionMenu)
 		{
 			case taccionMenu.mostrarMenu:				
-				GUILayout.BeginArea(new Rect(cuantoW*32.5f,cuantoH*posicionBloque,cuantoW*15,cuantoH*18),new GUIContent(),"BloqueMenu");
+				GUILayout.BeginArea(new Rect(cuantoW*32.5f,cuantoH*posicionBloque,cuantoW*15,cuantoH*18),new GUIContent());
 				GUILayout.BeginVertical();
-				GUILayout.Space(cuantoH*2);
-				if(GUILayout.Button(new GUIContent("Guardar partida","Lleva al menu de guardar partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))									
+				GUILayout.Box(new GUIContent(),"BloqueMenu",GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15));
+				if(GUILayout.Button(new GUIContent("Guardar partida","Lleva al menu de guardar partida"),"BotonGuardarPartida",GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))									
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarGuardar;				
-				if(GUILayout.Button(new GUIContent("Opciones de audio","Lleva al menu de opciones de audio"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+				if(GUILayout.Button(new GUIContent("Opciones de audio","Lleva al menu de opciones de audio"),"BotonOpcionesAudio",GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarOpcionesAudio;
-				if(GUILayout.Button(new GUIContent("Menu principal","Lleva al menu principal del juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+				if(GUILayout.Button(new GUIContent("Menu principal","Lleva al menu principal del juego"),"BotonMenuPrincipal",GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarSalirMenuPrincipal;
-				if(GUILayout.Button(new GUIContent("Salir del juego","Cierra completamente el juego"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+				if(GUILayout.Button(new GUIContent("Salir del juego","Cierra completamente el juego"),"BotonSalirJuego",GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarSalirJuego;
-				if(GUILayout.Button(new GUIContent("Volver","Vuelve a la partida"),GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
+				if(GUILayout.Button(new GUIContent("Volver","Vuelve a la partida"),"BotonVolver",GUILayout.Height(cuantoH*3),GUILayout.Width(cuantoW*15)))
 				{
 					accion = InterfazPrincipal.taccion.ninguna;
 					principal.setEscalaTiempo(escalaTiempoAntesMenu);
@@ -611,10 +639,10 @@ public class InterfazPrincipal : MonoBehaviour {
 			/* [Aris]
 			 * Re-escrito. Deberia funcionar ahora, al menos esta parte esta bien escrita.
 			 * Otra cosa será que no funcione la parte de guardar... Pero esto es solo interfaz
-			 * con poca lógica asociada. 
+			 * con poca lógica asociada.
 			 * */
-		        GUI.Box(new Rect(cuantoW * 14, cuantoH * 7, cuantoW * 20, cuantoH * 16), "");
-		        posicionScroll = GUI.BeginScrollView(new Rect(cuantoW * 14, cuantoH * 8, cuantoW * 20, cuantoH * 14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
+		        GUI.Box(new Rect(cuantoW*30,cuantoH*posicionGuardar,cuantoW*20,cuantoH*16),new GUIContent(""),"BoxGuardar");
+		        posicionScroll = GUI.BeginScrollView(new Rect(cuantoW*30,cuantoH*posicionGuardar,cuantoW*20,cuantoH*14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
 		        if (GUI.Button(new Rect(cuantoW, 0, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) 
 				{
 					GameObject contenedor = GameObject.FindGameObjectWithTag("Carga");
@@ -640,21 +668,19 @@ public class InterfazPrincipal : MonoBehaviour {
 	                }
 		        }
 		        GUI.EndScrollView();
-		        if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver a la partida"), "boton_atras")) {
-	                //Recuperar estado normal
-	                accion = InterfazPrincipal.taccion.ninguna;
-					principal.setEscalaTiempo(escalaTiempoAntesMenu);
+		        if (GUI.Button(new Rect(cuantoW*44,cuantoH*(posicionGuardar+13),cuantoW*5,cuantoH*2), new GUIContent("Volver", "Pulsa aquí para volver al menu de opciones"))) {
+	                accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
 		        }		
 				break;
 			case taccionMenu.mostrarOpcionesAudio:
-				GUI.Box(new Rect(cuantoW*35f,cuantoH*posicionAudio,cuantoW*10,cuantoH*8),new GUIContent());
-				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+0.5f),cuantoW*9,cuantoH*2),new GUIContent("Sonido"));
-				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+2.5f),cuantoW*5,cuantoH*1),new GUIContent("Volumen"));
-				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+3.5f),cuantoW*4,cuantoH*1),new GUIContent("Música"));
-				musicaVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+3.5f),cuantoW*6,cuantoH*1),musicaVol,0,1.0f);	
-				GUI.Label(new Rect(cuantoW*35.5f,cuantoH*(posicionAudio+4.5f),cuantoW*4,cuantoH*1),new GUIContent("Efectos"));
-				sfxVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+4.5f),cuantoW*6,cuantoH*1),sfxVol,0,1.0f);
-				if(GUI.Button(new Rect(cuantoW*42.5f,cuantoH*(posicionAudio+5.5f),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Volver","Pulsa aquí para volver al menu de opciones")))
+				GUI.Box(new Rect(cuantoW*32.5f,cuantoH*posicionAudio,cuantoW*15,cuantoH*12),new GUIContent(),"BoxOpcionesAudio");
+				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+1f),cuantoW*14.5f,cuantoH*2),new GUIContent("Sonido"));
+				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+3f),cuantoW*8,cuantoH*2),new GUIContent("Volumen"));
+				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+5f),cuantoW*5.5f,cuantoH*2),new GUIContent("Música"));
+				musicaVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+5f),cuantoW*8,cuantoH*2),musicaVol,0,1.0f);	
+				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+7f),cuantoW*5.5f,cuantoH*2),new GUIContent("Efectos"));
+				sfxVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+7f),cuantoW*8,cuantoH*2),sfxVol,0,1.0f);
+				if(GUI.Button(new Rect(cuantoW*42f,cuantoH*(posicionAudio+9.5f),cuantoW*5f,cuantoH*2f),new GUIContent("Volver","Pulsa aquí para volver al menu de opciones")))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;			
 				
 				if(GUI.changed)
@@ -676,7 +702,7 @@ public class InterfazPrincipal : MonoBehaviour {
 				}				
 				break;
 			case taccionMenu.mostrarSalirMenuPrincipal:
-				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent());
+				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent(),"BoxConfirmacion");
 				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
 				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir al menu principal")))
 					Application.LoadLevel("Escena_Inicial");
@@ -684,7 +710,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
 				break;
 			case taccionMenu.mostrarSalirJuego:			
-				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent());
+				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent(),"BoxConfirmacion");
 				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
 				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir del juego")))
 					Application.Quit();
@@ -709,8 +735,14 @@ public class InterfazPrincipal : MonoBehaviour {
 			 * siga pulsado, lo que puede ser 0.3 segundos perfectamente y eso en un método que se refresca
 			 * unas 100 veces por segundo o mas... puede dar problemas no? Porque al menos un par pueden
 			 * pasar...
+			 * 
+			 * [Marcos]
+			 * Efectivamente quería poner sólo el de Down y por descuido puse ese. En realidad funciona porque 
+			 * ya hay una lógica que se encarga de hacer que sólo se inserte una vez. Vamos desde que esto está
+			 * funcionando, habremos insertado cientos de cosas y siempre lo ha hecho bien así que creo que 
+			 * funciona perfectamente.
 			 * */
-			if(Input.GetMouseButton(0))
+			if(Input.GetMouseButtonDown(0))
 			{
 				int x = 0;
 				int y = 0;
@@ -878,6 +910,16 @@ public class InterfazPrincipal : MonoBehaviour {
 		 
 		 * Y así sucesivamente...
 		 * 
+		 * [Marcos]
+		 * Lo más exacto sería eso, tener guardadas todas las rect que he usado y comprobar si está dentro o no.
+		 * Pero como no hay tiempo de sobra pues... así funciona y es lo que importa xDD. Ya lo cambiaré si hay tiempo.
+		 * De todas formas con el ejemplo que tu propones al final es lo mismo. Una cosa es hacerse una lista de todos
+		 * los rect que hay y ver que el puntero NO está contenido en ellos y otra cosaes mirar simplemente si esta 
+		 * contenido dentro de un rect permitido. Lo que hago es lo segundo y es lo mismo comparar con 4 posiciones que 
+		 * con 1 rect, porque por dentro será lo que haga. Vamos que de hacerlo como dices a raiz de lo que hay, sería 
+		 * simplemente hacer un Rect al final con las posiciones que se han hallado antes y usar el contains y es algo 
+		 * que te va a costar más xq estas duplicando los datos para luego hacer la misma comprobación. Porque casi 
+		 * 100% seguro que el contains te hace lo mismo que hago yo xDD.
 		 * */
 		if(accion == taccion.mostrarMenu)
 			return false;
