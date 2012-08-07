@@ -56,6 +56,7 @@ public class Vida
 	public int idActualEdificio;
 	
 	public int contadorPintarTexturaPlantas = 0;
+	private bool texturaPlantasModificado = false;
 	
 	public Vida()
 	{
@@ -146,6 +147,7 @@ public class Vida
 	
 	private void pintaPlantasTex(int posX,int posY) {
 		Vegetal veg = tablero[posX,posY].vegetal;
+		texturaPlantasModificado = true;
 		if (veg.numVegetales > 0) {
 			int temp = (int)Mathf.Lerp(0.0f, 4.0f, veg.numVegetales / veg.especie.numMaxVegetales);
 			if (tablero[posX,posY].pinceladas != null) {
@@ -577,9 +579,10 @@ public class Vida
 			}
 		}
 		contadorPintarTexturaPlantas++;
-		if(contadorPintarTexturaPlantas == 5)
+		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)
 		{
 			texturaPlantas.Apply();
+			texturaPlantasModificado = false;
 			contadorPintarTexturaPlantas = 0;
 		}
 	}
