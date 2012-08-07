@@ -55,14 +55,14 @@ public class VidaSerializable {
 
 	public CasillaSerializable[,] tablero;
 	//FIXME Falta todo esto...
-	public Dictionary<string, Especie> especies;
-	public Dictionary<string, EspecieVegetal> especiesVegetales;
-	public Dictionary<string, EspecieAnimal> especiesAnimales;
-	public Dictionary<string, TipoEdificio> tiposEdificios;
-	public List<Ser> seres;
-	public List<Vegetal> vegetales;
-	public List<Animal> animales;
-	public List<Edificio> edificios;
+//	public Dictionary<string, Especie> especies;
+//	public Dictionary<string, EspecieVegetal> especiesVegetales;
+//	public Dictionary<string, EspecieAnimal> especiesAnimales;
+//	public Dictionary<string, TipoEdificio> tiposEdificios;
+//	public List<Ser> seres;
+//	public List<Vegetal> vegetales;
+//	public List<Animal> animales;
+//	public List<Edificio> edificios;
 	//Hasta aqui hay que hacer aun
 	public int numEspecies;
 	public int numEspeciesVegetales;
@@ -506,12 +506,15 @@ public class SaveLoad {
 	 */
 	private static void generarVidaSerializable(Vida vida, ref VidaSerializable vidaSerializable) {
 		vidaSerializable = new VidaSerializable();
-		vidaSerializable.animales = vida.animales;
+//		vidaSerializable.seres = vida.seres;
+//		vidaSerializable.animales = vida.animales;
+//		vidaSerializable.vegetales = vida.vegetales;
+//		vidaSerializable.edificios = vida.edificios;
+//		vidaSerializable.especies = vida.especies;
+//		vidaSerializable.tiposEdificios = vida.tiposEdificios;
+//		vidaSerializable.especiesAnimales = vida.especiesAnimales;
+//		vidaSerializable.especiesVegetales = vida.especiesVegetales;
 		vidaSerializable.contadorPintarTexturaPlantas = vida.contadorPintarTexturaPlantas;
-		vidaSerializable.edificios = vida.edificios;
-		vidaSerializable.especies = vida.especies;
-		vidaSerializable.especiesAnimales = vida.especiesAnimales;
-		vidaSerializable.especiesVegetales = vida.especiesVegetales;
 		vidaSerializable.idActualAnimal = vida.idActualAnimal;
 		vidaSerializable.idActualEdificio = vida.idActualEdificio;
 		vidaSerializable.idActualVegetal = vida.idActualVegetal;
@@ -519,22 +522,23 @@ public class SaveLoad {
 		vidaSerializable.numEspeciesAnimales = vida.numEspeciesAnimales;
 		vidaSerializable.numEspeciesVegetales = vida.numEspeciesVegetales;
 		vidaSerializable.numTiposEdificios = vida.numTiposEdificios;
-		vidaSerializable.seres = vida.seres;
 		generarTableroSerializable(vida.tablero, ref vidaSerializable.tablero);
-		vidaSerializable.tiposEdificios = vida.tiposEdificios;
-		vidaSerializable.vegetales = vida.vegetales;
+
 	}
 	
 	/* Construye un archivo con los datos del tablero Vida a partir de
 	 * unos datos serializables.
 	 */
 	private static void rehacerVida(ref Vida vida, VidaSerializable vidaSerializable) {
-		vida.animales = vidaSerializable.animales;
+//		vida.animales = vidaSerializable.animales;
+//		vida.edificios = vidaSerializable.edificios;
+//		vida.especies = vidaSerializable.especies;
+//		vida.especiesAnimales = vidaSerializable.especiesAnimales;
+//		vida.especiesVegetales = vidaSerializable.especiesVegetales;
+//		vida.tiposEdificios = vidaSerializable.tiposEdificios;
+//		vida.vegetales = vidaSerializable.vegetales;
+//		vida.seres = vidaSerializable.seres;
 		vida.contadorPintarTexturaPlantas = vidaSerializable.contadorPintarTexturaPlantas;
-		vida.edificios = vidaSerializable.edificios;
-		vida.especies = vidaSerializable.especies;
-		vida.especiesAnimales = vidaSerializable.especiesAnimales;
-		vida.especiesVegetales = vidaSerializable.especiesVegetales;
 		vida.idActualAnimal = vidaSerializable.idActualAnimal;
 		vida.idActualEdificio = vidaSerializable.idActualEdificio;
 		vida.idActualVegetal = vidaSerializable.idActualVegetal;
@@ -542,10 +546,8 @@ public class SaveLoad {
 		vida.numEspeciesAnimales = vidaSerializable.numEspeciesAnimales;
 		vida.numEspeciesVegetales = vidaSerializable.numEspeciesVegetales;
 		vida.numTiposEdificios = vidaSerializable.numTiposEdificios;
-		vida.seres = vidaSerializable.seres;
 		rehacerTablero(vidaSerializable.tablero, ref vida.tablero);
-		vida.tiposEdificios = vidaSerializable.tiposEdificios;
-		vida.vegetales = vidaSerializable.vegetales;
+
 	}
 	
 	/* Genera un archivo con los datos del tablero de la partida que es serializable

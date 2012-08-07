@@ -111,17 +111,17 @@ public class Principal : MonoBehaviour {
 		float extrusion = 0.45f;
 		MeshFilter Roca = objetoRoca.GetComponent<MeshFilter>();
 		Mesh meshTemp = Roca.mesh;
-		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, extrusion, objetoRoca.transform.position);
+		meshTemp = FuncTablero.extruyeVerticesTex(meshTemp, texturaBase, extrusion, objetoRoca.transform.position);
 		Roca.mesh = meshTemp;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Construyendo collider...");
 		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
        	objetoRoca.AddComponent<MeshCollider>();
         objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Calculando y extruyendo vertices del oceano...");
-		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
+//		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
 		MeshFilter Agua = objetoOceano.GetComponent<MeshFilter>();
 		Mesh meshAgua = Agua.mesh;
-		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, extrusion, objetoOceano.transform.position);
+		meshAgua = FuncTablero.extruyeVerticesValor(meshAgua, FuncTablero.getNivelAgua(), extrusion, objetoOceano.transform.position);
 		Agua.mesh = meshAgua;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Rellenando detalles...");
 		//se ajusta la propiedad de nivel de agua del shader

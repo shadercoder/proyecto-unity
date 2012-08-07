@@ -76,7 +76,7 @@ public class EscenaCarga : MonoBehaviour {
 	//Funciones basicas ----------------------------------------------------------------------------------------------------------------------
 	
 	void Awake() {
-		Debug.Log("Iniciando el script de EscenaCarga.Awake");
+		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando el metodo Awake() de la escena inicial...");
 		miObjeto = this.transform;
 		GameObject[] cadena = GameObject.FindGameObjectsWithTag("Carga");
 		if (cadena.Length > 1) {
@@ -114,7 +114,7 @@ public class EscenaCarga : MonoBehaviour {
 		nombresSaves = SaveLoad.getFileNames();
 		objetoRoca.renderer.sharedMaterials[1].SetFloat("_nivelMar", nivelAguaInit);
 		objetoRoca.renderer.sharedMaterials[1].SetFloat("_tamPlaya", tamanoPlayasInit);
-		Debug.Log("Terminando el script de EscenaCarga.Awake");
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado el metodo Awake().");
 	}
 	
 	void Update() {
@@ -150,19 +150,21 @@ public class EscenaCarga : MonoBehaviour {
 				menuPrincipal();
 				break;
 			case 1:		//Comenzar
-					ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
-					temp.texturaBase = texturaBase;
-					temp.texturaBase.Apply();
-					temp.roca = rocaMesh;
-					temp.agua = aguaMesh;
-					temp.nivelAgua = nivelAguaInit;
-					temp.tamanoPlaya = tamanoPlayasInit;
-					temp.texturaElementos = texElems;
-					temp.texturaHabitats = texHabitats;
-					temp.texturaHabsEstetica = texHabitatsEstetica;
-					temp.texturaPlantas = texPlantas;
-					temp.vida = vida;
-					Application.LoadLevel("Escena_Principal");
+				Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando la carga de la siguiente escena...");
+				ValoresCarga temp = contenedorTexturas.GetComponent<ValoresCarga>();
+				temp.texturaBase = texturaBase;
+				temp.texturaBase.Apply();
+				temp.roca = rocaMesh;
+				temp.agua = aguaMesh;
+				temp.nivelAgua = nivelAguaInit;
+				temp.tamanoPlaya = tamanoPlayasInit;
+				temp.texturaElementos = texElems;
+				temp.texturaHabitats = texHabitats;
+				temp.texturaHabsEstetica = texHabitatsEstetica;
+				temp.texturaPlantas = texPlantas;
+				temp.vida = vida;
+				Debug.Log (FuncTablero.formateaTiempo() + ": Valores cargados correctamente. Iniciando carga de nivel...");
+				Application.LoadLevel("Escena_Principal");
 				break;
 			case 2:		//Opciones
 				menuOpciones();
@@ -248,21 +250,27 @@ public class EscenaCarga : MonoBehaviour {
 		trabajando = true;
 		progreso = 0.0f;
 		GUI.enabled = false;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando creacionParte1()...");
 		yield return new WaitForSeconds(0.1f);
 		progreso = 0.1f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Creando ruido...");
 		yield return new WaitForSeconds(0.01f);
 		pixels = FuncTablero.ruidoTextura();										//Se crea el ruido para la textura base y normales...
 		progreso = 0.7f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Suavizando borde...");
 		yield return new WaitForSeconds(0.01f);
 		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);		//Se suaviza el borde lateral...
 		progreso = 0.8f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Suavizando polos...");
 		yield return new WaitForSeconds(0.01f);
 		pixels = FuncTablero.suavizaPoloTex(pixels);								//Se suavizan los polos...
 		progreso = 0.9f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Aplicando cambios...");
 		yield return new WaitForSeconds(0.01f);
 		texturaBase.SetPixels(pixels);
 		texturaBase.Apply();
 		progreso = 1.0f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada creacionParte1().");
 		yield return new WaitForSeconds(0.01f);
 		progreso = 0.0f;
 		trabajando = false;
@@ -274,25 +282,32 @@ public class EscenaCarga : MonoBehaviour {
 		trabajando = true;
 		progreso = 0.0f;
 		GUI.enabled = false;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando creacionParte2().");
 		yield return new WaitForSeconds(0.1f);
 		progreso = 0.1f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Instanciando la esfera roca...");
 		yield return new WaitForSeconds(0.01f);
 		Mesh meshTemp = GameObject.Instantiate(meshEsfera) as Mesh;
 		progreso = 0.2f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Extruyendo vertices de roca...");
 		yield return new WaitForSeconds(0.01f);
-		meshTemp = FuncTablero.extruyeVertices(meshTemp, texturaBase, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
-		progreso = 0.5f;
+		meshTemp = FuncTablero.extruyeVerticesTex(meshTemp, texturaBase, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
+		progreso = 0.6f;
+//		Debug.Log (FuncTablero.formateaTiempo() + ": Calculando texturaAgua...");
 		yield return new WaitForSeconds(0.01f);
 		rocaMesh = meshTemp;
-		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
-		progreso = 0.7f;
+//		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
+//		progreso = 0.7f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Instanciando la esfera agua...");
 		yield return new WaitForSeconds(0.01f);
 		Mesh meshAgua = GameObject.Instantiate(meshEsfera) as Mesh;
-		progreso = 0.8f;
+		progreso = 0.7f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Extruyendo vertices de agua...");
 		yield return new WaitForSeconds(0.01f);
-		meshAgua = FuncTablero.extruyeVertices(meshAgua, texturaAgua, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
+		meshAgua = FuncTablero.extruyeVerticesValor(meshAgua, nivelAguaInit, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
 		aguaMesh = meshAgua;
 		progreso = 1.0f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada creacionParte2().");
 		yield return new WaitForSeconds(0.01f);
 		progreso = 0.0f;
 		trabajando = false;
@@ -304,12 +319,16 @@ public class EscenaCarga : MonoBehaviour {
 		trabajando = true;
 		progreso = 0.0f;
 		GUI.enabled = false;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando creacionParte3().");
+		Debug.Log (FuncTablero.formateaTiempo() + ": Creando el tablero...");
 		yield return new WaitForSeconds(0.1f);
 		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, rocaMesh);
 		progreso = 0.7f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Creando la vida...");
 		yield return new WaitForSeconds(0.01f);
 		vida = new Vida(tablero, texPlantas);
 		progreso = 1.0f;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado creacionParte3().");
 		yield return new WaitForSeconds(0.01f);
 		progreso = 0.0f;
 		GUI.enabled = true;

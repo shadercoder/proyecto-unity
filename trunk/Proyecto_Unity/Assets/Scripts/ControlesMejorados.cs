@@ -92,17 +92,6 @@ public class ControlesMejorados : MonoBehaviour {
 		miTransform.position = rotCamara * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
 	}
 	
-	public static float anguloSeguro(float angulo) {
-	    float ang = angulo;
-		while (ang < -360) {
-	        ang += 360;
-		}
-	    while (ang >= 360) {
-	        ang -= 360;
-		}
-		return ang;
-	}
-	
 	public void setInteraccion(bool bol) {
 		interaccion = bol;
 	}
