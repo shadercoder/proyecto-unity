@@ -15,14 +15,14 @@ public class MejorasNave : MonoBehaviour {
 	void Start() {
 		//Inicializar las mejoras hechas a false
 		mejorasCompradas = new bool[10];
-		mejorasCompradas[0] = false;	//Mejora de la velocidad de la nave 1
-		mejorasCompradas[1] = false;	//Mejora de la velocidad de la nave 2
-		mejorasCompradas[2] = false;	//Mejora de capacidad de recursos 1
-		mejorasCompradas[3] = false;	//Mejora de capacidad de recursos 2
-		mejorasCompradas[4] = false;	//Mejora de produccion de energia 1
-		mejorasCompradas[5] = false;	//Mejora de produccion de energia 2
-		mejorasCompradas[6] = false;	//Mejora de orbita mas alta
-		mejorasCompradas[7] = false;	//
+		mejorasCompradas[0] = false;	//
+		mejorasCompradas[1] = false;	//Mejora de la velocidad de la nave 1
+		mejorasCompradas[2] = false;	//Mejora de la velocidad de la nave 2
+		mejorasCompradas[3] = false;	//Mejora de capacidad de recursos 1
+		mejorasCompradas[4] = false;	//Mejora de capacidad de recursos 2
+		mejorasCompradas[5] = false;	//Mejora de produccion de energia 1
+		mejorasCompradas[6] = false;	//Mejora de produccion de energia 2
+		mejorasCompradas[7] = false;	//Mejora de orbita mas alta
 		mejorasCompradas[8] = false;	//
 		mejorasCompradas[9] = false;	//
 		//Inicializar las piezas a invisibles
@@ -32,11 +32,16 @@ public class MejorasNave : MonoBehaviour {
 			piezaUnoNivel2.GetComponent<MeshRenderer>().enabled = false;
 		if (piezaDos != null) 
 			piezaDos.GetComponent<MeshRenderer>().enabled = false;
-//		Debug.Log("Metodo Start() de MejorasNave completado.");
 	}
 	
-	public void compraMejora1() {
-		if (mejorasCompradas[1])
+	public void compraMejora0() {
+		//TODO
+		mejorasCompradas[0] = true;
+	}
+	
+	public void compraMejora1() {	//Mejora de velocidad nivel 1
+		//Si ya se tiene la de nivel 2, no hace nada
+		if (mejorasCompradas[2])
 			return;
 		Controles temp = Camera.main.gameObject.transform.parent.gameObject.GetComponent<Controles>();
 		temp.mejoraVelocidad1();
@@ -45,11 +50,12 @@ public class MejorasNave : MonoBehaviour {
 		}
 		else
 			Debug.LogError("Falta por inicializar piezaUno desde el editor.");
-		mejorasCompradas[0] = true;
+		mejorasCompradas[1] = true;
 	}
 	
-	public void compraMejora2() {
-		if (!mejorasCompradas[0])
+	public void compraMejora2() {	//Mejora de velocidad nivel 2
+		//Si no tiene la de nivel 1, no hace nada
+		if (!mejorasCompradas[1])
 			return;
 		Controles temp = Camera.main.gameObject.transform.parent.gameObject.GetComponent<Controles>();
 		temp.mejoraVelocidad2();
@@ -63,22 +69,45 @@ public class MejorasNave : MonoBehaviour {
 		}
 		else
 			Debug.LogError("Falta por inicializar piezaUno desde el editor.");
-		mejorasCompradas[1] = true;
+		mejorasCompradas[2] = true;
 	}
 	
-	public void compraMejora3() {}
+	public void compraMejora3() {	//Mejora de almacen nivel 1
+		//Si ya se tiene la de nivel 2, no hace nada
+		if (mejorasCompradas[4])
+			return;
+		Principal temp = Camera.main.gameObject.GetComponent<Principal>();
+		temp.setEnergiaMax(1500);
+		temp.setCompBasMax(350);
+		temp.setCompAdvMax(150);
+		temp.setMatBioMax(75);
+		mejorasCompradas[3] = true;
+	}
 	
-	public void compraMejora4() {}
+	public void compraMejora4() {	//Mejora de almacen nivel 2
+		//Si no tiene la de nivel 1, no hace nada
+		if (!mejorasCompradas[3])
+			return;
+		Principal temp = Camera.main.gameObject.GetComponent<Principal>();
+		temp.setEnergiaMax(2000);
+		temp.setCompBasMax(400);
+		temp.setCompAdvMax(200);
+		temp.setMatBioMax(100);
+		mejorasCompradas[4] = true;
+	}
 	
 	public void compraMejora5() {}
 	
-	public void compraMejora6() {
+	public void compraMejora6() {}
+	
+	public void compraMejora7() {
+		//Si no tiene la mejora de energia de nivel 1 (mejora 5), no hace nada
+		if (!mejorasCompradas[5])
+			return;
 		Controles temp = Camera.main.gameObject.transform.parent.gameObject.GetComponent<Controles>();
 		temp.mejoraSubirOrbita();
-		mejorasCompradas[5] = true;
+		mejorasCompradas[6] = true;
 	}
-	
-	public void compraMejora7() {}
 	
 	public void compraMejora8() {}
 	
