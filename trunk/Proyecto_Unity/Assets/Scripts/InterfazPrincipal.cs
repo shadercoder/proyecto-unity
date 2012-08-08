@@ -858,11 +858,6 @@ public class InterfazPrincipal : MonoBehaviour {
 		if (longitud == 0.0f) 
 			return;			
 		else {
-			/* [Aris] 
-			 * Hago aqui un pequeño añadido para mejorar la longitud del tooltip, que antes
-			 * salia un poco mal, sobretodo en las muy pequeñas como por ejemplo el tooltip 
-			 * de los recursos del bloque superior.
-			 * */
 			if (longitud < 8)
 				longitud *= 10.0f;
 			else if (longitud < 15)
@@ -878,7 +873,9 @@ public class InterfazPrincipal : MonoBehaviour {
 		else 
 			posx += 15;				
 		if (posy > (Screen.height / 2)) 
-			posy += 20;					
+			posy -= 10;
+		else 
+			posy += 5;
 		Rect pos = new Rect(posx, Screen.height - posy, longitud, 25);
 		GUI.Box(pos, "");
 		GUI.Label(pos, GUI.tooltip);					

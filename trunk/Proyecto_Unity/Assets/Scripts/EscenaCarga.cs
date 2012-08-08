@@ -206,30 +206,32 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private void mostrarTooltip() {
 		if (activarTooltip) {
-			int longitud = GUI.tooltip.Length;
-			if (longitud == 0) {
-				return;
-			}
+			//Muestra el tooltip si ha sido activado
+			float longitud = GUI.tooltip.Length;
+			if (longitud == 0.0f) 
+				return;			
 			else {
-				longitud *= 9;
+				if (longitud < 8)
+					longitud *= 10.0f;
+				else if (longitud < 15)
+					longitud *= 9.0f;
+				else
+					longitud *= 8.75f;
 			}
+						
 			float posx = Input.mousePosition.x;
 			float posy = Input.mousePosition.y;
-			if (posx > (Screen.width / 2)) {
-				posx -= 215;
-			}
-			else {
-				posx += 20;
-			}
-			if (posy > (Screen.height / 2)) {
-				posy -= 25;
-			}
-			else {
-				posy += 30;
-			}	
+			if (posx > (Screen.width / 2)) 
+				posx -= (longitud + 20);			
+			else 
+				posx += 15;				
+			if (posy > (Screen.height / 2)) 
+				posy -= 10;
+			else 
+				posy += 5;
 			Rect pos = new Rect(posx, Screen.height - posy, longitud, 25);
 			GUI.Box(pos, "");
-			GUI.Label(pos, GUI.tooltip);
+			GUI.Label(pos, GUI.tooltip);					
 		}
 	}
 	

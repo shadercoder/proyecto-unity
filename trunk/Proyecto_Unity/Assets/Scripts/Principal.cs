@@ -118,7 +118,6 @@ public class Principal : MonoBehaviour {
        	objetoRoca.AddComponent<MeshCollider>();
         objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Calculando y extruyendo vertices del oceano...");
-//		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
 		MeshFilter Agua = objetoOceano.GetComponent<MeshFilter>();
 		Mesh meshAgua = Agua.mesh;
 		meshAgua = FuncTablero.extruyeVerticesValor(meshAgua, FuncTablero.getNivelAgua(), extrusion, objetoOceano.transform.position);
@@ -365,6 +364,34 @@ public class Principal : MonoBehaviour {
 			materialBiologico = 0;
 			//Desactivar cosas hasta que el número de material biológico sea >= 0 y avisarlo por el bloque de mensajes			
 		}		
+	}
+	
+	public void setEnergiaMax(int nuevo) {
+		if (nuevo >= 0)
+			energiaMax = nuevo;
+		if (energia > energiaMax)
+			energia = energiaMax;
+	}
+	
+	public void setCompBasMax(int nuevo) {
+		if (nuevo >= 0)
+			componentesBasicosMax = nuevo;
+		if (componentesBasicos > componentesBasicosMax)
+			componentesBasicos = componentesBasicosMax;
+	}
+	
+	public void setCompAdvMax(int nuevo) {
+		if (nuevo >= 0)
+			componentesAvanzadosMax = nuevo;
+		if (componentesAvanzados > componentesAvanzadosMax)
+			componentesAvanzados = componentesAvanzadosMax;
+	}
+	
+	public void setMatBioMax(int nuevo) {
+		if (nuevo >= 0)
+			materialBiologicoMax = nuevo;
+		if (materialBiologico > materialBiologicoMax)
+			materialBiologico = materialBiologicoMax;
 	}
 	
 	public void rellenaContenedor(ref ValoresCarga contenedor) {
