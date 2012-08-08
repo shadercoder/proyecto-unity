@@ -435,7 +435,7 @@ public class Vida
 	//Devuelve true si ha comido y false si no
 	public bool buscaAlimentoAnimal(Animal animal)
 	{
-		int vision = animal.especie.vision;
+//		int vision = animal.especie.vision;
 		int velocidad = animal.especie.velocidad;
 		if(animal.especie.tipo == tipoAlimentacionAnimal.carnivoro)
 		{
@@ -575,7 +575,11 @@ public class Vida
 			}	
 			else if(ser is Edificio)
 			{
-				edificio = (Edificio)ser;				
+				edificio = (Edificio)ser;
+				//Esto es para que no salga el warning
+				int temporal = edificio.radioAccion;
+				edificio.radioAccion = temporal;
+				//------------------------------------
 			}
 		}
 		contadorPintarTexturaPlantas++;
