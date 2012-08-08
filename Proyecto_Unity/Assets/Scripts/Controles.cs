@@ -3,36 +3,43 @@ using System.Collections;
 
 public class Controles : MonoBehaviour {
 	
-	//Variables usadas por velocidad (caché)
-	private Transform miTransform;				//Cache de la posicion de la cámara
+	//Variables usadas por velocidad (caché) -------------------------
+	private Transform miTransform;							//Cache de la posicion de la cámara
+	private Vector3 poloNorteOrbita;						//El punto proyectado a partir del polo norte que choca con la orbita actual 
+	private Vector3 poloSurOrbita;							//El punto proyectado a partir del polo sur que choca con la orbita actual 
 	
-	//Variables públicas (editables desde la vista del editor)
+	//Variables públicas (editables desde la vista del editor) --------
 	public Transform objetivo;								//El objetivo sobre el que se mueve la nave
 	public Transform nave;									//La nave sobre la que rota la vista
-	public float tiempoSuavizado 	= 0.4f;					//El tiempo que tarda el suavizado en llevarse a cabo
+		//Para controlar las mejoras
+	public float velocidadX			= 0.3f;					//Controla la velocidad con la que se mueve horizontalmente
+	public float velocidadY			= 0.4f;					//Controla la velocidad con la que se mueve verticalmente
+	public float distMinPolos		= 1.0f;					//La distancia minima hasta los polos
+	public float distCamaraMax		= 6.0f;					//La maxima distancia a la que estara la camara de la nave
 	
+	/*
+	 * Despues de experimentar con estos valores un poco, creo que un buen comienzo (el inicio del juego)
+	 * seria el siguiente:
+	 	* velocidadX = 0.1f;
+	 	* velocidadY = 0.2f;
+	 	* distMinPolos = 5.0f;
+	 	* distCamaraMax = 2.0f;
+	 */
+	
+	//Variables privadas ----------------------------------------------
 	//Posición y rotación objetivos
-	private float xNave				= 0.0f;					//Posicion objetivo de la x respecto a la nave
-	private float yNave				= 0.0f;					//Posicion objetivo de la y respecto a la nave
 	private float xObjetivo			= 0.0f;					//Posicion objetivo de la x respecto al objetivo
 	private float yObjetivo			= 0.0f;					//Posicion objetivo de la y respecto al objetivo
 	
+	private float distOrbitaTemp;							//Usado solamente para subir de orbita o bajar
+	
 	//Posición y rotacion actuales
-	private float distanciaNave		= 5.0f;					//La distancia hasta la nave desde la camara
-	private float distanciaObjetivo = 7.0f;					//La distancia entre la nave y el objetivo
-	private int distanciaMin		= 1;					//La minima distancia a la que estara la camara
-	private int distanciaMax		= 30;					//La maxima distancia a la que estara la camara
+	private float distanciaNave		= 1.5f;					//La distancia hasta la nave desde la camara
+	private float distCamaraMin		= 1.0f;					//La minima distancia a la que estara la camara
 	
 	private Quaternion rotCamara	= Quaternion.identity;	//Sirve para conservar la rotación de la nave correctamente
 	
-	//Suavizado del movimiento
-	private float velocidadX 		= 0.0f;					//Es cambiada por el método SmoothDamp de forma dinámica
-	private float velocidadY 		= 0.0f;					//Es cambiada por el método SmoothDamp de forma dinámica
-	private float xSuave 			= 0.0f;					//Dicta el movimiento con una trayectoria suavizada
-	private float ySuave 			= 0.0f;					//Dicta el movimiento con una trayectoria suavizada
-	public float velocidadMax		= 25.0f;				//La velocidad máxima a la que puede moverse la nave
-	
-	//Variables privadas y estados
+	//Estados
 	private bool interaccion		= true;					//Dicta si la interacción está activada o desactivada
 	
 	
@@ -40,63 +47,41 @@ public class Controles : MonoBehaviour {
 	void Start () {
 		miTransform = transform;
 	    Vector3 angulos = miTransform.eulerAngles;
-	    xNave = angulos.y;
-	    yNave = angulos.x;
 		xObjetivo = angulos.y;
 		yObjetivo = angulos.x;
-		xSuave = xNave;
-		ySuave = yNave;
+		setOrbita(6.5f);
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
 		
-//		Quaternion rotacionObjeto = miTransform.rotation;
-		Quaternion rotacionNave;
-		
 		if (!interaccion)
 			return;
 		
 		//Eje horizontal -----------------------------------------------------------------------------------------------------------------
-		//Con esto conseguimos que cuando soltemos el boton haga el suavizado y pare, no siga
-		float xNaveTemp = xNave; 					
-		xNaveTemp += Input.GetAxis("Horizontal");
-		if (Mathf.Abs(xNaveTemp - xSuave) < (velocidadMax * tiempoSuavizado * 1.2f))
-			xNave = xNaveTemp;
+		float xNaveTemp = 0;
+		//Ecuación de la circunferencia
+		xNaveTemp += Input.GetAxis("Horizontal") * velocidadX;
+		if (xNaveTemp != 0) {
+			nave.RotateAround(objetivo.position, nave.up, xNaveTemp);
+		}
 		
-		//Seguridad para que no siga avanzando cuando soltemos
-		if ((Input.GetAxis("Horizontal") == 0.0f) && (Mathf.Abs(xNaveTemp - xSuave) > (velocidadMax * tiempoSuavizado * 1.2f))) {
-			if (xNaveTemp > xSuave)
-				xNave = xSuave + velocidadMax * tiempoSuavizado * 1.2f;
-			else
-				xNave = xSuave - velocidadMax * tiempoSuavizado * 1.2f;
-		}// ------------------------------------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------------------------
 		
 		//Eje vertical -------------------------------------------------------------------------------------------------------------------
 		//Con esto conseguimos que cuando soltemos el boton haga el suavizado y pare, no siga
-		float yNaveTemp = yNave;
-		yNaveTemp += Input.GetAxis("Vertical");
-		if (Mathf.Abs(yNaveTemp - ySuave) < (velocidadMax * tiempoSuavizado * 1.2f))
-			yNave = yNaveTemp;
+		float yNaveTemp = 0;
+		yNaveTemp += Input.GetAxis("Vertical") * velocidadY;
+		if (yNaveTemp != 0) {
+			if (Vector3.Distance(nave.position, poloSurOrbita) > distMinPolos && Vector3.Distance(nave.position, poloNorteOrbita) > distMinPolos)
+				nave.RotateAround(objetivo.position, nave.right, yNaveTemp);
+			else if((Vector3.Distance(nave.position, poloSurOrbita) <= distMinPolos && yNaveTemp > 0) || (Vector3.Distance(nave.position, poloNorteOrbita) <= distMinPolos && yNaveTemp < 0))
+				nave.RotateAround(objetivo.position, nave.right, yNaveTemp);
+		}
 		
-		//Seguridad para que no siga avanzando cuando soltemos
-		if ((Input.GetAxis("Vertical") == 0.0f) && (Mathf.Abs(yNaveTemp - ySuave) > (velocidadMax * tiempoSuavizado * 1.2f))) {
-			if (yNaveTemp > ySuave)
-				yNave = ySuave + velocidadMax * tiempoSuavizado * 1.2f;
-			else
-				yNave = ySuave - velocidadMax * tiempoSuavizado * 1.2f;
-		}// ------------------------------------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------------------------
 		
-		//Y con esto suavizamos el movimiento con respecto a un máximo.
-		xSuave = Mathf.SmoothDamp(xSuave, xNave, ref velocidadX, tiempoSuavizado, velocidadMax);
-		ySuave = Mathf.SmoothDamp(ySuave, yNave, ref velocidadY, tiempoSuavizado, velocidadMax);
-		ySuave = anguloSeguro(ySuave);
-		xSuave = anguloSeguro(xSuave);
 		
-		//Obtenemos la rotación...
-		rotacionNave = Quaternion.Euler(ySuave, xSuave, 0);
-		//Y calculamos la posición a raiz de esta
-		nave.position = rotacionNave * new Vector3(0.0f, 0.0f, -distanciaObjetivo) + objetivo.position;
 		//Rotar la nave para que vaya moviéndose en la dirección
 		//en la que avanza.
 		nave.LookAt(objetivo.position);
@@ -108,13 +93,13 @@ public class Controles : MonoBehaviour {
 		}
 		
 		if (Input.GetAxis("Mouse ScrollWheel") != 0) {
-		    if (distanciaNave >= distanciaMin && distanciaNave <= distanciaMax){
+		    if (distanciaNave >= distCamaraMin && distanciaNave <= distCamaraMax){
 				distanciaNave -= Input.GetAxis("Mouse ScrollWheel");		
-				if (distanciaNave < distanciaMin) {
-					distanciaNave = distanciaMin;
+				if (distanciaNave < distCamaraMin) {
+					distanciaNave = distCamaraMin;
 				}
-			    if (distanciaNave > distanciaMax) {
-					distanciaNave = distanciaMax;
+			    if (distanciaNave > distCamaraMax) {
+					distanciaNave = distCamaraMax;
 				}
 		   	}
 	   	}
@@ -124,18 +109,29 @@ public class Controles : MonoBehaviour {
 		miTransform.position = rotCamara * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
 	}
 	
-	public static float anguloSeguro(float angulo) {
-	    float ang = angulo;
-		while (ang < -360) {
-	        ang += 360;
-		}
-	    while (ang >= 360) {
-	        ang -= 360;
-		}
-		return ang;
+	public void setOrbita(float distancia) {
+		nave.position = nave.rotation * new Vector3(0.0f, 0.0f, -distancia) + objetivo.position;
+		float dist = Vector3.Distance(nave.position, objetivo.position);
+		poloNorteOrbita = Vector3.up * dist + objetivo.position;
+		poloSurOrbita = Vector3.up * (-dist) + objetivo.position;
 	}
 	
 	public void setInteraccion(bool bol) {
 		interaccion = bol;
+	}
+	
+	public void mejoraVelocidad1() {
+		velocidadX = 0.4f;
+		velocidadY = 0.5f;
+	}
+	
+	public void mejoraVelocidad2() {
+		velocidadX = 0.8f;
+		velocidadY = 1.0f;
+	}
+	
+	public void mejoraSubirOrbita() {
+		setOrbita(8.5f);
+		distMinPolos = 1.0f;
 	}
 }
