@@ -42,10 +42,16 @@ public class Controles : MonoBehaviour {
 	//Estados
 	private bool interaccion		= true;					//Dicta si la interacción está activada o desactivada
 	
+	//Suavizado de la mejora de subir orbita
+	private bool subiendoOrbita		= false;				//Se utiliza para animar la subida de orbita
+	private bool orbitaNivel1		= false;				//Cuando se alcanza la orbita de nivel 1 se activa
+	private float orbitando			= 0.0f;					//Va de 0 a 1 para ir interpolando la altura de orbita
+	private float tiempoIniOrbita	= 0.0f;					//El momento exacto en el que se llama a la funcion
+	
 	
 	// Use this for initialization
 	void Start () {
-		miTransform = transform;
+		miTransform = this.transform;
 	    Vector3 angulos = miTransform.eulerAngles;
 		xObjetivo = angulos.y;
 		yObjetivo = angulos.x;
@@ -87,9 +93,12 @@ public class Controles : MonoBehaviour {
 		nave.LookAt(objetivo.position);
 		//Si se pulsa el botón derecho del ratón, se rota en torno a la nave
 		if (Input.GetMouseButton(1)) {
+			xObjetivo = miTransform.rotation.eulerAngles.y;
+			yObjetivo = miTransform.rotation.eulerAngles.x;
 			xObjetivo += Input.GetAxis("Mouse X");
 		    yObjetivo += Input.GetAxis("Mouse Y");
 			rotCamara = Quaternion.Euler(yObjetivo, xObjetivo, 0);
+			miTransform.rotation = rotCamara;
 		}
 		
 		if (Input.GetAxis("Mouse ScrollWheel") != 0) {
@@ -105,8 +114,18 @@ public class Controles : MonoBehaviour {
 	   	}
 		
 		//Se aplica la rotación y la posición de la cámara respecto a la nave.
-		miTransform.rotation = rotCamara;
-		miTransform.position = rotCamara * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
+		miTransform.position = miTransform.rotation * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
+		
+		//Si se ha comprado la mejora de la orbita mas alta, aplica el cambio suavemente
+		if (subiendoOrbita) {
+			orbitando = Mathf.Lerp(0.0f, 1.0f, (Time.realtimeSinceStartup - tiempoIniOrbita) / 3.0f);
+			float temp = Mathf.Lerp(6.5f, 8.5f, orbitando);
+			setOrbita(temp);
+			if (orbitando == 1.0f) {
+				subiendoOrbita = false;
+				orbitaNivel1 = true;
+			}
+		}
 	}
 	
 	public void setOrbita(float distancia) {
@@ -131,7 +150,9 @@ public class Controles : MonoBehaviour {
 	}
 	
 	public void mejoraSubirOrbita() {
-		setOrbita(8.5f);
-		distMinPolos = 1.0f;
+		if (!orbitaNivel1 && !subiendoOrbita) {
+			subiendoOrbita = true;
+			tiempoIniOrbita = Time.realtimeSinceStartup;
+		}
 	}
 }

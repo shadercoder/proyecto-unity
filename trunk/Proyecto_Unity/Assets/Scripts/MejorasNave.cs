@@ -9,7 +9,7 @@ public class MejorasNave : MonoBehaviour {
 	public GameObject piezaDos;
 	
 	//Variables de control
-	private bool[] mejorasCompradas;
+	public bool[] mejorasCompradas;
 	
 	
 	void Start() {
@@ -102,8 +102,8 @@ public class MejorasNave : MonoBehaviour {
 	
 	public void compraMejora7() {
 		//Si no tiene la mejora de energia de nivel 1 (mejora 5), no hace nada
-		if (!mejorasCompradas[5])
-			return;
+//		if (!mejorasCompradas[5])
+//			return;
 		Controles temp = Camera.main.gameObject.transform.parent.gameObject.GetComponent<Controles>();
 		temp.mejoraSubirOrbita();
 		mejorasCompradas[6] = true;
