@@ -36,15 +36,14 @@ public class Vida
 	private Transform objetoRoca;
 	//Estructuras
 	public Casilla[,] tablero;										//Tablero lógico que representa las casillas
-	public Dictionary<string, Especie> especies;					//Listado de todas las especies
-	public Dictionary<string, EspecieVegetal> especiesVegetales;	//Listado de todas las especies vegetales
-	public Dictionary<string, EspecieAnimal> especiesAnimales;		//Listado de todas las especies animales
-	public Dictionary<string, TipoEdificio> tiposEdificios;			//Listado de todos los tipos de edificios
+	public List<Especie> especies;									//Listado de todas las especies
+	public List<EspecieVegetal> especiesVegetales;					//Listado de todas las especies vegetales
+	public List<EspecieAnimal> especiesAnimales;					//Listado de todas las especies animales
+	public List<TipoEdificio> tiposEdificios;						//Listado de todos los tipos de edificios
 	public List<Ser> seres;											//Listado de todos los seres
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
-	public List<Edificio> edificios;								//Listado de todos los edificios
-	
+	public List<Edificio> edificios;								//Listado de todos los edificios	
 	
 	public int numEspecies;
 	public int numEspeciesVegetales;
@@ -60,10 +59,10 @@ public class Vida
 	
 	public Vida()
 	{
-		especies = new Dictionary<string, Especie>();
-		especiesVegetales = new Dictionary<string, EspecieVegetal>();
-		especiesAnimales = new Dictionary<string, EspecieAnimal>();
-		tiposEdificios = new Dictionary<string, TipoEdificio>();
+		especies = new List<Especie>();
+		especiesVegetales = new List<EspecieVegetal>();
+		especiesAnimales = new List<EspecieAnimal>();
+		tiposEdificios = new List<TipoEdificio>();
 		seres = new List<Ser>();	
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
@@ -80,10 +79,10 @@ public class Vida
 	public Vida(Casilla[,] tablero, Texture2D texPlantas, Transform objeto)
 	{
 		this.tablero = tablero;
-		especies = new Dictionary<string, Especie>();
-		especiesVegetales = new Dictionary<string, EspecieVegetal>();
-		especiesAnimales = new Dictionary<string, EspecieAnimal>();
-		tiposEdificios = new Dictionary<string, TipoEdificio>();
+		especies = new List<Especie>();
+		especiesVegetales = new List<EspecieVegetal>();
+		especiesAnimales = new List<EspecieAnimal>();
+		tiposEdificios = new List<TipoEdificio>();
 		seres = new List<Ser>();	
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
@@ -101,10 +100,10 @@ public class Vida
 	public Vida(Casilla[,] tablero, Texture2D texPlantas)
 	{
 		this.tablero = tablero;
-		especies = new Dictionary<string, Especie>();
-		especiesVegetales = new Dictionary<string, EspecieVegetal>();
-		especiesAnimales = new Dictionary<string, EspecieAnimal>();
-		tiposEdificios = new Dictionary<string, TipoEdificio>();
+		especies = new List<Especie>();
+		especiesVegetales = new List<EspecieVegetal>();
+		especiesAnimales = new List<EspecieAnimal>();
+		tiposEdificios = new List<TipoEdificio>();
 		seres = new List<Ser>();	
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
@@ -157,8 +156,8 @@ public class Vida
 						arrayPos[j] = tablero[posX,posY].pinceladas[j];
 					}
 					for (int i = tablero[posX,posY].pinceladas.Length; i < temp; i++) {
-						int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()));
-						int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()));
+						int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()+1));
+						int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()+1));
 						Vector2 posTemp = new Vector2(tempX, tempY);
 						arrayPos[i] = posTemp;
 						FuncTablero.pintaPlantas(texturaPlantas, posTemp, veg.especie.idTextura, true);
@@ -179,8 +178,8 @@ public class Vida
 			else {
 				tablero[posX,posY].pinceladas = new Vector2[temp];
 				for (int i = 0; i < temp; i++) {
-					int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()));
-					int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()));
+					int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()+1));
+					int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()+1));
 					tablero[posX,posY].pinceladas[i] = new Vector2(tempX, tempY);
 					FuncTablero.pintaPlantas(texturaPlantas, tablero[posX,posY].pinceladas[i], veg.especie.idTextura, true);
 				}
@@ -209,12 +208,12 @@ public class Vida
 	//Devuelve false si la especie ya existe (no se añade) y true si se añade correctamente
 	public bool anadeEspecieVegetal(EspecieVegetal especie)
 	{		
-		if(especies.ContainsKey(especie.nombre))
+		if(especies.Contains(especie))
 			return false;
 		especie.idEspecie = numEspeciesVegetales;
-		especies.Add(especie.nombre,especie);
+		especies.Add(especie);
 		numEspecies++;
-		especiesVegetales.Add(especie.nombre,especie);
+		especiesVegetales.Add(especie);
 		numEspeciesVegetales++;
 		return true;
 	}
@@ -222,12 +221,12 @@ public class Vida
 	//Devuelve false si la especie ya existe (no se añade) y true si se añade correctamente
 	public bool anadeEspecieAnimal(EspecieAnimal especie)
 	{		
-		if(especies.ContainsKey((string)especie.nombre))
+		if(especies.Contains(especie))
 			return false;
 		especie.idEspecie = numEspeciesAnimales;
-		especies.Add((string)especie.nombre,especie);
+		especies.Add(especie);
 		numEspecies++;
-		especiesAnimales.Add(especie.nombre,especie);
+		especiesAnimales.Add(especie);
 		numEspeciesAnimales++;
 		return true;
 	}
@@ -235,10 +234,10 @@ public class Vida
 	//Devuelve false si la especie ya existe (no se añade) y true si se añade correctamente
 	public bool anadeTipoEdificio(TipoEdificio tipoEdificio)
 	{			
-		if(tiposEdificios.ContainsKey((string)tipoEdificio.nombre))
+		if(tiposEdificios.Contains(tipoEdificio))
 			return false;
 		tipoEdificio.idTipoEdificio = numTiposEdificios;
-		tiposEdificios.Add((string)tipoEdificio.nombre,tipoEdificio);
+		tiposEdificios.Add(tipoEdificio);
 		numTiposEdificios++;
 		return true;
 	}
@@ -246,11 +245,11 @@ public class Vida
 	//Devuelve false si la especie no existe (no se elimina) y true si se elimina correctamente
 	public bool eliminaEspecieVegetal(EspecieVegetal especie)
 	{		
-		if(!especies.ContainsKey(especie.nombre))
+		if(!especies.Contains(especie))
 			return false;
-		especies.Remove(especie.nombre);
+		especies.Remove(especie);
 		numEspecies--;
-		especiesVegetales.Remove(especie.nombre);
+		especiesVegetales.Remove(especie);
 		numEspeciesVegetales--;
 		return true;
 	}
@@ -258,11 +257,11 @@ public class Vida
 	//Devuelve false si la especie no existe (no se elimina) y true si se elimina correctamente
 	public bool eliminaEspecieAnimal(EspecieAnimal especie)
 	{		
-		if(!especies.ContainsKey(especie.nombre))
+		if(!especies.Contains(especie))
 			return false;
-		especies.Remove(especie.nombre);
+		especies.Remove(especie);
 		numEspecies--;
-		especiesAnimales.Remove(especie.nombre);
+		especiesAnimales.Remove(especie);
 		numEspeciesAnimales--;
 		return true;
 	}
@@ -270,28 +269,29 @@ public class Vida
 	//Devuelve false si el edificio no existe (no se elimina) y true si se elimina correctamente
 	public bool eliminaTipoEdificio(TipoEdificio tipoEdificio)
 	{		
-		if(!tiposEdificios.ContainsKey(tipoEdificio.nombre))
+		if(!tiposEdificios.Contains(tipoEdificio))
 			return false;
-		tiposEdificios.Remove(tipoEdificio.nombre);
+		tiposEdificios.Remove(tipoEdificio);
 		numTiposEdificios--;
 		return true;
 	}
 	
-	//Devuelve la especie identificada por nombre
+	/*//Devuelve la especie identificada por nombre
 	public Especie dameEspecie(string nombre)
 	{
 		Especie especie;
+		
 		especies.TryGetValue(nombre,out especie);
 		return especie;			
-	}
+	}*/
 	
-	//Devuelve la especie identificada por nombre
+	/*//Devuelve la especie identificada por nombre
 	public TipoEdificio dameTipoEdificio(string nombre)
 	{
 		TipoEdificio tipoEdificio;
 		tiposEdificios.TryGetValue(nombre,out tipoEdificio);
 		return tipoEdificio;			
-	}
+	}*/
 	
 	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
@@ -319,7 +319,7 @@ public class Vida
 	{
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
-		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,(especie.modelos.Count - 1))];
+		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
@@ -390,8 +390,10 @@ public class Vida
 	//Devuelve true si consigue migrar una especie a una nueva posicion y false si no
 	public bool migraVegetal(EspecieVegetal especie,int posX,int posY,int radio)
 	{
-		int nposX = posX + UnityEngine.Random.Range(-radio,radio);
-		int nposY = posY + UnityEngine.Random.Range(-radio,radio);				
+		int difX = UnityEngine.Random.Range(-radio,radio+1);
+		int difY = UnityEngine.Random.Range(-radio,radio+1);		
+		int nposX = posX + difX;
+		int nposY = posY + difY;				
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);		
 		return anadeVegetal(especie,nposX,nposY);
 	}
@@ -426,8 +428,8 @@ public class Vida
 	//Devuelve true si consigue crear un nuevo animal colindante a la posición de entrada y false si no lo consigue
 	public bool reproduceAnimal(EspecieAnimal especie,int posX,int posY)
 	{
-		int nposX = posX + UnityEngine.Random.Range(-1,1);
-		int nposY = posY + UnityEngine.Random.Range(-1,1);
+		int nposX = posX + UnityEngine.Random.Range(-1,2);
+		int nposY = posY + UnityEngine.Random.Range(-1,2);
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
 		return anadeAnimal(especie,nposX,nposY);
 	}
@@ -516,8 +518,8 @@ public class Vida
 	
 	public bool movimientoAleatorio(Animal animal)
 	{
-		int x = UnityEngine.Random.Range(-1, 1);            
-	    int y = UnityEngine.Random.Range(-1, 1);
+		int x = UnityEngine.Random.Range(-1, 2);            
+	    int y = UnityEngine.Random.Range(-1, 2);
 	    /*      Sacamos la nueva posición en función de la velocidad (numero de posiciones que se puede mover por turno) y la direccion haciendo un random
 	     * entre -1, 0 y 1 de x y de y. La dirección viene dada según lo siguiente:
 	     * arriba                       => x = 0, y = -1
@@ -537,6 +539,7 @@ public class Vida
 						
 	public void algoritmoVida()
 	{
+		UnityEngine.Random.seed = System.DateTime.Now.Millisecond;
 		FuncTablero.randomLista(seres);
 		Ser ser;
 		Vegetal vegetal;
@@ -935,6 +938,7 @@ public class Ser
 	public int idSer;								//Id del ser
 	public int posX;
 	public int posY;
+	public int indiceModelo;
 	public GameObject modelo;
 }
 
@@ -995,14 +999,14 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionLocal()
 	{
-		int r = UnityEngine.Random.Range(0, numVegetales);
+		int r = UnityEngine.Random.Range(0, numVegetales+1);
 		return (r < (especie.capacidadMigracionLocal/100.0f) * numVegetales);
 	}	
 	
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionGlobal()
 	{
-		int r = UnityEngine.Random.Range(0, numVegetales);
+		int r = UnityEngine.Random.Range(0, numVegetales+1);
 		return (r < (especie.capacidadMigracionGlobal/100.0f) * numVegetales);
 	}	
 }

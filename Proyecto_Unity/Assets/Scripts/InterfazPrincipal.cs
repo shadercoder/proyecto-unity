@@ -104,25 +104,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	void OnGUI()
 	{		
 		GUI.skin = estilo;
-		/*[Aris]
-		 * Muevo esta linea al método Start porque no es necesario hacerlo cada poco tiempo (no se modifica
-		 * en ninguna parte y es una variable privada)
-		 * 
-		 * [Marcos]
-		 * Yo supose que sería un puntero y que tendría coste 0, pero vamos ni lo pense al ponerlo, 
-		 * así que lo movemos a start y si vemos que no falla nada pues guay.
-		 * */
 		aspectRatioNumerico = (float)Screen.width/(float)Screen.height;		
-		
-		/*[Aris]
-		 * El calculo del aspect ratio tambien lo moveria al método Start, porque no necesitas que se ejecute
-		 * mas de una vez. Si acaso, poner en el update una condicion de "si el tamaño de la pantalla se modifica..."
-		 * Pero lo dejo aqui de momento, para no molestarte :)
-		 * 
-		 * [Marcos] 
-		 * Hacer esa condición con un if y tal puede que llegue incluso a ser más costoso en tiempo. 
-		 * Y como la mejora (de haberla) sería totalmente ridicula dejamos eso ahí y ya esta.
-		 * */
 		if(aspectRatioNumerico >= 1.69)			//16:9
 		{
 			aspectRatio = taspectRatio.aspectRatio16_9;
@@ -177,7 +159,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		if(GUI.Button(new Rect(cuantoW*5,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 2x"),"BotonVelocidad2"))
 			principal.setEscalaTiempo(2.0f);
 		if(GUI.Button(new Rect(cuantoW*6,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Velocidad 5x"),"BotonVelocidad5"))
-			principal.setEscalaTiempo(5.0f);		
+			principal.setEscalaTiempo(20.0f);		
 		//Energia
 		GUI.Box(new Rect(cuantoW*12,cuantoH*0,cuantoW*2,cuantoH*2),new GUIContent("","Energía"),"IconoEnergia");
 		GUI.Box(new Rect(cuantoW*14,cuantoH*0,cuantoW*7,cuantoH*2),new GUIContent("",principal.energia.ToString()+"/"+principal.energiaMax.ToString()),"BoxEnergia");		
@@ -349,22 +331,13 @@ public class InterfazPrincipal : MonoBehaviour {
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.granja;
-				/* [Aris]
-				 * Yo quitaría esta linea de activar filtro de aqui, porque las granjas no
-				 * necesitan recursos para funcionar, no? 
-				 * 
-				 * [Marcos] 
-				 * La puse en su momento para activar los recursos (xq no estaban activados)
-				 * para ver donde insertar los edificios. En realidad habria que hacer que si no es
-				 * de tipo granja se active. En cualquier caso falta tb ponerle lo del radio de acción.
-				 * */
 					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.fabricaCompBas;
+					elementoInsercion = telementoInsercion.fabricaCompAdv;
 					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
@@ -533,23 +506,6 @@ public class InterfazPrincipal : MonoBehaviour {
 	//Dibuja el bloque de información básica de la casilla a la que estamos apuntando
 	private void bloqueInformacion()
 	{
-		/* [Aris]
-		 * En algunos sitios he visto que haces esto, hacer un switch para conseguir
-		 * la posicion que es un cuantoH justo por encima del final de la pantalla.
-		 * Creo que es más facil conseguirla con esta formula:
-		 	* Screen.Height - CuantoH
-	 	 * Es básicamente lo mismo que lo que haces con el switch y luego poner
-	 	 * cuantoH * posicionBloque.
-	 	 * Es una sugerencia nada mas ;)
-	 	 * 
-	 	 * [Marcos] 
-	 	 * Sólo lo has visto aquí y es así porque el bloque de información tiene
-	 	 * un cuanto de alto y está abajo de todo. Si hacemos lo que tu dices tendríamos 
-	 	 * mayor coste porque habria que hacer:
-	 	 * 		Screen.Height /numCuantos (que depende de cada aspect ratio) - CuantoH
-	 	 * Y en caso de querer poner el bloque en otra parte (por lo que fuera) habría que
-	 	 * cambiar todo.
-		 * */
 		int posicionBloque = 0;
 		switch (aspectRatio)
 		{
@@ -571,15 +527,6 @@ public class InterfazPrincipal : MonoBehaviour {
 	//Dibuja el menu de opciones que contiene Guardar, Opciones de audio, Menu Principal, Salir, Volver
 	private void bloqueMenu()
 	{
-		/* [Aris]
-		 * Aqui tenias tres bloques switch sobre la misma variable, asi que los he combinado en uno solo
-		 * mas que nada porque es una perdida de lineas de codigo para hacer lo mismo...
-		 * Si tienes otras razones, volvemos para atras y fuera. 
-		 * 
-		 * [Marcos]
-		 * Está puesto en 3 switch porque lo hice deprisa y corriendo antes de irme al pueblo. Evidentemente
-		 * con un sólo switch está mucho mejor y te agradezco enormemente la observación.
-		 * */
 		float posicionBloque = 0;
 		float posicionConfirmar = 0;
 		float posicionAudio = 0;
@@ -636,12 +583,7 @@ public class InterfazPrincipal : MonoBehaviour {
 				break;
 			
 			case taccionMenu.mostrarGuardar:
-			/* [Aris]
-			 * Re-escrito. Deberia funcionar ahora, al menos esta parte esta bien escrita.
-			 * Otra cosa será que no funcione la parte de guardar... Pero esto es solo interfaz
-			 * con poca lógica asociada.
-			 * */
-		        GUI.Box(new Rect(cuantoW*30,cuantoH*posicionGuardar,cuantoW*20,cuantoH*16),new GUIContent(""),"BoxGuardar");
+			    GUI.Box(new Rect(cuantoW*30,cuantoH*posicionGuardar,cuantoW*20,cuantoH*16),new GUIContent(""),"BoxGuardar");
 		        posicionScroll = GUI.BeginScrollView(new Rect(cuantoW*30,cuantoH*posicionGuardar,cuantoW*20,cuantoH*14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
 		        if (GUI.Button(new Rect(cuantoW, 0, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) 
 				{
@@ -728,20 +670,6 @@ public class InterfazPrincipal : MonoBehaviour {
 		if(accion == taccion.insertar)
 		{	
 			//pintar modelo en tiempo real y area de efecto si es necesario
-			/* [Aris]
-			 * Recomendación: En vez de sacar el GetMouseButton, creo que es mejor seguir el 
-			 * GetMouseButtonDown(0), de forma que solo tenga en cuenta el click en si mismo, para 
-			 * evitar que la condicion se pueda producir mas de una vez (GetMouseButton se cumple mientras
-			 * siga pulsado, lo que puede ser 0.3 segundos perfectamente y eso en un método que se refresca
-			 * unas 100 veces por segundo o mas... puede dar problemas no? Porque al menos un par pueden
-			 * pasar...
-			 * 
-			 * [Marcos]
-			 * Efectivamente quería poner sólo el de Down y por descuido puse ese. En realidad funciona porque 
-			 * ya hay una lógica que se encarga de hacer que sólo se inserte una vez. Vamos desde que esto está
-			 * funcionando, habremos insertado cientos de cosas y siempre lo ha hecho bien así que creo que 
-			 * funciona perfectamente.
-			 * */
 			if(Input.GetMouseButtonDown(0))
 			{
 				int x = 0;
@@ -751,9 +679,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					int tipo = (int)elementoInsercion - 1;
 					if(tipo >= 0 && tipo < 5)				//Edificio
 					{
-						TipoEdificio[] tipos = new TipoEdificio[principal.vida.tiposEdificios.Count];
-						principal.vida.tiposEdificios.Values.CopyTo(tipos,0);
-						TipoEdificio tedif = tipos[tipo];
+						TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
 						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear)) {							
 							if(principal.vida.anadeEdificio(tedif,y,x,0,0,0,0,10,10,10,10)) {
 								principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear);
@@ -773,9 +699,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					else if(tipo >= 5 && tipo < 15)			//Vegetal
 					{
 						tipo -= 5;
-						Especie[] especies = new Especie[principal.vida.especies.Count];
-						principal.vida.especies.Values.CopyTo(especies,0);						
-						EspecieVegetal especie = (EspecieVegetal)especies[tipo];
+						EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
 						principal.vida.anadeVegetal(especie,y,x);
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;
@@ -783,9 +707,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
 					{
 						tipo -= 5;	
-						Especie[] especies = new Especie[principal.vida.especies.Count];
-						principal.vida.especies.Values.CopyTo(especies,0);
-						EspecieAnimal especie = (EspecieAnimal)especies[tipo];
+						EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
 						principal.vida.anadeAnimal(especie,y,x);
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;
@@ -884,40 +806,6 @@ public class InterfazPrincipal : MonoBehaviour {
 	//Devuelve true si el raton está fuera de la interfaz y por tanto es válido y false si cae dentro de la interfaz dibujada en ese momento
 	public bool posicionFueraDeInterfaz(Vector3 posicionRaton)		
 	{
-		/* [Aris] 
-		 * Esto es solo una sugerencia, pero... sería mucho mas preciso y mas fácil,
-		 * al menos en mi cabeza, que lo hicieras comprobando por zonas de Rect().
-		 * Es la forma que usan en todos los sitios que he mirado y es muy sencilla 
-		 * de hacer porque esos Rect ya tienen que estar creados por ahi... Es tan facil
-		 * como crear unos rectangulos Rect que representen los bloques que hay activos
-		 * de la interfaz, y llevar una variable booleana que nos diga si el cursor
-		 * se encuentra dentro de alguno de ellos. Para comprobarlo, basta con lanzar la 
-		 * funcion Rect.Contains(Input.mousePosition), o en este caso
-		 * Rect.Contains(posicionRaton). Eso devuelve true si se encuentra dentro.
-		 * 
-		 * Te pongo un ejemplo de código por si te animas a hacerlo:
-		 
-		 	bool dentro = false;
-		 	Rect temp = new Rect(0,0,cuantoW*80, cuantoH*4);						//Bloque superior
-		 	if (temp.Contains(posicionRaton))
-		 		dentro = true;
-		 	temp = new Rect(0, Screen.height - cuantoH, cuantoW * 80, cuantoH);		//Barra informacion inferior
-		 	if (temp.Contains(posicionRaton))
-		 		dentro = true;
-		 
-		 * Y así sucesivamente...
-		 * 
-		 * [Marcos]
-		 * Lo más exacto sería eso, tener guardadas todas las rect que he usado y comprobar si está dentro o no.
-		 * Pero como no hay tiempo de sobra pues... así funciona y es lo que importa xDD. Ya lo cambiaré si hay tiempo.
-		 * De todas formas con el ejemplo que tu propones al final es lo mismo. Una cosa es hacerse una lista de todos
-		 * los rect que hay y ver que el puntero NO está contenido en ellos y otra cosaes mirar simplemente si esta 
-		 * contenido dentro de un rect permitido. Lo que hago es lo segundo y es lo mismo comparar con 4 posiciones que 
-		 * con 1 rect, porque por dentro será lo que haga. Vamos que de hacerlo como dices a raiz de lo que hay, sería 
-		 * simplemente hacer un Rect al final con las posiciones que se han hallado antes y usar el contains y es algo 
-		 * que te va a costar más xq estas duplicando los datos para luego hacer la misma comprobación. Porque casi 
-		 * 100% seguro que el contains te hace lo mismo que hago yo xDD.
-		 * */
 		if(accion == taccion.mostrarMenu)
 			return false;
 		float xini,xfin,yini,yfin;		
