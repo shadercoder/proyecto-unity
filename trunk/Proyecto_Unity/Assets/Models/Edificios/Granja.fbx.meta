@@ -1,20 +1,20 @@
 fileFormatVersion: 1
-guid: 1788f4edee5158e4c9639844fd39d382
+guid: 02f89d43c4b49d7449e48d22c323a5dd
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.4
+    scaleFactor: 0.3
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
     swapUVs: 0
   tangentSpace:
-    normalImportMode: 1
+    normalImportMode: 0
     tangentImportMode: 1
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
@@ -30,5 +30,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Cone
-    4300002: FabCompAdv
+    4300000: Cylinder
