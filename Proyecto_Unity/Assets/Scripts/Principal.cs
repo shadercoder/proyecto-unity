@@ -177,6 +177,7 @@ public class Principal : MonoBehaviour {
 		objetoRoca.renderer.sharedMaterials[1].SetTexture("_FiltroTex", texHabitats);
 		Debug.Log (FuncTablero.formateaTiempo() + ": Cargando la vida...");
 		vida = new Vida(contenedor.vida);
+		vida.setObjetoRoca(objetoRoca.transform);
 		Debug.Log (FuncTablero.formateaTiempo() + ": Carga completada.");
 	}
 	

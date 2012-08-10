@@ -55,7 +55,7 @@ public class Vida
 	public int idActualEdificio;
 	
 	public int contadorPintarTexturaPlantas = 0;
-	private bool texturaPlantasModificado = false;
+	public bool texturaPlantasModificado = false;
 	
 	public Vida()
 	{

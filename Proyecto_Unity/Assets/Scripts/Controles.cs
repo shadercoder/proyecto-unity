@@ -112,9 +112,17 @@ public class Controles : MonoBehaviour {
 				}
 		   	}
 	   	}
-		
+				
 		//Se aplica la rotación y la posición de la cámara respecto a la nave.
 		miTransform.position = miTransform.rotation * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
+		
+		//Centrar la camara si se pulsa la tecla "C"
+		if (Input.GetKeyDown(KeyCode.C)) {
+			Vector3 posTemp = objetivo.position - nave.position;
+			Quaternion rotTemp = Quaternion.LookRotation(posTemp, Vector3.up);
+			miTransform.rotation = rotTemp;
+			miTransform.position = rotTemp * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
+		}
 		
 		//Si se ha comprado la mejora de la orbita mas alta, aplica el cambio suavemente
 		if (subiendoOrbita) {
