@@ -1101,6 +1101,10 @@ public class FuncTablero {
 		perlin = new Perlin();
 	}
 	
+	public static void quitaPerlin() {
+		perlin = null;
+	}
+	
 	//Ordena aleatoriamente una lista
 	public static void randomLista<T>(IList<T> lista)
 	{
