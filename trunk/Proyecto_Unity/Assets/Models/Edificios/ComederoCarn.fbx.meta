@@ -1,9 +1,9 @@
 fileFormatVersion: 1
-guid: 02f89d43c4b49d7449e48d22c323a5dd
+guid: 3a3dee5fb6dec984bae4af68a48cf4a5
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.7
+    scaleFactor: 0.5
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
@@ -30,5 +30,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Cylinder
-    4300002: FCA
+    4300000: ComederoCarn

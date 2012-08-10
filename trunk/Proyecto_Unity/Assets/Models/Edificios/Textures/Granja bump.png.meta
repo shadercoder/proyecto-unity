@@ -20,7 +20,7 @@ TextureImporter:
   bumpmap:
     generation: 1
     external: 1
-    bumpyness: 0.25
+    bumpyness: 0.1
     filter: 0
   textureSettings:
     filterMode: -1
