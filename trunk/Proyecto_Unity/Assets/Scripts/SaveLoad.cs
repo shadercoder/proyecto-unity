@@ -53,25 +53,29 @@ public class SaveData {
 [System.Serializable]
 public class VidaSerializable {
 
+//	public Texture2D texturaPlantas;
+//	private Transform objetoRoca;
 	public CasillaSerializable[,] tablero;
-	//FIXME Falta todo esto...
-//	public Dictionary<string, Especie> especies;
-//	public Dictionary<string, EspecieVegetal> especiesVegetales;
-//	public Dictionary<string, EspecieAnimal> especiesAnimales;
-//	public Dictionary<string, TipoEdificio> tiposEdificios;
-//	public List<Ser> seres;
-//	public List<Vegetal> vegetales;
-//	public List<Animal> animales;
-//	public List<Edificio> edificios;
-	//Hasta aqui hay que hacer aun
+	public List<EspecieSerializable> especies;
+	public List<EspecieVegetalSerializable> especiesVegetales;
+	public List<EspecieAnimalSerializable> especiesAnimales;
+	public List<TipoEdificioSerializable> tiposEdificios;
+	public List<SerSerializable> seres;
+	public List<VegetalSerializable> vegetales;
+	public List<AnimalSerializable> animales;
+	public List<EdificioSerializable> edificios;
+	
 	public int numEspecies;
 	public int numEspeciesVegetales;
 	public int numEspeciesAnimales;
-	public int numTiposEdificios;	
+	public int numTiposEdificios;
+	
 	public int idActualVegetal;
 	public int idActualAnimal;
-	public int idActualEdificio;	
+	public int idActualEdificio;
+	
 	public int contadorPintarTexturaPlantas;
+	public bool texturaPlantasModificado;
 	
 	public VidaSerializable() {}
 }
@@ -93,6 +97,31 @@ public class CasillaSerializable {
 	public float[] pinceladas;
 	
 	public CasillaSerializable() {}
+}
+
+//Clase contenedora de la información de la clase Especie ----------------------------------------------------------------------------------
+[System.Serializable]
+public class EspecieSerializable {
+
+	public int idEspecie;
+	public string nombre;
+	public List<T_habitats> habitats;
+	public int[] modelos;
+	
+	public EspecieSerializable() {}
+}
+
+//Clase contenedora de la información de la clase Ser ----------------------------------------------------------------------------------
+[System.Serializable]
+public class SerSerializable {
+
+	public int idSer;
+	public int posX;
+	public int posY;
+	public int indiceModelo;
+	public int modelo;
+	
+	public SerSerializable() {}
 }
 
 //Clase contenedora de la información de la clase Vegetal ----------------------------------------------------------------------------------
@@ -443,6 +472,7 @@ public class SaveLoad {
 		contenedor.texturaHabsEstetica = temp5;
 		//Clase Vida
 		rehacerVida(ref contenedor.vida, save.vidaData);
+		contenedor.vida.texturaPlantas = temp3;
 		//Mesh Roca
 		Mesh temp6 = new Mesh();
 		Vector3[] temp6v = new Vector3[save.rocaVertices.Length / 3];
@@ -506,14 +536,38 @@ public class SaveLoad {
 	 */
 	private static void generarVidaSerializable(Vida vida, ref VidaSerializable vidaSerializable) {
 		vidaSerializable = new VidaSerializable();
-//		vidaSerializable.seres = vida.seres;
-//		vidaSerializable.animales = vida.animales;
-//		vidaSerializable.vegetales = vida.vegetales;
-//		vidaSerializable.edificios = vida.edificios;
-//		vidaSerializable.especies = vida.especies;
-//		vidaSerializable.tiposEdificios = vida.tiposEdificios;
-//		vidaSerializable.especiesAnimales = vida.especiesAnimales;
-//		vidaSerializable.especiesVegetales = vida.especiesVegetales;
+		vidaSerializable.animales = new List<AnimalSerializable>();
+		for (int i = 0; i < vida.animales.Count; i++) {
+			vidaSerializable.animales.Add(getAnimalSerializable(vida.animales[i]));
+		}
+		vidaSerializable.vegetales = new List<VegetalSerializable>();
+		for (int i = 0; i < vida.vegetales.Count; i++) {
+			vidaSerializable.vegetales.Add(getVegetalSerializable(vida.vegetales[i]));
+		}
+		vidaSerializable.edificios = new List<EdificioSerializable>();
+		for (int i = 0; i < vida.edificios.Count; i++) {
+			vidaSerializable.edificios.Add(getEdificioSerializable(vida.edificios[i]));
+		}
+		vidaSerializable.seres = new List<SerSerializable>();
+		for (int i = 0; i < vida.seres.Count; i++) {
+			vidaSerializable.seres.Add(getSerSerializable(vida.seres[i]));
+		}
+		vidaSerializable.especies = new List<EspecieSerializable>();
+		for (int i = 0; i < vida.especies.Count; i++) {
+			vidaSerializable.especies.Add(getEspecieSerializable(vida.especies[i]));
+		}
+		vidaSerializable.especiesAnimales = new List<EspecieAnimalSerializable>();
+		for (int i = 0; i < vida.especiesAnimales.Count; i++) {
+			vidaSerializable.especiesAnimales.Add(getEspecieAniSerializable(vida.especiesAnimales[i]));
+		}
+		vidaSerializable.especiesVegetales = new List<EspecieVegetalSerializable>();
+		for (int i = 0; i < vida.especiesVegetales.Count; i++) {
+			vidaSerializable.especiesVegetales.Add(getEspecieVegSerializable(vida.especiesVegetales[i]));
+		}
+		vidaSerializable.tiposEdificios = new List<TipoEdificioSerializable>();
+		for (int i = 0; i < vida.tiposEdificios.Count; i++) {
+			vidaSerializable.tiposEdificios.Add(getTipoEdifSerializable(vida.tiposEdificios[i]));
+		}
 		vidaSerializable.contadorPintarTexturaPlantas = vida.contadorPintarTexturaPlantas;
 		vidaSerializable.idActualAnimal = vida.idActualAnimal;
 		vidaSerializable.idActualEdificio = vida.idActualEdificio;
@@ -522,6 +576,7 @@ public class SaveLoad {
 		vidaSerializable.numEspeciesAnimales = vida.numEspeciesAnimales;
 		vidaSerializable.numEspeciesVegetales = vida.numEspeciesVegetales;
 		vidaSerializable.numTiposEdificios = vida.numTiposEdificios;
+		vidaSerializable.texturaPlantasModificado = vida.texturaPlantasModificado;
 		generarTableroSerializable(vida.tablero, ref vidaSerializable.tablero);
 
 	}
@@ -530,14 +585,38 @@ public class SaveLoad {
 	 * unos datos serializables.
 	 */
 	private static void rehacerVida(ref Vida vida, VidaSerializable vidaSerializable) {
-//		vida.animales = vidaSerializable.animales;
-//		vida.edificios = vidaSerializable.edificios;
-//		vida.especies = vidaSerializable.especies;
-//		vida.especiesAnimales = vidaSerializable.especiesAnimales;
-//		vida.especiesVegetales = vidaSerializable.especiesVegetales;
-//		vida.tiposEdificios = vidaSerializable.tiposEdificios;
-//		vida.vegetales = vidaSerializable.vegetales;
-//		vida.seres = vidaSerializable.seres;
+		vida.animales = new List<Animal>();
+		for (int i = 0; i < vidaSerializable.animales.Count; i++) {
+			vida.animales.Add(getAnimalNoSerializable(vidaSerializable.animales[i]));
+		}
+		vida.vegetales = new List<Vegetal>();
+		for (int i = 0; i < vidaSerializable.vegetales.Count; i++) {
+			vida.vegetales.Add(getVegetalNoSerializable(vidaSerializable.vegetales[i]));
+		}
+		vida.edificios = new List<Edificio>();
+		for (int i = 0; i < vidaSerializable.edificios.Count; i++) {
+			vida.edificios.Add(getEdificioNoSerializable(vidaSerializable.edificios[i]));
+		}
+		vida.seres = new List<Ser>();
+		for (int i = 0; i < vidaSerializable.seres.Count; i++) {
+			vida.seres.Add(getSerNoSerializable(vidaSerializable.seres[i]));
+		}
+		vida.especies = new List<Especie>();
+		for (int i = 0; i < vidaSerializable.especies.Count; i++) {
+			vida.especies.Add(getEspecieNoSerializable(vidaSerializable.especies[i]));
+		}
+		vida.especiesAnimales = new List<EspecieAnimal>();
+		for (int i = 0; i < vidaSerializable.especiesAnimales.Count; i++) {
+			vida.especiesAnimales.Add(getEspecieAniNoSerializable(vidaSerializable.especiesAnimales[i]));
+		}
+		vida.especiesVegetales = new List<EspecieVegetal>();
+		for (int i = 0; i < vidaSerializable.especiesVegetales.Count; i++) {
+			vida.especiesVegetales.Add(getEspecieVegNoSerializable(vidaSerializable.especiesVegetales[i]));
+		}
+		vida.tiposEdificios = new List<TipoEdificio>();
+		for (int i = 0; i < vidaSerializable.tiposEdificios.Count; i++) {
+			vida.tiposEdificios.Add(getTipoEdifNoSerializable(vidaSerializable.tiposEdificios[i]));
+		}
 		vida.contadorPintarTexturaPlantas = vidaSerializable.contadorPintarTexturaPlantas;
 		vida.idActualAnimal = vidaSerializable.idActualAnimal;
 		vida.idActualEdificio = vidaSerializable.idActualEdificio;
@@ -546,6 +625,7 @@ public class SaveLoad {
 		vida.numEspeciesAnimales = vidaSerializable.numEspeciesAnimales;
 		vida.numEspeciesVegetales = vidaSerializable.numEspeciesVegetales;
 		vida.numTiposEdificios = vidaSerializable.numTiposEdificios;
+		vida.texturaPlantasModificado = vidaSerializable.texturaPlantasModificado;
 		rehacerTablero(vidaSerializable.tablero, ref vida.tablero);
 
 	}
@@ -596,25 +676,48 @@ public class SaveLoad {
 		for (int i = 0; i < tablero.GetLength(0); i++) {
 			for (int j = 0; j < tablero.GetLength(1); j++) {			
 				Casilla temp = new Casilla();
-				temp.animal = getAnimalNoSerializable(tableroSerializable[i,j].animal);
+				if (tableroSerializable[i,j].animal != null)
+					temp.animal = getAnimalNoSerializable(tableroSerializable[i,j].animal);
 				Vector2 vect = new Vector2(tableroSerializable[i,j].coordsTexX, tableroSerializable[i,j].coordsTexY);
 				temp.coordsTex = vect;
 				Vector3 vect3 = new Vector3(tableroSerializable[i,j].coordsVertX, tableroSerializable[i,j].coordsVertY, tableroSerializable[i,j].coordsVertZ);
 				temp.coordsVert = vect3;
-				temp.edificio = getEdificioNoSerializable(tableroSerializable[i,j].edificio);
+				if (tableroSerializable[i,j].edificio != null)
+					temp.edificio = getEdificioNoSerializable(tableroSerializable[i,j].edificio);
 				temp.elementos = tableroSerializable[i,j].elementos;
 				temp.habitat = tableroSerializable[i,j].habitat;
-				if (tablero[i,j].pinceladas != null) {
-					temp.pinceladas = new Vector2[tablero[i,j].pinceladas.Length / 2];
-					for (int k = 0; k < tablero[i,j].pinceladas.Length; k++) {
+				if (tableroSerializable[i,j].pinceladas != null) {
+					temp.pinceladas = new Vector2[tableroSerializable[i,j].pinceladas.Length / 2];
+					for (int k = 0; k < tableroSerializable[i,j].pinceladas.Length; k++) {
 						Vector2 vect2 = new Vector2(tableroSerializable[i,j].pinceladas[k * 2], tableroSerializable[i,j].pinceladas[k * 2 + 1]);
 						temp.pinceladas[k] = vect2;
 					}
 				}
-				temp.vegetal = getVegetalNoSerializable(tableroSerializable[i,j].vegetal);
+				if (tableroSerializable[i,j].vegetal != null)
+					temp.vegetal = getVegetalNoSerializable(tableroSerializable[i,j].vegetal);
 				tablero[i,j] = temp;
 			}
 		}
+	}
+	
+	private static SerSerializable getSerSerializable(Ser ser) {
+		SerSerializable resultado = new SerSerializable();
+		resultado.idSer = ser.idSer;
+		resultado.indiceModelo = ser.indiceModelo;
+		resultado.posX = ser.posX;
+		resultado.posY = ser.posY;
+//		resultado.modelo = getModeloSerializable();
+		return resultado;
+	}
+	
+	private static Ser getSerNoSerializable(SerSerializable ser) {
+		Ser resultado = new Ser();
+		resultado.idSer = ser.idSer;
+		resultado.indiceModelo = ser.indiceModelo;
+//		resultado.modelo = getModeloNoSerializable(ser.modelo);
+		resultado.posX = ser.posX;
+		resultado.posY = ser.posY;
+		return resultado;
 	}
 	
 	private static VegetalSerializable getVegetalSerializable(Vegetal veg) {
@@ -698,6 +801,36 @@ public class SaveLoad {
 		return new Edificio(idSer, tipoEdif, posX, posY, eneCons, compBaCons, compAvCons, matBioCons, eneProd, compBaProd, compAvProd, matBioProd, modelo);
 	}
 	
+	private static EspecieSerializable getEspecieSerializable(Especie esp) {
+		EspecieSerializable resultado = new EspecieSerializable();
+		resultado.idEspecie = esp.idEspecie;
+		resultado.nombre = esp.nombre;
+		resultado.habitats = new List<T_habitats>();
+		for (int i = 0; i < esp.habitats.Count; i++) {
+			resultado.habitats.Add(esp.habitats[i]);
+		}
+		resultado.modelos = new int[esp.modelos.Count];
+		for (int i = 0; i < esp.modelos.Count; i++) {
+			resultado.modelos[i] = getModeloSerializable(esp);
+		}
+		return resultado;
+	}
+	
+	private static Especie getEspecieNoSerializable(EspecieSerializable esp) {
+		Especie resultado = new Especie();
+		resultado.idEspecie = esp.idEspecie;
+		resultado.nombre = esp.nombre;
+		resultado.habitats = new List<T_habitats>();
+		for (int i = 0; i < esp.habitats.Count; i++) {
+			resultado.habitats.Add(esp.habitats[i]);
+		}
+		resultado.modelos = new List<GameObject>();
+		for (int i = 0; i < esp.modelos.Length; i++) {
+			resultado.modelos.Add(getModeloNoSerializable(esp.modelos[i]));
+		}
+		return resultado;
+	}
+	
 	private static EspecieVegetal getEspecieVegNoSerializable(EspecieVegetalSerializable veg) {
 		string nombre = veg.nombre;
 		int numMaxVegetales = veg.numMaxVegetales;
@@ -760,6 +893,7 @@ public class SaveLoad {
 		resultado.reproductibilidad = ani.reproductibilidad;
 		resultado.tipo = ani.tipo;
 		resultado.habitats = ani.habitats;
+		resultado.modelos = new int[ani.modelos.Count];
 		for (int i = 0; i < ani.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(ani);
 		}
@@ -789,6 +923,7 @@ public class SaveLoad {
 		resultado.compAvzConsumidosAlCrear = edi.compAvzConsumidosAlCrear;
 		resultado.matBioConsumidoAlCrear = edi.matBioConsumidoAlCrear;
 		resultado.elemNecesarioAlConstruir = edi.elemNecesarioAlConstruir;
+		resultado.modelos = new int[edi.modelos.Count];
 		for (int i = 0; i < edi.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(edi);
 		}
@@ -858,7 +993,7 @@ public class SaveLoad {
 			return GameObject.Instantiate(modelosVegetales.pinosAltos[UnityEngine.Random.Range(0,4)]) as GameObject;
 		default:
 			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializable(int) no es valida! Num = " + referencia.ToString());
-			return null;
+			return GameObject.CreatePrimitive(PrimitiveType.Cube);
 		}
 	}
 	
@@ -907,7 +1042,7 @@ public class SaveLoad {
 			return 23;
 		if (nombre == "Pino Alto")
 			return 24;
-		Debug.LogError("La especie introducida en getModeloSerializable(Especie) no es valida!");
+		Debug.LogError("La especie introducida en getModeloSerializable(Especie) no es valida! Nombre: " + nombre + " Especie: " + esp.ToString());
 		return -1;
 	}
 	
@@ -923,7 +1058,7 @@ public class SaveLoad {
 			return 3;
 		if (nombre == "Central de energía avanzada")
 			return 4;
-		Debug.LogError("El tipo de edificio introducido en getModeloSerializable(TipoEdificio) no es valido!");
+		Debug.LogError("El tipo de edificio introducido en getModeloSerializable(TipoEdificio) no es valido! Nombre: " + nombre + " Tipo: " + tipo.ToString());
 		return -1;
 	}
 	

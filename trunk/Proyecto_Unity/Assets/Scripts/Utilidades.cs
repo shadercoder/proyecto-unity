@@ -1192,5 +1192,20 @@ public class FuncTablero {
 		int fraction = (tiempo * 100) % 100;
 		result = System.String.Format ("{0:00}:{1:00}:{2:00}", minutes, seconds, fraction);
 		return result;
-	} 
+	}
+	
+	public static string formateaFechaPasos (int num)
+	{
+		string result = "";
+		//Fecha de partida--- Representada con un año de 150 dias
+		int annoBase = 2325;
+		int diaBase = 11;
+		int diasPorCiclo = 150;
+		//-------------------
+		int diaMes = (num + diaBase) % diasPorCiclo;
+		int anno = (num + diaBase) / diasPorCiclo;
+		annoBase += anno;		
+		result = System.String.Format ("Dia: {0,3} A/u00f1o: {1,4}", diaMes, annoBase);
+		return result;
+	}
 }

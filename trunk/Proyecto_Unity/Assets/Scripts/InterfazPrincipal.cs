@@ -151,6 +151,12 @@ public class InterfazPrincipal : MonoBehaviour {
 		GUI.Box(new Rect(cuantoW*0,cuantoH*0,cuantoW*73,cuantoH*4),"","BloqueSuperior");		
 		//Tiempo
 		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),principal.numPasos.ToString(),"EtiquetaTiempo");
+		/* [Aris]
+		 * He creado el metodo para formatear la fecha y que no salga solo un numero cutre, pero ahora mismo
+		 * no hay espacio en la cabecera. Lo dejo aqui comentado para que comentes una y descomentes la otra
+		 * si te animas ;)
+		 */
+//		GUI.Label(new Rect(cuantoW*2,cuantoH*0,cuantoW*6,cuantoH*2),FuncTablero.formateaFechaPasos(principal.numPasos),"EtiquetaTiempo");
 		//Velocidad
 		if(GUI.Button(new Rect(cuantoW*3,cuantoH*2,cuantoW*1,cuantoH*1),new GUIContent("","Pausa el juego"),"BotonPausa"))
 			principal.setEscalaTiempo(0.0f);
