@@ -652,8 +652,12 @@ public class InterfazPrincipal : MonoBehaviour {
 			case taccionMenu.mostrarSalirMenuPrincipal:
 				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent(),"BoxConfirmacion");
 				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
-				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir al menu principal")))
+				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir al menu principal"))) {
+					accion = InterfazPrincipal.taccion.ninguna;
+					principal.setEscalaTiempo(escalaTiempoAntesMenu);
+					FuncTablero.quitaPerlin();
 					Application.LoadLevel("Escena_Inicial");
+				}
 				if(GUI.Button(new Rect(cuantoW*40.5f,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("No","Pulsa aquí para volver al menu de opciones")))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
 				break;
