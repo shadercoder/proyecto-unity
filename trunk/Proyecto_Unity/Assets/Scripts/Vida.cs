@@ -761,6 +761,7 @@ public class Especie
 	public int idEspecie;								//Identificador de la especie a la que pertenece	
 	public string nombre;								//Nombre de la especie
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
+	public List<float> habitabilidadInicial;			//Habitabilidad inicial para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
 	public List<GameObject> modelos;					//Distintos modelos que pueden representar a la especie		
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
@@ -938,7 +939,6 @@ public class Ser
 	public int idSer;								//Id del ser
 	public int posX;
 	public int posY;
-	public int indiceModelo;
 	public GameObject modelo;
 }
 
@@ -947,6 +947,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 {
 	public EspecieVegetal especie;					//Especie vegetal a la que pertenece
 	public int numVegetales;						//Número de vegetales de la población
+	public List<float> habitabilidad;				//Habitabilidad actual para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
 	
 	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY,GameObject modelo)
 	{
@@ -1017,6 +1018,7 @@ public class Animal : Ser
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
 	public int reserva;								//Reserva de alimento que tiene
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
+	public List<float> habitabilidad;				//Habitabilidad actual para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
 	
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY,GameObject modelo)
 	{
