@@ -703,7 +703,7 @@ public class SaveLoad {
 	private static SerSerializable getSerSerializable(Ser ser) {
 		SerSerializable resultado = new SerSerializable();
 		resultado.idSer = ser.idSer;
-		resultado.indiceModelo = ser.indiceModelo;
+		//resultado.indiceModelo = ser.indiceModelo;
 		resultado.posX = ser.posX;
 		resultado.posY = ser.posY;
 //		resultado.modelo = getModeloSerializable();
@@ -713,7 +713,7 @@ public class SaveLoad {
 	private static Ser getSerNoSerializable(SerSerializable ser) {
 		Ser resultado = new Ser();
 		resultado.idSer = ser.idSer;
-		resultado.indiceModelo = ser.indiceModelo;
+		//resultado.indiceModelo = ser.indiceModelo;
 //		resultado.modelo = getModeloNoSerializable(ser.modelo);
 		resultado.posX = ser.posX;
 		resultado.posY = ser.posY;
