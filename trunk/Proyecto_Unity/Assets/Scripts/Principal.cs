@@ -407,4 +407,12 @@ public class Principal : MonoBehaviour {
 		contenedor.nivelAgua = FuncTablero.getNivelAgua();
 		contenedor.tamanoPlaya = FuncTablero.getTamanoPlaya();
 	}
+	
+	public void mejoraEnergia1() {
+		modificaEnergiaPorTurno(3);
+	}
+	
+	public void mejoraEnergia2() {
+		modificaEnergiaPorTurno(6);
+	}	
 }

@@ -18,6 +18,13 @@ public class InterfazPrincipal : MonoBehaviour {
 	private float tiempoInfoCasilla 			= 0.25f;		//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
 	private Vector3 posicionMouseInfoCasilla 	= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
 	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
+	private MejorasNave mejoras;								//El script de mejoras de la nave
+	
+	//Mejoras posibles
+	private bool mostrarInfoInferior			= false;		//La barra inferior de informacion se muestra?
+	private bool mostrarInfoHabitat				= false;		//Se muestra informacion de habitats en ella?
+	private bool mostrarInfoMetalesRaros		= false;		//Se muestran los metales raros?
+	private bool mostrarInfoSeres				= false;		//Se muestran los animales y plantas?
 	
 	//Tooltips
 	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
@@ -62,6 +69,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	
 	void Start() {
 		principal = gameObject.GetComponent<Principal>();
+		mejoras = GameObject.FindGameObjectWithTag("Mejoras").GetComponent<MejorasNave>();
 		//Cargar la información del numero de saves que hay
 		SaveLoad.compruebaRuta();
 		numSaves = SaveLoad.FileCount();
@@ -104,7 +112,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	
 	void OnGUI()
 	{		
-		string x;
+//		string x;
 		if(accionAnterior != accion)
 		{
 			actualizarEstilosBotones();
@@ -517,90 +525,139 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUILayout.BeginVertical();
 				GUILayout.Space(cuantoH);
 				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
-				GUILayout.Space(cuantoW*6.5f);
+				GUILayout.Space(cuantoW*6.5f);		//Sensores -----------------------------------------------------
+				if (mejoras.mejorasCompradas[0])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("","Habilita la información de la barra inferior"),"BotonMejoraInformacion"))
 				{	
-					
+					mejoras.compraMejora0();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Habilita la deteccion de habitats"),"BotonMejoraHabitats"))
+				if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[1])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Habilita la detección de hábitats"),"BotonMejoraHabitats"))
 				{	
-					
+					mejoras.compraMejora1();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[1] || mejoras.mejorasCompradas[2])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("","Habilita la deteccion de metales raros"),"BotonMejoraMetalesRaros"))
 				{	
-					
+					mejoras.compraMejora2();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[2] || mejoras.mejorasCompradas[3])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("","Habilita la deteccion de animales y vegetales"),"BotonMejoraVida"))
 				{	
-					
-				}			
-				GUILayout.Space(cuantoW*6);			
-				if(GUILayout.Button(new GUIContent("","Mejora motor 1"),"BotonMejoraMotor1"))
-				{	
-					
+					mejoras.compraMejora3();
 				}
+				GUI.enabled = true;
+				GUILayout.Space(cuantoW*6);			//Motores ------------------------------------------------------
+				//Se pueden añadir mas condiciones como el coste
+				if (mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Mejora de motor nivel 1"),"BotonMejoraMotor1"))
+				{	
+					mejoras.compraMejora4();
+				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Mejora motor 2"),"BotonMejoraMotor2"))
+				if (!mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Mejora de motor nivel 2"),"BotonMejoraMotor2"))
 				{	
-					
+					mejoras.compraMejora5();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Mejora motor 3"),"BotonMejoraMotor3"))
+				if (mejoras.mejorasCompradas[6])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Aislamiento magnético (viaje por los polos)"),"BotonMejoraMotor3"))
 				{	
-					
+					mejoras.compraMejora6();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Mejora motor 4"),"BotonMejoraMotor4"))
+				if (mejoras.mejorasCompradas[7])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Subir la nave de órbita"),"BotonMejoraMotor4"))
 				{	
-					
+					mejoras.compraMejora7();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW*1.5f);
 				GUILayout.EndHorizontal();
 				GUILayout.Space(cuantoH);
 				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
-				GUILayout.Space(cuantoW*6.5f);
+				GUILayout.Space(cuantoW*6.5f);		//Energia ------------------------------------------------------
+				if (mejoras.mejorasCompradas[8])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia1"))
 				{	
-					
+					mejoras.compraMejora8();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia2"))
+				if (mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[8])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía mejorado"),"BotonMejoraEnergia2"))
 				{	
-					
+					mejoras.compraMejora9();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia3"))
+				if (mejoras.mejorasCompradas[10])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Desbloquea el uso de habilidades avanzadas"),"BotonMejoraEnergia3"))
 				{	
-					
+					mejoras.compraMejora10();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia4"))
+				if (mejoras.mejorasCompradas[11] || !mejoras.mejorasCompradas[10])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Desbloquea el uso de habilidades cuánticas"),"BotonMejoraEnergia4"))
 				{	
-					
+					mejoras.compraMejora11();
 				}
-				GUILayout.Space(cuantoW*6);
+				GUI.enabled = true;
+				GUILayout.Space(cuantoW*6);			//Almacenamiento -----------------------------------------------
+			 	if (mejoras.mejorasCompradas[12] || mejoras.mejorasCompradas[13] || !mejoras.mejorasCompradas[14])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen1"))
 				{	
-					
+					mejoras.compraMejora12();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen2"))
+				if (mejoras.mejorasCompradas[13] || !mejoras.mejorasCompradas[12] || !mejoras.mejorasCompradas[15])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Mejora del contenedor para almacenar todavía más recursos"),"BotonMejoraAlmacen2"))
 				{	
-					
+					mejoras.compraMejora13();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen3"))
+				if (mejoras.mejorasCompradas[14])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Permite almacenar componentes avanzados"),"BotonMejoraAlmacen3"))
 				{	
-					
+					mejoras.compraMejora14();
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen4"))
+				if (!mejoras.mejorasCompradas[14] || !mejoras.mejorasCompradas[12])
+					GUI.enabled = false;
+				if(GUILayout.Button(new GUIContent("","Permite almacenar material biológico"),"BotonMejoraAlmacen4"))
 				{	
-					
-				}		
+					mejoras.compraMejora15();
+				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW*1.5f);
 				GUILayout.EndHorizontal();
 				GUILayout.Space(cuantoH);				
@@ -613,46 +670,85 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUILayout.Space(cuantoH);				
 				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
 				GUILayout.Space(cuantoW*1.5f);
+				if (!mejoras.mejorasCompradas[1] && !mejoras.mejorasCompradas[2] && !mejoras.mejorasCompradas[3])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("","Desactiva todos los filtros"),"BotonHabilidadVisionNormal"))
-				{	
+				{
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[2])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroRecursos"))
 				{	
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[1])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroHabitats"))
 				{	
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[3])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroVegetales"))
 				{	
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[3])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroAnimales"))
-				{	
-				}	
+				{
+					//TODO
+				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW*3);
+				if (!mejoras.mejorasCompradas[10])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad6"))
-				{	
+				{
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[10])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad7"))
-				{	
+				{
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[10])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad8"))
-				{	
+				{
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[11])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad9"))
-				{	
+				{
+					//TODO
 				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
+				if (!mejoras.mejorasCompradas[11])
+					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad10"))
 				{	
-					
-				}		
+					//TODO
+				}
+				GUI.enabled = true;
 				GUILayout.Space(cuantoW*1.5f);
 				GUILayout.EndHorizontal();
 				GUILayout.Space(cuantoH);				
@@ -683,7 +779,8 @@ public class InterfazPrincipal : MonoBehaviour {
 			default:
 				break;
 		}
-		GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),infoCasilla,"BloqueInformacion");		
+		if (mostrarInfoInferior)
+			GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),infoCasilla,"BloqueInformacion");		
 	}
 	
 	//Dibuja el menu de opciones que contiene Guardar, Opciones de audio, Menu Principal, Salir, Volver
@@ -849,14 +946,30 @@ public class InterfazPrincipal : MonoBehaviour {
 						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear)) {							
 							if(principal.vida.anadeEdificio(tedif,y,x,0,0,0,0,10,10,10,10)) {
 								principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear);
-								principal.modificaRecursosPorTurno(10,10,10,10);								
+								switch (tipo) {
+								case 0:		//Fabrica basica
+									principal.modificaRecursosPorTurno(-1,5,0,0);
+									break;
+								case 1:		//Central energia 1
+									principal.modificaRecursosPorTurno(5,0,0,0);
+									break;
+								case 2:		//Granja
+									principal.modificaRecursosPorTurno(-5,0,0,1);
+									break;
+								case 3:		//Fabrica avanzada
+									principal.modificaRecursosPorTurno(-5,5,5,0);
+									break;
+								case 4: 	//Central energia 2
+									principal.modificaRecursosPorTurno(25,0,0,0);
+									break;
+								}								
 							}
-							else {								
-								;//Mostrar por pantalla que no se ha podido insertar por que el habitat no es el adecuado o xq ya existe un edificio ahi
+							else {							
+								infoCasilla += "Habitat inadecuado o ya ocupado!";//Mostrar por pantalla que no se ha podido insertar por que el habitat no es el adecuado o xq ya existe un edificio ahi
 							}
 						}
 						else {
-							;//Mostrar por pantalla que no se ha podido insertar por falta de recursos
+							infoCasilla += "No hay recursos suficientes!";//Mostrar por pantalla que no se ha podido insertar por falta de recursos
 						}						
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;	
@@ -902,22 +1015,29 @@ public class InterfazPrincipal : MonoBehaviour {
 					Edificio edificio = principal.vida.tablero[y,x].edificio;
 					Vegetal vegetal = principal.vida.tablero[y,x].vegetal;
 					Animal animal = principal.vida.tablero[y,x].animal;
-										
-					if(habitat == T_habitats.montana)
-						infoCasilla = "Hábitat: montaña" + "\t\t";
-					else
-						infoCasilla = "Hábitat: " + habitat.ToString() + "\t\t";
+					infoCasilla = "";
+					//[Aris] Desbloqueando mejoras de deteccion
+					if (mostrarInfoHabitat) {
+						if(habitat == T_habitats.montana)
+							infoCasilla = "Hábitat: montaña" + "\t\t";
+						else
+							infoCasilla = "Hábitat: " + habitat.ToString() + "\t\t";
+					}
+					
 					if(elem == T_elementos.comunes)
 						infoCasilla += "Elementos: metales comunes" + "\t\t";
-					else if(elem == T_elementos.raros)
+					else if(elem == T_elementos.raros && mostrarInfoMetalesRaros)	//Desbloqueando mejoras
 						infoCasilla += "Elementos: metales raros" + "\t\t";					
 					
 					if(edificio != null)
 						infoCasilla += "Edificio: " + edificio.tipo.nombre + "\t\t";
-					if(vegetal != null)
-						infoCasilla += "Vegetal: " + vegetal.especie.nombre + "\t\t";
-					if(animal != null)
-						infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";					
+					
+					if (mostrarInfoSeres) {					
+						if(vegetal != null)
+							infoCasilla += "Vegetal: " + vegetal.especie.nombre + "\t\t";
+						if(animal != null)
+							infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";
+					}
 				}			
 			}						
 		}	
@@ -1028,6 +1148,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		else 
 			return false;
 	}
+	
 	public void actualizarEstilosBotones()
 	{
 		GUIStyle style;
@@ -1080,5 +1201,21 @@ public class InterfazPrincipal : MonoBehaviour {
 			default:break;
 		}
 		
+	}
+	
+	public void mejoraBarraInferior() {
+		mostrarInfoInferior = true;
+	}
+	
+	public void mejoraMostrarHabitats() {
+		mostrarInfoHabitat = true;
+	}
+	
+	public void mejoraMostrarMetales() {
+		mostrarInfoMetalesRaros = true;
+	}
+	
+	public void mejoraMostrarSeres() {
+		mostrarInfoSeres = true;
 	}
 }

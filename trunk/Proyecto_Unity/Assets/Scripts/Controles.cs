@@ -87,10 +87,13 @@ public class Controles : MonoBehaviour {
 		
 		// ------------------------------------------------------------------------------------------------------------------------------
 		
-		
 		//Rotar la nave para que vaya moviéndose en la dirección
 		//en la que avanza.
 		nave.LookAt(objetivo.position);
+		
+		Vector3 posTemp = objetivo.position - nave.position;
+		Quaternion rotTemp = Quaternion.LookRotation(posTemp, Vector3.up);
+		
 		//Si se pulsa el botón derecho del ratón, se rota en torno a la nave
 		if (Input.GetMouseButton(1)) {
 			xObjetivo = miTransform.rotation.eulerAngles.y;
@@ -98,7 +101,11 @@ public class Controles : MonoBehaviour {
 			xObjetivo += Input.GetAxis("Mouse X");
 		    yObjetivo += Input.GetAxis("Mouse Y");
 			rotCamara = Quaternion.Euler(yObjetivo, xObjetivo, 0);
-			miTransform.rotation = rotCamara;
+			//No se permite rotar la camara como para introducirse en el planeta
+			float difX = Mathf.Abs(rotCamara.eulerAngles.x - rotTemp.eulerAngles.x);
+			float difY = Mathf.Abs(rotCamara.eulerAngles.y - rotTemp.eulerAngles.y);
+			if ((difX <= 120.0f || difX >= 240.0f) && (difY <= 100.0f || difY >= 260.0f))
+				miTransform.rotation = rotCamara;
 		}
 		
 		if (Input.GetAxis("Mouse ScrollWheel") != 0) {
@@ -118,8 +125,8 @@ public class Controles : MonoBehaviour {
 		
 		//Centrar la camara si se pulsa la tecla "C"
 		if (Input.GetKeyDown(KeyCode.C)) {
-			Vector3 posTemp = objetivo.position - nave.position;
-			Quaternion rotTemp = Quaternion.LookRotation(posTemp, Vector3.up);
+//			Vector3 posTemp = objetivo.position - nave.position;
+//			Quaternion rotTemp = Quaternion.LookRotation(posTemp, Vector3.up);
 			miTransform.rotation = rotTemp;
 			miTransform.position = rotTemp * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
 		}
@@ -153,8 +160,12 @@ public class Controles : MonoBehaviour {
 	}
 	
 	public void mejoraVelocidad2() {
-		velocidadX = 0.8f;
-		velocidadY = 1.0f;
+		velocidadX = 0.95f;
+		velocidadY = 1.05f;
+	}
+	
+	public void mejoraAislamientoMag() {
+		distMinPolos = 1.0f;
 	}
 	
 	public void mejoraSubirOrbita() {
@@ -162,5 +173,6 @@ public class Controles : MonoBehaviour {
 			subiendoOrbita = true;
 			tiempoIniOrbita = Time.realtimeSinceStartup;
 		}
+		distCamaraMax += 2.0f;
 	}
 }
