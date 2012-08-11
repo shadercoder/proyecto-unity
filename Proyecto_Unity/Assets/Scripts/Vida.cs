@@ -33,7 +33,7 @@ public class Vida
 	//Referencia a la textura de las plantas
 	public Texture2D texturaPlantas;
 	//Transform del objeto roca, para mover los meshes
-	private Transform objetoRoca;
+	public Transform objetoRoca;
 	//Estructuras
 	public Casilla[,] tablero;										//Tablero lógico que representa las casillas
 	public List<Especie> especies;									//Listado de todas las especies
@@ -294,6 +294,14 @@ public class Vida
 	}*/
 	
 	
+	
+	
+	//Devuelve si el animal se puede insertar en esa posición o no
+	public bool compruebaAnadeVegetal(EspecieVegetal especie,int posX,int posY)
+	{
+		return(!tieneVegetal(posX,posY) && especie.tieneHabitat(tablero[posX,posY].habitat));
+	}	
+	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeVegetal(EspecieVegetal especie,int posX,int posY)
 	{
@@ -314,6 +322,12 @@ public class Vida
 		return true;
 	}	
 	
+	//Devuelve si el animal se puede insertar en esa posición o no
+	public bool compruebaAnadeAnimal(EspecieAnimal especie,int posX,int posY)
+	{
+		return(!tieneAnimal(posX,posY) && especie.tieneHabitat(tablero[posX,posY].habitat));
+	}
+	
 	//Devuelve false si el animal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeAnimal(EspecieAnimal especie,int posX,int posY)
 	{
@@ -332,6 +346,12 @@ public class Vida
 		tablero[posX,posY].animal = animal;
 		Debug.Log("Añadido animal");
 		return true;
+	}
+	
+	//Devuelve si el edificio se puede insertar en esa posición o no
+	public bool compruebaAnadeEdificio(TipoEdificio tipoEdificio,int posX,int posY)
+	{
+		return(!tieneEdificio(posX,posY) && tipoEdificio.tieneHabitat(tablero[posX,posY].habitat));
 	}
 	
 	//Devuelve false si el edificio ya existe (no se añade) y true si se añade correctamente	
