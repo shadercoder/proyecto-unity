@@ -37,23 +37,32 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>G:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>G:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\StrumpyShaderEditor\Editor\Scripts\NodeEditorWindow.cs" />
      <Compile Include="Assets\StrumpyShaderEditor\Editor\Scripts\StrumpyPreviewWindow.cs" />
-     <None Include="Assets\Shaders\Oceano (prueba).shader" />
+     <None Include="Assets\Shaders\Oceano.shader" />
      <None Include="Assets\Shaders\Planeta.shader" />
      <None Include="Assets\StrumpyShaderEditor\Editor\Resources\Internal\Temp\TempShader.shader" />
      <None Include="Assets\Shaders\plantas.shader" />
+     <None Include="Assets\Shaders\Habitats.shader" />
+     <None Include="Assets\Shaders\Nubes.shader" />
+     <None Include="Assets\Shaders\Nave.shader" />
+     <None Include="Assets\Shaders\arbol.shader" />
+     <None Include="Assets\Shaders\Holograma Oceano.shader" />
+     <None Include="Assets\Shaders\wireframe.shader" />
+     <None Include="Assets\Shaders\RecursosFiltro.shader" />
+     <None Include="Assets\Shaders\Estrellas Espacio.shader" />
+     <None Include="Assets\Shaders\Seres.shader" />
+     <None Include="Assets\Shaders\Holograma Roca.shader" />
+     <None Include="Assets\Shaders\Vegetales.shader" />
      <None Include="Assets\Shaders\Roca.shader" />
-     <None Include="Assets\Shaders\RocaInt.shader" />
      <None Include="Assets\Shaders\Atmosfera.shader" />
-     <None Include="Assets\Shaders\Magma.shader" />
      <None Include="Assets\StrumpyShaderEditor\Editor\Resources\Internal\TextureCopy.shader" />
  <Reference Include="Assembly-UnityScript">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript.dll</HintPath>
