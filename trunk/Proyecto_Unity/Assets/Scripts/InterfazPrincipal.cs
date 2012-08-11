@@ -33,6 +33,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	private enum taccion									//Acción que se esta realizando en el momento actual
 		{ninguna,seleccionarVegetal,seleccionarAnimal,seleccionarEdificio,seleccionarMejora,seleccionarHabilidad,insertar,mostrarInfoDetallada,mostrarMenu}
 	private taccion accion = taccion.ninguna;
+	private taccion accionAnterior = taccion.ninguna;
 	
 	private enum taccionMenu								//Acción que se esta realizando en el menu
 		{mostrarMenu,mostrarGuardar,mostrarOpcionesAudio,mostrarSalirMenuPrincipal,mostrarSalirJuego};
@@ -103,6 +104,12 @@ public class InterfazPrincipal : MonoBehaviour {
 	
 	void OnGUI()
 	{		
+		string x;
+		if(accionAnterior != accion)
+		{
+			actualizarEstilosBotones();
+			accionAnterior = accion;
+		}
 		GUI.skin = estilo;
 		aspectRatioNumerico = (float)Screen.width/(float)Screen.height;		
 		if(aspectRatioNumerico >= 1.69)			//16:9
@@ -140,7 +147,7 @@ public class InterfazPrincipal : MonoBehaviour {
 			mostrarInfoCasilla = false;	
 		
 		if(activarTooltip)			
-			mostrarToolTip();		
+			mostrarToolTip();			
 	}	
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
@@ -239,10 +246,10 @@ public class InterfazPrincipal : MonoBehaviour {
 			GUILayout.BeginVertical(GUILayout.Height(cuantoH*10),GUILayout.Width(cuantoH*2));			
 			if(GUILayout.Button(new GUIContent("","Accede al menu de insertar vegetales"),"BotonInsertarVegetales"))	
 			{	
-				if(accion != taccion.seleccionarVegetal)
+				if(accion != taccion.seleccionarVegetal)				
 					accion = taccion.seleccionarVegetal;
 				else
-					accion = taccion.ninguna;
+					accion = taccion.ninguna;				
 			}
 			if(GUILayout.Button(new GUIContent("","Accede al menu de insertar animales"),"BotonInsertarAnimales"))
 			{	
@@ -291,17 +298,20 @@ public class InterfazPrincipal : MonoBehaviour {
 	private void bloqueSeleccion()
 	{
 		int posicionBloque = 0;
-		
+		int posicionBloqueMejoras = 0;
 		switch (aspectRatio)
 		{
 			case taspectRatio.aspectRatio16_9:
 				posicionBloque = 40;
+				posicionBloqueMejoras = 37;
 				break;
 			case taspectRatio.aspectRatio16_10:
 				posicionBloque = 45;
+				posicionBloqueMejoras = 42;
 				break;
 			case taspectRatio.aspectRatio4_3:
 				posicionBloque = 55;
+				posicionBloqueMejoras = 52;
 				break;
 			default:
 				break;
@@ -420,9 +430,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.herbivoro5;
 				}	
-				GUILayout.Space(cuantoW);
-				GUILayout.Box("",GUILayout.Width(cuantoW*1),GUILayout.Height(cuantoH*2));
-				GUILayout.Space(cuantoW);
+				GUILayout.Space(cuantoW*3);
 				if(GUILayout.Button(new GUIContent("","Carnivoro1"),"BotonInsertarCarnivoro1"))
 				{	
 					accion = taccion.insertar;
@@ -504,8 +512,153 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUILayout.EndVertical();
 				GUILayout.EndArea();
 				break;
-			
-			
+			case taccion.seleccionarMejora:
+				GUILayout.BeginArea(new Rect(cuantoW*22,cuantoH*posicionBloqueMejoras,cuantoW*36,cuantoH*7),new GUIContent(),"BloqueSeleccionMejoras");
+				GUILayout.BeginVertical();
+				GUILayout.Space(cuantoH);
+				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
+				GUILayout.Space(cuantoW*6.5f);
+				if(GUILayout.Button(new GUIContent("","Habilita la información de la barra inferior"),"BotonMejoraInformacion"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Habilita la deteccion de habitats"),"BotonMejoraHabitats"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Habilita la deteccion de metales raros"),"BotonMejoraMetalesRaros"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Habilita la deteccion de animales y vegetales"),"BotonMejoraVida"))
+				{	
+					
+				}			
+				GUILayout.Space(cuantoW*6);			
+				if(GUILayout.Button(new GUIContent("","Mejora motor 1"),"BotonMejoraMotor1"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Mejora motor 2"),"BotonMejoraMotor2"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Mejora motor 3"),"BotonMejoraMotor3"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Mejora motor 4"),"BotonMejoraMotor4"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW*1.5f);
+				GUILayout.EndHorizontal();
+				GUILayout.Space(cuantoH);
+				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
+				GUILayout.Space(cuantoW*6.5f);
+				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia1"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia2"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia3"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Añade un condensador de energía para ampliar la energía máxima"),"BotonMejoraEnergia4"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW*6);
+				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen1"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen2"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen3"))
+				{	
+					
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("","Añade un contenedor para almacenar más recursos"),"BotonMejoraAlmacen4"))
+				{	
+					
+				}		
+				GUILayout.Space(cuantoW*1.5f);
+				GUILayout.EndHorizontal();
+				GUILayout.Space(cuantoH);				
+				GUILayout.EndVertical();
+				GUILayout.EndArea();
+				break;
+			case taccion.seleccionarHabilidad:
+				GUILayout.BeginArea(new Rect(cuantoW*22,cuantoH*posicionBloque,cuantoW*36,cuantoH*4),new GUIContent(),"BloqueSeleccionHabilidades");
+				GUILayout.BeginVertical();
+				GUILayout.Space(cuantoH);				
+				GUILayout.BeginHorizontal(GUILayout.Height(cuantoH*2));			
+				GUILayout.Space(cuantoW*1.5f);
+				if(GUILayout.Button(new GUIContent("","Desactiva todos los filtros"),"BotonHabilidadVisionNormal"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroRecursos"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroHabitats"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroVegetales"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroAnimales"))
+				{	
+				}	
+				GUILayout.Space(cuantoW*3);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad6"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad7"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad8"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad9"))
+				{	
+				}
+				GUILayout.Space(cuantoW);
+				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidad10"))
+				{	
+					
+				}		
+				GUILayout.Space(cuantoW*1.5f);
+				GUILayout.EndHorizontal();
+				GUILayout.Space(cuantoH);				
+				GUILayout.EndVertical();
+				GUILayout.EndArea();
+				break;
 			default:
 				break;
 		}
@@ -874,5 +1027,58 @@ public class InterfazPrincipal : MonoBehaviour {
 			return true;
 		else 
 			return false;
+	}
+	public void actualizarEstilosBotones()
+	{
+		GUIStyle style;
+		switch(accion)
+		{
+			case taccion.seleccionarVegetal:
+				style = (GUIStyle)estilo.customStyles.GetValue(2);
+				style.normal = style.onActive;	
+				break;
+			case taccion.seleccionarAnimal:
+				style = (GUIStyle)estilo.customStyles.GetValue(3);
+				style.normal = style.onActive;	
+				break;
+			case taccion.seleccionarEdificio:
+				style = (GUIStyle)estilo.customStyles.GetValue(4);
+				style.normal = style.onActive;	
+				break;
+			case taccion.seleccionarMejora:
+				style = (GUIStyle)estilo.customStyles.GetValue(5);
+				style.normal = style.onActive;	
+				break;
+			case taccion.seleccionarHabilidad:
+				style = (GUIStyle)estilo.customStyles.GetValue(6);
+				style.normal = style.onActive;	
+				break;
+			default:break;
+		}
+		switch(accionAnterior)
+		{
+			case taccion.seleccionarVegetal:
+				style = (GUIStyle)estilo.customStyles.GetValue(2);
+				style.normal = style.onNormal;	
+				break;
+			case taccion.seleccionarAnimal:
+				style = (GUIStyle)estilo.customStyles.GetValue(3);
+				style.normal = style.onNormal;	
+				break;
+			case taccion.seleccionarEdificio:
+				style = (GUIStyle)estilo.customStyles.GetValue(4);
+				style.normal = style.onNormal;	
+				break;
+			case taccion.seleccionarMejora:
+				style = (GUIStyle)estilo.customStyles.GetValue(5);
+				style.normal = style.onNormal;	
+				break;
+			case taccion.seleccionarHabilidad:
+				style = (GUIStyle)estilo.customStyles.GetValue(6);
+				style.normal = style.onNormal;	
+				break;
+			default:break;
+		}
+		
 	}
 }
