@@ -61,11 +61,17 @@ public class TiposSeres : MonoBehaviour {
 		habsEdificiosAdv.Add(T_habitats.tundra);
 		habsEdificiosAdv.Add(T_habitats.desierto);
 		
-		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",habsEdificios,200,25,0,0,T_elementos.comunes,modelosEdificios.fabCompBas);
+		/*fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",habsEdificios,100,25,0,0,T_elementos.comunes,modelosEdificios.fabCompBas);
 		energia = new TipoEdificio("Central de energía",habsEdificios,150,15,0,0,T_elementos.comunes,modelosEdificios.centralEnergia);
 		granja = new TipoEdificio("Granja",habsEdificios,700,200,50,0,T_elementos.nada,modelosEdificios.granja);
 		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,850,300,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
 		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,1000,500,250,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
+		*/
+		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.fabCompBas);
+		energia = new TipoEdificio("Central de energía",habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.centralEnergia);
+		granja = new TipoEdificio("Granja",habsEdificios,0,0,0,0,T_elementos.nada,modelosEdificios.granja);
+		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
+		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
 		
 		List<T_habitats> habSeta = new List<T_habitats>();
 		habSeta.Add(T_habitats.montana);

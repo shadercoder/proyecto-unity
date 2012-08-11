@@ -19,12 +19,15 @@ public class InterfazPrincipal : MonoBehaviour {
 	private Vector3 posicionMouseInfoCasilla 	= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
 	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
 	private MejorasNave mejoras;								//El script de mejoras de la nave
+	private float tiempoUltimoModeloInsercion	= 0.0f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
+	private float tiempoModeloInsercion			= 0.1f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
+	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
 	
 	//Mejoras posibles
-	private bool mostrarInfoInferior			= false;		//La barra inferior de informacion se muestra?
-	private bool mostrarInfoHabitat				= false;		//Se muestra informacion de habitats en ella?
-	private bool mostrarInfoMetalesRaros		= false;		//Se muestran los metales raros?
-	private bool mostrarInfoSeres				= false;		//Se muestran los animales y plantas?
+	private bool mejoraInfoCasilla				= true;			//La barra inferior de informacion se muestra?
+	private bool mostrarInfoHabitat				= true;			//Se muestra informacion de habitats en ella?
+	private bool mostrarInfoMetalesRaros		= true;			//Se muestran los metales raros?
+	private bool mostrarInfoSeres				= true;			//Se muestran los animales y plantas?
 	
 	//Tooltips
 	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
@@ -33,16 +36,16 @@ public class InterfazPrincipal : MonoBehaviour {
 	public float tiempoTooltip 					= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
 	
 	//Enumerados
-	private enum taspectRatio								//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
+	private enum taspectRatio									//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
 		{aspectRatio16_9, aspectRatio16_10, aspectRatio4_3};
 	private taspectRatio aspectRatio;
 	
-	private enum taccion									//Acción que se esta realizando en el momento actual
+	private enum taccion										//Acción que se esta realizando en el momento actual
 		{ninguna,seleccionarVegetal,seleccionarAnimal,seleccionarEdificio,seleccionarMejora,seleccionarHabilidad,insertar,mostrarInfoDetallada,mostrarMenu}
 	private taccion accion = taccion.ninguna;
 	private taccion accionAnterior = taccion.ninguna;
 	
-	private enum taccionMenu								//Acción que se esta realizando en el menu
+	private enum taccionMenu									//Acción que se esta realizando en el menu
 		{mostrarMenu,mostrarGuardar,mostrarOpcionesAudio,mostrarSalirMenuPrincipal,mostrarSalirJuego};
 	private taccionMenu accionMenu = taccionMenu.mostrarMenu;
 	
@@ -50,22 +53,22 @@ public class InterfazPrincipal : MonoBehaviour {
 		{desactivada,animal,vegetal,edificio,mejoras,habilidades}
 	private tcategoriaSeleccion categoriaSeleccion = tcategoriaSeleccion.desactivada;*/
 	
-	private enum telementoInsercion							//Tipo de elemento seleccionado en un momento dado
+	private enum telementoInsercion								//Tipo de elemento seleccionado en un momento dado
 		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,seta,flor,cana,arbusto,estromatolito,cactus,palmera,pino,cipres,pinoAlto,
 		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}	
 	private telementoInsercion elementoInsercion = telementoInsercion.ninguno;
 	
 	//Menus para guardar
-    private Vector2 posicionScroll 		= Vector2.zero;		//La posicion en la que se encuentra la ventana con scroll
-    private int numSaves 				= 0;				//El numero de saves diferentes que hay en el directorio respectivo
-    private int numSavesExtra 			= 0;				//Numero de saves que hay que no se ven al primer vistazo en la scrollview
-    private string[] nombresSaves;							//Los nombres de los ficheros de savegames guardados
+    private Vector2 posicionScroll 		= Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
+    private int numSaves 				= 0;					//El numero de saves diferentes que hay en el directorio respectivo
+    private int numSavesExtra 			= 0;					//Numero de saves que hay que no se ven al primer vistazo en la scrollview
+    private string[] nombresSaves;								//Los nombres de los ficheros de savegames guardados
 	
 	//Sonido
-	private float musicaVol 			= 0.0f;				//A que volumen la musica?
-	private float sfxVol 				= 0.0f;				//A que volumen los efectos?
-	public GameObject sonidoAmbiente;						//El objeto que va a contener la fuente del audio de ambiente
-	public GameObject sonidoFX;								//El objeto que va a contener la fuente de efectos de audio
+	private float musicaVol 			= 0.0f;					//A que volumen la musica?
+	private float sfxVol 				= 0.0f;					//A que volumen los efectos?
+	public GameObject sonidoAmbiente;							//El objeto que va a contener la fuente del audio de ambiente
+	public GameObject sonidoFX;									//El objeto que va a contener la fuente de efectos de audio
 	
 	void Start() {
 		principal = gameObject.GetComponent<Principal>();
@@ -112,11 +115,10 @@ public class InterfazPrincipal : MonoBehaviour {
 	
 	void OnGUI()
 	{		
-//		string x;
 		if(accionAnterior != accion)
 		{
 			actualizarEstilosBotones();
-			accionAnterior = accion;
+			accionAnterior = accion;			
 		}
 		GUI.skin = estilo;
 		aspectRatioNumerico = (float)Screen.width/(float)Screen.height;		
@@ -342,60 +344,80 @@ public class InterfazPrincipal : MonoBehaviour {
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.seta;
+					modeloInsercion = principal.vida.especiesVegetales[0].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[0].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Flor"),"BotonInsertarFlor"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.flor;
+					modeloInsercion = principal.vida.especiesVegetales[1].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[1].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Caña"),"BotonInsertarCana"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.cana;
+					modeloInsercion = principal.vida.especiesVegetales[2].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[2].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Arbusto"),"BotonInsertarArbusto"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.arbusto;
+					modeloInsercion = principal.vida.especiesVegetales[3].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[3].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Estromatolito"),"BotonInsertarEstromatolito"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.estromatolito;
+					modeloInsercion = principal.vida.especiesVegetales[4].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[4].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}		
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Cactus"),"BotonInsertarCactus"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.cactus;
+					modeloInsercion = principal.vida.especiesVegetales[5].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[5].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Palmera"),"BotonInsertarPalmera"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.palmera;
+					modeloInsercion = principal.vida.especiesVegetales[6].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[6].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Pino"),"BotonInsertarPino"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.pino;
+					modeloInsercion = principal.vida.especiesVegetales[7].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[7].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Ciprés"),"BotonInsertarCipres"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.cipres;
+					modeloInsercion = principal.vida.especiesVegetales[8].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[8].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Pino Alto"),"BotonInsertarPinoAlto"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.pinoAlto;
+					modeloInsercion = principal.vida.especiesVegetales[9].modelos[UnityEngine.Random.Range(0,principal.vida.especiesVegetales[9].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}		
 				GUILayout.Space(cuantoW*2.5f);
 				GUILayout.EndHorizontal();
@@ -413,60 +435,80 @@ public class InterfazPrincipal : MonoBehaviour {
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.herbivoro1;
+					modeloInsercion = principal.vida.especiesAnimales[0].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[0].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Herbivoro2"),"BotonInsertarHerbivoro2"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.herbivoro2;
+					modeloInsercion = principal.vida.especiesAnimales[1].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[1].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Herbivoro3"),"BotonInsertarHerbivoro3"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.herbivoro3;
+					modeloInsercion = principal.vida.especiesAnimales[2].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[2].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Herbivoro4"),"BotonInsertarHerbivoro4"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.herbivoro4;
+					modeloInsercion = principal.vida.especiesAnimales[3].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[3].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Herbivoro5"),"BotonInsertarHerbivoro5"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.herbivoro5;
+					modeloInsercion = principal.vida.especiesAnimales[4].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[4].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}	
 				GUILayout.Space(cuantoW*3);
 				if(GUILayout.Button(new GUIContent("","Carnivoro1"),"BotonInsertarCarnivoro1"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.carnivoro1;
+					modeloInsercion = principal.vida.especiesAnimales[5].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[5].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Carnivoro2"),"BotonInsertarCarnivoro2"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.carnivoro2;
+					modeloInsercion = principal.vida.especiesAnimales[6].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[6].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Carnivoro3"),"BotonInsertarCarnivoro3"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.carnivoro3;
+					modeloInsercion = principal.vida.especiesAnimales[7].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[7].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Carnivoro4"),"BotonInsertarCarnivoro4"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.carnivoro4;
+					modeloInsercion = principal.vida.especiesAnimales[8].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[8].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Carnivoro5"),"BotonInsertarCarnivoro5"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.carnivoro5;
+					modeloInsercion = principal.vida.especiesAnimales[9].modelos[UnityEngine.Random.Range(0,principal.vida.especiesAnimales[9].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
 				}		
 				GUILayout.Space(cuantoW*1.5f);
 				GUILayout.EndHorizontal();
@@ -483,36 +525,46 @@ public class InterfazPrincipal : MonoBehaviour {
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes básicos"),"BotonInsertarFabComBas"))
 				{	
 					accion = taccion.insertar;
-					elementoInsercion = telementoInsercion.fabricaCompBas;			
-					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
+					elementoInsercion = telementoInsercion.fabricaCompBas;	
+					modeloInsercion = principal.vida.tiposEdificios[0].modelos[UnityEngine.Random.Range(0,principal.vida.tiposEdificios[0].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
+					//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía"),"BotonInsertarCenEn"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.centralEnergia;
-					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
+					modeloInsercion = principal.vida.tiposEdificios[1].modelos[UnityEngine.Random.Range(0,principal.vida.tiposEdificios[1].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
+					//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Granja"),"BotonInsertarGranja"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.granja;
-					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);
+					modeloInsercion = principal.vida.tiposEdificios[2].modelos[UnityEngine.Random.Range(0,principal.vida.tiposEdificios[2].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
+					//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Fábrica de componentes avanzados"),"BotonInsertarFabComAdv"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.fabricaCompAdv;
-					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
+					modeloInsercion = principal.vida.tiposEdificios[3].modelos[UnityEngine.Random.Range(0,principal.vida.tiposEdificios[3].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
+					//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}
 				GUILayout.Space(cuantoW);
 				if(GUILayout.Button(new GUIContent("","Central de energía avanzada"),"BotonInsertarCenEnAdv"))
 				{	
 					accion = taccion.insertar;
 					elementoInsercion = telementoInsercion.centralEnergiaAdv;
-					principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
+					modeloInsercion = principal.vida.tiposEdificios[4].modelos[UnityEngine.Random.Range(0,principal.vida.tiposEdificios[4].modelos.Count)];
+					modeloInsercion = FuncTablero.creaMesh(new Vector3(0,0,0),modeloInsercion);
+					//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 				}		
 				GUILayout.Space(cuantoW);
 				GUILayout.EndHorizontal();
@@ -779,8 +831,7 @@ public class InterfazPrincipal : MonoBehaviour {
 			default:
 				break;
 		}
-		if (mostrarInfoInferior)
-			GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),infoCasilla,"BloqueInformacion");		
+		GUI.Box(new Rect(cuantoW*0,cuantoH*posicionBloque,cuantoW*100,cuantoH*1),infoCasilla,"BloqueInformacion");		
 	}
 	
 	//Dibuja el menu de opciones que contiene Guardar, Opciones de audio, Menu Principal, Salir, Volver
@@ -932,6 +983,108 @@ public class InterfazPrincipal : MonoBehaviour {
 	{
 		if(accion == taccion.insertar)
 		{	
+			if(Time.realtimeSinceStartup > tiempoUltimoModeloInsercion + tiempoModeloInsercion)
+			{
+				tiempoUltimoModeloInsercion = Time.realtimeSinceStartup;
+				int posX = 0;
+				int posY = 0;
+				int tipo = (int)elementoInsercion - 1;
+				if(principal.raycastRoca(Input.mousePosition,ref posX,ref posY))
+				{					
+					float x = (principal.vida.tablero[posY,posX].coordsVert.x + principal.vida.tablero[posY-1,posX].coordsVert.x)/2;
+					float y = (principal.vida.tablero[posY,posX].coordsVert.y + principal.vida.tablero[posY-1,posX].coordsVert.y)/2;
+					float z = (principal.vida.tablero[posY,posX].coordsVert.z + principal.vida.tablero[posY-1,posX].coordsVert.z)/2;
+					Vector3 coordsVert = new Vector3(x,y,z);		
+					//Mover la malla
+					modeloInsercion.transform.position = coordsVert;
+					Vector3 normal = modeloInsercion.transform.position - modeloInsercion.transform.parent.position;
+					modeloInsercion.transform.position = principal.vida.objetoRoca.transform.TransformPoint(modeloInsercion.transform.position);
+					modeloInsercion.transform.rotation = Quaternion.LookRotation(normal);
+					modeloInsercion.renderer.material.SetFloat("_FiltroOn",1.0f);
+					modeloInsercion.renderer.material.SetColor("_Tinte",Color.red);
+					if(tipo >= 0 && tipo < 5)				//Edificio
+					{						
+						TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
+						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear)) 
+						{							
+							if(principal.vida.compruebaAnadeEdificio(tedif,posY,posX)) 
+							{
+								modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
+								//Mostrar tooltip de que no se puede insertar en ese habitat o que ya hay un edificio
+							}
+						}
+						else
+						{
+							//Mostrar tooltip de que no hay recursos							
+						}
+					}	
+					else if(tipo >= 5 && tipo < 15)			//Vegetal
+					{
+						tipo -= 5;
+						EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
+						if(principal.vida.compruebaAnadeVegetal(especie,posY,posX))
+							modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
+						else
+						{
+							//Mostrar tooltip de que no se puede insertar en ese habitat o que ya hay un vegetal
+						}
+					}
+					else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
+					{
+						tipo -= 5;	
+						EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
+						if(principal.vida.compruebaAnadeAnimal(especie,posY,posX))
+							modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
+						else
+						{
+							//Mostrar tooltip de que no se puede insertar en ese habitat o que ya hay un vegetal
+						}
+					}
+						
+					if(Input.GetMouseButton(0))					//Probamos inserción
+					{
+						tipo = (int)elementoInsercion - 1;
+						if(tipo >= 0 && tipo < 5)				//Edificio
+						{
+							TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
+							if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear)) 
+							{							
+								if(principal.vida.anadeEdificio(tedif,posY,posX,0,0,0,0,10,10,10,10)) 
+								{
+									principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear);
+									principal.modificaRecursosPorTurno(10,10,10,10);								
+								}
+							}					
+							elementoInsercion = telementoInsercion.ninguno;
+							accion = taccion.ninguna;	
+							//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 0);	
+						}					
+						else if(tipo >= 5 && tipo < 15)			//Vegetal
+						{
+							tipo -= 5;
+							EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
+							principal.vida.anadeVegetal(especie,posY,posX);
+							elementoInsercion = telementoInsercion.ninguno;
+							accion = taccion.ninguna;
+						}
+						else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
+						{
+							tipo -= 5;	
+							EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
+							principal.vida.anadeAnimal(especie,posY,posX);
+							elementoInsercion = telementoInsercion.ninguno;
+							accion = taccion.ninguna;
+						}
+						else
+							return;
+						Destroy(modeloInsercion);
+					}		
+				}				
+			}
+		}
+				
+		/*if(accion == taccion.insertar)
+		{	
 			//pintar modelo en tiempo real y area de efecto si es necesario
 			if(Input.GetMouseButtonDown(0))
 			{
@@ -995,12 +1148,12 @@ public class InterfazPrincipal : MonoBehaviour {
 						return;
 				}			
 			}			
-		}
+		}*/
 	}	
 	//Obtiene la información básica de la casilla a mostrar en la barra de información inferior
 	private void calculaInfoCasilla()
 	{
-		if(mostrarInfoCasilla)
+		if(mostrarInfoCasilla && mejoraInfoCasilla)
 		{
 			if(Input.mousePosition != posicionMouseInfoCasilla && Time.realtimeSinceStartup > tiempoUltimaInfoCasilla + tiempoInfoCasilla)
 			{
@@ -1204,7 +1357,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	}
 	
 	public void mejoraBarraInferior() {
-		mostrarInfoInferior = true;
+		mejoraInfoCasilla = true;
 	}
 	
 	public void mejoraMostrarHabitats() {
