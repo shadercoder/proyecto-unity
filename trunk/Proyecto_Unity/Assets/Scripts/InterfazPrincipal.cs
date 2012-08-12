@@ -33,8 +33,9 @@ public class InterfazPrincipal : MonoBehaviour {
 	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
 	private bool activarTooltip 				= false;		//Controla si se muestra o no el tooltip	
 	private float ultimoMov 					= 0.0f;			//Ultima vez que se movio el mouse		
-	public float tiempoTooltip 					= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
-	private float forzarTooltip					= 0.0f;			//Para forzar el tooltip a aparecer
+	private float tiempoTooltip 				= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
+	private bool forzarTooltip = false;							//Fuerza que se muestre un tooltip en una situación especial
+	private string mensajeForzarTooltip = "";					//Mensaje del tooltip forzado.
 	
 	//Enumerados
 	private enum taspectRatio									//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
@@ -117,7 +118,8 @@ public class InterfazPrincipal : MonoBehaviour {
 	void OnGUI()
 	{		
 		if(accionAnterior != accion)
-		{
+		{			
+			forzarTooltip = false;
 			actualizarEstilosBotones();
 			accionAnterior = accion;			
 		}
@@ -157,8 +159,11 @@ public class InterfazPrincipal : MonoBehaviour {
 		else
 			mostrarInfoCasilla = false;	
 		
+		if(forzarTooltip)			
+			GUI.Box(new Rect(Input.mousePosition.x-cuantoW,Screen.height-Input.mousePosition.y-cuantoH,cuantoW*2,cuantoH*2),new GUIContent("",mensajeForzarTooltip),"");
 		if(activarTooltip)			
-			mostrarToolTip();			
+			mostrarToolTip();
+		
 	}	
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
@@ -1002,31 +1007,25 @@ public class InterfazPrincipal : MonoBehaviour {
 					modeloInsercion.transform.position = principal.vida.objetoRoca.transform.TransformPoint(modeloInsercion.transform.position);
 					modeloInsercion.transform.rotation = Quaternion.LookRotation(normal);
 					modeloInsercion.renderer.material.SetFloat("_FiltroOn",1.0f);
-					modeloInsercion.renderer.material.SetColor("_Tinte",Color.red);
+					modeloInsercion.renderer.material.SetColor("_Tinte",Color.red);					
+					forzarTooltip = false;
 					if(tipo >= 0 && tipo < 5)				//Edificio
 					{						
 						TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
 						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear)) 
 						{							
 							if(principal.vida.compruebaAnadeEdificio(tedif,posY,posX)) 
-							{
 								modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
-							}
-							else {
-								//[Aris]No se puede hacer con tooltip porque el  tooltip esta pensado solo para la GUI
-								//y debe haber un elemento gui debajo del raton para que se active...
-//								forzarTooltip = Time.realtimeSinceStartup + 3.0f;
-//								GUI.tooltip = "No se puede insertar: habitat incompatible o ya ocupado.";
-								if (!infoCasilla.Contains("-HABITAT"))
-									infoCasilla += "-HABITAT INCOMPATIBLE O YA OCUPADO-";
+							else 
+							{
+								forzarTooltip = true;
+								mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
 							}
 						}
 						else
 						{
-//							forzarTooltip = Time.realtimeSinceStartup + 3.0f;
-//							GUI.tooltip = "No se puede insertar: no hay recursos suficientes.";
-							if (!infoCasilla.Contains("-NO"))
-								infoCasilla += "-NO HAY RECURSOS SUFICIENTES-";
+							forzarTooltip = true;
+							mensajeForzarTooltip = "No hay recursos suficientes";
 						}
 					}	
 					else if(tipo >= 5 && tipo < 15)			//Vegetal
@@ -1037,7 +1036,8 @@ public class InterfazPrincipal : MonoBehaviour {
 							modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
 						else
 						{
-							//Mostrar tooltip de que no se puede insertar en ese habitat o que ya hay un vegetal
+							forzarTooltip = true;
+							mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
 						}
 					}
 					else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
@@ -1048,10 +1048,10 @@ public class InterfazPrincipal : MonoBehaviour {
 							modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
 						else
 						{
-							//Mostrar tooltip de que no se puede insertar en ese habitat o que ya hay un vegetal
+							forzarTooltip = true;
+							mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
 						}
 					}
-						
 					if(Input.GetMouseButton(0))					//Probamos inserción
 					{
 						tipo = (int)elementoInsercion - 1;
@@ -1115,13 +1115,18 @@ public class InterfazPrincipal : MonoBehaviour {
 							elementoInsercion = telementoInsercion.ninguno;
 							accion = taccion.ninguna;
 						}
-						else
-							return;
 						Destroy(modeloInsercion);
-					}		
+					}	
+					else if(Input.GetMouseButton(1))					//Desactivamos inserción
+					{
+						elementoInsercion = telementoInsercion.ninguno;
+						accion = taccion.ninguna;
+						Destroy(modeloInsercion);	
+					}					
 				}				
 			}
 		}
+					
 				
 		/*if(accion == taccion.insertar)
 		{	
@@ -1248,7 +1253,7 @@ public class InterfazPrincipal : MonoBehaviour {
 			ultimoMov = Time.realtimeSinceStartup;
 		}
 		else 		
-			if ((Time.realtimeSinceStartup >= ultimoMov + tiempoTooltip) || (Time.realtimeSinceStartup <= forzarTooltip))
+			if (Time.realtimeSinceStartup >= ultimoMov + tiempoTooltip)
 				activarTooltip = true;
 					
 	}	
