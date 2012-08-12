@@ -34,6 +34,7 @@ public class InterfazPrincipal : MonoBehaviour {
 	private bool activarTooltip 				= false;		//Controla si se muestra o no el tooltip	
 	private float ultimoMov 					= 0.0f;			//Ultima vez que se movio el mouse		
 	public float tiempoTooltip 					= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
+	private float forzarTooltip					= 0.0f;			//Para forzar el tooltip a aparecer
 	
 	//Enumerados
 	private enum taspectRatio									//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
@@ -1010,12 +1011,22 @@ public class InterfazPrincipal : MonoBehaviour {
 							if(principal.vida.compruebaAnadeEdificio(tedif,posY,posX)) 
 							{
 								modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
-								//Mostrar tooltip de que no se puede insertar en ese habitat o que ya hay un edificio
+							}
+							else {
+								//[Aris]No se puede hacer con tooltip porque el  tooltip esta pensado solo para la GUI
+								//y debe haber un elemento gui debajo del raton para que se active...
+//								forzarTooltip = Time.realtimeSinceStartup + 3.0f;
+//								GUI.tooltip = "No se puede insertar: habitat incompatible o ya ocupado.";
+								if (!infoCasilla.Contains("-HABITAT"))
+									infoCasilla += "-HABITAT INCOMPATIBLE O YA OCUPADO-";
 							}
 						}
 						else
 						{
-							//Mostrar tooltip de que no hay recursos							
+//							forzarTooltip = Time.realtimeSinceStartup + 3.0f;
+//							GUI.tooltip = "No se puede insertar: no hay recursos suficientes.";
+							if (!infoCasilla.Contains("-NO"))
+								infoCasilla += "-NO HAY RECURSOS SUFICIENTES-";
 						}
 					}	
 					else if(tipo >= 5 && tipo < 15)			//Vegetal
@@ -1052,9 +1063,38 @@ public class InterfazPrincipal : MonoBehaviour {
 								if(principal.vida.anadeEdificio(tedif,posY,posX,0,0,0,0,10,10,10,10)) 
 								{
 									principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear);
-									principal.modificaRecursosPorTurno(10,10,10,10);								
+//									principal.modificaRecursosPorTurno(10,10,10,10);
+									//[Aris] Los recursos generados se tienen que ajustar o cambiar, pero mejor ir probando
+									//con cosas creibles desde ya. De todas formas esto se tiene que cambiar para que sean
+									//atributos de cada edificio para poder "apagarlos" y por la situacion de cuando se agote la
+									//energia y el dif sea negativo...
+									switch (tipo) {
+                                    case 0:         //Fabrica basica
+                                        principal.modificaRecursosPorTurno(-1,5,0,0);
+                                        break;
+                                    case 1:         //Central energia 1
+                                        principal.modificaRecursosPorTurno(5,0,0,0);
+                                        break;
+                                    case 2:         //Granja
+                                        principal.modificaRecursosPorTurno(-5,0,0,1);
+                                        break;
+                                    case 3:         //Fabrica avanzada
+                                        principal.modificaRecursosPorTurno(-5,5,5,0);
+                                        break;
+                                    case 4:         //Central energia 2
+                                        principal.modificaRecursosPorTurno(25,0,0,0);
+                                        break;
+                                    }
 								}
-							}					
+								else {
+									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
+									efectos.playNumber(Random.Range(1,3)); 	//Sonidos de error son el 1 y 2
+								}
+							}
+							else {
+								Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX>();
+								efectos.playNumber(Random.Range(1,3));		//Sonidos de error son el 1 y 2
+							}
 							elementoInsercion = telementoInsercion.ninguno;
 							accion = taccion.ninguna;	
 							//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 0);	
@@ -1207,9 +1247,10 @@ public class InterfazPrincipal : MonoBehaviour {
 			activarTooltip = false;
 			ultimoMov = Time.realtimeSinceStartup;
 		}
-		else 
-			if (Time.realtimeSinceStartup >= ultimoMov + tiempoTooltip)
-				activarTooltip = true;		
+		else 		
+			if ((Time.realtimeSinceStartup >= ultimoMov + tiempoTooltip) || (Time.realtimeSinceStartup <= forzarTooltip))
+				activarTooltip = true;
+					
 	}	
 	
 	//Muestra el tooltip si ha sido activado

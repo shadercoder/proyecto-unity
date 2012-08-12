@@ -24,7 +24,6 @@ public class EscenaCarga : MonoBehaviour {
 	
 		//Segunda fase
 	public GameObject objetoRoca;
-//	private Vector3 escalaBase 				= new Vector3(50.0f,50.0f,50.0f);	//La escala básica del océano
 	public Mesh meshEsfera;														//La esfera sobre la que se harán los cambios
 	private Mesh aguaMesh;														//El objeto con el Mesh extruido del agua
 	private Mesh rocaMesh;														//El objeto con el Mesh extruido de la roca
@@ -191,7 +190,8 @@ public class EscenaCarga : MonoBehaviour {
 				menuCargar();
 				break;
 			case 7:		//Cargar (el juego seleccionado)
-				cargarJuego();
+//				cargarJuego();
+				Application.LoadLevel("Escena_Principal");
 				break;		
 		}
 		if (trabajando) {
@@ -295,11 +295,8 @@ public class EscenaCarga : MonoBehaviour {
 		yield return new WaitForSeconds(0.01f);
 		meshTemp = FuncTablero.extruyeVerticesTex(meshTemp, texturaBase, 0.45f, new Vector3(0.0f, 0.0f, 0.0f));
 		progreso = 0.6f;
-//		Debug.Log (FuncTablero.formateaTiempo() + ": Calculando texturaAgua...");
 		yield return new WaitForSeconds(0.01f);
 		rocaMesh = meshTemp;
-//		Texture2D texturaAgua = FuncTablero.calculaTexAgua(texturaBase);
-//		progreso = 0.7f;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Instanciando la esfera agua...");
 		yield return new WaitForSeconds(0.01f);
 		Mesh meshAgua = GameObject.Instantiate(meshEsfera) as Mesh;
@@ -339,21 +336,21 @@ public class EscenaCarga : MonoBehaviour {
 		estado = 1;	
 	}
 	
-	private void cargarJuego() {		
-		int w = saveGame.heightmapW;
-		int h = saveGame.heightmapH;
-		Color[] pixels = new Color[w * h];
-		for (int i = 0; i < w * h; i++) {
-			float temp = saveGame.heightmapData[i];
-			pixels[i] = new Color(temp, temp, temp);
-		}	
-		if (texturaBase.width != w || texturaBase.height != h) {
-			Debug.LogError("Las dimensiones de las texturas no coinciden!");
-		}
-		texturaBase.SetPixels(pixels);
-		texturaBase.Apply();
-		estado = 1;
-	}	
+//	private void cargarJuego() {		
+//		int w = saveGame.heightmapW;
+//		int h = saveGame.heightmapH;
+//		Color[] pixels = new Color[w * h];
+//		for (int i = 0; i < w * h; i++) {
+//			float temp = saveGame.heightmapData[i];
+//			pixels[i] = new Color(temp, temp, temp);
+//		}	
+//		if (texturaBase.width != w || texturaBase.height != h) {
+//			Debug.LogError("Las dimensiones de las texturas no coinciden!");
+//		}
+//		texturaBase.SetPixels(pixels);
+//		texturaBase.Apply();
+//		estado = 1;
+//	}	
 	
 	//Menus personalizados --------------------------------------------------------------------------------------------------------------------
 	
