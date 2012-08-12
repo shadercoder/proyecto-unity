@@ -6,7 +6,6 @@ public class Audio_SoundFX : MonoBehaviour {
 	public bool activado;
 	public float volumen;
 	public AudioClip[] sonidos;
-	private int ultimoSonido;
 	private AudioSource source;
 	
 	void Awake () {
