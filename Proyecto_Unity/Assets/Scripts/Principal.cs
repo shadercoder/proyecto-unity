@@ -72,7 +72,7 @@ public class Principal : MonoBehaviour {
 		if(algoritmoActivado && tiempoPaso > 1.0f) 		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
 		{		
 			actualizaRecursos();
-			vida.algoritmoVida();
+			vida.algoritmoVida(numPasos);
 			numPasos++;
 			tiempoPaso = 0.0f;
 		}

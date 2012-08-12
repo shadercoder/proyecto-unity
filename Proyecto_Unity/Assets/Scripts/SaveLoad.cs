@@ -844,14 +844,14 @@ public class SaveLoad {
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < veg.modelos.Length; i++)
 			modelos.Add(getModeloNoSerializable(veg.modelos[i]));
-		return new EspecieVegetal(nombre, numMaxVegetales, numIniVegetales, capacidadReproductiva, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, habitats, idTextura, modelos);
+		return null;//return new EspecieVegetal(nombre, num numMaxVegetales, numIniVegetales, capacidadReproductiva, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, habitats, idTextura, modelos);
 	}
 	
 	private static EspecieVegetalSerializable getEspecieVegSerializable(EspecieVegetal veg) {
 		EspecieVegetalSerializable resultado = new EspecieVegetalSerializable();
 		resultado.capacidadMigracionGlobal = veg.capacidadMigracionGlobal;
 		resultado.capacidadMigracionLocal = veg.capacidadMigracionLocal;
-		resultado.capacidadReproductiva = veg.capacidadReproductiva;
+		//resultado.capacidadReproductiva = veg.capacidadReproductiva;
 		resultado.idEspecie = veg.idEspecie;
 		resultado.idTextura = veg.idTextura;
 		resultado.nombre = veg.nombre;
@@ -879,7 +879,7 @@ public class SaveLoad {
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < ani.modelos.Length; i++)
 			modelos.Add(getModeloNoSerializable(ani.modelos[i]));
-		return new EspecieAnimal(nombre, consumo, reservaMax, alimento, vision, velocidad, repro, tipoAlim, habitats, modelos);
+		return null;//return new EspecieAnimal(nombre, consumo, reservaMax, alimento, vision, velocidad, repro, tipoAlim, habitats, modelos);
 	}
 	
 	private static EspecieAnimalSerializable getEspecieAniSerializable(EspecieAnimal ani) {
@@ -911,7 +911,7 @@ public class SaveLoad {
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < edi.modelos.Length; i++)
 			modelos.Add(getModeloNoSerializable(edi.modelos[i]));
-		return new TipoEdificio(nombre, habitats, eneCons, compBaCons, compAvCons, matBioCons, elemNeces, modelos);
+		return null;//return new TipoEdificio(nombre, habitats, eneCons, compBaCons, compAvCons, matBioCons, elemNeces, modelos);
 	}
 	
 	private static TipoEdificioSerializable getTipoEdifSerializable(TipoEdificio edi) {

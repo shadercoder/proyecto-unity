@@ -44,7 +44,10 @@ public class Vida
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
 	public List<Edificio> edificios;								//Listado de todos los edificios	
+	public List<Ser>[] listadoSeresTurnos;								//Listado que contiene los turnos en los que cada ser ejecuta algoritmo
 	
+	public int numMaxTurnos;
+	public int turnoActual;
 	public int numEspecies;
 	public int numEspeciesVegetales;
 	public int numEspeciesAnimales;
@@ -67,6 +70,9 @@ public class Vida
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
 		edificios = new List<Edificio>();
+		numMaxTurnos = 0;
+		turnoActual = 0;
+		listadoSeresTurnos = new List<Ser>[numMaxTurnos];
 		numEspecies = 0;
 		numEspeciesVegetales = 0;
 		numEspeciesAnimales = 0;
@@ -87,6 +93,9 @@ public class Vida
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
 		edificios = new List<Edificio>();
+		numMaxTurnos = 0;
+		turnoActual = 0;
+		listadoSeresTurnos = new List<Ser>[numMaxTurnos];
 		numEspecies = 0;
 		numEspeciesVegetales = 0;
 		numEspeciesAnimales = 0;
@@ -108,6 +117,9 @@ public class Vida
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
 		edificios = new List<Edificio>();
+		numMaxTurnos = 0;
+		turnoActual = 0;
+		listadoSeresTurnos = new List<Ser>[numMaxTurnos];
 		numEspecies = 0;
 		numEspeciesVegetales = 0;
 		numEspeciesAnimales = 0;
@@ -129,6 +141,9 @@ public class Vida
 		vegetales = vida.vegetales;		
 		animales = vida.animales;
 		edificios = vida.edificios;
+		numMaxTurnos = vida.numMaxTurnos;
+		turnoActual = vida.turnoActual;
+		listadoSeresTurnos = vida.listadoSeresTurnos;
 		numEspecies = vida.numEspecies;
 		numEspeciesVegetales = vida.numEspeciesVegetales;
 		numEspeciesAnimales = vida.numEspeciesAnimales;
@@ -137,6 +152,26 @@ public class Vida
 		idActualAnimal = vida.idActualAnimal;
 		idActualEdificio = vida.idActualEdificio;
 		texturaPlantas = vida.texturaPlantas;
+	}
+	
+	public void actualizaNumTurnos()
+	{
+		numMaxTurnos = 0;
+		for(int i = 0; i < tiposEdificios.Count;i++)
+			if(tiposEdificios[i].siguienteTurno > numMaxTurnos)
+				numMaxTurnos = tiposEdificios[i].siguienteTurno;
+		
+		for(int i = 0; i < especies.Count;i++)
+			if(especies[i].siguienteTurno > numMaxTurnos)
+				numMaxTurnos = especies[i].siguienteTurno;
+		
+		numMaxTurnos++;
+		turnoActual = 0;
+		listadoSeresTurnos = new List<Ser>[numMaxTurnos];
+		for(int i = 0; i < listadoSeresTurnos.Length; i++)
+		{
+			listadoSeresTurnos[i] = new List<Ser>();
+		}
 	}
 	
 	//Necesario para cuando se crea Vida desde la escena inicial, donde el objeto roca no está creado aun
@@ -314,8 +349,10 @@ public class Vida
 		Vector3 coordsVert = new Vector3(x,y,z);
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(coordsVert, modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
-		idActualVegetal++;
 		seres.Add(vegetal);
+		int turno = (turnoActual + especie.siguienteTurno)%numMaxTurnos;
+		listadoSeresTurnos[turno].Add(vegetal);
+		idActualVegetal++;
 		vegetales.Add(vegetal);
 		tablero[posX,posY].vegetal = vegetal;
 		pintaPlantasTex(posX,posY);
@@ -340,8 +377,10 @@ public class Vida
 		Vector3 coordsVert = new Vector3(x,y,z);
 		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(coordsVert, modelo));
 		animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
-		idActualAnimal++;
 		seres.Add(animal);
+		int turno = (turnoActual + especie.siguienteTurno)%numMaxTurnos;
+		listadoSeresTurnos[turno].Add(animal);
+		idActualAnimal++;
 		animales.Add(animal);		
 		tablero[posX,posY].animal = animal;
 		Debug.Log("Añadido animal");
@@ -370,10 +409,52 @@ public class Vida
 		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,energiaConsumidaPorTurno,compBasConsumidosPorTurno,compAvzConsumidosPorTurno,matBioConsumidoPorTurno,
 		                                 energiaProducidaPorTurno,compBasProducidosPorTurno,compAvzProducidosPorTurno,matBioProducidoPorTurno,FuncTablero.creaMesh(coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
-		idActualEdificio++;		
 		seres.Add(edificio);
+		int turno = (turnoActual + tipoEdificio.siguienteTurno)%numMaxTurnos;
+		listadoSeresTurnos[turno].Add(edificio);
+		idActualEdificio++;		
 		edificios.Add(edificio);		
 		tablero[posX,posY].edificio = edificio;
+		return true;
+	}
+	
+	public bool anadeSer(Ser ser)
+	{
+		if(ser is Vegetal)
+		{
+			Vegetal vegetal = (Vegetal)ser;
+			if(!compruebaAnadeVegetal(vegetal.especie,vegetal.posX,vegetal.posY))
+				return false;
+			int turno = (turnoActual + vegetal.especie.siguienteTurno)%numMaxTurnos;
+			listadoSeresTurnos[turno].Add(vegetal);
+			idActualVegetal++;
+			vegetales.Add(vegetal);
+			tablero[vegetal.posX,vegetal.posY].vegetal = vegetal;
+			pintaPlantasTex(vegetal.posX,vegetal.posY);		
+		}
+		else if(ser is Animal)
+		{
+			Animal animal = (Animal)ser;
+			if(!compruebaAnadeAnimal(animal.especie,animal.posX,animal.posY))
+				return false;
+			int turno = (turnoActual + animal.especie.siguienteTurno)%numMaxTurnos;
+			listadoSeresTurnos[turno].Add(animal);
+			idActualAnimal++;
+			animales.Add(animal);		
+			tablero[animal.posX,animal.posY].animal = animal;		
+		}	
+		else if(ser is Edificio)
+		{
+			Edificio edificio = (Edificio)ser;
+			if(!compruebaAnadeEdificio(edificio.tipo,edificio.posX,edificio.posY))
+				return false;
+			int turno = (turnoActual + edificio.tipo.siguienteTurno)%numMaxTurnos;
+			listadoSeresTurnos[turno].Add(edificio);
+			idActualEdificio++;		
+			edificios.Add(edificio);		
+			tablero[edificio.posX,edificio.posY].edificio = edificio;				
+		}
+		seres.Add(ser);
 		return true;
 	}
 	
@@ -557,17 +638,17 @@ public class Vida
 		return true;
 	}
 						
-	public void algoritmoVida()
+	public void algoritmoVida(int numTurno)
 	{
-		UnityEngine.Random.seed = System.DateTime.Now.Millisecond;
-		FuncTablero.randomLista(seres);
 		Ser ser;
 		Vegetal vegetal;
 		Animal animal;
 		Edificio edificio;
-		for(int i = 0; i < seres.Count; i++)
+		turnoActual = numTurno % numMaxTurnos;
+		List<Ser> seresTurno = listadoSeresTurnos[turnoActual];		
+		for(int i = 0; i < seresTurno.Count; i++)
 		{
-			ser = seres[i];
+			ser = seresTurno[i];
 			if(ser is Vegetal)
 			{
 				vegetal = (Vegetal)ser;
@@ -577,6 +658,9 @@ public class Vida
 					migraVegetal(vegetal.especie,vegetal.posX,vegetal.posY,1);
 				if(vegetal.migracionGlobal())
 					migraVegetal(vegetal.especie,vegetal.posX,vegetal.posY,vegetal.especie.radioMigracion);
+				int turno = (turnoActual + vegetal.especie.siguienteTurno)%numMaxTurnos;
+				listadoSeresTurnos[turno].Add(vegetal);	
+				listadoSeresTurnos[turnoActual].RemoveAt(i);
 			}
 			else if(ser is Animal)
 			{
@@ -595,26 +679,44 @@ public class Vida
 				else { 															//Movimiento aleatorio				
 					movimientoAleatorio(animal);
 				}
+				int turno = (turnoActual + animal.especie.siguienteTurno)%numMaxTurnos;
+				listadoSeresTurnos[turno].Add(animal);	
+				listadoSeresTurnos[turnoActual].RemoveAt(i);
 			}	
 			else if(ser is Edificio)
 			{
 				edificio = (Edificio)ser;
-				//Esto es para que no salga el warning
-				int temporal = edificio.radioAccion;
-				edificio.radioAccion = temporal;
-				//------------------------------------
+				int turno = (turnoActual + edificio.tipo.siguienteTurno)%numMaxTurnos;
+				listadoSeresTurnos[turno].Add(edificio);	
+				listadoSeresTurnos[turnoActual].RemoveAt(i);
 			}
 		}
 		contadorPintarTexturaPlantas++;
 		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)
 		{
-			texturaPlantas.Apply();
+			//texturaPlantas.Apply();
 			texturaPlantasModificado = false;
 			contadorPintarTexturaPlantas = 0;
 		}
 	}
 	
-	public bool buscaPosicionVaciaVegetal(T_habitats habitat,ref int x,ref int y)
+	public void calculaConsumoProduccion(ref int energia,ref int compBas,ref int compAvz,ref int matBio)
+	{
+		energia = compBas = compAvz = matBio = 0;
+		for(int i = 0; i < edificios.Count; i++)
+		{
+			energia-=edificios[i].energiaConsumidaPorTurno;
+			energia+=edificios[i].energiaProducidaPorTurno;
+			compBas-=edificios[i].compBasConsumidosPorTurno;
+			compBas+=edificios[i].compBasProducidosPorTurno;
+			compAvz-=edificios[i].compAvzConsumidosPorTurno;
+			compAvz+=edificios[i].compAvzProducidosPorTurno;
+			matBio-=edificios[i].matBioConsumidoPorTurno;
+			matBio+=edificios[i].matBioProducidoPorTurno;			
+		}		
+	}
+	
+	/*public bool buscaPosicionVaciaVegetal(T_habitats habitat,ref int x,ref int y)
 	{
 		List<int> listaX = new List<int>();
 		for(int i = 0; i < FuncTablero.altoTablero; i++)
@@ -675,7 +777,7 @@ public class Vida
 					return true;				
 			}
 		return false;
-	}
+	}*/
 }
 
 [System.Serializable]
@@ -689,6 +791,7 @@ public class TipoEdificio
 	public int compAvzConsumidosAlCrear;
 	public int matBioConsumidoAlCrear;
 	public T_elementos elemNecesarioAlConstruir;
+	public int siguienteTurno;							//Numero de turnos hasta que el edificio vuelva a ejecutar el algoritmo
 	public List<GameObject> modelos;					//Distintos modelos que pueden representar al edificio		
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
@@ -720,11 +823,12 @@ public class TipoEdificio
 		return true;
 	}
 	
-	public TipoEdificio(string nombre,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	public TipoEdificio(string nombre, int siguienteTurno,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
 	                    T_elementos elemNecesarioAlConstruir,GameObject modelo)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		aniadirHabitat(habitat);
 		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
@@ -734,10 +838,11 @@ public class TipoEdificio
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}
-	public TipoEdificio(string nombre,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	public TipoEdificio(string nombre, int siguienteTurno,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
 	                    T_elementos elemNecesarioAlConstruir,GameObject modelo)
 	{
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.habitats = habitats;
 		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
@@ -748,11 +853,12 @@ public class TipoEdificio
 		modelos.Add(modelo);
 	}
 	
-	public TipoEdificio(string nombre,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	public TipoEdificio(string nombre, int siguienteTurno,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
 	                    T_elementos elemNecesarioAlConstruir,List<GameObject> modelos)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		aniadirHabitat(habitat);
 		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
@@ -761,10 +867,11 @@ public class TipoEdificio
 		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
 		this.modelos = modelos;
 	}
-	public TipoEdificio(string nombre,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	public TipoEdificio(string nombre, int siguienteTurno,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
 	                    T_elementos elemNecesarioAlConstruir,List<GameObject> modelos)
 	{
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.habitats = habitats;
 		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
@@ -782,6 +889,7 @@ public class Especie
 	public string nombre;								//Nombre de la especie
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
 	public List<float> habitabilidadInicial;			//Habitabilidad inicial para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
+	public int siguienteTurno;							//Numero de turnos hasta que la especie vuelva a ejecutar el algoritmo
 	public List<GameObject> modelos;					//Distintos modelos que pueden representar a la especie		
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
@@ -818,19 +926,20 @@ public class EspecieVegetal : Especie
 {	
 	public int numMaxVegetales;							//Número de vegetales máximos por casilla
 	public int numIniVegetales;							//Número inicial de vegetales en la casilla al crearse una nueva poblacion
-	public float capacidadReproductiva;					//% de individuos que se incrementan por turno en función de los vegetales actuales	(en tanto por 1)
+	//public float capacidadReproductiva;					//% de individuos que se incrementan por turno en función de los vegetales actuales	(en tanto por 1)
 	public float capacidadMigracionLocal;				//Probabilidad que tiene la especie de migrar a otra casilla colindante en función del número de vegetales que posea (el valor viene indicado para numMaxVegetales y en tanto por 1)
 	public float capacidadMigracionGlobal;				//Probabilidad que tiene la especie de migrar a otra casilla distanciada como máximo en radioMigración casillas. Se calcula en función del número de vegetales que posea (el valor viene indicado para numMaxVegetales y en tanto por 1)	
 	public int radioMigracion;							//Longitud máxima de migración de la especie
 	public int idTextura;
 	
-	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, GameObject modelo)
+	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, GameObject modelo)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;		
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
-		this.capacidadReproductiva = capacidadReproductiva;
+		//this.capacidadReproductiva = capacidadReproductiva;		
 		this.capacidadMigracionLocal = capacidadMigracionLocal;
 		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
 		this.radioMigracion = radioMigracion;
@@ -839,12 +948,13 @@ public class EspecieVegetal : Especie
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}
-	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, GameObject modelo)
+	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, GameObject modelo)
 	{
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
-		this.capacidadReproductiva = capacidadReproductiva;
+		//this.capacidadReproductiva = capacidadReproductiva;
 		this.capacidadMigracionLocal = capacidadMigracionLocal;
 		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
 		this.radioMigracion = radioMigracion;
@@ -853,13 +963,14 @@ public class EspecieVegetal : Especie
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}
-	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, List<GameObject> modelos)
+	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, List<GameObject> modelos)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
-		this.capacidadReproductiva = capacidadReproductiva;
+		//this.capacidadReproductiva = capacidadReproductiva;
 		this.capacidadMigracionLocal = capacidadMigracionLocal;
 		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
 		this.radioMigracion = radioMigracion;
@@ -867,12 +978,13 @@ public class EspecieVegetal : Especie
 		this.idTextura = idTextura;
 		this.modelos = modelos;
 	}
-	public EspecieVegetal(string nombre, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, List<GameObject> modelos)
+	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, List<GameObject> modelos)
 	{
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
-		this.capacidadReproductiva = capacidadReproductiva;
+		//this.capacidadReproductiva = capacidadReproductiva;
 		this.capacidadMigracionLocal = capacidadMigracionLocal;
 		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
 		this.radioMigracion = radioMigracion;
@@ -895,10 +1007,11 @@ public class EspecieAnimal : Especie
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public tipoAlimentacionAnimal tipo;					//herbivoro o carnivoro 
 		
-	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, GameObject modelo)
+	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, GameObject modelo)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.consumo = consumo;
 		this.reservaMaxima = reservaMaxima;
 		this.alimentoQueProporciona = alimentoQueProporciona;
@@ -910,9 +1023,10 @@ public class EspecieAnimal : Especie
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}		
-	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, GameObject modelo)
+	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, GameObject modelo)
 	{
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.consumo = consumo;
 		this.reservaMaxima = reservaMaxima;
 		this.alimentoQueProporciona = alimentoQueProporciona;
@@ -924,10 +1038,11 @@ public class EspecieAnimal : Especie
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}	
-	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, List<GameObject> modelos)
+	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, List<GameObject> modelos)
 	{
 		habitats = new List<T_habitats>();
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.consumo = consumo;
 		this.reservaMaxima = reservaMaxima;
 		this.alimentoQueProporciona = alimentoQueProporciona;
@@ -938,9 +1053,10 @@ public class EspecieAnimal : Especie
 		this.aniadirHabitat(habitat);
 		this.modelos = modelos;
 	}		
-	public EspecieAnimal(string nombre, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos)
+	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos)
 	{
 		this.nombre = nombre;
+		this.siguienteTurno = siguienteTurno;
 		this.consumo = consumo;
 		this.reservaMaxima = reservaMaxima;
 		this.alimentoQueProporciona = alimentoQueProporciona;
@@ -958,7 +1074,7 @@ public class Ser
 {
 	public int idSer;								//Id del ser
 	public int posX;
-	public int posY;
+	public int posY;	
 	public GameObject modelo;
 }
 
@@ -1011,7 +1127,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	{
 		if (numVegetales >= especie.numMaxVegetales)
 			return false;
-		numVegetales = (int)(numVegetales * (1 + especie.capacidadReproductiva/100.0f));
+		//numVegetales = (int)(numVegetales * (1 + especie.capacidadReproductiva/100.0f));
 		if (numVegetales >= especie.numMaxVegetales)
 			numVegetales = especie.numMaxVegetales;
 		return true;
@@ -1129,5 +1245,33 @@ public class Edificio : Ser
 		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
 		this.matBioProducidoPorTurno = matBioProducidoPorTurno;
 		this.modelo = modelo;
+	}
+	public void modificaConsumo(int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno)
+	{
+		this.energiaConsumidaPorTurno = energiaConsumidaPorTurno;
+		this.compBasConsumidosPorTurno = compBasConsumidosPorTurno;
+		this.compAvzConsumidosPorTurno = compAvzConsumidosPorTurno;
+		this.matBioConsumidoPorTurno = matBioConsumidoPorTurno;
+		
+	}
+	public void modificaProduccion(int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno)
+	{
+		this.energiaProducidaPorTurno = energiaProducidaPorTurno;
+		this.compBasProducidosPorTurno = compBasProducidosPorTurno;
+		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
+		this.matBioProducidoPorTurno = matBioProducidoPorTurno;
+		
+	}
+	public void modificaConsumoProduccion(int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno,
+	                int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno)
+	{
+		this.energiaConsumidaPorTurno = energiaConsumidaPorTurno;
+		this.compBasConsumidosPorTurno = compBasConsumidosPorTurno;
+		this.compAvzConsumidosPorTurno = compAvzConsumidosPorTurno;
+		this.matBioConsumidoPorTurno = matBioConsumidoPorTurno;
+		this.energiaProducidaPorTurno = energiaProducidaPorTurno;
+		this.compBasProducidosPorTurno = compBasProducidosPorTurno;
+		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
+		this.matBioProducidoPorTurno = matBioProducidoPorTurno;
 	}
 }
