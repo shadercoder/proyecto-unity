@@ -362,7 +362,8 @@ public class EscenaCarga : MonoBehaviour {
 			FuncTablero.inicializa(texturaBase);
 			faseCreacion = 0;
 			paso1Completado = false;
-			objetoRoca.renderer.enabled = true;
+//			objetoRoca.renderer.enabled = true;
+			objetoRoca.animation.Play("HologramaAparecer");
 			Camera.main.animation.Play("AcercarseHolograma");
 			estado = 5;
 		}
@@ -495,7 +496,8 @@ public class EscenaCarga : MonoBehaviour {
 		if (GUILayout.Button(new GUIContent("Volver", "Volver al men\u00fa principal"))) {
 			faseCreacion = 0;
 			estado = 0;
-			objetoRoca.renderer.enabled = false;
+//			objetoRoca.renderer.enabled = false;
+			objetoRoca.animation.Play("HologramaDesaparecer");
 			Camera.main.animation.Play("AlejarseHolograma");
 		}
 		GUILayout.Space(cuantoW * 28);
