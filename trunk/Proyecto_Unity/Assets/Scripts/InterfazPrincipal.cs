@@ -1034,7 +1034,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					{
 						tipo -= 5;
 						EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
-						if(principal.vida.compruebaAnadeVegetal(especie,posY,posX))
+						if(principal.vida.compruebaAnadeVegetal(especie,especie.habitabilidadInicial,posY,posX))
 							modeloInsercion.renderer.material.SetColor("_Tinte",Color.green);
 						else
 						{
@@ -1104,8 +1104,8 @@ public class InterfazPrincipal : MonoBehaviour {
 						else if(tipo >= 5 && tipo < 15)			//Vegetal
 						{
 							tipo -= 5;
-							EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
-							principal.vida.anadeVegetal(especie,posY,posX);
+							EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];							
+							principal.vida.anadeVegetal(especie,especie.habitabilidadInicial,posY,posX);
 							elementoInsercion = telementoInsercion.ninguno;
 							accion = taccion.ninguna;
 						}

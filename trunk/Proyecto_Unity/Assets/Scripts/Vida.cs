@@ -28,7 +28,7 @@ public class Casilla {
 }
 
 [System.Serializable] 
-public class Vida
+public class Vida : MonoBehaviour
 {
 	//Referencia a la textura de las plantas
 	public Texture2D texturaPlantas;
@@ -332,22 +332,22 @@ public class Vida
 	
 	
 	//Devuelve si el animal se puede insertar en esa posición o no
-	public bool compruebaAnadeVegetal(EspecieVegetal especie,int posX,int posY)
+	public bool compruebaAnadeVegetal(EspecieVegetal especie,List<float> habitabilidad,int posX,int posY)
 	{
-		return(!tieneVegetal(posX,posY) && especie.tieneHabitat(tablero[posX,posY].habitat));
+		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] > -1.0f);	
 	}	
 	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
-	public bool anadeVegetal(EspecieVegetal especie,int posX,int posY)
+	public bool anadeVegetal(EspecieVegetal especie,List<float> habitabilidad,int posX,int posY)
 	{
-		if(tieneVegetal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
+		if(tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == -1.0f)
 			return false;
 		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
 		Vector3 coordsVert = new Vector3(x,y,z);
-		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,FuncTablero.creaMesh(coordsVert, modelo));
+		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,habitabilidad,tablero[posX,posY].habitat,FuncTablero.creaMesh(coordsVert, modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
 		seres.Add(vegetal);
 		int turno = (turnoActual + especie.siguienteTurno)%numMaxTurnos;
@@ -423,7 +423,7 @@ public class Vida
 		if(ser is Vegetal)
 		{
 			Vegetal vegetal = (Vegetal)ser;
-			if(!compruebaAnadeVegetal(vegetal.especie,vegetal.posX,vegetal.posY))
+			if(!compruebaAnadeVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY))
 				return false;
 			int turno = (turnoActual + vegetal.especie.siguienteTurno)%numMaxTurnos;
 			listadoSeresTurnos[turno].Add(vegetal);
@@ -463,6 +463,8 @@ public class Vida
 	{
 		if(!vegetales.Contains(vegetal))
 			return false;
+		Destroy(vegetal.modelo);
+		listadoSeresTurnos[turnoActual].Remove(vegetal);
 		tablero[vegetal.posX,vegetal.posY].vegetal = null;
 		vegetales.Remove(vegetal);
 		return true;
@@ -473,6 +475,8 @@ public class Vida
 	{
 		if(!animales.Contains(animal))
 			return false;
+		Destroy(animal.modelo);
+		listadoSeresTurnos[turnoActual].Remove(animal);
 		tablero[animal.posX,animal.posY].animal = null;
 		animales.Remove(animal);
 		return true;
@@ -483,20 +487,22 @@ public class Vida
 	{
 		if(!edificios.Contains(edificio))
 			return false;
+		Destroy(edificio.modelo);
+		listadoSeresTurnos[turnoActual].Remove(edificio);
 		tablero[edificio.posX,edificio.posY].edificio = null;
 		edificios.Remove(edificio);
 		return true;
 	}
 	
 	//Devuelve true si consigue migrar una especie a una nueva posicion y false si no
-	public bool migraVegetal(EspecieVegetal especie,int posX,int posY,int radio)
+	public bool migraVegetal(EspecieVegetal especie, List<float> habitabilidad, int posX,int posY,int radio)
 	{
 		int difX = UnityEngine.Random.Range(-radio,radio+1);
 		int difY = UnityEngine.Random.Range(-radio,radio+1);		
 		int nposX = posX + difX;
 		int nposY = posY + difY;				
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);		
-		return anadeVegetal(especie,nposX,nposY);
+		return anadeVegetal(especie,habitabilidad,nposX,nposY);
 	}
 	
 	//Devuelve true si consigue desplazar al animal y false si no lo consigue
@@ -652,12 +658,22 @@ public class Vida
 			if(ser is Vegetal)
 			{
 				vegetal = (Vegetal)ser;
-				if(vegetal.reproduccion())
-						pintaPlantasTex(vegetal.posX, vegetal.posY);
+				//Reproducción y muerte
+				if(vegetal.reproduccionMuerte())
+					pintaPlantasTex(vegetal.posX, vegetal.posY);
+				else
+				{					
+					eliminaVegetal(vegetal);
+					continue;
+				}
+				//Evolución
+				//if(vegetal.evolucion)
+				//	;
+				//Migración
 				if(vegetal.migracionLocal())
-					migraVegetal(vegetal.especie,vegetal.posX,vegetal.posY,1);
+					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,1);
 				if(vegetal.migracionGlobal())
-					migraVegetal(vegetal.especie,vegetal.posX,vegetal.posY,vegetal.especie.radioMigracion);
+					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,vegetal.especie.radioMigracion);
 				int turno = (turnoActual + vegetal.especie.siguienteTurno)%numMaxTurnos;
 				listadoSeresTurnos[turno].Add(vegetal);	
 				listadoSeresTurnos[turnoActual].RemoveAt(i);
@@ -887,30 +903,9 @@ public class Especie
 {
 	public int idEspecie;								//Identificador de la especie a la que pertenece	
 	public string nombre;								//Nombre de la especie
-	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar
-	public List<float> habitabilidadInicial;			//Habitabilidad inicial para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
 	public int siguienteTurno;							//Numero de turnos hasta que la especie vuelva a ejecutar el algoritmo
 	public List<GameObject> modelos;					//Distintos modelos que pueden representar a la especie		
 	
-	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
-	public bool aniadirHabitat(T_habitats habitat)
-	{
-		if(habitats.Contains(habitat))
-			return false;
-		habitats.Add(habitat);
-		return true;
-	}
-	
-	//Devuelve true si ha conseguido eliminar el hábitat, false si no existe
-	public bool eliminarHabitat(T_habitats habitat)
-	{
-		return habitats.Remove(habitat);		
-	}
-	
-	public bool tieneHabitat(T_habitats habitat)
-	{
-		return habitats.Contains(habitat);
-	}
 	//Devuelve true si ha conseguido introducir el modelo, false si ya ha sido introducido
 	public bool aniadirModelo(GameObject modelo)
 	{
@@ -926,72 +921,47 @@ public class EspecieVegetal : Especie
 {	
 	public int numMaxVegetales;							//Número de vegetales máximos por casilla
 	public int numIniVegetales;							//Número inicial de vegetales en la casilla al crearse una nueva poblacion
-	//public float capacidadReproductiva;					//% de individuos que se incrementan por turno en función de los vegetales actuales	(en tanto por 1)
 	public float capacidadMigracionLocal;				//Probabilidad que tiene la especie de migrar a otra casilla colindante en función del número de vegetales que posea (el valor viene indicado para numMaxVegetales y en tanto por 1)
 	public float capacidadMigracionGlobal;				//Probabilidad que tiene la especie de migrar a otra casilla distanciada como máximo en radioMigración casillas. Se calcula en función del número de vegetales que posea (el valor viene indicado para numMaxVegetales y en tanto por 1)	
 	public int radioMigracion;							//Longitud máxima de migración de la especie
+	public int turnosEvolucionInicial;					//Turnos para que la especie evolucione y tenga una habitabilidad mejor en el habitat actual
+	public float evolucion;								//Valor en el que mejora la habitabilidad en el habitat actual
+	public List<float> habitabilidadInicial;			//Habitabilidad inicial para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
 	public int idTextura;
-	
-	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, GameObject modelo)
+		
+	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales, float capacidadMigracionLocal, float capacidadMigracionGlobal, 
+	                      int radioMigracion, int turnosEvolucionInicial, float evolucion, List<float> habitabilidadInicial, int idTextura, GameObject modelo)
 	{
-		habitats = new List<T_habitats>();
 		this.nombre = nombre;
 		this.siguienteTurno = siguienteTurno;		
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
-		//this.capacidadReproductiva = capacidadReproductiva;		
 		this.capacidadMigracionLocal = capacidadMigracionLocal;
 		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
 		this.radioMigracion = radioMigracion;
-		this.aniadirHabitat(habitat);
+		this.turnosEvolucionInicial = turnosEvolucionInicial;
+		this.evolucion = evolucion;
+		this.habitabilidadInicial = habitabilidadInicial;
 		this.idTextura = idTextura;
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}
-	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, GameObject modelo)
+	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales, float capacidadMigracionLocal,float capacidadMigracionGlobal, 
+	                      int radioMigracion, int turnosEvolucionInicial, float evolucion, List<float> habitabilidadInicial, int idTextura, List<GameObject> modelos)
 	{
 		this.nombre = nombre;
 		this.siguienteTurno = siguienteTurno;
 		this.numMaxVegetales = numMaxVegetales;
 		this.numIniVegetales = numIniVegetales;
-		//this.capacidadReproductiva = capacidadReproductiva;
 		this.capacidadMigracionLocal = capacidadMigracionLocal;
 		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
 		this.radioMigracion = radioMigracion;
-		this.habitats = habitats;
-		this.idTextura = idTextura;
-		modelos = new List<GameObject>();
-		modelos.Add(modelo);
-	}
-	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, T_habitats habitat, int idTextura, List<GameObject> modelos)
-	{
-		habitats = new List<T_habitats>();
-		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
-		this.numMaxVegetales = numMaxVegetales;
-		this.numIniVegetales = numIniVegetales;
-		//this.capacidadReproductiva = capacidadReproductiva;
-		this.capacidadMigracionLocal = capacidadMigracionLocal;
-		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
-		this.radioMigracion = radioMigracion;
-		this.aniadirHabitat(habitat);
+		this.turnosEvolucionInicial = turnosEvolucionInicial;
+		this.evolucion = evolucion;
+		this.habitabilidadInicial = habitabilidadInicial;
 		this.idTextura = idTextura;
 		this.modelos = modelos;
-	}
-	public EspecieVegetal(string nombre, int siguienteTurno, int numMaxVegetales, int numIniVegetales,float capacidadReproductiva, float capacidadMigracionLocal,float capacidadMigracionGlobal, int radioMigracion, List<T_habitats> habitats, int idTextura, List<GameObject> modelos)
-	{
-		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
-		this.numMaxVegetales = numMaxVegetales;
-		this.numIniVegetales = numIniVegetales;
-		//this.capacidadReproductiva = capacidadReproductiva;
-		this.capacidadMigracionLocal = capacidadMigracionLocal;
-		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
-		this.radioMigracion = radioMigracion;
-		this.habitats = habitats;
-		this.idTextura = idTextura;
-		this.modelos = modelos;
-	}
+	}	
 }
 
 public enum tipoAlimentacionAnimal {herbivoro,carnivoro};
@@ -1006,6 +976,7 @@ public class EspecieAnimal : Especie
 	public int velocidad;								//Número de casillas que puede desplazarse por turno
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public tipoAlimentacionAnimal tipo;					//herbivoro o carnivoro 
+	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar	
 		
 	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, GameObject modelo)
 	{
@@ -1066,6 +1037,25 @@ public class EspecieAnimal : Especie
 		this.tipo = tipo;
 		this.habitats = habitats;
 		this.modelos = modelos;
+	}
+	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
+	public bool aniadirHabitat(T_habitats habitat)
+	{
+		if(habitats.Contains(habitat))
+			return false;
+		habitats.Add(habitat);
+		return true;
+	}
+	
+	//Devuelve true si ha conseguido eliminar el hábitat, false si no existe
+	public bool eliminarHabitat(T_habitats habitat)
+	{
+		return habitats.Remove(habitat);		
+	}
+	
+	public bool tieneHabitat(T_habitats habitat)
+	{
+		return habitats.Contains(habitat);
 	}	
 }
 
@@ -1084,19 +1074,40 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	public EspecieVegetal especie;					//Especie vegetal a la que pertenece
 	public int numVegetales;						//Número de vegetales de la población
 	public List<float> habitabilidad;				//Habitabilidad actual para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
+	public int indiceHabitat;						//Habitat en el que se encuentra actualmente el vegetal
+	public int turnosEvolucion;						//Turnos que quedan para que el vegetal evolucione mejorando la habitabilidad del habitat actual
 	
-	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY,GameObject modelo)
+	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, T_habitats habitatActual, GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.especie = especie;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
 		this.posX = posX;
 		this.posY = posY;
-		this.numVegetales = especie.numIniVegetales;
+		this.numVegetales = especie.numIniVegetales;		
+		this.turnosEvolucion = especie.turnosEvolucionInicial;
+		this.habitabilidad = new List<float>();
+		for(int i = 0; i < especie.habitabilidadInicial.Count;i++)
+			habitabilidad.Add(especie.habitabilidadInicial[i]);
+		this.indiceHabitat = (int)habitatActual;
 		this.modelo = modelo;
-	}	
+	}
 	
-	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, int numVegetales,GameObject modelo)
+	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, List<float> habitabilidad, T_habitats habitatActual, GameObject modelo)
+	{
+		this.idSer = idSer;
+		this.especie = especie;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
+		this.posX = posX;
+		this.posY = posY;
+		this.numVegetales = especie.numIniVegetales;		
+		this.turnosEvolucion = especie.turnosEvolucionInicial;
+		this.habitabilidad = habitabilidad;
+		this.indiceHabitat = (int)habitatActual;
+		this.modelo = modelo;
+	}
+	
+	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, T_habitats habitatActual, int numVegetales,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.especie = especie;
@@ -1104,8 +1115,15 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		this.posY = posY % FuncTablero.anchoTablero;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);
 		this.numVegetales = numVegetales;
+		this.turnosEvolucion = especie.turnosEvolucionInicial;
+		this.indiceHabitat = (int)habitatActual;
 		this.modelo = modelo;
 	}	
+	
+	public void modificaHabitat(T_habitats habitat)
+	{
+		indiceHabitat = (int)habitat;		
+	}
 	
 	public int consumeVegetales(int vegetalesAConsumir)			//Devuelve el número de vegetales que se han consumido
 	{				
@@ -1122,14 +1140,15 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		}
 		return aux;
 	}
-		
-	public bool reproduccion()
+	
+	//Devuelve true si la planta sigue viva y false si ha muerto
+	public bool reproduccionMuerte()
 	{
-		if (numVegetales >= especie.numMaxVegetales)
-			return false;
-		//numVegetales = (int)(numVegetales * (1 + especie.capacidadReproductiva/100.0f));
+		numVegetales += (int)(especie.numIniVegetales*habitabilidad[indiceHabitat]);
 		if (numVegetales >= especie.numMaxVegetales)
 			numVegetales = especie.numMaxVegetales;
+		else if(numVegetales <= 0)		
+			return false;	
 		return true;
 	}
 	
@@ -1137,14 +1156,40 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	public bool migracionLocal()
 	{
 		int r = UnityEngine.Random.Range(0, numVegetales+1);
-		return (r < (especie.capacidadMigracionLocal/100.0f) * numVegetales);
+		return (r < (especie.capacidadMigracionLocal * numVegetales * (habitabilidad[indiceHabitat]+1)/2));
 	}	
 	
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionGlobal()
 	{
 		int r = UnityEngine.Random.Range(0, numVegetales+1);
-		return (r < (especie.capacidadMigracionGlobal/100.0f) * numVegetales);
+		return (r < (especie.capacidadMigracionGlobal * numVegetales * habitabilidad[indiceHabitat]));
+	}
+	
+	//Devuelve true si se produce una evolución y false si no
+	public bool evolucion()
+	{
+		turnosEvolucion--;
+		if(turnosEvolucion <= 0)
+		{
+			habitabilidad[indiceHabitat] += especie.evolucion;
+			if(habitabilidad[indiceHabitat] > 1.0f)
+				habitabilidad[indiceHabitat] = 1.0f;
+			turnosEvolucion = especie.turnosEvolucionInicial;	
+			return true;
+		}		
+		return false;
+	}
+	//Devuelve si un hábitat es habitable para un vegetal
+	public bool esHabitable(T_habitats habitat)
+	{
+		return (habitabilidad[(int)habitat] > -1.0);
+	}	
+	
+	//Devuelve si un hábitat es habitable para un vegetal
+	public bool esOptimamenteHabitable(T_habitats habitat)
+	{
+		return (habitabilidad[(int)habitat] >= 0.0);
 	}	
 }
 
@@ -1154,8 +1199,7 @@ public class Animal : Ser
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
 	public int reserva;								//Reserva de alimento que tiene
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
-	public List<float> habitabilidad;				//Habitabilidad actual para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
-	
+	public List<List<Animation>> animaciones;
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY,GameObject modelo)
 	{
 		this.idSer = idSer;

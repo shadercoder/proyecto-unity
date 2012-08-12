@@ -738,7 +738,7 @@ public class SaveLoad {
 		int posY = veg.posY;
 		GameObject modelo = getModeloNoSerializable(veg.modelo);
 		int numVeg = veg.numVegetales;
-		return new Vegetal(idSer, especieVeg, posX, posY, numVeg, modelo);
+		return null;//return new Vegetal(idSer, especieVeg, posX, posY, numVeg, modelo);
 	}
 	
 	private static AnimalSerializable getAnimalSerializable(Animal ani) {
@@ -806,9 +806,9 @@ public class SaveLoad {
 		resultado.idEspecie = esp.idEspecie;
 		resultado.nombre = esp.nombre;
 		resultado.habitats = new List<T_habitats>();
-		for (int i = 0; i < esp.habitats.Count; i++) {
+		/*for (int i = 0; i < esp.habitats.Count; i++) {
 			resultado.habitats.Add(esp.habitats[i]);
-		}
+		}*/
 		resultado.modelos = new int[esp.modelos.Count];
 		for (int i = 0; i < esp.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(esp);
@@ -820,10 +820,10 @@ public class SaveLoad {
 		Especie resultado = new Especie();
 		resultado.idEspecie = esp.idEspecie;
 		resultado.nombre = esp.nombre;
-		resultado.habitats = new List<T_habitats>();
+		/*resultado.habitats = new List<T_habitats>();
 		for (int i = 0; i < esp.habitats.Count; i++) {
 			resultado.habitats.Add(esp.habitats[i]);
-		}
+		}*/
 		resultado.modelos = new List<GameObject>();
 		for (int i = 0; i < esp.modelos.Length; i++) {
 			resultado.modelos.Add(getModeloNoSerializable(esp.modelos[i]));
@@ -858,7 +858,7 @@ public class SaveLoad {
 		resultado.numIniVegetales = veg.numIniVegetales;
 		resultado.numMaxVegetales = veg.numMaxVegetales;
 		resultado.radioMigracion = veg.radioMigracion;
-		resultado.habitats = veg.habitats;
+		//resultado.habitats = veg.habitats;
 		resultado.modelos = new int[veg.modelos.Count];
 		for (int i = 0; i < veg.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(veg);
