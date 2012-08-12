@@ -121,6 +121,8 @@ public class InterfazPrincipal : MonoBehaviour {
 		{			
 			forzarTooltip = false;
 			actualizarEstilosBotones();
+			if(accionAnterior == taccion.insertar && modeloInsercion != null)
+				Destroy(modeloInsercion);
 			accionAnterior = accion;			
 		}
 		GUI.skin = estilo;
