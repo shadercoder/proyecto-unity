@@ -1155,7 +1155,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionLocal()
 	{
-		int r = UnityEngine.Random.Range(0, numVegetales+1);
+		int r = UnityEngine.Random.Range(0, especie.numMaxVegetales+1);
 		//float migracion = especie.capacidadMigracionLocal * numVegetales * (habitabilidad[indiceHabitat]+1)/2;		//Para permitir migracion con 	1.0f < hab <= 0.0f
 		float migracion = especie.capacidadMigracionLocal * numVegetales * habitabilidad[indiceHabitat];		
 		return (r < migracion);
@@ -1164,7 +1164,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionGlobal()
 	{
-		int r = UnityEngine.Random.Range(0, numVegetales+1);
+		int r = UnityEngine.Random.Range(0, especie.numMaxVegetales+1);
 		float migracion = especie.capacidadMigracionGlobal * numVegetales * habitabilidad[indiceHabitat];		
 		return (r < migracion);
 	}
