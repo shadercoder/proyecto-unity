@@ -150,12 +150,12 @@ public class MejorasNave : MonoBehaviour {
 		mejorasCompradas[13] = true;
 	}
 	
-	public void compraMejora14() {
+	public void compraMejora14() {	//Mejora de alacenamiento de comp adv
 		principal.setCompAdvMax(75);
 		mejorasCompradas[14] = true;
 	}
 	
-	public void compraMejora15() {
+	public void compraMejora15() {	//Mejora de almacenamiento de mat bio
 		principal.setMatBioMax(10);
 		mejorasCompradas[15] = true;
 	}

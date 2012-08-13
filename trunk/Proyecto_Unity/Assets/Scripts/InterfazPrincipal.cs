@@ -711,7 +711,7 @@ public class InterfazPrincipal : MonoBehaviour {
 				}
 				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
-				if (!mejoras.mejorasCompradas[14] || !mejoras.mejorasCompradas[12])
+				if (!mejoras.mejorasCompradas[14] || !mejoras.mejorasCompradas[12] || mejoras.mejorasCompradas[15])
 					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("","Permite almacenar material biológico"),"BotonMejoraAlmacen4"))
 				{	

@@ -28,7 +28,7 @@ public class Casilla {
 }
 
 [System.Serializable] 
-public class Vida : MonoBehaviour
+public class Vida //: MonoBehaviour
 {
 	//Referencia a la textura de las plantas
 	public Texture2D texturaPlantas;
@@ -463,7 +463,7 @@ public class Vida : MonoBehaviour
 	{
 		if(!vegetales.Contains(vegetal))
 			return false;
-		Destroy(vegetal.modelo);
+		UnityEngine.Object.Destroy(vegetal.modelo);
 		listadoSeresTurnos[turnoActual].Remove(vegetal);
 		tablero[vegetal.posX,vegetal.posY].vegetal = null;
 		vegetales.Remove(vegetal);
@@ -475,7 +475,7 @@ public class Vida : MonoBehaviour
 	{
 		if(!animales.Contains(animal))
 			return false;
-		Destroy(animal.modelo);
+		UnityEngine.Object.Destroy(animal.modelo);
 		listadoSeresTurnos[turnoActual].Remove(animal);
 		tablero[animal.posX,animal.posY].animal = null;
 		animales.Remove(animal);
@@ -487,7 +487,7 @@ public class Vida : MonoBehaviour
 	{
 		if(!edificios.Contains(edificio))
 			return false;
-		Destroy(edificio.modelo);
+		UnityEngine.Object.Destroy(edificio.modelo);
 		listadoSeresTurnos[turnoActual].Remove(edificio);
 		tablero[edificio.posX,edificio.posY].edificio = null;
 		edificios.Remove(edificio);
