@@ -73,8 +73,23 @@ public class TiposSeres : MonoBehaviour {
 		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
 		energiaAdv = new TipoEdificio("Central de energía avanzada",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
 		
-		/* Vegetales */		
-		
+		/* Vegetales */
+		/*vegetal = new EspecieVegetal(nombre, siguienteTurno, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, 
+									   turnosEvolucionInicial, evolucion, habitabilidadInicial, idTextura, modelos
+		nombre						=>	nombre de la especie
+		siguienteTurno				=>	cada cuantos turnos ejecuta la especie su algoritmo
+		numMaxVegetales				=>	número máximo de vegetales en una misma casilla. Valores desde 500-1000 para la primera especie y aumentando en sucesivas especies.
+		numIniVegetales				=>	número inicial de vegetales al crearse. Valores desde 50 para la primera especie y aumentando en sucesivas especies.
+		capacidadMigracionLocal		=>	probabilidad en tanto por 1 de que una especie migre a una casilla colindante. La migración también depende de la habitabilidad. 
+										Así que si por ejemplo tenemos 0.5f en migracionLocal y 0.5 en la habitabilidad de ese hábitat hay un 25% de que migre localmente.
+		capacidadMigracionGlobal	=>	igual que la local sólo que prueba a migrar a una casilla que puede estar entre 1 y radioMigración de distancia en cualquier direccion
+		radioMigracion				=>	distancia a la que puede migrar globalmente un vegetal
+		turnosEvolucionInicial		=>	turnos que tienen que pasar para que un vegetal mejore la habitabilidad del hábitat en el que está
+		evolucion					=>	mejora que se produce cuando turnosEvolucion llega a 0
+		habitabilidadInicial		=>	lista de floats desde -1.0f (inhabitable) a 0.0 (decreciente) y hasta 1.0f (creciente). La lista tiene que ser del mismo tamaño que el total de los habitats
+		idTextura					=>	id de la textura que se pinta debajo del modelo
+		modelos						=>	lista de los diferentes modelos que tiene la especie		
+		*/
 		//List<T_habitats> habSeta = new List<T_habitats>();
 		//habSeta.Add(T_habitats.montana);		
 		//Seta: habitats -> montaña
@@ -88,7 +103,7 @@ public class TiposSeres : MonoBehaviour {
 		habSeta.Add(-1.0f);//costa
 		habSeta.Add(-1.0f);//tundra
 		habSeta.Add(-1.0f);//inhabitable		
-		seta = new EspecieVegetal("Seta",8,1000,50,20,1,20,10,0.01f,habSeta,1,modelosVegetales.setas);
+		seta = new EspecieVegetal("Seta",8,1000,50,0.5f,0.2f,20,10,0.01f,habSeta,1,modelosVegetales.setas);
 		
 		//List<T_habitats> habFlor = new List<T_habitats>();
 		//habFlor.Add(T_habitats.llanura);
@@ -103,7 +118,7 @@ public class TiposSeres : MonoBehaviour {
 		habFlor.Add(-1.0f);//costa
 		habFlor.Add(-1.0f);//tundra
 		habFlor.Add(-1.0f);//inhabitable		
-		flor = new EspecieVegetal("Flor",8,1000,50,20,1,10,10,0.01f,habFlor,2,modelosVegetales.flores);
+		flor = new EspecieVegetal("Flor",8,1000,50,0.5f,0.2f,10,10,0.01f,habFlor,2,modelosVegetales.flores);
 		
 		//List<T_habitats> habCana = new List<T_habitats>();
 		//habCana.Add(T_habitats.costa);
@@ -119,7 +134,7 @@ public class TiposSeres : MonoBehaviour {
 		habCana.Add( 0.5f);//costa
 		habCana.Add(-1.0f);//tundra
 		habCana.Add(-1.0f);//inhabitable		
-		palo = new EspecieVegetal("Caña",8,1000,50,20,1,10,10,0.01f,habCana,3,modelosVegetales.canas);
+		palo = new EspecieVegetal("Caña",8,1000,50,0.5f,0.2f,10,10,0.01f,habCana,3,modelosVegetales.canas);
 		
 		/*List<T_habitats> habArbusto = new List<T_habitats>();
 		habArbusto.Add(T_habitats.llanura);
@@ -137,7 +152,7 @@ public class TiposSeres : MonoBehaviour {
 		habArbusto.Add( 0.5f);//costa
 		habArbusto.Add(-1.0f);//tundra
 		habArbusto.Add(-1.0f);//inhabitable		
-		arbusto = new EspecieVegetal("Arbusto",8,1000,50,20,1,10,10,0.01f,habArbusto,2,modelosVegetales.arbustos);
+		arbusto = new EspecieVegetal("Arbusto",8,1000,50,0.5f,0.2f,10,10,0.01f,habArbusto,2,modelosVegetales.arbustos);
 		
 		/*List<T_habitats> habEstrom = new List<T_habitats>();
 		habEstrom.Add(T_habitats.costa);
@@ -154,7 +169,7 @@ public class TiposSeres : MonoBehaviour {
 		habEstrom.Add( 0.5f);//costa
 		habEstrom.Add(-1.0f);//tundra
 		habEstrom.Add(-1.0f);//inhabitable		
-		estrom = new EspecieVegetal("Estromatolito",8,1000,50,20,1,10,10,0.01f,habEstrom,4,modelosVegetales.estromatolitos);
+		estrom = new EspecieVegetal("Estromatolito",8,1000,50,0.5f,0.2f,10,10,0.01f,habEstrom,4,modelosVegetales.estromatolitos);
 		
 		//List<T_habitats> habCactus = new List<T_habitats>();
 		//habCactus.Add(T_habitats.desierto);
@@ -169,7 +184,7 @@ public class TiposSeres : MonoBehaviour {
 		habCactus.Add( 0.5f);//costa
 		habCactus.Add(-1.0f);//tundra
 		habCactus.Add(-1.0f);//inhabitable		
-		cactus = new EspecieVegetal("Cactus",8,1000,50,20,1,10,10,0.01f,habCactus,0,modelosVegetales.cactus);
+		cactus = new EspecieVegetal("Cactus",8,1000,50,0.5f,0.2f,10,10,0.01f,habCactus,0,modelosVegetales.cactus);
 		
 		//List<T_habitats> habPalm = new List<T_habitats>();
 		//habPalm.Add(T_habitats.costa);
@@ -184,7 +199,7 @@ public class TiposSeres : MonoBehaviour {
 		habPalm.Add( 0.6f);//costa
 		habPalm.Add(-1.0f);//tundra
 		habPalm.Add(-1.0f);//inhabitable		
-		palmera = new EspecieVegetal("Palmera",8,1000,50,20,1,10,10,0.01f,habPalm,3,modelosVegetales.palmeras);
+		palmera = new EspecieVegetal("Palmera",8,1000,50,0.5f,0.2f,10,10,0.01f,habPalm,3,modelosVegetales.palmeras);
 		
 		/*List<T_habitats> habPino = new List<T_habitats>();
 		habPino.Add(T_habitats.montana);
@@ -201,7 +216,7 @@ public class TiposSeres : MonoBehaviour {
 		habPino.Add( 0.5f);//costa
 		habPino.Add(-1.0f);//tundra
 		habPino.Add(-1.0f);//inhabitable		
-		pino = new EspecieVegetal("Pino",8,1000,50,20,1,10,10,0.01f,habPino,4,modelosVegetales.pinos);
+		pino = new EspecieVegetal("Pino",8,1000,50,0.5f,0.2f,10,10,0.01f,habPino,4,modelosVegetales.pinos);
 		
 		/*List<T_habitats> habCipres = new List<T_habitats>();
 		habCipres.Add(T_habitats.montana);
@@ -218,7 +233,7 @@ public class TiposSeres : MonoBehaviour {
 		habCipres.Add( 0.5f);//costa
 		habCipres.Add(-1.0f);//tundra
 		habCipres.Add(-1.0f);//inhabitable		
-		cipres = new EspecieVegetal("Ciprés",8,1000,50,20,1,10,10,0.01f,habCipres,4,modelosVegetales.cipreses);
+		cipres = new EspecieVegetal("Ciprés",8,1000,50,0.5f,0.2f,10,10,0.01f,habCipres,4,modelosVegetales.cipreses);
 		
 		/*List<T_habitats> habPinoAlto = new List<T_habitats>();
 		habPinoAlto.Add(T_habitats.montana);
@@ -234,7 +249,7 @@ public class TiposSeres : MonoBehaviour {
 		habPinoAlto.Add( 0.5f);//costa
 		habPinoAlto.Add(-1.0f);//tundra
 		habPinoAlto.Add(-1.0f);//inhabitable		
-		pinoAlto = new EspecieVegetal("Pino Alto",8,1000,50,20,1,10,10,0.01f,habPinoAlto,1,modelosVegetales.pinosAltos);
+		pinoAlto = new EspecieVegetal("Pino Alto",8,1000,50,0.5f,0.2f,10,10,0.01f,habPinoAlto,1,modelosVegetales.pinosAltos);
 		
 		
 		List<T_habitats> listaHabs = new List<T_habitats>();

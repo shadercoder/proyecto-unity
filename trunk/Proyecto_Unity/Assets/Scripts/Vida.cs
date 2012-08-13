@@ -331,16 +331,16 @@ public class Vida //: MonoBehaviour
 	
 	
 	
-	//Devuelve si el animal se puede insertar en esa posición o no
-	public bool compruebaAnadeVegetal(EspecieVegetal especie,List<float> habitabilidad,int posX,int posY)
+	//Devuelve si el vegetal se puede insertar en esa posición o no
+	public bool compruebaAnadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY)
 	{
-		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] > -1.0f);	
+		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] > habitabilidadMinima);	
 	}	
 	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
-	public bool anadeVegetal(EspecieVegetal especie,List<float> habitabilidad,int posX,int posY)
+	public bool anadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY)
 	{
-		if(tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == -1.0f)
+		if(tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == habitabilidadMinima)
 			return false;
 		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
 		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
@@ -418,7 +418,7 @@ public class Vida //: MonoBehaviour
 		return true;
 	}
 	
-	public bool anadeSer(Ser ser)
+	/*public bool anadeSer(Ser ser)
 	{
 		if(ser is Vegetal)
 		{
@@ -456,7 +456,7 @@ public class Vida //: MonoBehaviour
 		}
 		seres.Add(ser);
 		return true;
-	}
+	}*/
 	
 	//Devuelve false si la especie no existe (no se elimina) y true si se elimina correctamente
 	public bool eliminaVegetal(Vegetal vegetal)
@@ -502,7 +502,7 @@ public class Vida //: MonoBehaviour
 		int nposX = posX + difX;
 		int nposY = posY + difY;				
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);		
-		return anadeVegetal(especie,habitabilidad,nposX,nposY);
+		return anadeVegetal(especie,habitabilidad,-1.0f,nposX,nposY);
 	}
 	
 	//Devuelve true si consigue desplazar al animal y false si no lo consigue
@@ -1156,14 +1156,17 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	public bool migracionLocal()
 	{
 		int r = UnityEngine.Random.Range(0, numVegetales+1);
-		return (r < (especie.capacidadMigracionLocal * numVegetales * (habitabilidad[indiceHabitat]+1)/2));
+		//float migracion = especie.capacidadMigracionLocal * numVegetales * (habitabilidad[indiceHabitat]+1)/2;		//Para permitir migracion con 	1.0f < hab <= 0.0f
+		float migracion = especie.capacidadMigracionLocal * numVegetales * habitabilidad[indiceHabitat];		
+		return (r < migracion);
 	}	
 	
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionGlobal()
 	{
 		int r = UnityEngine.Random.Range(0, numVegetales+1);
-		return (r < (especie.capacidadMigracionGlobal * numVegetales * habitabilidad[indiceHabitat]));
+		float migracion = especie.capacidadMigracionGlobal * numVegetales * habitabilidad[indiceHabitat];		
+		return (r < migracion);
 	}
 	
 	//Devuelve true si se produce una evolución y false si no
