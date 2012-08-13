@@ -1,0 +1,37 @@
+fileFormatVersion: 1
+guid: 39cd7003fad2c514b9e61a5070df0844
+ModelImporter:
+  importerVersion: 7
+  meshes:
+    scaleFactor: 0.05
+    useFileUnits: 1
+    meshCompression: 0
+    generateColliders: 0
+    swapUVs: 0
+  tangentSpace:
+    normalImportMode: 0
+    tangentImportMode: 1
+    smoothingAngle: 60
+    splitTangents: 1
+  materials:
+    generation: 1
+  animations:
+    generation: 0
+    bakeAnimations: 0
+    animationCompression: 1
+    animationWrapMode: 0
+    splitAnimations: 1
+  nodeInfo:
+    //RootNode:
+    - 100000
+    - 400000
+    - 3300000
+    - 2300000
+AssetImporter:
+  importerVersion: 1
+  fileIDToRecycleName:
+    4300000: Caracol04
+    4300002: Caracol01
+    4300004: Caracol02
+    4300006: Caracol03
+    7400000: Default Take //// Caracol 04
