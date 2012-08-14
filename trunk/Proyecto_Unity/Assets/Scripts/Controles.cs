@@ -35,7 +35,7 @@ public class Controles : MonoBehaviour {
 	
 	//Posición y rotacion actuales
 	private float distanciaNave		= 1.5f;					//La distancia hasta la nave desde la camara
-	private float distCamaraMin		= 1.0f;					//La minima distancia a la que estara la camara
+	private float distCamaraMin		= 0.5f;					//La minima distancia a la que estara la camara
 	
 	private Quaternion rotCamara	= Quaternion.identity;	//Sirve para conservar la rotación de la nave correctamente
 	
@@ -55,7 +55,7 @@ public class Controles : MonoBehaviour {
 	    Vector3 angulos = miTransform.eulerAngles;
 		xObjetivo = angulos.y;
 		yObjetivo = angulos.x;
-		setOrbita(6.5f);
+		setOrbita(7.5f);
 	}
 	
 	// Update is called once per frame

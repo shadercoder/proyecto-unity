@@ -7,10 +7,7 @@ _Luces("_Luces", 2D) = "black" {}
 _Emision("_Emision", Float) = 0.5
 _Luces2("_Luces2", 2D) = "black" {}
 _Emision2("_Emision2", Float) = 0
-_Fuerza("_Fuerza", Range(0,5) ) = 5
-_Especular("_Especular", 2D) = "black" {}
 _Bump("_Bump", 2D) = "black" {}
-_Reflejado("_Reflejado", Color) = (1,1,1,1)
 
 	}
 	
@@ -43,10 +40,7 @@ sampler2D _Luces;
 float _Emision;
 sampler2D _Luces2;
 float _Emision2;
-float _Fuerza;
-sampler2D _Especular;
 sampler2D _Bump;
-float4 _Reflejado;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -87,9 +81,9 @@ return c;
 			
 			struct Input {
 				float2 uv_Difuso;
+float2 uv_Bump;
 float2 uv_Luces;
 float2 uv_Luces2;
-float2 uv_Especular;
 
 			};
 
@@ -113,22 +107,20 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Custom = 0.0;
 				
 float4 Sampled2D1=tex2D(_Difuso,IN.uv_Difuso.xy);
+float4 Tex2DNormal0=float4(UnpackNormal( tex2D(_Bump,(IN.uv_Bump.xyxy).xy)).xyz, 1.0 );
 float4 Sampled2D0=tex2D(_Luces,IN.uv_Luces.xy);
 float4 Multiply1=Sampled2D0 * _Emision.xxxx;
 float4 Sampled2D2=tex2D(_Luces2,IN.uv_Luces2.xy);
 float4 Multiply0=Sampled2D2 * _Emision2.xxxx;
 float4 Add0=Multiply1 + Multiply0;
-float4 Multiply3=_Reflejado * _Fuerza.xxxx;
-float4 Tex2D2=tex2D(_Especular,(IN.uv_Especular.xyxy).xy);
-float4 Multiply4=Multiply3 * Tex2D2;
-float4 Master0_1_NoInput = float4(0,0,1,1);
+float4 Master0_3_NoInput = float4(0,0,0,0);
+float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
 o.Albedo = Sampled2D1;
+o.Normal = Tex2DNormal0;
 o.Emission = Add0;
-o.Specular = Multiply4;
-o.Gloss = Multiply4;
 
 				o.Normal = normalize(o.Normal);
 			}
