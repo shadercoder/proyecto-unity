@@ -966,7 +966,7 @@ public class InterfazPrincipal : MonoBehaviour {
 				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
 				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir al menu principal"))) {
 					accion = InterfazPrincipal.taccion.ninguna;
-					principal.setEscalaTiempo(escalaTiempoAntesMenu);
+					principal.setEscalaTiempo(1.0f);
 					FuncTablero.quitaPerlin();
 					Application.LoadLevel("Escena_Inicial");
 				}
