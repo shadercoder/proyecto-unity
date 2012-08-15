@@ -5,6 +5,9 @@ Shader "Planet/RecursosFiltro"
 _MainTex("Textura Recursos", 2D) = "gray" {}
 _FiltroOn("Filtro On/Off", Range(0,1) ) = 0.5
 _Emision("Brillo del filtro", Float) = 0.5
+_ComunesOn("_ComunesOn", Float) = 0
+_RarosOn("_RarosOn", Float) = 0
+_EdificiosOn("_EdificiosOn", Float) = 0
 
 	}
 	
@@ -35,6 +38,9 @@ Fog{
 sampler2D _MainTex;
 float _FiltroOn;
 float _Emision;
+float _ComunesOn;
+float _RarosOn;
+float _EdificiosOn;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -98,22 +104,25 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Custom = 0.0;
 				
 float4 Tex2D1=tex2D(_MainTex,(IN.uv_MainTex.xyxy).xy);
-float4 Multiply1=Tex2D1 * _Emision.xxxx;
 float4 Split0=Tex2D1;
-float4 Add0=float4( Split0.x, Split0.x, Split0.x, Split0.x) + float4( Split0.y, Split0.y, Split0.y, Split0.y);
-float4 Invert1= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.w, Split0.w, Split0.w, Split0.w);
-float4 Add1=float4( Split0.z, Split0.z, Split0.z, Split0.z) + Invert1;
-float4 Add2=Add0 + Add1;
-float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - _FiltroOn.xxxx;
-float4 Add3=float4( 0.8,0.8,0.8,0.8 ) + Invert0;
-float4 Subtract0=Add2 - Add3;
+float4 Multiply0=_ComunesOn.xxxx * float4( Split0.x, Split0.x, Split0.x, Split0.x);
+float4 Multiply2=_EdificiosOn.xxxx * float4( Split0.y, Split0.y, Split0.y, Split0.y);
+float4 Multiply3=_RarosOn.xxxx * float4( Split0.z, Split0.z, Split0.z, Split0.z);
+float4 Assemble0_3_NoInput = float4(0,0,0,0);
+float4 Assemble0=float4(Multiply0.x, Multiply2.y, Multiply3.z, Assemble0_3_NoInput.w);
+float4 Multiply1=Assemble0 * _Emision.xxxx;
+float4 Add4=Multiply0 + Multiply2;
+float4 Add1=Add4 + Multiply3;
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - Add1;
+float4 Subtract0_0_NoInput = float4(0,0,0,0);
+float4 Subtract0=Subtract0_0_NoInput - Invert0;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 clip( Subtract0 );
-o.Albedo = Tex2D1;
+o.Albedo = Assemble0;
 o.Emission = Multiply1;
 
 				o.Normal = normalize(o.Normal);
