@@ -182,7 +182,7 @@ public class Vida //: MonoBehaviour
 	private void pintaPlantasTex(int posX,int posY) {
 		Vegetal veg = tablero[posX,posY].vegetal;
 		texturaPlantasModificado = true;
-		if (veg.numVegetales > 0) {
+		if (veg != null && veg.numVegetales > 0) {
 			int temp = (int)Mathf.Lerp(0.0f, 4.0f, veg.numVegetales / veg.especie.numMaxVegetales);
 			if (tablero[posX,posY].pinceladas != null) {
 				if (tablero[posX,posY].pinceladas.Length < temp) {
@@ -334,7 +334,7 @@ public class Vida //: MonoBehaviour
 	//Devuelve si el vegetal se puede insertar en esa posición o no
 	public bool compruebaAnadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY)
 	{
-		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] > habitabilidadMinima);	
+		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] >= habitabilidadMinima);	
 	}	
 	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
@@ -383,7 +383,7 @@ public class Vida //: MonoBehaviour
 		idActualAnimal++;
 		animales.Add(animal);		
 		tablero[posX,posY].animal = animal;
-		Debug.Log("Añadido animal");
+		Debug.Log("A\u00F1adido animal");
 		return true;
 	}
 	
