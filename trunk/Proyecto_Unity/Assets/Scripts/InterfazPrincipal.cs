@@ -901,9 +901,9 @@ public class InterfazPrincipal : MonoBehaviour {
 				break;
 			
 			case taccionMenu.mostrarGuardar:
-			    GUI.Box(new Rect(cuantoW*30,cuantoH*posicionGuardar,cuantoW*20,cuantoH*16),new GUIContent(""),"BoxGuardar");
-		        posicionScroll = GUI.BeginScrollView(new Rect(cuantoW*30,cuantoH*posicionGuardar,cuantoW*20,cuantoH*14), posicionScroll, new Rect(0, 0, cuantoW * 20, cuantoH * 4 * numSavesExtra));
-		        if (GUI.Button(new Rect(cuantoW, 0, cuantoW * 18, cuantoH * 4), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) 
+			    GUI.Box(new Rect(cuantoW*31,cuantoH*posicionGuardar,cuantoW*18,cuantoH*14),new GUIContent(""),"BoxGuardar");
+		        posicionScroll = GUI.BeginScrollView(new Rect(cuantoW*31,cuantoH*posicionGuardar,cuantoW*18,cuantoH*12), posicionScroll, new Rect(0, 0, cuantoW * 18, cuantoH * 4 * numSavesExtra));
+		        if (GUI.Button(new Rect(cuantoW * 4, 0, cuantoW * 10, cuantoH * 3), new GUIContent("Nueva partida salvada", "Guardar una nueva partida"))) 
 				{
 					GameObject contenedor = GameObject.FindGameObjectWithTag("Carga");
 		            ValoresCarga temp = contenedor.GetComponent<ValoresCarga>();
@@ -916,7 +916,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					principal.setEscalaTiempo(escalaTiempoAntesMenu);
 		        }
 		        for (int i = 0; i < numSaves; i++) {
-	                if (GUI.Button(new Rect(cuantoW, (i + 1) * cuantoH * 4, cuantoW * 18, cuantoH * 4), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
+	                if (GUI.Button(new Rect(cuantoW * 5, (i + 1) * cuantoH * 3, cuantoW * 10, cuantoH * 3), new GUIContent(nombresSaves[i], "Sobreescribir partida num. " + i))) {
                         GameObject contenedor = GameObject.FindGameObjectWithTag("Carga");
 		            	ValoresCarga temp = contenedor.GetComponent<ValoresCarga>();
 						principal.rellenaContenedor(ref temp);
