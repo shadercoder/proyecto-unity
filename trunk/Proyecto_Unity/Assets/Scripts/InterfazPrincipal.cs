@@ -934,13 +934,13 @@ public class InterfazPrincipal : MonoBehaviour {
 				break;
 			case taccionMenu.mostrarOpcionesAudio:
 				GUI.Box(new Rect(cuantoW*32.5f,cuantoH*posicionAudio,cuantoW*15,cuantoH*12),new GUIContent(),"BoxOpcionesAudio");
-				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+1f),cuantoW*14.5f,cuantoH*2),new GUIContent("Sonido"));
-				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+3f),cuantoW*8,cuantoH*2),new GUIContent("Volumen"));
-				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+5f),cuantoW*5.5f,cuantoH*2),new GUIContent("Música"));
-				musicaVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+5f),cuantoW*8,cuantoH*2),musicaVol,0,1.0f);	
-				GUI.Label(new Rect(cuantoW*33f,cuantoH*(posicionAudio+7f),cuantoW*5.5f,cuantoH*2),new GUIContent("Efectos"));
-				sfxVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+7f),cuantoW*8,cuantoH*2),sfxVol,0,1.0f);
-				if(GUI.Button(new Rect(cuantoW*42f,cuantoH*(posicionAudio+9.5f),cuantoW*5f,cuantoH*2f),new GUIContent("Volver","Pulsa aquí para volver al menu de opciones")))
+				/*GUI.Label(new Rect(cuantoW*34f,cuantoH*(posicionAudio),cuantoW*15.5f,cuantoH*2),new GUIContent("Sonido"));*/
+				GUI.Label(new Rect(cuantoW*34f,cuantoH*(posicionAudio+2f),cuantoW*9,cuantoH*2),new GUIContent("Volumen"));
+				GUI.Label(new Rect(cuantoW*34f,cuantoH*(posicionAudio+4f),cuantoW*6.5f,cuantoH*2),new GUIContent("Música"));
+				musicaVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+5f),cuantoW*7,cuantoH*2),musicaVol,0,1.0f);	
+				GUI.Label(new Rect(cuantoW*34f,cuantoH*(posicionAudio+6f),cuantoW*5.5f,cuantoH*2),new GUIContent("Efectos"));
+				sfxVol = GUI.HorizontalSlider(new Rect(cuantoW*39f,cuantoH*(posicionAudio+7f),cuantoW*7,cuantoH*2),sfxVol,0,1.0f);
+				if(GUI.Button(new Rect(cuantoW*41f,cuantoH*(posicionAudio+9.5f),cuantoW*5f,cuantoH*2f),new GUIContent("Volver","Pulsa aquí para volver al menu de opciones")))
 					accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;			
 				
 				if(GUI.changed)
@@ -963,7 +963,7 @@ public class InterfazPrincipal : MonoBehaviour {
 				break;
 			case taccionMenu.mostrarSalirMenuPrincipal:
 				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent(),"BoxConfirmacion");
-				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
+				GUI.Label(new Rect(cuantoW*37.5f,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
 				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir al menu principal"))) {
 					accion = InterfazPrincipal.taccion.ninguna;
 					principal.setEscalaTiempo(1.0f);
@@ -975,7 +975,7 @@ public class InterfazPrincipal : MonoBehaviour {
 				break;
 			case taccionMenu.mostrarSalirJuego:			
 				GUI.Box(new Rect(cuantoW*36,cuantoH*posicionConfirmar,cuantoW*8,cuantoH*4),new GUIContent(),"BoxConfirmacion");
-				GUI.Label(new Rect(cuantoW*37,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
+				GUI.Label(new Rect(cuantoW*37.5f,cuantoH*(posicionConfirmar),cuantoW*6,cuantoH*2),new GUIContent("¿Está seguro?"));
 				if(GUI.Button(new Rect(cuantoW*37,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("Si","Pulsa aquí para salir del juego")))
 					Application.Quit();
 				if(GUI.Button(new Rect(cuantoW*40.5f,cuantoH*(posicionConfirmar+2),cuantoW*2.5f,cuantoH*1.5f),new GUIContent("No","Pulsa aquí para volver al menu de opciones")))
