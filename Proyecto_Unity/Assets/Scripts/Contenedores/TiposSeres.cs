@@ -93,6 +93,7 @@ public class TiposSeres : MonoBehaviour {
 		modelos						=>	lista de los diferentes modelos que tiene la especie		
 		*/	
 		//Seta: habitats -> llanura y colina
+		//Tier 1. Barata y normal en llanura y colina. Poca produccion de comida pero alta reproductibilidad y rango de migracion
 		List<float> habSeta = new List<float>();
 		habSeta.Add(-0.1f);//montana
 		habSeta.Add( 0.2f);//llanura
@@ -103,9 +104,10 @@ public class TiposSeres : MonoBehaviour {
 		habSeta.Add(-0.6f);//costa
 		habSeta.Add(-1.0f);//tundra
 		habSeta.Add(-1.0f);//inhabitable		
-		seta = new EspecieVegetal("Seta",8,1000,100,0.6f,0.2f,20,20,0.01f,habSeta,1,modelosVegetales.setas);
+		seta = new EspecieVegetal("Seta",8,1000,100,0.5f,0.2f,7,20,0.01f,habSeta,1,modelosVegetales.setas);
 		
 		//Flor: habitats -> llanura
+		//Tier 1. Barata y decente en llanuras. Mediocre produccion de alimento, reproductibilidad buena pero rango de migracion normal.
 		List<float> habFlor = new List<float>();
 		habFlor.Add(-0.4f);//montana
 		habFlor.Add( 0.5f);//llanura
@@ -116,9 +118,10 @@ public class TiposSeres : MonoBehaviour {
 		habFlor.Add(-1.0f);//costa
 		habFlor.Add(-1.0f);//tundra
 		habFlor.Add(-1.0f);//inhabitable		
-		flor = new EspecieVegetal("Flor",8,1200,150,0.4f,0.2f,10,10,0.01f,habFlor,2,modelosVegetales.flores);
+		flor = new EspecieVegetal("Flor",8,1200,150,0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
 
 		//Palo (Caña): habitats -> llanura, costa y desierto
+		//Tier 2. Normal en llanura, desierto y costa, produccion de alimento normal, reproductibilidad normal y rango alto. Alto ratio de evolucion.
 		List<float> habCana = new List<float>();
 		habCana.Add(-1.0f);//montana
 		habCana.Add( 0.3f);//llanura
@@ -129,9 +132,10 @@ public class TiposSeres : MonoBehaviour {
 		habCana.Add( 0.3f);//costa
 		habCana.Add(-1.0f);//tundra
 		habCana.Add(-1.0f);//inhabitable		
-		palo = new EspecieVegetal("Caña",8,1500,200,0.35f,0.1f,15,8,0.05f,habCana,3,modelosVegetales.canas);
+		palo = new EspecieVegetal("Caña",8,1500,200,0.55f,0.1f,6,8,0.04f,habCana,3,modelosVegetales.canas);
 		
 		//Arbusto: habitats -> llanura, colina, montaña y desierto
+		//Tier 2. Decente en llanura y colina. Produccion normal y reproductibilidad normal. Rango bajo y evolucion lenta pero alta.
 		List<float> habArbusto = new List<float>();
 		habArbusto.Add(-0.3f);//montana
 		habArbusto.Add( 0.3f);//llanura
@@ -142,85 +146,91 @@ public class TiposSeres : MonoBehaviour {
 		habArbusto.Add(-1.0f);//costa
 		habArbusto.Add(-1.0f);//tundra
 		habArbusto.Add(-1.0f);//inhabitable		
-		arbusto = new EspecieVegetal("Arbusto",8,1300,120,0.5f,0.1f,5,20,0.05f,habArbusto,2,modelosVegetales.arbustos);
+		arbusto = new EspecieVegetal("Arbusto",8,1800,120,0.4f,0.1f,3,20,0.1f,habArbusto,2,modelosVegetales.arbustos);
 
 		//Estrom (Estromatolito): habitats -> costa, desierto y volcanico
+		//Tier 3. Muy buena en costas. Alta produccion de alimento y reproductibilidad un poco baja. Poca migracion y poco radio. Evolucion decente.
 		List<float> habEstrom = new List<float>();
 		habEstrom.Add(-1.0f);//montana
-		habEstrom.Add( 0.5f);//llanura
+		habEstrom.Add(-1.0f);//llanura
 		habEstrom.Add(-1.0f);//colina
-		habEstrom.Add( 0.5f);//desierto
-		habEstrom.Add(-1.0f);//volcanico
+		habEstrom.Add(-0.8f);//desierto
+		habEstrom.Add(-0.1f);//volcanico
 		habEstrom.Add(-1.0f);//mar
-		habEstrom.Add( 0.5f);//costa
-		habEstrom.Add(-1.0f);//tundra
+		habEstrom.Add( 0.8f);//costa
+		habEstrom.Add(-0.4f);//tundra
 		habEstrom.Add(-1.0f);//inhabitable		
-		estrom = new EspecieVegetal("Estromatolito",8,1000,100,0.5f,0.2f,10,10,0.01f,habEstrom,4,modelosVegetales.estromatolitos);
+		estrom = new EspecieVegetal("Estromatolito",10,2400,350,0.3f,0.1f,3,25,0.03f,habEstrom,4,modelosVegetales.estromatolitos);
 
 		//Cactus: habitats -> desierto
+		//Tier 3. Muy buena en desierto y buena en volcanico. Produccion de alimento decente, reproductibilidad normal, alto ratio de migracion y alta evolucion.
 		List<float> habCactus = new List<float>();
-		habCactus.Add(-1.0f);//montana
-		habCactus.Add( 0.5f);//llanura
+		habCactus.Add(-0.8f);//montana
+		habCactus.Add(-0.6f);//llanura
 		habCactus.Add(-1.0f);//colina
-		habCactus.Add( 0.5f);//desierto
-		habCactus.Add(-1.0f);//volcanico
+		habCactus.Add( 0.7f);//desierto
+		habCactus.Add( 0.5f);//volcanico
 		habCactus.Add(-1.0f);//mar
-		habCactus.Add( 0.5f);//costa
+		habCactus.Add(-1.0f);//costa
 		habCactus.Add(-1.0f);//tundra
 		habCactus.Add(-1.0f);//inhabitable		
-		cactus = new EspecieVegetal("Cactus",8,1000,100,0.5f,0.2f,10,10,0.01f,habCactus,0,modelosVegetales.cactus);
+		cactus = new EspecieVegetal("Cactus",8,2200,250,0.35f,0.3f,8,12,0.07f,habCactus,0,modelosVegetales.cactus);
 
 		//Palmera: habitats -> costa
+		//Tier 4. Buenisima en costas y mala en llanuras. Alta produccion, reproductibilidad buena, alta migracion y alta evolucion.
 		List<float> habPalm = new List<float>();
 		habPalm.Add(-1.0f);//montana
-		habPalm.Add(-0.8f);//llanura
+		habPalm.Add( 0.2f);//llanura
 		habPalm.Add(-1.0f);//colina
-		habPalm.Add(-0.8f);//desierto
+		habPalm.Add(-0.2f);//desierto
 		habPalm.Add(-1.0f);//volcanico
 		habPalm.Add(-1.0f);//mar
-		habPalm.Add( 0.6f);//costa
+		habPalm.Add( 0.9f);//costa
 		habPalm.Add(-1.0f);//tundra
 		habPalm.Add(-1.0f);//inhabitable		
-		palmera = new EspecieVegetal("Palmera",8,1000,100,0.5f,0.2f,10,10,0.01f,habPalm,3,modelosVegetales.palmeras);
+		palmera = new EspecieVegetal("Palmera",8,3000,400,0.4f,0.3f,5,15,0.1f,habPalm,3,modelosVegetales.palmeras);
 
 		//Pino: habitats -> tundra, colina y montaña
+		//Tier 4. Muy buena en colinas, buena en llanura y mediocreo en montañas. Produccion buena, reproductibilidad buena, migracion mediocre y evolucion alta.
 		List<float> habPino = new List<float>();
-		habPino.Add(-1.0f);//montana
+		habPino.Add( 0.3f);//montana
 		habPino.Add( 0.5f);//llanura
-		habPino.Add(-1.0f);//colina
-		habPino.Add( 0.5f);//desierto
+		habPino.Add( 0.7f);//colina
+		habPino.Add(-1.0f);//desierto
 		habPino.Add(-1.0f);//volcanico
 		habPino.Add(-1.0f);//mar
-		habPino.Add( 0.5f);//costa
+		habPino.Add(-0.1f);//costa
 		habPino.Add(-1.0f);//tundra
 		habPino.Add(-1.0f);//inhabitable		
-		pino = new EspecieVegetal("Pino",8,1000,100,0.5f,0.2f,10,10,0.01f,habPino,4,modelosVegetales.pinos);
+		pino = new EspecieVegetal("Pino",8,3500,250,0.5f,0.2f,5,20,0.15f,habPino,4,modelosVegetales.pinos);
 
 		//Ciprés: habitats -> tundra, colina y montaña
+		//Tier 5. Bueno en muchos habitats. Procuddion muy alta, reproduccion buena, migracion normal y evolucion altisima.
 		List<float> habCipres = new List<float>();
-		habCipres.Add(-1.0f);//montana
-		habCipres.Add( 0.5f);//llanura
-		habCipres.Add(-1.0f);//colina
-		habCipres.Add( 0.5f);//desierto
-		habCipres.Add(-1.0f);//volcanico
+		habCipres.Add( 0.6f);//montana
+		habCipres.Add( 0.2f);//llanura
+		habCipres.Add( 0.4f);//colina
+		habCipres.Add(-0.8f);//desierto
+		habCipres.Add(-0.5f);//volcanico
 		habCipres.Add(-1.0f);//mar
-		habCipres.Add( 0.5f);//costa
-		habCipres.Add(-1.0f);//tundra
+		habCipres.Add(-0.1f);//costa
+		habCipres.Add( 0.6f);//tundra
 		habCipres.Add(-1.0f);//inhabitable		
-		cipres = new EspecieVegetal("Ciprés",8,1000,100,0.5f,0.2f,10,10,0.01f,habCipres,4,modelosVegetales.cipreses);
+		cipres = new EspecieVegetal("Ciprés",8,4000,450,0.65f,0.25f,6,10,0.2f,habCipres,4,modelosVegetales.cipreses);
 
 		//Pino Alto: habitats -> tundra y montaña
+		//Tier 5. Muy bueno en montaña y colina, y decente en mas. Produccion altisima, reproduccion buena, migracion alta y evolucion muy alta.
 		List<float> habPinoAlto = new List<float>();
-		habPinoAlto.Add(-1.0f);//montana
+		habPinoAlto.Add( 0.9f);//montana
 		habPinoAlto.Add( 0.5f);//llanura
-		habPinoAlto.Add(-1.0f);//colina
-		habPinoAlto.Add( 0.5f);//desierto
+		habPinoAlto.Add( 0.9f);//colina
+		habPinoAlto.Add(-1.0f);//desierto
 		habPinoAlto.Add(-1.0f);//volcanico
 		habPinoAlto.Add(-1.0f);//mar
-		habPinoAlto.Add( 0.5f);//costa
-		habPinoAlto.Add(-1.0f);//tundra
+		habPinoAlto.Add(-0.5f);//costa
+		habPinoAlto.Add( 0.3f);//tundra
 		habPinoAlto.Add(-1.0f);//inhabitable		
-		pinoAlto = new EspecieVegetal("Pino Alto",8,1000,100,0.5f,0.2f,10,10,0.01f,habPinoAlto,1,modelosVegetales.pinosAltos);
+		pinoAlto = new EspecieVegetal("Pino Alto",8,5000,600,0.45f,0.25f,6,12,0.2f,habPinoAlto,1,modelosVegetales.pinosAltos);
 		
 		
 		List<T_habitats> listaHabs = new List<T_habitats>();
