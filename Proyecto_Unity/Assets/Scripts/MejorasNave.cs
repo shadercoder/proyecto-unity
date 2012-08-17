@@ -4,9 +4,26 @@ using System.Collections;
 public class MejorasNave : MonoBehaviour {
 	
 	//Modelos de las piezas
-	public GameObject piezaUno;
-	public GameObject piezaUnoNivel2;
-	public GameObject piezaDos;
+	//Sensores
+	public GameObject SensoresInfo;			//Habilita barra inferior de informacion
+	public GameObject SensoresHabitat;		//Deteccion de habitats
+	public GameObject SensoresRaros;		//Deteccion de metales raros
+	public GameObject SensoresVida;			//Deteccion de animales y vegetales
+	//Motor
+	public GameObject MotorT1;				//Mejora de motor nivel 1
+	public GameObject MotorT2;				//Mejora de motor nivel 2
+	public GameObject MotorT3;				//Mejora de aislamiento magnético (viaje por los polos)
+	public GameObject MotorT4;				//Mejora de orbita
+	//Energia
+	public GameObject GeneradorT1;			//Mejora de energia nivel 1
+	public GameObject GeneradorT2;			//Mejora de energia nivel 2
+	public GameObject GenHab1;				//Desbloqueo de habilidades 1
+	public GameObject GenHab2;				//Desbloqueo de habilidades 2
+	//Almacen
+	public GameObject AlmacenT1;			//Mejora de almacen 1
+	public GameObject AlmacenT2;			//Mejora de almacen 2
+	public GameObject AlmacenAv;			//Desbloquear almacenamiento de componentes avanzados
+	public GameObject AlmacenBio;			//Desbloquear almacenamiento de material biologico
 	
 	//Variables de control
 	public bool[] mejorasCompradas;
@@ -45,90 +62,93 @@ public class MejorasNave : MonoBehaviour {
 		mejorasCompradas[14] = false;	//Desbloquear almacenamiento de componentes avanzados
 		mejorasCompradas[15] = false;	//Desbloquear almacenamiento de material biologico
 		
-		//Inicializar las piezas a invisibles
-		if (piezaUno != null)
-			piezaUno.GetComponent<MeshRenderer>().enabled = false;
-		if (piezaUnoNivel2 != null) 
-			piezaUnoNivel2.GetComponent<MeshRenderer>().enabled = false;
-		if (piezaDos != null) 
-			piezaDos.GetComponent<MeshRenderer>().enabled = false;
+		/*Inicializar las piezas a invisibles
+		if (SensoresInfo != null)
+			SensoresInfo.GetComponent<MeshRenderer>().enabled = false;
+		if (SensoresHabitat != null) 
+			SensoresHabitat.GetComponent<MeshRenderer>().enabled = false;
+		if (SensoresRaros != null) 
+			SensoresRaros.GetComponent<MeshRenderer>().enabled = false;
+		if (SensoresVida != null) 
+			SensoresVida.GetComponent<MeshRenderer>().enabled = false;
+		...*/
 	}
 	
 	//Sensores -----------------------------------------------------------------------------------
 	public void compraMejora0() {	//Habilitar barra inferior de informacion
 		interfaz.mejoraBarraInferior();
+		SensoresInfo.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[0] = true;
 	}
 	
 	public void compraMejora1() {	//Habilitar deteccion de habitats
 		interfaz.mejoraMostrarHabitats();
+		SensoresHabitat.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[1] = true;
 	}
 	
 	public void compraMejora2() {	//Habilitar deteccion de metales raros
 		interfaz.mejoraMostrarMetales();
+		SensoresRaros.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[2] = true;
 	}
 	
 	public void compraMejora3() {	//Habilitar la deteccion de animales y plantas
 		interfaz.mejoraMostrarSeres();
+		SensoresVida.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[3] = true;
 	}
 	
 	//Motores -----------------------------------------------------------------------------------
 	public void compraMejora4() {	//Mejora de velocidad nivel 1
 		controles.mejoraVelocidad1();
-		if (piezaUno != null) {
-			piezaUno.GetComponent<MeshRenderer>().enabled = true;
-		}
-		else
-			Debug.LogError("Falta por inicializar piezaUno desde el editor.");
+		ocultaMotores();
+		MotorT1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[4] = true;
 	}
 	
 	public void compraMejora5() {	//Mejora de velocidad nivel 2
 		controles.mejoraVelocidad2();
-		if (piezaUnoNivel2 != null) {
-			piezaUnoNivel2.GetComponent<MeshRenderer>().enabled = true;
-		}
-		else
-			Debug.LogError("Falta por inicializar piezaUnoNivel2 desde el editor.");
-		if (piezaUno != null) {
-			piezaUno.GetComponent<MeshRenderer>().enabled = false;
-		}
-		else
-			Debug.LogError("Falta por inicializar piezaUno desde el editor.");
+		ocultaMotores();
+		MotorT2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[5] = true;		
 	}
 	
 	public void compraMejora6() {	//Mejora de aislamiento magnetico
 		controles.mejoraAislamientoMag();
+		MotorT3.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[6] = true;
 	}
 	
 	public void compraMejora7() {	//Mejora de orbita
 		controles.mejoraSubirOrbita();
+		MotorT4.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[7] = true;
 	}
 	
 	//Energia --------------------------------------------------------------------------------------
 	public void compraMejora8() {	//Mejora energia nivel 1
 		principal.mejoraEnergia1();
+		GeneradorT1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[8] = true;
 	}
 	
 	public void compraMejora9() {	//Mejora energia nivel 2
 		principal.mejoraEnergia2();
+		
+		GeneradorT2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[9] = true;
 	}
 	
 	public void compraMejora10() {	//Desbloqueo habilidades nivel 1
 		//TODO
+		GenHab1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[10] = true;
 	}
 	
 	public void compraMejora11() {	//Desbloqueo habilidades nivel 2
 		//TODO
+		GenHab2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[11] = true;
 	}
 	
@@ -138,6 +158,7 @@ public class MejorasNave : MonoBehaviour {
 		principal.setCompBasMax(350);
 		principal.setCompAdvMax(200);
 //		principal.setMatBioMax(75);
+		AlmacenT1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[12] = true;
 		
 	}
@@ -147,16 +168,26 @@ public class MejorasNave : MonoBehaviour {
 		principal.setCompBasMax(600);
 		principal.setCompAdvMax(400);
 		principal.setMatBioMax(50);
+		AlmacenT2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[13] = true;
 	}
 	
 	public void compraMejora14() {	//Mejora de alacenamiento de comp adv
 		principal.setCompAdvMax(75);
+		AlmacenAv.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[14] = true;
 	}
 	
 	public void compraMejora15() {	//Mejora de almacenamiento de mat bio
 		principal.setMatBioMax(10);
+		AlmacenBio.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[15] = true;
+	}
+	
+	public void ocultaMotores(){
+//		MotorT1.GetComponent<MeshRenderer>().enabled = false;
+//		MotorT2.GetComponent<MeshRenderer>().enabled = false;
+//		MotorT3.GetComponent<MeshRenderer>().enabled = false;
+//		MotorT4.GetComponent<MeshRenderer>().enabled = false;	
 	}
 }
