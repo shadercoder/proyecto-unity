@@ -1,9 +1,9 @@
 fileFormatVersion: 1
-guid: 39cd7003fad2c514b9e61a5070df0844
+guid: 55c65e9af0c00af469d5c0dd6b861193
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.2
+    scaleFactor: 0.4
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
@@ -30,8 +30,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Caracol04
-    4300002: Caracol01
-    4300004: Caracol02
-    4300006: Caracol03
-    7400000: Default Take //// Caracol 04
+    4300000: Oso2

@@ -1483,16 +1483,16 @@ public class InterfazPrincipal : MonoBehaviour {
 			}
 			GUI.BeginGroup(new Rect(69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 13 * cuantoH));
 			GUI.Box(new Rect(0, 0, 11 * cuantoW, 13 * cuantoH), "", "BloqueDerechoFiltroRecursos");
-			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 6, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton Minerales 1"), "BotonFiltroRecursosMineralComun")) {
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 6, cuantoW * 2, cuantoH * 2), new GUIContent("", "Muestra los minerales comunes"), "BotonFiltroRecursosMineralComun")) {
 				
 			}
-			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton RadiosAccion 1"), "BotonFiltroRecursosRadio1")) {
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Influencia Energetica"), "BotonFiltroRecursosRadioEnergia")) {
 				
 			}
-			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton Minerales 2"), "BotonFiltroRecursosMineralRaro")) {
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), new GUIContent("", "Muestra los minerales raros"), "BotonFiltroRecursosMineralRaro")) {
 				
 			}
-			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton RadiosAccion 2"), "BotonFiltroRecursosRadio2")) {
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Terreno de las Granjas"), "BotonFiltroRecursosRadioGranja")) {
 				
 			}
 			GUI.EndGroup();
