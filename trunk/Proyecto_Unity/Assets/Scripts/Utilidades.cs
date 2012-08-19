@@ -1193,7 +1193,7 @@ public class FuncTablero {
 		int tiempo = (int)Time.realtimeSinceStartup;
 		int minutes = tiempo / 60;
 		int seconds = tiempo % 60;
-		int fraction = (tiempo * 100) % 100;
+		int fraction = ((int)(Time.realtimeSinceStartup * 100f)) % 100;
 		result = System.String.Format ("{0:00}:{1:00}:{2:00}", minutes, seconds, fraction);
 		return result;
 	}

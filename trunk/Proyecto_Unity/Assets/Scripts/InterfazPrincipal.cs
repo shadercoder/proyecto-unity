@@ -57,8 +57,11 @@ public class InterfazPrincipal : MonoBehaviour {
 	
 	private enum telementoInsercion								//Tipo de elemento seleccionado en un momento dado
 		{ninguno,fabricaCompBas,centralEnergia,granja,fabricaCompAdv,centralEnergiaAdv,seta,flor,cana,arbusto,estromatolito,cactus,palmera,pino,cipres,pinoAlto,
-		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5}	
+		herbivoro1,herbivoro2,herbivoro3,herbivoro4,herbivoro5,carnivoro1,carnivoro2,carnivoro3,carnivoro4,carnivoro5};
 	private telementoInsercion elementoInsercion = telementoInsercion.ninguno;
+	
+	private enum tMenuDerecho {ninguno, filtroAnimales, filtroRecursos, filtroVegetales, insercion, seleccion};
+	private tMenuDerecho tipoMenuDerecho = tMenuDerecho.ninguno;
 	
 	//Menus para guardar
     private Vector2 posicionScroll 		= Vector2.zero;			//La posicion en la que se encuentra la ventana con scroll
@@ -151,6 +154,7 @@ public class InterfazPrincipal : MonoBehaviour {
 		bloqueIzquierdo();
 		bloqueSeleccion();
 		bloqueInformacion();
+		bloqueDerecho();
 		
 		if(posicionFueraDeInterfaz(Input.mousePosition))
 		{
@@ -722,7 +726,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroRecursos"))
 				{	
-					//TODO
+					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.filtroRecursos;
 				}
 				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
@@ -738,7 +742,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroVegetales"))
 				{	
-					//TODO
+					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.filtroVegetales;
 				}
 				GUI.enabled = true;
 				GUILayout.Space(cuantoW);
@@ -746,7 +750,7 @@ public class InterfazPrincipal : MonoBehaviour {
 					GUI.enabled = false;
 				if(GUILayout.Button(new GUIContent("",""),"BotonHabilidadFiltroAnimales"))
 				{
-					//TODO
+					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.filtroAnimales;
 				}
 				GUI.enabled = true;
 				GUILayout.Space(cuantoW*3);
@@ -1398,5 +1402,160 @@ public class InterfazPrincipal : MonoBehaviour {
 	
 	public void mejoraMostrarSeres() {
 		mostrarInfoSeres = true;
+	}
+	
+	private void bloqueDerecho() {
+		float posicionBloqueH = 0;
+		switch (tipoMenuDerecho) {
+		case tMenuDerecho.ninguno:
+			break;
+		case tMenuDerecho.filtroAnimales:
+			switch (aspectRatio)
+			{
+				case taspectRatio.aspectRatio16_9:
+					posicionBloqueH = 8.5f;	//sobre 45
+					break;
+				case taspectRatio.aspectRatio16_10:
+					posicionBloqueH = 11;	//sobre 50
+					break;
+				case taspectRatio.aspectRatio4_3:
+					posicionBloqueH = 16;	//sobre 60
+					break;
+				default:break;
+			}
+			GUI.BeginGroup(new Rect(69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
+			GUI.Box(new Rect(0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoFiltroAnimales");
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 4, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Carnivoro1"), "BotonInsertarCarnivoro1")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 7, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Carnivoro2"), "BotonInsertarCarnivoro2")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Carnivoro3"), "BotonInsertarCarnivoro3")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 13, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Carnivoro4"), "BotonInsertarCarnivoro4")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 16, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Carnivoro5"), "BotonInsertarCarnivoro5")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 4, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Herbivoro1"), "BotonInsertarHerbivoro1")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 7, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Herbivoro2"), "BotonInsertarHerbivoro2")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Herbivoro3"), "BotonInsertarHerbivoro3")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 13, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Herbivoro4"), "BotonInsertarHerbivoro4")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 16, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Herbivoro5"), "BotonInsertarHerbivoro5")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 23, cuantoW * 2, cuantoH * 2), new GUIContent("", "Desactivar filtros de Carnivoros"), "BotonFiltroAnimalesOffCarnivoros")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 23, cuantoW * 2, cuantoH * 2), new GUIContent("", "Desactivar filtros de Herbivoros"), "BotonFiltroAnimalesOffHerbivoros")) {
+				
+			}
+			GUI.EndGroup();
+			//TODO Botones de filtros de animales
+			if (GUI.Button(new Rect(79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
+				tipoMenuDerecho = tMenuDerecho.ninguno;
+			}
+			break;
+		case tMenuDerecho.filtroRecursos:
+			switch (aspectRatio)
+			{
+				case taspectRatio.aspectRatio16_9:
+					posicionBloqueH = 16;	//sobre 45
+					break;
+				case taspectRatio.aspectRatio16_10:
+					posicionBloqueH = 18.5f;	//sobre 50
+					break;
+				case taspectRatio.aspectRatio4_3:
+					posicionBloqueH = 23.5f;	//sobre 60
+					break;
+				default:break;
+			}
+			GUI.BeginGroup(new Rect(69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 13 * cuantoH));
+			GUI.Box(new Rect(0, 0, 11 * cuantoW, 13 * cuantoH), "", "BloqueDerechoFiltroRecursos");
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 6, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton Minerales 1"), "BotonFiltroRecursosMineralComun")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton RadiosAccion 1"), "BotonFiltroRecursosRadio1")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton Minerales 2"), "BotonFiltroRecursosMineralRaro")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Boton RadiosAccion 2"), "BotonFiltroRecursosRadio2")) {
+				
+			}
+			GUI.EndGroup();
+			if (GUI.Button(new Rect(79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
+				tipoMenuDerecho = tMenuDerecho.ninguno;
+			}
+			break;
+		case tMenuDerecho.filtroVegetales:
+			switch (aspectRatio)
+			{
+				case taspectRatio.aspectRatio16_9:
+					posicionBloqueH = 12.5f;	//sobre 45
+					break;
+				case taspectRatio.aspectRatio16_10:
+					posicionBloqueH = 15;	//sobre 50
+					break;
+				case taspectRatio.aspectRatio4_3:
+					posicionBloqueH = 20;	//sobre 60
+					break;
+				default:break;
+			}
+			GUI.BeginGroup(new Rect(69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 20 * cuantoH));
+			GUI.Box(new Rect(0, 0, 11 * cuantoW, 20 * cuantoH), "", "BloqueDerechoFiltroVegetales");
+			if (GUI.Button(new Rect(cuantoW * 3, cuantoH * 4, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Seta"), "BotonInsertarSeta")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 3, cuantoH * 7, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Ca\u00f1a"), "BotonInsertarCana")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 3, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Estromatolito"), "BotonInsertarEstromatolito")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 3, cuantoH * 13, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Palmera"), "BotonInsertarPalmera")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 3, cuantoH * 16, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Cipres"), "BotonInsertarCipres")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 6, cuantoH * 4, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Flor"), "BotonInsertarFlor")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 6, cuantoH * 7, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Arbusto"), "BotonInsertarArbusto")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 6, cuantoH * 10, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Cactus"), "BotonInsertarCactus")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 6, cuantoH * 13, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Pino"), "BotonInsertarPino")) {
+				
+			}
+			if (GUI.Button(new Rect(cuantoW * 6, cuantoH * 16, cuantoW * 2, cuantoH * 2), new GUIContent("", "Filtrar la especie Pino alto"), "BotonInsertarPinoAlto")) {
+				
+			}
+			GUI.EndGroup();
+			//TODO Botones del filtro de vegetales
+			if (GUI.Button(new Rect(79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
+				tipoMenuDerecho = tMenuDerecho.ninguno;
+			}
+			break;
+		case tMenuDerecho.insercion:
+			break;
+		case tMenuDerecho.seleccion:
+			break;
+		}
 	}
 }

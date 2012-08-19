@@ -659,7 +659,7 @@ public class Vida //: MonoBehaviour
 					case tipoEstadoAnimal.morir:
 						eliminaAnimal(animal);
 						continue;
-						break;					
+//						break;					
 					default:break;
 					}
 				}
