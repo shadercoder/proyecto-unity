@@ -81,10 +81,10 @@ public class Principal : MonoBehaviour {
 	void Update () {
 		Time.timeScale = escalaTiempo;
 		if(Input.GetKeyDown(KeyCode.V)) 
-            if(algoritmoActivado)
-                    algoritmoActivado = false;
+			if(algoritmoActivado)
+ 				algoritmoActivado = false;
             else
-                    algoritmoActivado = true;
+				algoritmoActivado = true;
 	}
 	
 	public void setEscalaTiempo(float nuevaEscala)

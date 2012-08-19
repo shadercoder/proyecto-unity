@@ -201,8 +201,8 @@ public class EspecieAnimalSerializable {
 	public int consumo;
 	public int reservaMaxima;
 	public int alimentoQueProporciona;
-	public int vision;
-	public int velocidad;
+	public int alimentoMaxTurno;
+	public int aguante;
 	public int reproductibilidad;
 	public tipoAlimentacionAnimal tipo;	
 	
@@ -871,15 +871,15 @@ public class SaveLoad {
 		int consumo = ani.consumo;
 		int reservaMax = ani.reservaMaxima;
 		int alimento = ani.alimentoQueProporciona;
-		int vision = ani.vision;
-		int velocidad = ani.velocidad;
+		int alimentoMaxTurno = ani.alimentoMaxTurno;
+		int aguante = ani.aguante;
 		int repro = ani.reproductibilidad;
 		tipoAlimentacionAnimal tipoAlim = ani.tipo;
 		List<T_habitats> habitats = ani.habitats;		
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < ani.modelos.Length; i++)
 			modelos.Add(getModeloNoSerializable(ani.modelos[i]));
-		return null;//return new EspecieAnimal(nombre, consumo, reservaMax, alimento, vision, velocidad, repro, tipoAlim, habitats, modelos);
+		return null;//return new EspecieAnimal(nombre, consumo, reservaMax, alimento, alimentoMaxTurno, aguante, repro, tipoAlim, habitats, modelos);
 	}
 	
 	private static EspecieAnimalSerializable getEspecieAniSerializable(EspecieAnimal ani) {
@@ -887,9 +887,9 @@ public class SaveLoad {
 		resultado.nombre = ani.nombre;
 		resultado.consumo = ani.consumo;
 		resultado.reservaMaxima = ani.reservaMaxima;
-		resultado.alimentoQueProporciona = ani.alimentoQueProporciona;
-		resultado.vision = ani.vision;
-		resultado.velocidad = ani.velocidad;
+		//resultado.alimentoQueProporciona = ani.alimentoQueProporciona;
+		resultado.alimentoMaxTurno = ani.alimentoMaxTurno;
+		//resultado.aguante = ani.aguanteInicial;
 		resultado.reproductibilidad = ani.reproductibilidad;
 		resultado.tipo = ani.tipo;
 		resultado.habitats = ani.habitats;
