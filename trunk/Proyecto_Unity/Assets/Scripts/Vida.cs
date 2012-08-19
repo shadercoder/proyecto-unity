@@ -44,7 +44,7 @@ public class Vida //: MonoBehaviour
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
 	public List<Edificio> edificios;								//Listado de todos los edificios	
-	public List<Ser>[] listadoSeresTurnos;								//Listado que contiene los turnos en los que cada ser ejecuta algoritmo
+	public List<Ser>[] listadoSeresTurnos;							//Listado que contiene los turnos en los que cada ser ejecuta algoritmo
 	
 	public int numMaxTurnos;
 	public int turnoActual;
@@ -310,31 +310,11 @@ public class Vida //: MonoBehaviour
 		numTiposEdificios--;
 		return true;
 	}
-	
-	/*//Devuelve la especie identificada por nombre
-	public Especie dameEspecie(string nombre)
-	{
-		Especie especie;
 		
-		especies.TryGetValue(nombre,out especie);
-		return especie;			
-	}*/
-	
-	/*//Devuelve la especie identificada por nombre
-	public TipoEdificio dameTipoEdificio(string nombre)
-	{
-		TipoEdificio tipoEdificio;
-		tiposEdificios.TryGetValue(nombre,out tipoEdificio);
-		return tipoEdificio;			
-	}*/
-	
-	
-	
-	
 	//Devuelve si el vegetal se puede insertar en esa posición o no
 	public bool compruebaAnadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY)
 	{
-		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] >= habitabilidadMinima);	
+		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] > habitabilidadMinima);	
 	}	
 	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
@@ -458,7 +438,7 @@ public class Vida //: MonoBehaviour
 		return true;
 	}*/
 	
-	//Devuelve false si la especie no existe (no se elimina) y true si se elimina correctamente
+	//Elimina un vegetal, si no existe devuelve false
 	public bool eliminaVegetal(Vegetal vegetal)
 	{
 		if(!vegetales.Contains(vegetal))
@@ -466,11 +446,12 @@ public class Vida //: MonoBehaviour
 		UnityEngine.Object.Destroy(vegetal.modelo);
 		listadoSeresTurnos[turnoActual].Remove(vegetal);
 		tablero[vegetal.posX,vegetal.posY].vegetal = null;
+		seres.Remove(vegetal);
 		vegetales.Remove(vegetal);
 		return true;
 	}
 	
-	//Devuelve false si la especie no existe (no se elimina) y true si se elimina correctamente
+	//Elimina un animal, si no existe devuelve false
 	public bool eliminaAnimal(Animal animal)
 	{
 		if(!animales.Contains(animal))
@@ -478,11 +459,12 @@ public class Vida //: MonoBehaviour
 		UnityEngine.Object.Destroy(animal.modelo);
 		listadoSeresTurnos[turnoActual].Remove(animal);
 		tablero[animal.posX,animal.posY].animal = null;
+		seres.Remove(animal);
 		animales.Remove(animal);
 		return true;
 	}
 	
-	//Devuelve false si el edificio no existe (no se elimina) y true si se elimina correctamente
+	//Elimina un edificio, si no existe devuelve false
 	public bool eliminaEdificio(Edificio edificio)
 	{
 		if(!edificios.Contains(edificio))
@@ -490,6 +472,7 @@ public class Vida //: MonoBehaviour
 		UnityEngine.Object.Destroy(edificio.modelo);
 		listadoSeresTurnos[turnoActual].Remove(edificio);
 		tablero[edificio.posX,edificio.posY].edificio = null;
+		seres.Remove(edificio);
 		edificios.Remove(edificio);
 		return true;
 	}
@@ -509,12 +492,12 @@ public class Vida //: MonoBehaviour
 	public bool desplazaAnimal(Animal animal,int nposX,int nposY)
 	{		
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
-		while(animal.posX != nposX || animal.posY != nposY)		
-		{			
-			if(!tieneAnimal(nposX,nposY) && animal.especie.tieneHabitat(tablero[nposX,nposY].habitat))
+		//while(animal.posX != nposX || animal.posY != nposY)		
+		//{			
+			if(!tieneEdificio(nposX,nposY) && !tieneAnimal(nposX,nposY) && animal.especie.tieneHabitat(tablero[nposX,nposY].habitat))
 			{
-				animal.desplazarse(nposX,nposY);
 				tablero[animal.posX,animal.posY].animal = null;
+				animal.desplazarse(nposX,nposY);
 				tablero[nposX,nposY].animal = animal;
 				//Mover la malla
 				animal.modelo.transform.position = tablero[nposX,nposY].coordsVert;
@@ -523,12 +506,12 @@ public class Vida //: MonoBehaviour
 				animal.modelo.transform.rotation = Quaternion.LookRotation(normal);
 				return true;
 			}	
-			if(nposX > animal.posX) nposX--;
+			/*if(nposX > animal.posX) nposX--;
 			else if(nposX < animal.posX) nposX++;
 			if(nposY > animal.posY) nposY--;
 			else if(nposY < animal.posY) nposY++;
-			FuncTablero.convierteCoordenadas(ref nposX,ref nposY);				
-		}
+			FuncTablero.convierteCoordenadas(ref nposX,ref nposY);*/				
+		//}
 		return false;
 	}
 	
@@ -541,109 +524,27 @@ public class Vida //: MonoBehaviour
 		return anadeAnimal(especie,nposX,nposY);
 	}
 	
-	//Devuelve true si ha comido y false si no
-	public bool buscaAlimentoAnimal(Animal animal)
+	//Devuelve la direccion en la que se tiene que mover el animal para acercarse a una presa o una aleatoria sino encuentra presa
+	/*public Vector2 buscaAlimentoAnimal(Animal animal)
 	{
-//		int vision = animal.especie.vision;
-		int velocidad = animal.especie.velocidad;
-		if(animal.especie.tipo == tipoAlimentacionAnimal.carnivoro)
+		int x,y;
+		x = y = 0;
+		while(x == 0 && y == 0)
 		{
-			for(int i = 0; i < animales.Count; i++)
-			{
-				/*
-				//Si el animal está en su radio de visión
-				if(animales[i].posX >= animal.posX - vision && animales[i].posX <= animal.posX + vision && 
-				   animales[i].posY >= animal.posY - vision && animales[i].posY <= animal.posY + vision)
-				{
-					//Si el animal está en su radio de acción lo consume
-					if(animales[i].posX >= animal.posX - velocidad && animales[i].posX <= animal.posX + velocidad && 
-				   	   animales[i].posY >= animal.posY - velocidad && animales[i].posY <= animal.posY + velocidad &&
-				   	   animales[i].especie.idEspecie != animal.especie.idEspecie)
-					{
-						animal.ingiereAlimento(animales[i].especie.alimentoQueProporciona);
-						int x = animales[i].posX;
-						int y = animales[i].posY;						
-						eliminaAnimal(animales[i]);
-						desplazaAnimal(animal,x,y);
-						return true;
-					}
-					//Sino se acerca a el
-					else
-					{
-						int x;
-						int y;
-						//if(
-					}
-					
-				}*/
-				//Si el animal está en su radio de acción lo consume
-				if(animales[i].posX >= animal.posX - velocidad && animales[i].posX <= animal.posX + velocidad && 
-			   	   animales[i].posY >= animal.posY - velocidad && animales[i].posY <= animal.posY + velocidad &&
-				   animales[i].especie.idEspecie != animal.especie.idEspecie)
-				{
-					animal.ingiereAlimento(animales[i].especie.alimentoQueProporciona);
-					int x = animales[i].posX;
-					int y = animales[i].posY;						
-					eliminaAnimal(animales[i]);
-					desplazaAnimal(animal,x,y);
-					return true;
-				}
-				//Sino movimiento random
-//				else
-//				{
-//					movimientoAleatorio(animal);
-//					return false;
-//				}
-			}
-			movimientoAleatorio(animal);
-			return false;
+			x = UnityEngine.Random.Range(-1, 2);            
+	    	y = UnityEngine.Random.Range(-1, 2);
 		}
-		else if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
+		
+		
+		
+		if(x == 0 && y == 0)
 		{
-			for(int i = 0; i < vegetales.Count; i++)
-			{				
-				//Si el animal está en su radio de acción lo consume
-				if(vegetales[i].posX >= animal.posX - velocidad && vegetales[i].posX <= animal.posX + velocidad && 
-			   	   vegetales[i].posY >= animal.posY - velocidad && vegetales[i].posY <= animal.posY + velocidad)
-				{					
-					int vegetalesComidos = vegetales[i].consumeVegetales(animal.especie.reservaMaxima - animal.reserva);
-					int x = vegetales[i].posX;
-					int y = vegetales[i].posY;											
-					if(vegetales[i].numVegetales == 0)
-						eliminaVegetal(vegetales[i]);	
-					animal.ingiereAlimento(vegetalesComidos);
-					desplazaAnimal(animal,x,y);
-					return true;
-				}
-			}
-			//Sino movimiento random
-			movimientoAleatorio(animal);
-			return false;
+			x = UnityEngine.Random.Range(-1, 2);            
+	    	y = UnityEngine.Random.Range(-1, 2);
 		}
-		return false;
-	}
-	
-	public bool movimientoAleatorio(Animal animal)
-	{
-		int x = UnityEngine.Random.Range(-1, 2);            
-	    int y = UnityEngine.Random.Range(-1, 2);
-	    /*      Sacamos la nueva posición en función de la velocidad (numero de posiciones que se puede mover por turno) y la direccion haciendo un random
-	     * entre -1, 0 y 1 de x y de y. La dirección viene dada según lo siguiente:
-	     * arriba                       => x = 0, y = -1
-	     * arriba derecha       => x = 1, y = -1
-	     * derecha                      => x = 1, y = 0
-	     * abajo derecha        => x = 1, y = 1
-	     * abajo                        => x = 0, y = 1
-	     * abajo izquierda      => x = -1,y = 1
-	     * izquierda            => x = -1,y = 0
-	     * arriba izquierda     => x = -1,y = -1
-	     */
-	    int nposX = animal.posX + animal.especie.velocidad * x;
-	    int nposY = animal.posY + animal.especie.velocidad * y;       
-		desplazaAnimal(animal,nposX,nposY);		
-		return true;
-	}
-						
+		return new Vector2(x,y);
+	}*/
+								
 	public void algoritmoVida(int numTurno)
 	{
 		Ser ser;
@@ -651,7 +552,9 @@ public class Vida //: MonoBehaviour
 		Animal animal;
 		Edificio edificio;
 		turnoActual = numTurno % numMaxTurnos;
-		List<Ser> seresTurno = listadoSeresTurnos[turnoActual];		
+		List<Ser> seresTurno = listadoSeresTurnos[turnoActual];	
+		if(turnoActual == 0)
+			FuncTablero.randomLista<Ser>(seresTurno);
 		for(int i = 0; i < seresTurno.Count; i++)
 		{
 			ser = seresTurno[i];
@@ -681,23 +584,91 @@ public class Vida //: MonoBehaviour
 			else if(ser is Animal)
 			{
 				animal = (Animal)ser;
-				if(!animal.consumirAlimento())
+				if(!animal.consumirAlimento() && animal.estado != tipoEstadoAnimal.morir)
+					animal.estado = tipoEstadoAnimal.morir;
+				else if(animal.reserva > animal.especie.reservaMaxima*0.75)
 				{
-					eliminaAnimal(animal);
-					continue;
+					if(animal.reproduccion()) 
+						reproduceAnimal(animal.especie,animal.posX,animal.posY);											
+					animal.estado = tipoEstadoAnimal.descansar;
 				}
-				if(animal.reproduccion()) {
-					reproduceAnimal(animal.especie,animal.posX,animal.posY);
+				else
+				{
+					switch(animal.estado)
+					{
+					case tipoEstadoAnimal.buscarAlimento:
+						if(animal.aguante == 0)					
+							animal.estado = tipoEstadoAnimal.descansar;	
+						else
+						{
+							int nPosX = 0;
+							int nPosY = 0;
+							while(nPosX == 0 && nPosY == 0)
+						    {
+								nPosX = UnityEngine.Random.Range(-1, 2);
+								nPosY = UnityEngine.Random.Range(-1, 2);
+							}
+							nPosX += animal.posX;
+							nPosY += animal.posY;
+							FuncTablero.convierteCoordenadas(ref nPosX,ref nPosY);
+		    				if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
+							{									
+								if(tablero[animal.posX,animal.posY].vegetal != null)
+									if(tablero[animal.posX,animal.posY].vegetal.numVegetales > 0)
+									{
+										int comida = tablero[animal.posX,animal.posY].vegetal.consumeVegetales(animal.especie.alimentoMaxTurno);
+										animal.ingiereAlimento(comida);
+										animal.estado = tipoEstadoAnimal.comer;
+									}
+									else
+										;
+								else if(tablero[nPosX,nPosY].animal == null)																			
+									desplazaAnimal(animal,nPosX,nPosY);	
+							}
+							else if(animal.especie.tipo == tipoAlimentacionAnimal.carnivoro)						
+							{
+								if(tablero[nPosX,nPosY].animal != null)
+									if(tablero[nPosX,nPosY].animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
+									{
+										int comida = tablero[nPosX,nPosY].animal.reserva;
+										tablero[nPosX,nPosY].animal.morir();
+										tablero[nPosX,nPosY].animal = null;
+										animal.ingiereAlimento(comida);
+										animal.desplazarse(nPosX,nPosY);
+										desplazaAnimal(animal,nPosX,nPosY);
+										animal.estado = tipoEstadoAnimal.comer;							
+									}
+									else
+										;
+								else if(tablero[nPosX,nPosY].animal == null)																			
+									desplazaAnimal(animal,nPosX,nPosY);	
+							}
+						}
+						animal.aguante--;					
+						break;
+					case tipoEstadoAnimal.descansar:
+						animal.aguante = animal.especie.aguanteInicial;
+						animal.estado = tipoEstadoAnimal.buscarAlimento;					
+						break;
+					case tipoEstadoAnimal.comer:
+						animal.estado = tipoEstadoAnimal.buscarAlimento;
+						break;
+					case tipoEstadoAnimal.nacer:
+						animal.estado = tipoEstadoAnimal.buscarAlimento;
+						break;
+					case tipoEstadoAnimal.morir:
+						eliminaAnimal(animal);
+						continue;
+						break;					
+					default:break;
+					}
 				}
-				if(animal.reserva < animal.especie.reservaMaxima * 0.75) {		//Si está por debajo del 75% de la reserva de comida
-					buscaAlimentoAnimal(animal);
-				}
-				else { 															//Movimiento aleatorio				
-					movimientoAleatorio(animal);
-				}
+				/*Animation ani = animal.especie.animaciones[(int)animal.estado];
+				ani.Play();*/
 				int turno = (turnoActual + animal.especie.siguienteTurno)%numMaxTurnos;
 				listadoSeresTurnos[turno].Add(animal);	
 				listadoSeresTurnos[turnoActual].RemoveAt(i);
+			
 			}	
 			else if(ser is Edificio)
 			{
@@ -707,6 +678,77 @@ public class Vida //: MonoBehaviour
 				listadoSeresTurnos[turnoActual].RemoveAt(i);
 			}
 		}
+		/*
+		for(int i = 0; i < animales.Count; i++)
+		{
+			animal = animales[i];
+			if(animal.reserva == 0)
+			{
+				animal.estado = tipoEstadoAnimal.morir;
+				continue;
+			}
+			switch(animal.estado)
+			{
+				case tipoEstadoAnimal.buscarAlimento:
+					animal.aguante--;
+					if(animal.aguante == 0)					
+						animal.estado = tipoEstadoAnimal.descansar;	
+					else
+					{
+						int nPosX = UnityEngine.Random.Range(-1, 2);
+						int nPosY = UnityEngine.Random.Range(-1, 2);
+	    				if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
+						{						
+							
+							if(tablero[nPosX,nPosY].animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
+								animal.estado = tipoEstadoAnimal.descansar;
+								
+							
+							desplazaAnimal
+							
+							
+						}
+						else
+						{
+						
+						}
+					}
+					
+					//desplazaAnimal(animal,
+					break;
+				case tipoEstadoAnimal.descansar:
+					animal.aguante = animal.especie.aguanteInicial;
+					animal.estado = tipoEstadoAnimal.buscarAlimento;					
+					break;
+				case tipoEstadoAnimal.comer:
+					break;
+				case tipoEstadoAnimal.nacer:
+					break;
+				case tipoEstadoAnimal.morir:
+					break;					
+				default:break;
+			}
+			Animation ani = animal.especie.animaciones[(int)animal.estado];
+			ani.Play();
+				               
+			/*if(animal
+			animal = animales[i];
+			if(!animal.consumirAlimento())
+			{
+				eliminaAnimal(animal);
+				continue;
+			}
+			if(animal.reproduccion()) {
+				reproduceAnimal(animal.especie,animal.posX,animal.posY);
+			}
+			if(animal.reserva < animal.especie.reservaMaxima * 0.75) {		//Si está por debajo del 75% de la reserva de comida
+				buscaAlimentoAnimal(animal);
+			}
+			else { 															//Movimiento aleatorio				
+				movimientoAleatorio(animal);
+			}
+		}*/
+		
 		contadorPintarTexturaPlantas++;
 		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)
 		{
@@ -731,69 +773,6 @@ public class Vida //: MonoBehaviour
 			matBio+=edificios[i].matBioProducidoPorTurno;			
 		}		
 	}
-	
-	/*public bool buscaPosicionVaciaVegetal(T_habitats habitat,ref int x,ref int y)
-	{
-		List<int> listaX = new List<int>();
-		for(int i = 0; i < FuncTablero.altoTablero; i++)
-			listaX.Add(i);
-		FuncTablero.randomLista(listaX);		
-		List<int> listaY = new List<int>();
-		for(int i = 0; i < FuncTablero.anchoTablero; i++)
-			listaY.Add(i);
-		FuncTablero.randomLista(listaY);
-		for(int i = 0; i < FuncTablero.altoTablero;i++)
-			for(int j = 0; j < FuncTablero.anchoTablero; j++)
-			{
-				x = listaX[i];
-				y = listaY[j];
-				if(!tieneVegetal(x,y) && tablero[x,y].habitat == habitat)			   	
-					return true;				
-			}
-		return false;
-	}
-			
-	public bool buscaPosicionVaciaAnimal(T_habitats habitat,ref int x,ref int y)
-	{
-		List<int> listaX = new List<int>();
-		for(int i = 0; i < FuncTablero.altoTablero; i++)
-			listaX.Add(i);
-		FuncTablero.randomLista(listaX);		
-		List<int> listaY = new List<int>();
-		for(int i = 0; i < FuncTablero.anchoTablero; i++)
-			listaY.Add(i);
-		FuncTablero.randomLista(listaY);
-		for(int i = 0; i < FuncTablero.altoTablero;i++)
-			for(int j = 0; j < FuncTablero.anchoTablero; j++)
-			{
-				x = listaX[i];
-				y = listaY[j];
-				if(!tieneAnimal(x,y) && tablero[x,y].habitat == habitat)			   	
-					return true;				
-			}
-		return false;
-	}
-	
-	public bool buscaPosicionVaciaEdificio(T_habitats habitat,ref int x,ref int y)
-	{
-		List<int> listaX = new List<int>();
-		for(int i = 0; i < FuncTablero.altoTablero; i++)
-			listaX.Add(i);
-		FuncTablero.randomLista(listaX);		
-		List<int> listaY = new List<int>();
-		for(int i = 0; i < FuncTablero.anchoTablero; i++)
-			listaY.Add(i);
-		FuncTablero.randomLista(listaY);
-		for(int i = 0; i < FuncTablero.altoTablero;i++)
-			for(int j = 0; j < FuncTablero.anchoTablero; j++)
-			{
-				x = listaX[i];
-				y = listaY[j];
-				if(!tieneEdificio(x,y) && tablero[x,y].habitat == habitat)			   	
-					return true;				
-			}
-		return false;
-	}*/
 }
 
 [System.Serializable]
@@ -965,78 +944,31 @@ public class EspecieVegetal : Especie
 }
 
 public enum tipoAlimentacionAnimal {herbivoro,carnivoro};
-
 [System.Serializable]
 public class EspecieAnimal : Especie
 {
 	public int consumo;									//Alimento que consume por turno
 	public int reservaMaxima;							//Máximo valor para la reserva de comida, es decir, el alimento almacenado para sobrevivir
-	public int alimentoQueProporciona;					//Alimento que recibe un animal al comerse a uno de esta especie
-	public int vision;									//Rango de visión del animal para controlar su IA
-	public int velocidad;								//Número de casillas que puede desplazarse por turno
+	public int alimentoMaxTurno;									//Comida máxima que pueden ingerir por turno
+	public int aguanteInicial;							//Número de turnos seguidos que puede desplazarse sin agotarse
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public tipoAlimentacionAnimal tipo;					//herbivoro o carnivoro 
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar	
+	public List<Animation> animaciones;
 		
-	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, GameObject modelo)
-	{
-		habitats = new List<T_habitats>();
-		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
-		this.consumo = consumo;
-		this.reservaMaxima = reservaMaxima;
-		this.alimentoQueProporciona = alimentoQueProporciona;
-		this.vision = vision;
-		this.velocidad = velocidad;
-		this.reproductibilidad = reproductibilidad;	
-		this.tipo = tipo;
-		this.aniadirHabitat(habitat);
-		modelos = new List<GameObject>();
-		modelos.Add(modelo);
-	}		
-	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, GameObject modelo)
+	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoMaxTurno, int aguanteInicial, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos, List<Animation> animaciones)
 	{
 		this.nombre = nombre;
 		this.siguienteTurno = siguienteTurno;
 		this.consumo = consumo;
 		this.reservaMaxima = reservaMaxima;
-		this.alimentoQueProporciona = alimentoQueProporciona;
-		this.vision = vision;
-		this.velocidad = velocidad;
-		this.reproductibilidad = reproductibilidad;	
-		this.tipo = tipo;
-		this.habitats = habitats;
-		modelos = new List<GameObject>();
-		modelos.Add(modelo);
-	}	
-	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, T_habitats habitat, List<GameObject> modelos)
-	{
-		habitats = new List<T_habitats>();
-		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
-		this.consumo = consumo;
-		this.reservaMaxima = reservaMaxima;
-		this.alimentoQueProporciona = alimentoQueProporciona;
-		this.vision = vision;
-		this.velocidad = velocidad;
-		this.reproductibilidad = reproductibilidad;	
-		this.tipo = tipo;
-		this.aniadirHabitat(habitat);
-		this.modelos = modelos;
-	}		
-	public EspecieAnimal(string nombre, int siguienteTurno, int consumo, int reservaMaxima, int alimentoQueProporciona, int vision, int velocidad, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos)
-	{
-		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
-		this.consumo = consumo;
-		this.reservaMaxima = reservaMaxima;
-		this.alimentoQueProporciona = alimentoQueProporciona;
-		this.vision = vision;
-		this.velocidad = velocidad;
+		this.alimentoMaxTurno = alimentoMaxTurno;
+		this.aguanteInicial = aguanteInicial;
 		this.reproductibilidad = reproductibilidad;	
 		this.tipo = tipo;
 		this.habitats = habitats;
 		this.modelos = modelos;
+		this.animaciones = animaciones;
 	}
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
 	public bool aniadirHabitat(T_habitats habitat)
@@ -1156,7 +1088,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	public bool migracionLocal()
 	{
 		int r = UnityEngine.Random.Range(0, especie.numMaxVegetales+1);
-		//float migracion = especie.capacidadMigracionLocal * numVegetales * (habitabilidad[indiceHabitat]+1)/2;		//Para permitir migracion con 	1.0f < hab <= 0.0f
+		//float migracion = especie.capacidadMigracionLocal * numVegetales * (habitabilidad[indiceHabitat]+1)/2;		//Para permitir migracion con 	-1.0f < hab <= 0.0f
 		float migracion = especie.capacidadMigracionLocal * numVegetales * habitabilidad[indiceHabitat];		
 		return (r < migracion);
 	}	
@@ -1184,35 +1116,34 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		return false;
 	}
 	//Devuelve si un hábitat es habitable para un vegetal
-	public bool esHabitable(T_habitats habitat)
+	public bool esHabitable(T_habitats habitat,float habitabilidadMinima)
 	{
-		return (habitabilidad[(int)habitat] > -1.0);
-	}	
-	
-	//Devuelve si un hábitat es habitable para un vegetal
-	public bool esOptimamenteHabitable(T_habitats habitat)
-	{
-		return (habitabilidad[(int)habitat] >= 0.0);
-	}	
+		return (habitabilidad[(int)habitat] > habitabilidadMinima);
+	}
 }
 
 [System.Serializable]
+public enum tipoEstadoAnimal {nacer,descansar,buscarAlimento,comer,morir};
 public class Animal : Ser
 {
 	public EspecieAnimal especie;					//Especie animal a la que pertenece
 	public int reserva;								//Reserva de alimento que tiene
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
-	public List<List<Animation>> animaciones;
+	public int aguante;								//Número de turnos seguidos (que le quedan) que puede desplazarse sin agotarse
+	public tipoEstadoAnimal estado;					//Estado en el que se encuentra el animal
+	
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.especie = especie;
 		this.reserva = especie.reservaMaxima/2;
-		this.turnosParaReproduccion = especie.reproductibilidad;		
+		this.turnosParaReproduccion = especie.reproductibilidad;
+		this.aguante = especie.aguanteInicial;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
 		this.posX = posX;
 		this.posY = posY;
 		this.modelo = modelo;
+		estado = tipoEstadoAnimal.nacer;
 	}
 	
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY, int res, int turnos, GameObject modelo)
@@ -1221,10 +1152,12 @@ public class Animal : Ser
 		this.especie = especie;
 		this.reserva = res;
 		this.turnosParaReproduccion = turnos;		
+		this.aguante = especie.aguanteInicial;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
 		this.posX = posX;
 		this.posY = posY;
 		this.modelo = modelo;
+		estado = tipoEstadoAnimal.nacer;
 	}
 	
 	//Devuelve true si el animal sobrevive y false si muere
@@ -1250,6 +1183,11 @@ public class Animal : Ser
 			return false;		
 		turnosParaReproduccion = especie.reproductibilidad;
 		return true;
+	}
+	
+	public void morir()
+	{
+		reserva = 0;
 	}
 	
 	public void desplazarse(int posXin,int posYin)

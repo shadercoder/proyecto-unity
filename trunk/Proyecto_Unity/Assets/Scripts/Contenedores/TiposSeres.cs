@@ -67,11 +67,11 @@ public class TiposSeres : MonoBehaviour {
 		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,850,300,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
 		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,1000,500,250,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
 		*/
-		fabricaComBas = new TipoEdificio("Fabrica de componentes basicos",10,habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.fabCompBas);
-		energia = new TipoEdificio("Central de energia",10,habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.centralEnergia);
+		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",10,habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.fabCompBas);
+		energia = new TipoEdificio("Central de energía",10,habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.centralEnergia);
 		granja = new TipoEdificio("Granja",10,habsEdificios,0,0,0,0,T_elementos.nada,modelosEdificios.granja);
-		fabricaComAdv = new TipoEdificio("Fabrica de componentes avanzados",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
-		energiaAdv = new TipoEdificio("Central de energia avanzada",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
+		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
+		energiaAdv = new TipoEdificio("Central de energía avanzada",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
 		
 		/* Vegetales */
 		/*vegetal = new EspecieVegetal(nombre, siguienteTurno, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, 
@@ -91,7 +91,7 @@ public class TiposSeres : MonoBehaviour {
 		habitabilidadInicial		=>	lista de floats desde -1.0f (inhabitable) a 0.0 (decreciente) y hasta 1.0f (creciente). La lista tiene que ser del mismo tamaño que el total de los habitats
 		idTextura					=>	id de la textura que se pinta debajo del modelo
 		modelos						=>	lista de los diferentes modelos que tiene la especie		
-		*/	
+		*/
 		//Seta: habitats -> llanura y colina
 		//Tier 1. Barata y normal en llanura y colina. Poca produccion de comida pero alta reproductibilidad y rango de migracion
 		List<float> habSeta = new List<float>();
@@ -245,29 +245,60 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.costa);
-		//Conejo: habitats -> costa, llanura y colina
-		herbivoro1 = new EspecieAnimal("Conejo",2,10,100,100,5,1,100,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1);
+		
+		//Conejo: habitats -> costa, llanura y colina		
+		List<Animation> animacionesHerb1 = new List<Animation>();
+		/*animacionesHerb1.Add(nacer);
+		animacionesHerb1.Add(descansar);
+		animacionesHerb1.Add(buscarAlimento);
+		animacionesHerb1.Add(comer);
+		animacionesHerb1.Add(morir);*/
+		herbivoro1 = new EspecieAnimal("Conejo",1,100,1000,500,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
 		
 		listaHabs.Add(T_habitats.desierto);
 		//Cabra: habitats -> llanura, colina y desierto
-		herbivoro2 = new EspecieAnimal("Camello",2,10,100,100,5,1,100,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro2);
+		List<Animation> animacionesHerb2 = new List<Animation>();
+		/*animacionesHerb2.Add(nacer);
+		animacionesHerb2.Add(descansar);
+		animacionesHerb2.Add(buscarAlimento);
+		animacionesHerb2.Add(comer);
+		animacionesHerb2.Add(morir);*/
+		herbivoro2 = new EspecieAnimal("Camello",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro2,animacionesHerb2);
 		
 		listaHabs.Clear();
 		listaHabs.Add(T_habitats.costa);
 		//Tortuga: habitats -> costa
-		herbivoro3 = new EspecieAnimal("Tortuga",8,10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro3);
+		List<Animation> animacionesHerb3 = new List<Animation>();
+		/*animacionesHerb3.Add(nacer);
+		animacionesHerb3.Add(descansar);
+		animacionesHerb3.Add(buscarAlimento);
+		animacionesHerb3.Add(comer);
+		animacionesHerb3.Add(morir);*/
+		herbivoro3 = new EspecieAnimal("Tortuga",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro3,animacionesHerb3);
 		
 		listaHabs.Clear();
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
 		//Ciervo: habitats -> colina, tundra y montaña
-		herbivoro4 = new EspecieAnimal("Ciervo",8,10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro4);
+		List<Animation> animacionesHerb4 = new List<Animation>();
+		/*animacionesHerb4.Add(nacer);
+		animacionesHerb4.Add(descansar);
+		animacionesHerb4.Add(buscarAlimento);
+		animacionesHerb4.Add(comer);
+		animacionesHerb4.Add(morir);*/
+		herbivoro4 = new EspecieAnimal("Ciervo",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro4,animacionesHerb4);
 		
 		listaHabs.Remove(T_habitats.tundra);
 		listaHabs.Add(T_habitats.volcanico);
 		//Salamandra: habitats-> colina, montaña y volcanico
-		herbivoro5 = new EspecieAnimal("Salamandra",8,10,100,100,5,5,1,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5);
+		List<Animation> animacionesHerb5 = new List<Animation>();
+		/*animacionesHerb5.Add(nacer);
+		animacionesHerb5.Add(descansar);
+		animacionesHerb5.Add(buscarAlimento);
+		animacionesHerb5.Add(comer);
+		animacionesHerb5.Add(morir);*/
+		herbivoro5 = new EspecieAnimal("Salamandra",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5,animacionesHerb5);
 		
 		/* Carnivoros */
 		listaHabs.Clear();
@@ -275,30 +306,60 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.costa);
 		//Zorro: habitats -> costa, llanura y colina
-		carnivoro1 = new EspecieAnimal("Zorro",8,10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1);
+		List<Animation> animacionesCarn1 = new List<Animation>();
+		/*animacionesCarn1.Add(nacer);
+		animacionesCarn1.Add(descansar);
+		animacionesCarn1.Add(buscarAlimento);
+		animacionesCarn1.Add(comer);
+		animacionesCarn1.Add(morir);*/
+		carnivoro1 = new EspecieAnimal("Zorro",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1,animacionesCarn1);
 		
 		listaHabs.Add(T_habitats.tundra);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Remove(T_habitats.costa);
 		//Lobo: habitats -> llanura, colina, tundra y montaña
-		carnivoro2 = new EspecieAnimal("Lobo",8,10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2);
+		List<Animation> animacionesCarn2 = new List<Animation>();
+		/*animacionesCarn2.Add(nacer);
+		animacionesCarn2.Add(descansar);
+		animacionesCarn2.Add(buscarAlimento);
+		animacionesCarn2.Add(comer);
+		animacionesCarn2.Add(morir);*/
+		carnivoro2 = new EspecieAnimal("Lobo",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2,animacionesCarn2);
 		
 		listaHabs.Add(T_habitats.desierto);
 		listaHabs.Remove(T_habitats.montana);
 		listaHabs.Remove(T_habitats.tundra);
 		//Serpiente: habitats -> llanura, desierto y colina
-		carnivoro3 = new EspecieAnimal("Serpiente",8,10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3);
+		List<Animation> animacionesCarn3 = new List<Animation>();
+		/*animacionesCarn3.Add(nacer);
+		animacionesCarn3.Add(descansar);
+		animacionesCarn3.Add(buscarAlimento);
+		animacionesCarn3.Add(comer);
+		animacionesCarn3.Add(morir);*/
+		carnivoro3 = new EspecieAnimal("Serpiente",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3,animacionesCarn3);
 		
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Remove(T_habitats.desierto);
 		//Tigre: habitats -> llanura, colina, montaña
-		carnivoro4 = new EspecieAnimal("Tigre",8,10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4);
+		List<Animation> animacionesCarn4 = new List<Animation>();
+		/*animacionesCarn4.Add(nacer);
+		animacionesCarn4.Add(descansar);
+		animacionesCarn4.Add(buscarAlimento);
+		animacionesCarn4.Add(comer);
+		animacionesCarn4.Add(morir);*/
+		carnivoro4 = new EspecieAnimal("Tigre",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4,animacionesCarn4);
 		
 		listaHabs.Add(T_habitats.tundra);
 		listaHabs.Add(T_habitats.volcanico);
 		listaHabs.Remove(T_habitats.montana);
 		//Velocitaptor: habitats -> llanura, colina, tundra y volcanico
-		carnivoro5 = new EspecieAnimal("Velociraptor",8,10,100,100,5,5,1,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5);
+		List<Animation> animacionesCarn5 = new List<Animation>();
+		/*animacionesCarn5.Add(nacer);
+		animacionesCarn5.Add(descansar);
+		animacionesCarn5.Add(buscarAlimento);
+		animacionesCarn5.Add(comer);
+		animacionesCarn5.Add(morir);*/
+		carnivoro5 = new EspecieAnimal("Velociraptor",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5,animacionesCarn5);
 		
 	}
 	
