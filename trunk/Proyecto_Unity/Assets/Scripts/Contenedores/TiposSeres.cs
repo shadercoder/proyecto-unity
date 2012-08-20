@@ -38,6 +38,34 @@ public class TiposSeres : MonoBehaviour {
 	private EspecieVegetal cipres;
 	private EspecieVegetal pinoAlto;
 	
+	//Descripciones
+	private List<string> descripciones;
+	private string descripcionSeta				= "RELLENAR";
+	private string descripcionFlor				= "RELLENAR";
+	private string descripcionCana				= "RELLENAR";
+	private string descripcionArbusto			= "RELLENAR";
+	private string descripcionEstromatolito		= "RELLENAR";
+	private string descripcionCactus			= "RELLENAR";
+	private string descripcionPalmera			= "RELLENAR";
+	private string descripcionPino				= "RELLENAR";
+	private string descripcionCipres			= "RELLENAR";
+	private string descripcionPinoAlto			= "RELLENAR";
+	private string descripcionHerb1				= "RELLENAR";
+	private string descripcionHerb2				= "RELLENAR";
+	private string descripcionHerb3				= "RELLENAR";
+	private string descripcionHerb4				= "RELLENAR";
+	private string descripcionHerb5				= "RELLENAR";
+	private string descripcionCarn1				= "RELLENAR";
+	private string descripcionCarn2				= "RELLENAR";
+	private string descripcionCarn3				= "RELLENAR";
+	private string descripcionCarn4				= "RELLENAR";
+	private string descripcionCarn5				= "RELLENAR";
+	private string descripcionFabBas			= "RELLENAR";
+	private string descripcionEnergia1			= "RELLENAR";
+	private string descripcionGranja			= "RELLENAR";
+	private string descripcionFabAdv			= "RELLENAR";
+	private string descripcionEnergia2			= "RELLENAR";
+	
 	//Variables del script
 	private ModelosEdificios modelosEdificios;
 	private ModelosVegetales modelosVegetales;
@@ -49,6 +77,8 @@ public class TiposSeres : MonoBehaviour {
 		modelosVegetales = GameObject.FindGameObjectWithTag("ModelosVegetales").GetComponent<ModelosVegetales>();		
 		modelosAnimales = GameObject.FindGameObjectWithTag("ModelosAnimales").GetComponent<ModelosAnimales>();
 		principal = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Principal>();
+		
+		descripciones = new List<string>();
 		
 		List<T_habitats> habsEdificios = new List<T_habitats>();
 		habsEdificios.Add(T_habitats.llanura);
@@ -366,6 +396,33 @@ public class TiposSeres : MonoBehaviour {
 	void Start () {
 		
 		//NO CAMBIAR EL ORDEN CON EL QUE SE AÑADEN
+		//Añadir las descripciones
+		descripciones.Add(descripcionSeta);
+		descripciones.Add(descripcionFlor);
+		descripciones.Add(descripcionCana);
+		descripciones.Add(descripcionArbusto);
+		descripciones.Add(descripcionEstromatolito);
+		descripciones.Add(descripcionCactus);
+		descripciones.Add(descripcionPalmera);
+		descripciones.Add(descripcionPino);
+		descripciones.Add(descripcionCipres);
+		descripciones.Add(descripcionPinoAlto);
+		descripciones.Add(descripcionHerb1);
+		descripciones.Add(descripcionHerb2);
+		descripciones.Add(descripcionHerb3);
+		descripciones.Add(descripcionHerb4);
+		descripciones.Add(descripcionHerb5);
+		descripciones.Add(descripcionCarn1);
+		descripciones.Add(descripcionCarn2);
+		descripciones.Add(descripcionCarn3);
+		descripciones.Add(descripcionCarn4);
+		descripciones.Add(descripcionCarn5);
+		descripciones.Add(descripcionFabBas);
+		descripciones.Add(descripcionEnergia1);
+		descripciones.Add(descripcionGranja);
+		descripciones.Add(descripcionFabAdv);
+		descripciones.Add(descripcionEnergia2);
+		
 		//Añadir a Vida los edificios
 		principal.anadeTipoEdificio(fabricaComBas);
 		principal.anadeTipoEdificio(energia);
@@ -400,5 +457,23 @@ public class TiposSeres : MonoBehaviour {
 		principal.anadeEspecieAnimal(carnivoro5);
 		
 		principal.vida.actualizaNumTurnos();
+	}
+	
+	public string getDescripcion(int entrada) {
+		if (entrada >= 0 && entrada < descripciones.Count)
+			return descripciones[entrada];
+		return "";
+	}
+	
+	public int getNumeroSer(EspecieAnimal entrada) {
+		return entrada.idEspecie + 10;
+	}
+	
+	public int getNumeroSer(EspecieVegetal entrada) {
+		return entrada.idEspecie;
+	}
+	
+	public int getNumeroSer(TipoEdificio entrada) {
+		return entrada.idTipoEdificio + 20;
 	}
 }
