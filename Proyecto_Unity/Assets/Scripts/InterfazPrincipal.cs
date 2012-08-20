@@ -1506,16 +1506,16 @@ public class InterfazPrincipal : MonoBehaviour
 
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 20 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 20 * cuantoH), "", "BloqueDerechoFiltroVegetales");
-			togglesFiltros[4] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[4], new GUIContent ("", "Filtrar la especie Seta"), "BotonInsertarSeta");
-			togglesFiltros[5] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[5], new GUIContent ("", "Filtrar la especie Ca\u00f1a"), "BotonInsertarCana");
-			togglesFiltros[6] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[6], new GUIContent ("", "Filtrar la especie Estromatolito"), "BotonInsertarEstromatolito");
-			togglesFiltros[7] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[7], new GUIContent ("", "Filtrar la especie Palmera"), "BotonInsertarPalmera");
-			togglesFiltros[8] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[8], new GUIContent ("", "Filtrar la especie Cipres"), "BotonInsertarCipres");
-			togglesFiltros[9] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[9], new GUIContent ("", "Filtrar la especie Flor"), "BotonInsertarFlor");
-			togglesFiltros[10] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[10], new GUIContent ("", "Filtrar la especie Arbusto"), "BotonInsertarArbusto");
-			togglesFiltros[11] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[11], new GUIContent ("", "Filtrar la especie Cactus"), "BotonInsertarCactus");
-			togglesFiltros[12] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[12], new GUIContent ("", "Filtrar la especie Pino"), "BotonInsertarPino");
-			togglesFiltros[13] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[13], new GUIContent ("", "Filtrar la especie Pino alto"), "BotonInsertarPinoAlto");
+			togglesFiltros[4] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[4], new GUIContent ("", "Resaltar las Setas"), "BotonInsertarSeta");
+			togglesFiltros[5] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[5], new GUIContent ("", "Resaltar las Ca\u00f1as"), "BotonInsertarCana");
+			togglesFiltros[6] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[6], new GUIContent ("", "Resaltar los Estromatolitos"), "BotonInsertarEstromatolito");
+			togglesFiltros[7] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[7], new GUIContent ("", "Resaltar las Palmeras"), "BotonInsertarPalmera");
+			togglesFiltros[8] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[8], new GUIContent ("", "Resaltar los Cipreses"), "BotonInsertarCipres");
+			togglesFiltros[9] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[9], new GUIContent ("", "Resaltar las Flores"), "BotonInsertarFlor");
+			togglesFiltros[10] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[10], new GUIContent ("", "Resaltar los Arbustos"), "BotonInsertarArbusto");
+			togglesFiltros[11] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[11], new GUIContent ("", "Resaltar los Cactus"), "BotonInsertarCactus");
+			togglesFiltros[12] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[12], new GUIContent ("", "Resaltar los Pinos"), "BotonInsertarPino");
+			togglesFiltros[13] = GUI.Toggle (new Rect (cuantoW * 6, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[13], new GUIContent ("", "Resaltar los Pinos altos"), "BotonInsertarPinoAlto");
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
@@ -1527,25 +1527,25 @@ public class InterfazPrincipal : MonoBehaviour
 		case tMenuDerecho.seleccion:
 			switch (aspectRatio) {
 			case taspectRatio.aspectRatio16_9:
-				posicionBloqueH = 12.5f;
+				posicionBloqueH = 8.5f;
 				//sobre 45
 				break;
 			case taspectRatio.aspectRatio16_10:
-				posicionBloqueH = 15;
+				posicionBloqueH = 11;
 				//sobre 50
 				break;
 			case taspectRatio.aspectRatio4_3:
-				posicionBloqueH = 20;
+				posicionBloqueH = 16;
 				//sobre 60
 				break;
 			default:
 				break;
 			}
-			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 20 * cuantoH));
-			GUI.Box (new Rect (0, 0, 11 * cuantoW, 20 * cuantoH), "", "BloqueDerechoSeleccion");
+			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
+			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
 			//TODO Metodo para seleccionar la imagen adecuada
-			GUI.Box (new Rect (0, 0, 4 * cuantoW, 4 * cuantoH), "");				//Aqui se pone la imagen adecuada dependiendo de tu seleccion
 			GUI.Label(new Rect (1, 5, 9 * cuantoW, 14 * cuantoH), infoSeleccion, "LabelReducido");	//Aqui se pega el texto de la seleccion
+			GUI.Box (new Rect (1, 3, 4 * cuantoW, 4 * cuantoH), "");				//Aqui se pone la imagen adecuada dependiendo de tu seleccion
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
