@@ -500,7 +500,12 @@ public class Vida //: MonoBehaviour
 				animal.desplazarse(nposX,nposY);
 				tablero[nposX,nposY].animal = animal;
 				//Mover la malla
-				animal.modelo.transform.position = tablero[nposX,nposY].coordsVert;
+				float x = (tablero[nposX,nposY].coordsVert.x + tablero[nposX-1,nposY].coordsVert.x)/2;
+				float y = (tablero[nposX,nposY].coordsVert.y + tablero[nposX-1,nposY].coordsVert.y)/2;
+				float z = (tablero[nposX,nposY].coordsVert.z + tablero[nposX-1,nposY].coordsVert.z)/2;
+				Vector3 coordsVert = new Vector3(x,y,z);
+				//animal.modelo.transform.position = tablero[nposX,nposY].coordsVert;
+				animal.modelo.transform.position = coordsVert;				
 				Vector3 normal = animal.modelo.transform.position - animal.modelo.transform.parent.position;
 				animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
 				animal.modelo.transform.rotation = Quaternion.LookRotation(normal);
@@ -678,77 +683,7 @@ public class Vida //: MonoBehaviour
 				listadoSeresTurnos[turnoActual].RemoveAt(i);
 			}
 		}
-		/*
-		for(int i = 0; i < animales.Count; i++)
-		{
-			animal = animales[i];
-			if(animal.reserva == 0)
-			{
-				animal.estado = tipoEstadoAnimal.morir;
-				continue;
-			}
-			switch(animal.estado)
-			{
-				case tipoEstadoAnimal.buscarAlimento:
-					animal.aguante--;
-					if(animal.aguante == 0)					
-						animal.estado = tipoEstadoAnimal.descansar;	
-					else
-					{
-						int nPosX = UnityEngine.Random.Range(-1, 2);
-						int nPosY = UnityEngine.Random.Range(-1, 2);
-	    				if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
-						{						
-							
-							if(tablero[nPosX,nPosY].animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
-								animal.estado = tipoEstadoAnimal.descansar;
-								
-							
-							desplazaAnimal
-							
-							
-						}
-						else
-						{
-						
-						}
-					}
-					
-					//desplazaAnimal(animal,
-					break;
-				case tipoEstadoAnimal.descansar:
-					animal.aguante = animal.especie.aguanteInicial;
-					animal.estado = tipoEstadoAnimal.buscarAlimento;					
-					break;
-				case tipoEstadoAnimal.comer:
-					break;
-				case tipoEstadoAnimal.nacer:
-					break;
-				case tipoEstadoAnimal.morir:
-					break;					
-				default:break;
-			}
-			Animation ani = animal.especie.animaciones[(int)animal.estado];
-			ani.Play();
-				               
-			/*if(animal
-			animal = animales[i];
-			if(!animal.consumirAlimento())
-			{
-				eliminaAnimal(animal);
-				continue;
-			}
-			if(animal.reproduccion()) {
-				reproduceAnimal(animal.especie,animal.posX,animal.posY);
-			}
-			if(animal.reserva < animal.especie.reservaMaxima * 0.75) {		//Si está por debajo del 75% de la reserva de comida
-				buscaAlimentoAnimal(animal);
-			}
-			else { 															//Movimiento aleatorio				
-				movimientoAleatorio(animal);
-			}
-		}*/
-		
+				
 		contadorPintarTexturaPlantas++;
 		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)
 		{
@@ -1076,12 +1011,12 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	//Devuelve true si la planta sigue viva y false si ha muerto
 	public bool reproduccionMuerte()
 	{
+		if(numVegetales <= 0)			
+			return false;			
 		numVegetales += (int)(especie.numIniVegetales*habitabilidad[indiceHabitat]);
 		if (numVegetales >= especie.numMaxVegetales)
 			numVegetales = especie.numMaxVegetales;
-		else if(numVegetales <= 0)		
-			return false;	
-		return true;
+		return numVegetales > 0;
 	}
 	
 	//Devuelve true si se produce una migración y false si no

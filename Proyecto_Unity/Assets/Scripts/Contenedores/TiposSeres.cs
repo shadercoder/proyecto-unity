@@ -148,7 +148,7 @@ public class TiposSeres : MonoBehaviour {
 		habFlor.Add(-1.0f);//costa
 		habFlor.Add(-1.0f);//tundra
 		habFlor.Add(-1.0f);//inhabitable		
-		flor = new EspecieVegetal("Flor",8,1200,150,0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
+		flor = new EspecieVegetal("Flor",8,1200,150,3.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);//0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
 
 		//Palo (Caña): habitats -> llanura, costa y desierto
 		//Tier 2. Normal en llanura, desierto y costa, produccion de alimento normal, reproductibilidad normal y rango alto. Alto ratio de evolucion.
@@ -283,7 +283,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb1.Add(buscarAlimento);
 		animacionesHerb1.Add(comer);
 		animacionesHerb1.Add(morir);*/
-		herbivoro1 = new EspecieAnimal("Conejo",1,100,1000,500,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
+		herbivoro1 = new EspecieAnimal("Conejo",1,50,1000,500,2,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
 		
 		listaHabs.Add(T_habitats.desierto);
 		//Cabra: habitats -> llanura, colina y desierto
