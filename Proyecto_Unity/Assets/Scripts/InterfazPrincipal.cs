@@ -25,13 +25,17 @@ public class InterfazPrincipal : MonoBehaviour
 	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
 	private bool[] togglesFiltros;								//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
 	private bool[] togglesFiltrosOld;							//Toggles en los filtros antes de cambiarlos
-	private string infoSeleccion				= "";			//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
+		//Seleccion de seres
+	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
 	private float[] habitabilidadSeleccion;						//La habitabilidad del ser o edificio seleccionado
+	private int tipoSeleccion					= -1;			//Que se ha seleccionado? 0->Planta, 1->Herbivoro, 2->Carnivoro, 3->Edificio
+	
 	//Mejoras posibles
 	private bool mejoraInfoCasilla 				= true;			//La barra inferior de informacion se muestra?
 	private bool mostrarInfoHabitat				= true;			//Se muestra informacion de habitats en ella?
 	private bool mostrarInfoMetalesRaros 		= true;			//Se muestran los metales raros?
 	private bool mostrarInfoSeres 				= true;			//Se muestran los animales y plantas?
+	
 	//Tooltips
 	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
 	private bool activarTooltip 				= false;		//Controla si se muestra o no el tooltip	
@@ -39,6 +43,7 @@ public class InterfazPrincipal : MonoBehaviour
 	private float tiempoTooltip 				= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
 	private bool forzarTooltip 					= false;		//Fuerza que se muestre un tooltip en una situación especial
 	private string mensajeForzarTooltip 		= "";			//Mensaje del tooltip forzado.
+	
 	//Enumerados
 	private enum taspectRatio
 	{
@@ -140,6 +145,7 @@ public class InterfazPrincipal : MonoBehaviour
 		togglesFiltros = new bool[24];
 		togglesFiltrosOld = new bool[24];
 		habitabilidadSeleccion = new float[9];
+		infoSeleccion = new List<string>();
 		//Cargar la información del numero de saves que hay
 		SaveLoad.compruebaRuta ();
 		numSaves = SaveLoad.FileCount ();
@@ -223,8 +229,8 @@ public class InterfazPrincipal : MonoBehaviour
 				//Se ha hecho click en el tablero sin insertar nada
 				if (seleccionarObjetoTablero())
 					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.seleccion;
-				else
-					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.ninguno;
+//				else
+//					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.ninguno;
 			}
 		} else
 			mostrarInfoCasilla = false;
@@ -1541,11 +1547,38 @@ public class InterfazPrincipal : MonoBehaviour
 			default:
 				break;
 			}
+			if (infoSeleccion.Count == 0) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.ninguno;
+				break;
+			}
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
-			//TODO Metodo para seleccionar la imagen adecuada
-			GUI.Label(new Rect (1, 5, 9 * cuantoW, 14 * cuantoH), infoSeleccion, "LabelReducido");	//Aqui se pega el texto de la seleccion
-			GUI.Box (new Rect (1, 3, 4 * cuantoW, 4 * cuantoH), "");				//Aqui se pone la imagen adecuada dependiendo de tu seleccion
+			GUI.Label(new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");	//Este texto es el nombre
+			GUI.Box(new Rect(cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "");							//Esta es la imagen
+			//Habitabilidad --
+			GUI.Label(new Rect(cuantoW * 1, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[6].ToString("N1"), "Costa"), "LabelHabitabilidad");
+			GUI.Label(new Rect(cuantoW * 2, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[1].ToString("N1"), "LLanura"), "LabelHabitabilidad");
+			GUI.Label(new Rect(cuantoW * 3, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[2].ToString("N1"), "Colina"), "LabelHabitabilidad");
+			GUI.Label(new Rect(cuantoW * 4, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[0].ToString("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
+			GUI.Label(new Rect(cuantoW * 5, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[4].ToString("N1"), "Volcanico"), "LabelHabitabilidad");
+			GUI.Label(new Rect(cuantoW * 6, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[7].ToString("N1"), "Tundra"), "LabelHabitabilidad");
+			GUI.Label(new Rect(cuantoW * 7, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[3].ToString("N1"), "Desierto"), "LabelHabitabilidad");
+				//Solo para probar errores ----
+			Debug.Log(habitabilidadSeleccion[6].ToString("N1"));
+				//Solo para probar errores ----
+			//Habitabilidad --
+			GUI.Label(new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");				//Titulo de la descripcion
+			GUI.Label(new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");			//Este texto es la descripcion
+			switch (tipoSeleccion) {
+			case 0:		//Planta
+				break;
+			case 1: 	//Herbivoro
+				break;
+			case 2: 	//Carnivoro
+				break;
+			case 3: 	//Edificio
+				break;
+			}
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
@@ -1648,10 +1681,12 @@ public class InterfazPrincipal : MonoBehaviour
 			Edificio edificio = principal.vida.tablero[y, x].edificio;
 			Vegetal vegetal = principal.vida.tablero[y, x].vegetal;
 			Animal animal = principal.vida.tablero[y, x].animal;
-			infoSeleccion = "";
+			infoSeleccion.Clear();
 			if (animal != null || vegetal != null || edificio != null) {
 				if (animal != null) {
-					infoSeleccion += animal.especie.nombre + "\n";
+					infoSeleccion.Add(animal.especie.nombre);									//Cadena infoSeleccion[0]
+					TiposSeres tiposSeres = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
+					infoSeleccion.Add(tiposSeres.getDescripcion(tiposSeres.getNumeroSer(animal.especie)));		//Cadena infoSeleccion[1]
 					habitabilidadSeleccion[0] = (animal.especie.habitats.Contains(T_habitats.montana)) ? 1 : -1;
 					habitabilidadSeleccion[1] = animal.especie.habitats.Contains(T_habitats.llanura) ? 1 : -1;
 					habitabilidadSeleccion[2] = animal.especie.habitats.Contains(T_habitats.colina) ? 1 : -1;
@@ -1659,44 +1694,58 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[4] = animal.especie.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
 					habitabilidadSeleccion[6] = animal.especie.habitats.Contains(T_habitats.costa) ? 1 : -1;
 					habitabilidadSeleccion[7] = animal.especie.habitats.Contains(T_habitats.tundra) ? 1 : -1;
-					if (mostrarInfoSeres) {		//Si esta activado el mostrar seres...
-						infoSeleccion += "Estado: ";
-						string temp = "";
-						switch (animal.estado) {
-						case tipoEstadoAnimal.buscarAlimento: 
-							temp = "Buscando comida\n";
-							break;
-						case tipoEstadoAnimal.comer:
-							temp = "Comiendo\n";
-							break;
-						case tipoEstadoAnimal.descansar:
-							temp = "Descansando\n";
-							break;
-						case tipoEstadoAnimal.morir:
-							temp = "Muriendo\n";
-							break;
-						case tipoEstadoAnimal.nacer:
-							temp = "Naciendo\n";
-							break;
-						}
-						infoSeleccion += temp;
-						infoSeleccion += "Hambre: ";
-						if (animal.reserva < (animal.especie.reservaMaxima / 4)) { 	//Menor al 25%
-							infoSeleccion += "muerto de hambre\n";
-						}
-						else if (animal.reserva < (animal.especie.reservaMaxima / 2)) { 	//Menor al 50%
-							infoSeleccion += "hambriento\n";
-						}
-						else if (animal.reserva < (animal.especie.reservaMaxima / 4) * 3) { 	//Menor al 75%
-							infoSeleccion += "bien alimentado\n";
-						}
-						else
-							infoSeleccion += "lleno\n";
+					//Cadena infoSeleccion[2]
+					if (animal.especie.tipo == tipoAlimentacionAnimal.carnivoro) {
+						infoSeleccion.Add("Carnivoro");
+						tipoSeleccion = 2;
 					}
+					else {
+						infoSeleccion.Add("Herbivoro");
+						tipoSeleccion = 1;
+					}
+					//-----------------------
+					//Cadena infoSeleccion[3]
+					if (animal.reserva < (animal.especie.reservaMaxima / 4)) { 	//Menor al 25%
+						infoSeleccion.Add("Hambiento!");
+					}
+					else if (animal.reserva < (animal.especie.reservaMaxima / 2)) { 	//Menor al 50%
+						infoSeleccion.Add("Bastante");
+					}
+					else if (animal.reserva < (animal.especie.reservaMaxima / 4) * 3) { 	//Menor al 75%
+						infoSeleccion.Add("Poca");
+					}
+					else
+						infoSeleccion.Add("LLeno");
+					//-----------------------
+					
+					//Cadena infoSeleccion[4]
+					string temp = "";
+					switch (animal.estado) {
+					case tipoEstadoAnimal.buscarAlimento: 
+						temp = "Buscando comida\n";
+						break;
+					case tipoEstadoAnimal.comer:
+						temp = "Comiendo\n";
+						break;
+					case tipoEstadoAnimal.descansar:
+						temp = "Descansando\n";
+						break;
+					case tipoEstadoAnimal.morir:
+						temp = "Muriendo\n";
+						break;
+					case tipoEstadoAnimal.nacer:
+						temp = "Naciendo\n";
+						break;
+					}
+					infoSeleccion.Add(temp);
+					//------------------------
+					
 					return true;
 				}
 				else if (vegetal != null) {
-					infoSeleccion += vegetal.especie.nombre + "\n";
+					infoSeleccion.Add(vegetal.especie.nombre);									//Cadena infoSeleccion[0]
+					TiposSeres temp = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
+					infoSeleccion.Add(temp.getDescripcion(temp.getNumeroSer(vegetal.especie)));		//Cadena infoSeleccion[1]
 					habitabilidadSeleccion[0] = vegetal.habitabilidad[0];
 					habitabilidadSeleccion[1] = vegetal.habitabilidad[1];
 					habitabilidadSeleccion[2] = vegetal.habitabilidad[2];
@@ -1704,14 +1753,14 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[4] = vegetal.habitabilidad[4];
 					habitabilidadSeleccion[6] = vegetal.habitabilidad[6];
 					habitabilidadSeleccion[7] = vegetal.habitabilidad[7];
-					if (mostrarInfoSeres) {		//Si esta activado el mostrar seres...
-						infoSeleccion += "Numero: " + vegetal.numVegetales;
-						
-					}
+					infoSeleccion.Add(vegetal.numVegetales.ToString());		//Cadena infoSeleccion[2]					
+					tipoSeleccion = 0;
 					return true;
 				}
 				else if (edificio != null) {
-					infoSeleccion += edificio.tipo.nombre;
+					infoSeleccion.Add(edificio.tipo.nombre);									//Cadena infoSeleccion[0]
+					TiposSeres temp = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
+					infoSeleccion.Add(temp.getDescripcion(temp.getNumeroSer(edificio.tipo)));		//Cadena infoSeleccion[1]
 					habitabilidadSeleccion[0] = edificio.tipo.habitats.Contains(T_habitats.montana) ? 1 : -1;
 					habitabilidadSeleccion[1] = edificio.tipo.habitats.Contains(T_habitats.llanura) ? 1 : -1;
 					habitabilidadSeleccion[2] = edificio.tipo.habitats.Contains(T_habitats.colina) ? 1 : -1;
@@ -1719,11 +1768,16 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[4] = edificio.tipo.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
 					habitabilidadSeleccion[6] = edificio.tipo.habitats.Contains(T_habitats.costa) ? 1 : -1;
 					habitabilidadSeleccion[7] = edificio.tipo.habitats.Contains(T_habitats.tundra) ? 1 : -1;
+					//TODO Poner aqui la info escrita que necesitemos para los edificios
+					
+					tipoSeleccion = 3;
 					return true;
 				}
 			}	//Si la casilla esta vacia...
+			tipoSeleccion = -1;
 			return false;
 		}		//Si el raycast falla...
+		tipoSeleccion = -1;
 		return false;
 	}
 }
