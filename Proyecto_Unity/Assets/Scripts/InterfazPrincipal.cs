@@ -25,6 +25,8 @@ public class InterfazPrincipal : MonoBehaviour
 	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
 	private bool[] togglesFiltros;								//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
 	private bool[] togglesFiltrosOld;							//Toggles en los filtros antes de cambiarlos
+	private string infoSeleccion				= "";			//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
+	private float[] habitabilidadSeleccion;						//La habitabilidad del ser o edificio seleccionado
 	//Mejoras posibles
 	private bool mejoraInfoCasilla 				= true;			//La barra inferior de informacion se muestra?
 	private bool mostrarInfoHabitat				= true;			//Se muestra informacion de habitats en ella?
@@ -137,6 +139,7 @@ public class InterfazPrincipal : MonoBehaviour
 		mejoras = GameObject.FindGameObjectWithTag ("Mejoras").GetComponent<MejorasNave> ();
 		togglesFiltros = new bool[24];
 		togglesFiltrosOld = new bool[24];
+		habitabilidadSeleccion = new float[9];
 		//Cargar la información del numero de saves que hay
 		SaveLoad.compruebaRuta ();
 		numSaves = SaveLoad.FileCount ();
@@ -216,6 +219,13 @@ public class InterfazPrincipal : MonoBehaviour
 			mostrarInfoCasilla = true;
 			if (accion == taccion.insertar)
 				insertarElemento ();
+			else if (Input.GetMouseButtonDown(0)) {
+				//Se ha hecho click en el tablero sin insertar nada
+				if (seleccionarObjetoTablero())
+					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.seleccion;
+				else
+					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.ninguno;
+			}
 		} else
 			mostrarInfoCasilla = false;
 		
@@ -1205,7 +1215,8 @@ public class InterfazPrincipal : MonoBehaviour
 					}
 					
 					if (elem == T_elementos.comunes)
-						infoCasilla += "Elementos: metales comunes" + "\t\t"; else if (elem == T_elementos.raros && mostrarInfoMetalesRaros)
+						infoCasilla += "Elementos: metales comunes" + "\t\t"; 
+					else if (elem == T_elementos.raros && mostrarInfoMetalesRaros)
 						//Desbloqueando mejoras
 						infoCasilla += "Elementos: metales raros" + "\t\t";
 					
@@ -1514,6 +1525,32 @@ public class InterfazPrincipal : MonoBehaviour
 		case tMenuDerecho.insercion:
 			break;
 		case tMenuDerecho.seleccion:
+			switch (aspectRatio) {
+			case taspectRatio.aspectRatio16_9:
+				posicionBloqueH = 12.5f;
+				//sobre 45
+				break;
+			case taspectRatio.aspectRatio16_10:
+				posicionBloqueH = 15;
+				//sobre 50
+				break;
+			case taspectRatio.aspectRatio4_3:
+				posicionBloqueH = 20;
+				//sobre 60
+				break;
+			default:
+				break;
+			}
+			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 20 * cuantoH));
+			GUI.Box (new Rect (0, 0, 11 * cuantoW, 20 * cuantoH), "", "BloqueDerechoSeleccion");
+			//TODO Metodo para seleccionar la imagen adecuada
+			GUI.Box (new Rect (0, 0, 4 * cuantoW, 4 * cuantoH), "");				//Aqui se pone la imagen adecuada dependiendo de tu seleccion
+			GUI.Label(new Rect (1, 5, 9 * cuantoW, 14 * cuantoH), infoSeleccion, "LabelReducido");	//Aqui se pega el texto de la seleccion
+			GUI.EndGroup ();
+			//TODO Botones del filtro de vegetales
+			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
+				tipoMenuDerecho = tMenuDerecho.ninguno;
+			}
 			break;
 		}	//Fin switch
 		if (GUI.changed) {
@@ -1602,5 +1639,91 @@ public class InterfazPrincipal : MonoBehaviour
 				}
 			}
 		}
+	}
+	
+	private bool seleccionarObjetoTablero() {
+		int x = 0;
+		int y = 0;
+		if (principal.raycastRoca (Input.mousePosition, ref x, ref y)) {
+			Edificio edificio = principal.vida.tablero[y, x].edificio;
+			Vegetal vegetal = principal.vida.tablero[y, x].vegetal;
+			Animal animal = principal.vida.tablero[y, x].animal;
+			infoSeleccion = "";
+			if (animal != null || vegetal != null || edificio != null) {
+				if (animal != null) {
+					infoSeleccion += animal.especie.nombre + "\n";
+					habitabilidadSeleccion[0] = (animal.especie.habitats.Contains(T_habitats.montana)) ? 1 : -1;
+					habitabilidadSeleccion[1] = animal.especie.habitats.Contains(T_habitats.llanura) ? 1 : -1;
+					habitabilidadSeleccion[2] = animal.especie.habitats.Contains(T_habitats.colina) ? 1 : -1;
+					habitabilidadSeleccion[3] = animal.especie.habitats.Contains(T_habitats.desierto) ? 1 : -1;
+					habitabilidadSeleccion[4] = animal.especie.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
+					habitabilidadSeleccion[6] = animal.especie.habitats.Contains(T_habitats.costa) ? 1 : -1;
+					habitabilidadSeleccion[7] = animal.especie.habitats.Contains(T_habitats.tundra) ? 1 : -1;
+					if (mostrarInfoSeres) {		//Si esta activado el mostrar seres...
+						infoSeleccion += "Estado: ";
+						string temp = "";
+						switch (animal.estado) {
+						case tipoEstadoAnimal.buscarAlimento: 
+							temp = "Buscando comida\n";
+							break;
+						case tipoEstadoAnimal.comer:
+							temp = "Comiendo\n";
+							break;
+						case tipoEstadoAnimal.descansar:
+							temp = "Descansando\n";
+							break;
+						case tipoEstadoAnimal.morir:
+							temp = "Muriendo\n";
+							break;
+						case tipoEstadoAnimal.nacer:
+							temp = "Naciendo\n";
+							break;
+						}
+						infoSeleccion += temp;
+						infoSeleccion += "Hambre: ";
+						if (animal.reserva < (animal.especie.reservaMaxima / 4)) { 	//Menor al 25%
+							infoSeleccion += "muerto de hambre\n";
+						}
+						else if (animal.reserva < (animal.especie.reservaMaxima / 2)) { 	//Menor al 50%
+							infoSeleccion += "hambriento\n";
+						}
+						else if (animal.reserva < (animal.especie.reservaMaxima / 4) * 3) { 	//Menor al 75%
+							infoSeleccion += "bien alimentado\n";
+						}
+						else
+							infoSeleccion += "lleno\n";
+					}
+					return true;
+				}
+				else if (vegetal != null) {
+					infoSeleccion += vegetal.especie.nombre + "\n";
+					habitabilidadSeleccion[0] = vegetal.habitabilidad[0];
+					habitabilidadSeleccion[1] = vegetal.habitabilidad[1];
+					habitabilidadSeleccion[2] = vegetal.habitabilidad[2];
+					habitabilidadSeleccion[3] = vegetal.habitabilidad[3];
+					habitabilidadSeleccion[4] = vegetal.habitabilidad[4];
+					habitabilidadSeleccion[6] = vegetal.habitabilidad[6];
+					habitabilidadSeleccion[7] = vegetal.habitabilidad[7];
+					if (mostrarInfoSeres) {		//Si esta activado el mostrar seres...
+						infoSeleccion += "Numero: " + vegetal.numVegetales;
+						
+					}
+					return true;
+				}
+				else if (edificio != null) {
+					infoSeleccion += edificio.tipo.nombre;
+					habitabilidadSeleccion[0] = edificio.tipo.habitats.Contains(T_habitats.montana) ? 1 : -1;
+					habitabilidadSeleccion[1] = edificio.tipo.habitats.Contains(T_habitats.llanura) ? 1 : -1;
+					habitabilidadSeleccion[2] = edificio.tipo.habitats.Contains(T_habitats.colina) ? 1 : -1;
+					habitabilidadSeleccion[3] = edificio.tipo.habitats.Contains(T_habitats.desierto) ? 1 : -1;
+					habitabilidadSeleccion[4] = edificio.tipo.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
+					habitabilidadSeleccion[6] = edificio.tipo.habitats.Contains(T_habitats.costa) ? 1 : -1;
+					habitabilidadSeleccion[7] = edificio.tipo.habitats.Contains(T_habitats.tundra) ? 1 : -1;
+					return true;
+				}
+			}	//Si la casilla esta vacia...
+			return false;
+		}		//Si el raycast falla...
+		return false;
 	}
 }
