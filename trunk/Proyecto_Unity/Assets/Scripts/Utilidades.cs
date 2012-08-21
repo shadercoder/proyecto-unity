@@ -756,7 +756,7 @@ public class FuncTablero {
 		return numCasillasIguales;
 	}
 	
-	public static Casilla[,] iniciaTablero(Texture2D texHeightmap, Texture2D texHabitats, Texture2D texHabitatsEstetica, Texture2D texElems, Mesh mesh) {
+	public static Casilla[,] iniciaTablero(Texture2D texHeightmap, Texture2D texHabitats, Texture2D texHabitatsEstetica, Texture2D texElems, Mesh mesh, Vector3 posicionPlaneta) {
 		Casilla[,] tablero = new Casilla[altoTablero,anchoTablero];
 		Vector3[] vertices = mesh.vertices;
 		T_elementos[] elems = new T_elementos[altoTablero*anchoTablero];
@@ -783,7 +783,9 @@ public class FuncTablero {
 				k++;
 			}
 		}
-		tablero = mueveVertices(tablero);
+		//Comento esta linea para hacer una prueba
+//		tablero = mueveVertices(tablero);
+		tablero = mueveVertices(tablero, texHeightmap, posicionPlaneta);
 		return tablero;
 	}
 	
@@ -819,7 +821,7 @@ public class FuncTablero {
 		return resultado;
 	}
 	
-	private static Casilla[,] mueveVertices(Casilla[,] tableroIn) {
+	private static Casilla[,] mueveVertices(Casilla[,] tableroIn, Texture2D texIn, Vector3 posicionPlaneta) {
 		Casilla[,] tableroOut;
 		tableroOut = tableroIn;
 //		De momento lo dejo comentado porque es un cambio estetico y de momento lo podemos aparcar.
@@ -830,18 +832,46 @@ public class FuncTablero {
 //				
 //			}
 //		}
+		//Dejo esto comentado para probar la siguiente forma tambien
+//		float x,y,z;
+//		Vector3 coordsVert;
+//		for (int i = altoTablero-1; i > 0; i--) 
+//		{
+//			for (int j = anchoTablero-1; j >= 0; j--) 
+//			{
+//				x = (tableroIn[i-1,j].coordsVert.x + tableroIn[i,j].coordsVert.x)/2;
+//				y = (tableroIn[i-1,j].coordsVert.y + tableroIn[i,j].coordsVert.y)/2;
+//				z = (tableroIn[i-1,j].coordsVert.z + tableroIn[i,j].coordsVert.z)/2;
+//				coordsVert = new Vector3(x,y,z);				
+//				tableroOut[i,j].coordsVert = coordsVert;
+//			}			
+//		}
+		/* [Aris] Con esta parte "teoricamente" seria a la altura perfecta, pero actualmente el fallo es que se 
+		 * suma la extrusion dos veces, y por tanto sale el punto flotando por encima del planeta.
+		 * Habria que restar la extrusion a los vertices utilizados para las coordenadas x y z y luego dejar
+		 * el resto como esta.
+		 * */
 		float x,y,z;
 		Vector3 coordsVert;
+		Vector3 pos;
+		Color[] col = texIn.GetPixels();
 		for (int i = altoTablero-1; i > 0; i--) 
 		{
 			for (int j = anchoTablero-1; j >= 0; j--) 
 			{
+				int iTab = (i * relTexTabAlto) + (relTexTabAlto / 2);
+				int jTab = (j * relTexTabAncho) + ( relTexTabAncho / 2);
+				float altura = col[iTab * texIn.width + jTab].r;
 				x = (tableroIn[i-1,j].coordsVert.x + tableroIn[i,j].coordsVert.x)/2;
 				y = (tableroIn[i-1,j].coordsVert.y + tableroIn[i,j].coordsVert.y)/2;
 				z = (tableroIn[i-1,j].coordsVert.z + tableroIn[i,j].coordsVert.z)/2;
-				coordsVert = new Vector3(x,y,z);				
+				coordsVert = new Vector3(x,y,z);
+				pos = coordsVert - posicionPlaneta;
+				//0.45f es la extrusion
+				pos = (0.45f/512) * pos.normalized * altura;
+				coordsVert = coordsVert + pos;				
 				tableroOut[i,j].coordsVert = coordsVert;
-			}			
+			}
 		}
 		return tableroOut;
 	}
@@ -1073,11 +1103,13 @@ public class FuncTablero {
 	public static Mesh extruyeVerticesTex(Mesh mesh, Texture2D tex, float extrusion, Vector3 centro) {
 		Vector3[] verts = mesh.vertices;
 		Vector3[] vertsRes = new Vector3[verts.Length];
+		Color[] colores = tex.GetPixels();
 		for (int i = 0; i < verts.Length; i++) {
 			Vector2 cord = new Vector2(mesh.uv[i].x, mesh.uv[i].y);
 			cord.x *= tex.width;
 			cord.y *= tex.height;
-			Color col = tex.GetPixel((int)cord.x, (int)cord.y);
+//			Color col = tex.GetPixel((int)cord.x, (int)cord.y);
+			Color col = colores[((int)cord.x) + (((int)cord.y) * tex.width)];
 			Vector3 normal = verts[i] - centro;
 			Vector3 desplazamiento = (extrusion/512 * normal.normalized * col.grayscale);
 			vertsRes[i] = verts[i] + desplazamiento;	

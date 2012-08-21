@@ -321,7 +321,7 @@ public class EscenaCarga : MonoBehaviour {
 		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando creacionParte3().");
 		Debug.Log (FuncTablero.formateaTiempo() + ": Creando el tablero...");
 		yield return new WaitForSeconds(0.1f);
-		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, rocaMesh);
+		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, rocaMesh, Vector3.zero);
 		progreso = 0.7f;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Creando la vida...");
 		yield return new WaitForSeconds(0.01f);
