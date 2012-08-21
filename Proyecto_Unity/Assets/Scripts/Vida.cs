@@ -323,10 +323,11 @@ public class Vida //: MonoBehaviour
 		if(tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == habitabilidadMinima)
 			return false;
 		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
-		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
+		/*float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
-		Vector3 coordsVert = new Vector3(x,y,z);
+		Vector3 coordsVert = new Vector3(x,y,z);*/
+		Vector3 coordsVert = tablero[posX,posY].coordsVert;
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,habitabilidad,tablero[posX,posY].habitat,FuncTablero.creaMesh(coordsVert, modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
 		seres.Add(vegetal);
@@ -351,10 +352,12 @@ public class Vida //: MonoBehaviour
 		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
-		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
+		/*float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
 		Vector3 coordsVert = new Vector3(x,y,z);
+		*/
+		Vector3 coordsVert = tablero[posX,posY].coordsVert;
 		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(coordsVert, modelo));
 		animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
 		seres.Add(animal);
@@ -380,12 +383,12 @@ public class Vida //: MonoBehaviour
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = tipoEdificio.modelos[UnityEngine.Random.Range(0,tipoEdificio.modelos.Count)];
-		float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
+		/*float x = (tablero[posX,posY].coordsVert.x + tablero[posX-1,posY].coordsVert.x)/2;
 		float y = (tablero[posX,posY].coordsVert.y + tablero[posX-1,posY].coordsVert.y)/2;
 		float z = (tablero[posX,posY].coordsVert.z + tablero[posX-1,posY].coordsVert.z)/2;
 		Vector3 coordsVert = new Vector3(x,y,z);		
-		//Vector3 coordsVert = tablero[posX,posY].coordsVert;		
-		
+		*/
+		Vector3 coordsVert = tablero[posX,posY].coordsVert;	
 		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,energiaConsumidaPorTurno,compBasConsumidosPorTurno,compAvzConsumidosPorTurno,matBioConsumidoPorTurno,
 		                                 energiaProducidaPorTurno,compBasProducidosPorTurno,compAvzProducidosPorTurno,matBioProducidoPorTurno,FuncTablero.creaMesh(coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
@@ -500,11 +503,12 @@ public class Vida //: MonoBehaviour
 				animal.desplazarse(nposX,nposY);
 				tablero[nposX,nposY].animal = animal;
 				//Mover la malla
-				float x = (tablero[nposX,nposY].coordsVert.x + tablero[nposX-1,nposY].coordsVert.x)/2;
+				/*float x = (tablero[nposX,nposY].coordsVert.x + tablero[nposX-1,nposY].coordsVert.x)/2;
 				float y = (tablero[nposX,nposY].coordsVert.y + tablero[nposX-1,nposY].coordsVert.y)/2;
 				float z = (tablero[nposX,nposY].coordsVert.z + tablero[nposX-1,nposY].coordsVert.z)/2;
 				Vector3 coordsVert = new Vector3(x,y,z);
-				//animal.modelo.transform.position = tablero[nposX,nposY].coordsVert;
+				*/
+				Vector3 coordsVert = tablero[nposX,nposY].coordsVert;
 				animal.modelo.transform.position = coordsVert;				
 				Vector3 normal = animal.modelo.transform.position - animal.modelo.transform.parent.position;
 				animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);

@@ -1003,12 +1003,17 @@ public class InterfazPrincipal : MonoBehaviour
 				tiempoUltimoModeloInsercion = Time.realtimeSinceStartup;
 				int posX = 0;
 				int posY = 0;
+				RaycastHit hit;
 				int tipo = (int)elementoInsercion - 1;
-				if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY)) {
+				if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY,out hit)) {
+					/*
 					float x = (principal.vida.tablero[posY, posX].coordsVert.x + principal.vida.tablero[posY - 1, posX].coordsVert.x) / 2;
 					float y = (principal.vida.tablero[posY, posX].coordsVert.y + principal.vida.tablero[posY - 1, posX].coordsVert.y) / 2;
 					float z = (principal.vida.tablero[posY, posX].coordsVert.z + principal.vida.tablero[posY - 1, posX].coordsVert.z) / 2;
 					Vector3 coordsVert = new Vector3 (x, y, z);
+					*/
+					Vector3 coordsVert = principal.vida.tablero[posY, posX].coordsVert;
+					//Vector3 coordsVert = new Vector3(principal.vida.tablero[posY, posX].coordsVert.x,principal.vida.tablero[posY, posX].coordsVert.y,hit.normal.z);
 					//Mover la malla
 					modeloInsercion.transform.position = coordsVert;
 					Vector3 normal = modeloInsercion.transform.position - modeloInsercion.transform.parent.position;
@@ -1058,9 +1063,10 @@ public class InterfazPrincipal : MonoBehaviour
 						//Edificio
 						if (tipo >= 0 && tipo < 5) {
 							TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
-							if (principal.recursosSuficientes (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear)) {
-								if (principal.vida.anadeEdificio (tedif, posY, posX, 0, 0, 0, 0, 10, 10, 10,
-								10)) {
+							if (principal.recursosSuficientes (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear)) 
+							{
+								if (principal.vida.anadeEdificio (tedif, posY, posX, 0, 0, 0, 0, 10, 10, 10, 10)) 
+								{
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
 //									principal.modificaRecursosPorTurno(10,10,10,10);
 									//[Aris] Los recursos generados se tienen que ajustar o cambiar, pero mejor ir probando
@@ -1205,7 +1211,8 @@ public class InterfazPrincipal : MonoBehaviour
 				tiempoUltimaInfoCasilla = Time.realtimeSinceStartup;
 				int x = 0;
 				int y = 0;
-				if (principal.raycastRoca (Input.mousePosition, ref x, ref y)) {
+				RaycastHit hit;
+				if (principal.raycastRoca (Input.mousePosition, ref x, ref y,out hit)) {
 					T_habitats habitat = principal.vida.tablero[y, x].habitat;
 					T_elementos elem = principal.vida.tablero[y, x].elementos;
 					Edificio edificio = principal.vida.tablero[y, x].edificio;
@@ -1235,6 +1242,7 @@ public class InterfazPrincipal : MonoBehaviour
 						if (animal != null)
 							infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";
 					}
+					infoCasilla += "\t\tAlto: "+y+"\t\tAncho :"+x;
 				}
 			}
 		} else
@@ -1674,7 +1682,8 @@ public class InterfazPrincipal : MonoBehaviour
 	private bool seleccionarObjetoTablero() {
 		int x = 0;
 		int y = 0;
-		if (principal.raycastRoca (Input.mousePosition, ref x, ref y)) {
+		RaycastHit hit;
+		if (principal.raycastRoca (Input.mousePosition, ref x, ref y,out hit)) {
 			Edificio edificio = principal.vida.tablero[y, x].edificio;
 			Vegetal vegetal = principal.vida.tablero[y, x].vegetal;
 			Animal animal = principal.vida.tablero[y, x].animal;

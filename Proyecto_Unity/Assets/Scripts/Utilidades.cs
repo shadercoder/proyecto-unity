@@ -830,6 +830,19 @@ public class FuncTablero {
 //				
 //			}
 //		}
+		float x,y,z;
+		Vector3 coordsVert;
+		for (int i = altoTablero-1; i > 0; i--) 
+		{
+			for (int j = anchoTablero-1; j >= 0; j--) 
+			{
+				x = (tableroIn[i-1,j].coordsVert.x + tableroIn[i,j].coordsVert.x)/2;
+				y = (tableroIn[i-1,j].coordsVert.y + tableroIn[i,j].coordsVert.y)/2;
+				z = (tableroIn[i-1,j].coordsVert.z + tableroIn[i,j].coordsVert.z)/2;
+				coordsVert = new Vector3(x,y,z);				
+				tableroOut[i,j].coordsVert = coordsVert;
+			}			
+		}
 		return tableroOut;
 	}
 	
