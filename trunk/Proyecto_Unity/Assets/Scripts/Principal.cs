@@ -182,9 +182,9 @@ public class Principal : MonoBehaviour {
 	}
 	
 	//Devuelve  true si se ha producido una colision con el planeta y además las coordenadas de la casilla del tablero en la que ha impactado el raycast (en caso de producirse)
-	public bool raycastRoca(Vector3 posicion,ref int x,ref int y)
+	public bool raycastRoca(Vector3 posicion,ref int x,ref int y,out RaycastHit hit)
 	{
-		RaycastHit hit;
+		//RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay(posicion);
 		if (objetoRoca.collider.Raycast(ray, out hit, Mathf.Infinity)) 
 		{
