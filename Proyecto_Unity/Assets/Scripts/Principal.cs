@@ -134,7 +134,8 @@ public class Principal : MonoBehaviour {
 		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
 		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando el tablero...");
-		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.mesh);
+		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.mesh, objetoRoca.transform.position);
+//		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.sharedMesh, objetoRoca.transform.position);
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando Vida...");
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
