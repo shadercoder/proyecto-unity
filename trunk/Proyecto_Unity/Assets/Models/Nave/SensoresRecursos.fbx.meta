@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: 1ff38def4be3e424688087ee7c98e530
+guid: a45d59758f3d71544a6c90d47244bb6d
 ModelImporter:
   importerVersion: 7
   meshes:
@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
@@ -30,6 +30,13 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Cylinder
-    4300002: Anillo
-    4300004: GeneradorT2
+    4300000: SensorT2
+    4300002: Cube_002
+    4300004: Cube_001
+    4300006: Cube
+    4300008: Vida
+    4300010: Recursos
+    4300012: SensorRecursos
+    7400000: Default Take //// SensoresVida
+    7400002: Default Take //// SensoresVida2
+    7400004: Default Take //// SensoresRecursos

@@ -32,3 +32,10 @@ AssetImporter:
   fileIDToRecycleName:
     4300000: Cube
     4300002: GeneradorT1
+    4300004: Cylinder
+    4300006: SensorVida
+    4300008: SensorRecursos
+    4300010: ArraySolar
+    4300012: Motores_T1
+    4300014: Brazos
+    4300016: Cuerpo

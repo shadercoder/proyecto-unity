@@ -93,7 +93,7 @@ public class MejorasNave : MonoBehaviour {
 		mejorasCompradas[2] = true;
 	}
 	
-	public void compraMejora3() {	//Habilitar la deteccion de animales y plantas
+	public void compraMejora3() {	//Habilitar la deteccion de animales y planta
 		interfaz.mejoraMostrarSeres();
 		SensoresVida.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[3] = true;
@@ -135,7 +135,6 @@ public class MejorasNave : MonoBehaviour {
 	
 	public void compraMejora9() {	//Mejora energia nivel 2
 		principal.mejoraEnergia2();
-		
 		GeneradorT2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[9] = true;
 	}
