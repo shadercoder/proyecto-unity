@@ -34,8 +34,8 @@ public class Principal : MonoBehaviour {
 	public Vida vida;													//Tablero lógico del algoritmo		
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
 	public int numPasos							= 0;					//Numero de pasos del algoritmo ejecutados
-	private bool algoritmoActivado				= false;				//Se encuentra activado el algoritmo de la vida?
-	
+	private bool algoritmoActivado				= true;				//Se encuentra activado el algoritmo de la vida?
+	private bool algoritmoPasoAPaso = false;
 	//Escala de tiempo
 	public float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	
@@ -75,6 +75,8 @@ public class Principal : MonoBehaviour {
 			vida.algoritmoVida(numPasos);
 			numPasos++;
 			tiempoPaso = 0.0f;
+			if(algoritmoPasoAPaso)
+				algoritmoActivado = false;
 		}
 	}
 	
@@ -85,6 +87,11 @@ public class Principal : MonoBehaviour {
  				algoritmoActivado = false;
             else
 				algoritmoActivado = true;
+		if(Input.GetKeyDown(KeyCode.B)) 
+			if(algoritmoPasoAPaso)
+ 				algoritmoPasoAPaso = false;
+            else
+				algoritmoPasoAPaso = true;		
 	}
 	
 	public void setEscalaTiempo(float nuevaEscala)

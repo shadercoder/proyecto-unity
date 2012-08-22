@@ -283,7 +283,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb1.Add(buscarAlimento);
 		animacionesHerb1.Add(comer);
 		animacionesHerb1.Add(morir);*/
-		herbivoro1 = new EspecieAnimal("Conejo",1,50,1000,500,2,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
+		herbivoro1 = new EspecieAnimal("Conejo",1,75,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
 		
 		listaHabs.Add(T_habitats.desierto);
 		//Cabra: habitats -> llanura, colina y desierto
@@ -377,7 +377,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn4.Add(buscarAlimento);
 		animacionesCarn4.Add(comer);
 		animacionesCarn4.Add(morir);*/
-		carnivoro4 = new EspecieAnimal("Tigre",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4,animacionesCarn4);
+		carnivoro4 = new EspecieAnimal("Tigre",1,50,1500,750,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4,animacionesCarn4);
 		
 		listaHabs.Add(T_habitats.tundra);
 		listaHabs.Add(T_habitats.volcanico);
