@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: 1ff38def4be3e424688087ee7c98e530
+guid: 55fd8d0417df08a429b889714fcc1ad5
 ModelImporter:
   importerVersion: 7
   meshes:
@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
@@ -30,6 +30,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Cylinder
-    4300002: Anillo
-    4300004: GeneradorT2
+    4300000: Habitats

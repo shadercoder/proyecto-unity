@@ -630,21 +630,21 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[1])
+			if (mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Habilita la detección de hábitats"), "BotonMejoraHabitats")) {
 				mejoras.compraMejora1 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[1] || mejoras.mejorasCompradas[2])
+			if (mejoras.mejorasCompradas[2])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Habilita la deteccion de metales raros"), "BotonMejoraMetalesRaros")) {
 				mejoras.compraMejora2 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[2] || mejoras.mejorasCompradas[3])
+			if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Habilita la deteccion de animales y vegetales"), "BotonMejoraVida")) {
 				mejoras.compraMejora3 ();
@@ -693,21 +693,21 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[8])
+			if (mejoras.mejorasCompradas[9])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Añade un condensador de energía mejorado"), "BotonMejoraEnergia2")) {
 				mejoras.compraMejora9 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[10])
+			if (!mejoras.mejorasCompradas[9] || mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desbloquea el uso de habilidades avanzadas"), "BotonMejoraEnergia3")) {
 				mejoras.compraMejora10 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[11] || !mejoras.mejorasCompradas[10])
+			if (!mejoras.mejorasCompradas[8] && !mejoras.mejorasCompradas[9] && !mejoras.mejorasCompradas[10] || mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desbloquea el uso de habilidades cuánticas"), "BotonMejoraEnergia4")) {
 				mejoras.compraMejora11 ();
