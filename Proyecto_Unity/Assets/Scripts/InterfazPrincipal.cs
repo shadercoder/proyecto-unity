@@ -1242,7 +1242,7 @@ public class InterfazPrincipal : MonoBehaviour
 						if (animal != null)
 							infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";
 					}
-					infoCasilla += "\t\tAlto: "+y+"\t\tAncho :"+x;
+					//infoCasilla += "\t\tAlto: "+y+"\t\tAncho :"+x;
 				}
 			}
 		} else

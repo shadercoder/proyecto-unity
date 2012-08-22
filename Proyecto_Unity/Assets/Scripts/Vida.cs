@@ -60,6 +60,8 @@ public class Vida //: MonoBehaviour
 	public int contadorPintarTexturaPlantas = 0;
 	public bool texturaPlantasModificado = false;
 	
+	public List<Tupla<int,int>> posicionesColindantes;	
+	
 	public Vida()
 	{
 		especies = new List<Especie>();
@@ -104,7 +106,17 @@ public class Vida //: MonoBehaviour
 		idActualEdificio = 0;
 		texturaPlantas = texPlantas;
 		objetoRoca = objeto;
-	}
+		
+		posicionesColindantes = new List<Tupla<int, int>>();
+		posicionesColindantes.Add(new Tupla<int,int>(-1,-1));
+		posicionesColindantes.Add(new Tupla<int,int>(0,-1));
+		posicionesColindantes.Add(new Tupla<int,int>(1,-1));
+		posicionesColindantes.Add(new Tupla<int,int>(1,0));
+		posicionesColindantes.Add(new Tupla<int,int>(1,1));
+		posicionesColindantes.Add(new Tupla<int,int>(0,1));
+		posicionesColindantes.Add(new Tupla<int,int>(-1,1));
+		posicionesColindantes.Add(new Tupla<int,int>(-1,0));
+}
 	
 	public Vida(Casilla[,] tablero, Texture2D texPlantas)
 	{
@@ -533,27 +545,57 @@ public class Vida //: MonoBehaviour
 		return anadeAnimal(especie,nposX,nposY);
 	}
 	
-	//Devuelve la direccion en la que se tiene que mover el animal para acercarse a una presa o una aleatoria sino encuentra presa
-	/*public Vector2 buscaAlimentoAnimal(Animal animal)
+	//Devuelve true si el animal se ha alimentado y false si no
+	public bool buscaAlimentoAnimal(Animal animal)
 	{
-		int x,y;
-		x = y = 0;
-		while(x == 0 && y == 0)
-		{
-			x = UnityEngine.Random.Range(-1, 2);            
-	    	y = UnityEngine.Random.Range(-1, 2);
+		int nPosX;
+		int nPosY;		
+		if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
+		{									
+			if(tablero[animal.posX,animal.posY].vegetal != null)
+			{
+				int comida = tablero[animal.posX,animal.posY].vegetal.consumeVegetales(animal.especie.alimentoMaxTurno);
+				animal.ingiereAlimento(comida);
+				if(tablero[animal.posX,animal.posY].vegetal.numVegetales <= 0)
+					eliminaVegetal(tablero[animal.posX,animal.posY].vegetal);
+				return true;				
+			}
+			else
+			{
+				FuncTablero.randomLista(posicionesColindantes);				
+				for(int i = 0; i < posicionesColindantes.Count; i++)
+				{
+					nPosX = animal.posX + posicionesColindantes[i].e1;
+					nPosY = animal.posY + posicionesColindantes[i].e2;					
+					FuncTablero.convierteCoordenadas(ref nPosX,ref nPosY);
+					if(desplazaAnimal(animal,nPosX,nPosY))
+						break;
+				}				
+			}
 		}
-		
-		
-		
-		if(x == 0 && y == 0)
-		{
-			x = UnityEngine.Random.Range(-1, 2);            
-	    	y = UnityEngine.Random.Range(-1, 2);
+		else if(animal.especie.tipo == tipoAlimentacionAnimal.carnivoro)						
+		{			
+			FuncTablero.randomLista(posicionesColindantes);				
+			for(int i = 0; i < posicionesColindantes.Count; i++)
+			{
+				nPosX = animal.posX + posicionesColindantes[i].e1;
+				nPosY = animal.posY + posicionesColindantes[i].e2;					
+				FuncTablero.convierteCoordenadas(ref nPosX,ref nPosY);
+				if(tablero[nPosX,nPosY].animal != null)
+					if(tablero[nPosX,nPosY].animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)					
+					{
+						int comida = tablero[nPosX,nPosY].animal.reserva % animal.especie.alimentoMaxTurno;
+						tablero[nPosX,nPosY].animal.morir();
+						tablero[nPosX,nPosY].animal = null;
+						animal.ingiereAlimento(comida);
+						desplazaAnimal(animal,nPosX,nPosY);
+						return true;					
+					}
+			}			
 		}
-		return new Vector2(x,y);
-	}*/
-								
+		return false;
+	}
+	
 	public void algoritmoVida(int numTurno)
 	{
 		Ser ser;
@@ -588,14 +630,14 @@ public class Vida //: MonoBehaviour
 					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,vegetal.especie.radioMigracion);
 				int turno = (turnoActual + vegetal.especie.siguienteTurno)%numMaxTurnos;
 				listadoSeresTurnos[turno].Add(vegetal);	
-				listadoSeresTurnos[turnoActual].RemoveAt(i);
+				listadoSeresTurnos[turnoActual].Remove(vegetal);
 			}
 			else if(ser is Animal)
 			{
 				animal = (Animal)ser;
 				if(!animal.consumirAlimento() && animal.estado != tipoEstadoAnimal.morir)
 					animal.estado = tipoEstadoAnimal.morir;
-				else if(animal.reserva > animal.especie.reservaMaxima*0.75)
+				else if(animal.reserva > animal.especie.reservaMaxima*0.5)
 				{
 					if(animal.reproduccion()) 
 						reproduceAnimal(animal.especie,animal.posX,animal.posY);											
@@ -609,50 +651,8 @@ public class Vida //: MonoBehaviour
 						if(animal.aguante == 0)					
 							animal.estado = tipoEstadoAnimal.descansar;	
 						else
-						{
-							int nPosX = 0;
-							int nPosY = 0;
-							while(nPosX == 0 && nPosY == 0)
-						    {
-								nPosX = UnityEngine.Random.Range(-1, 2);
-								nPosY = UnityEngine.Random.Range(-1, 2);
-							}
-							nPosX += animal.posX;
-							nPosY += animal.posY;
-							FuncTablero.convierteCoordenadas(ref nPosX,ref nPosY);
-		    				if(animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
-							{									
-								if(tablero[animal.posX,animal.posY].vegetal != null)
-									if(tablero[animal.posX,animal.posY].vegetal.numVegetales > 0)
-									{
-										int comida = tablero[animal.posX,animal.posY].vegetal.consumeVegetales(animal.especie.alimentoMaxTurno);
-										animal.ingiereAlimento(comida);
-										animal.estado = tipoEstadoAnimal.comer;
-									}
-									else
-										;
-								else if(tablero[nPosX,nPosY].animal == null)																			
-									desplazaAnimal(animal,nPosX,nPosY);	
-							}
-							else if(animal.especie.tipo == tipoAlimentacionAnimal.carnivoro)						
-							{
-								if(tablero[nPosX,nPosY].animal != null)
-									if(tablero[nPosX,nPosY].animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)
-									{
-										int comida = tablero[nPosX,nPosY].animal.reserva;
-										tablero[nPosX,nPosY].animal.morir();
-										tablero[nPosX,nPosY].animal = null;
-										animal.ingiereAlimento(comida);
-										animal.desplazarse(nPosX,nPosY);
-										desplazaAnimal(animal,nPosX,nPosY);
-										animal.estado = tipoEstadoAnimal.comer;							
-									}
-									else
-										;
-								else if(tablero[nPosX,nPosY].animal == null)																			
-									desplazaAnimal(animal,nPosX,nPosY);	
-							}
-						}
+							if(buscaAlimentoAnimal(animal))
+								animal.estado = tipoEstadoAnimal.comer;					
 						animal.aguante--;					
 						break;
 					case tipoEstadoAnimal.descansar:
@@ -668,15 +668,12 @@ public class Vida //: MonoBehaviour
 					case tipoEstadoAnimal.morir:
 						eliminaAnimal(animal);
 						continue;
-//						break;					
 					default:break;
 					}
 				}
-				/*Animation ani = animal.especie.animaciones[(int)animal.estado];
-				ani.Play();*/
 				int turno = (turnoActual + animal.especie.siguienteTurno)%numMaxTurnos;
 				listadoSeresTurnos[turno].Add(animal);	
-				listadoSeresTurnos[turnoActual].RemoveAt(i);
+				listadoSeresTurnos[turnoActual].Remove(animal);
 			
 			}	
 			else if(ser is Edificio)
@@ -684,9 +681,49 @@ public class Vida //: MonoBehaviour
 				edificio = (Edificio)ser;
 				int turno = (turnoActual + edificio.tipo.siguienteTurno)%numMaxTurnos;
 				listadoSeresTurnos[turno].Add(edificio);	
-				listadoSeresTurnos[turnoActual].RemoveAt(i);
+				listadoSeresTurnos[turnoActual].Remove(edificio);
 			}
 		}
+		/*for(int i = 0; i < animales.Count; i++)
+		{
+			animal = animales[i];
+			if(!animal.consumirAlimento() && animal.estado != tipoEstadoAnimal.morir)
+				animal.estado = tipoEstadoAnimal.morir;
+			else if(animal.reserva > animal.especie.reservaMaxima*0.5)
+			{
+				if(animal.reproduccion()) 
+					reproduceAnimal(animal.especie,animal.posX,animal.posY);											
+				animal.estado = tipoEstadoAnimal.descansar;
+			}
+			else
+			{
+				switch(animal.estado)
+				{
+				case tipoEstadoAnimal.buscarAlimento:
+					if(animal.aguante == 0)					
+						animal.estado = tipoEstadoAnimal.descansar;	
+					else
+						if(buscaAlimentoAnimal(animal))
+							animal.estado = tipoEstadoAnimal.comer;					
+					animal.aguante--;					
+					break;
+				case tipoEstadoAnimal.descansar:
+					animal.aguante = animal.especie.aguanteInicial;
+					animal.estado = tipoEstadoAnimal.buscarAlimento;					
+					break;
+				case tipoEstadoAnimal.comer:
+					animal.estado = tipoEstadoAnimal.buscarAlimento;
+					break;
+				case tipoEstadoAnimal.nacer:
+					animal.estado = tipoEstadoAnimal.buscarAlimento;
+					break;
+				case tipoEstadoAnimal.morir:
+					eliminaAnimal(animal);
+					continue;
+				default:break;
+				}
+			}			
+		}*/
 				
 		contadorPintarTexturaPlantas++;
 		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)

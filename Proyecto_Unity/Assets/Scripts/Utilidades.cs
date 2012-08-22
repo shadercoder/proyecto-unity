@@ -14,7 +14,18 @@ using System.Collections.Generic;
 //Clase para tratar la textura y el tablero -----------------------------------------------------------------------------------------
 public enum T_habitats {montana, llanura, colina, desierto, volcanico, mar, costa, tundra, inhabitable};	//Tipos de orografía
 public enum T_elementos {comunes, raros, nada};																//Se pueden añadir mas mas adelante
-	
+
+public struct Tupla<T1, T2>
+{
+	public T1 e1;
+	public T2 e2;
+	public Tupla(T1 i1,T2 i2)
+	{
+		e1 = i1;
+		e2 = i2;
+	}
+}
+
 public class FuncTablero {
 	
 	//Variables ----------------------------------------------------------------------------------------------------------------------
@@ -46,7 +57,7 @@ public class FuncTablero {
 	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
-		
+	
 	//Funciones --------------------------------------------------------------------------------------------------------------------
 	
 	public static float ruido_Turbulence(Vector2 coordsIn, int nOctavas, float lacunarity, float gain) {
@@ -784,8 +795,8 @@ public class FuncTablero {
 			}
 		}
 		//Comento esta linea para hacer una prueba
-//		tablero = mueveVertices(tablero);
-		tablero = mueveVertices(tablero, texHeightmap, posicionPlaneta);
+		tablero = mueveVertices(tablero);
+		//tablero = mueveVertices(tablero, texHeightmap, posicionPlaneta);
 		return tablero;
 	}
 	
@@ -821,6 +832,24 @@ public class FuncTablero {
 		return resultado;
 	}
 	
+	private static Casilla[,] mueveVertices(Casilla[,] tableroIn) {
+		Casilla[,] tableroOut;
+		tableroOut = tableroIn;
+		float x,y,z;
+		Vector3 coordsVert;
+		for (int i = altoTablero-1; i > 0; i--) 
+		{
+			for (int j = anchoTablero-1; j >= 0; j--) 
+			{
+				x = (tableroIn[i-1,j].coordsVert.x + tableroIn[i,j].coordsVert.x)/2;
+				y = (tableroIn[i-1,j].coordsVert.y + tableroIn[i,j].coordsVert.y)/2;
+				z = (tableroIn[i-1,j].coordsVert.z + tableroIn[i,j].coordsVert.z)/2;
+				coordsVert = new Vector3(x,y,z);				
+				tableroOut[i,j].coordsVert = coordsVert;
+			}			
+		}
+		return tableroOut;		
+	}
 	private static Casilla[,] mueveVertices(Casilla[,] tableroIn, Texture2D texIn, Vector3 posicionPlaneta) {
 		Casilla[,] tableroOut;
 		tableroOut = tableroIn;
