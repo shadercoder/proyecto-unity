@@ -40,16 +40,16 @@ public class TiposSeres : MonoBehaviour {
 	
 	//Descripciones
 	private List<string> descripciones;
-	private string descripcionSeta				= "RELLENAR";
-	private string descripcionFlor				= "RELLENAR";
-	private string descripcionCana				= "RELLENAR";
-	private string descripcionArbusto			= "RELLENAR";
-	private string descripcionEstromatolito		= "RELLENAR";
-	private string descripcionCactus			= "RELLENAR";
-	private string descripcionPalmera			= "RELLENAR";
-	private string descripcionPino				= "RELLENAR";
-	private string descripcionCipres			= "RELLENAR";
-	private string descripcionPinoAlto			= "RELLENAR";
+	private string descripcionSeta				= "Del reino de los hongos, las setas son organismos simples que crecen en llanuras y colinas. No producen mucha comida, pero su reproduccion por esporas es muy efectiva y les permite extenderse a gran distancia.";
+	private string descripcionFlor				= "Las flores son plantas peque\u00f1as que crecen en las llanuras, cubriendolas de color. Producen mas comida que las setas, aunque se reproducen menos y de forma mas local.";
+	private string descripcionCana				= "Alargadas y finas, las ca\u00f1as crecen en llanuras, costas y desiertos, adaptandose muy bien al entorno en el que se encuentren. No producen mucho alimento, pero pueden expandirse a zonas lejanas.";
+	private string descripcionArbusto			= "Los arbustos son plantas muy resistentes, que crecen en llanuras y colinas. Lo mas destacable de ellas es su adaptabilidad, pues una vez que se afianzan en un lugar se adaptan muy bien a su entorno.";
+	private string descripcionEstromatolito		= "A medio camino entre las algas y el coral, los estromatolitos forman sus estructuras en las costas. Son organismos muy locales y de reproduccion lenta, pero muy estables y resistentes.";
+	private string descripcionCactus			= "Los cactus se extienden por los desiertos y los terrenos volcanicos. Son una fuente muy rica en alimentos para las especies que se alimentan de ellos y pueden reproducirse a grandes distancias.";
+	private string descripcionPalmera			= "El habitat natural de la palmera es la costa, aunque tambien pueden encontrarse en llanuras. Son plantas muy resistentes, con una alta produccion de alimento y una gran capacidad de adaptacion al medio.";
+	private string descripcionPino				= "Los pinos son arboles de gran tama\u00f1o que crecen en llanuras, colinas y en menor medida en monta\u00f1as. Ademas de su gran resistencia, se adaptan muy bien al entorno en el que crecen.";
+	private string descripcionCipres			= "Pocos habitats existen donde un cipres no pueda nacer. Estos arboles crecen muy rapido y tienen un factor de adaptacion extraordinariamente alto, lo que les permite sobrevivir en todo tipo de lugares.";
+	private string descripcionPinoAlto			= "El pino alto se encuentra con frecuencia en colinas y monta\u00f1as, aunque puede vivir en mas lugares. Es un arbol enorme y con muchas hojas que representa lo mas alto en la cadena de los vegetales.";
 	private string descripcionHerb1				= "RELLENAR";
 	private string descripcionHerb2				= "RELLENAR";
 	private string descripcionHerb3				= "RELLENAR";
@@ -60,11 +60,11 @@ public class TiposSeres : MonoBehaviour {
 	private string descripcionCarn3				= "RELLENAR";
 	private string descripcionCarn4				= "RELLENAR";
 	private string descripcionCarn5				= "RELLENAR";
-	private string descripcionFabBas			= "RELLENAR";
-	private string descripcionEnergia1			= "RELLENAR";
-	private string descripcionGranja			= "RELLENAR";
-	private string descripcionFabAdv			= "RELLENAR";
-	private string descripcionEnergia2			= "RELLENAR";
+	private string descripcionFabBas			= "En este edificio se producen componentes de construccion basicos, necesarios para casi todas las construcciones que puede erigir la nave y para las reparaciones.";
+	private string descripcionEnergia1			= "A traves de un reactor de fusion y otro de fision, este edificio produce una alta cantidad de energia. Este combinado de reacciones es practicamente inagotable y limpio.";
+	private string descripcionGranja			= "Recolectando seres vivos de los alrededores, la granja es capaz de refinar compuestos de material biologico esenciales para el fin de la mision encomendada a la nave.";
+	private string descripcionFabAdv			= "La fabrica de componentes avanzados recolecta ciertos metales raros para producir materiales complejos y muy valiosos, permitiendo construir e investigar en nuevos frentes.";
+	private string descripcionEnergia2			= "Creando un campo de contencion magnetica muy poderoso, este edificio capta y utiliza materia oscura para producir una ingente cantidad de energia.";
 	
 	//Variables del script
 	private ModelosEdificios modelosEdificios;
