@@ -46,6 +46,7 @@ public class Principal : MonoBehaviour {
 	
 	void Awake() {		
 		Random.seed = System.DateTime.Now.Millisecond;
+		UnityEngine.Random.seed = System.DateTime.Now.Millisecond;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando el script Principal...");
 		//Se busca el objeto con los valores guardados en la escena inicial, si lo hubiera
 		contenedor = GameObject.FindGameObjectWithTag("Carga");
@@ -69,7 +70,7 @@ public class Principal : MonoBehaviour {
 	void FixedUpdate() {
 		//Algoritmo de vida		
 		tiempoPaso += Time.deltaTime;		
-		if(algoritmoActivado && tiempoPaso > 1.0f) 		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
+		if(algoritmoActivado && tiempoPaso > 3.0f) 		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
 		{		
 			actualizaRecursos();
 			vida.algoritmoVida(numPasos);

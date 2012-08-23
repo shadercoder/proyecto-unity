@@ -329,6 +329,59 @@ public class Vida //: MonoBehaviour
 		numTiposEdificios--;
 		return true;
 	}
+	
+	public Vector3 posicionAleatoriaVegetal(int posX,int posY)
+	{		
+		int xIzq = posX;
+		int yIzq = posY-1;
+		FuncTablero.convierteCoordenadas(ref xIzq,ref yIzq);
+		int xDer = posX;
+		int yDer = posY+1;
+		FuncTablero.convierteCoordenadas(ref xDer,ref yDer);
+		int xSup = posX+1;
+		int ySup = posY;
+		FuncTablero.convierteCoordenadas(ref xSup,ref ySup);
+		int xInf = posX-1;
+		int yInf = posY;
+		FuncTablero.convierteCoordenadas(ref xInf,ref yInf);
+		Vector3 centro = tablero[posX,posY].coordsVert;
+		Vector3 izquierdo = tablero[xIzq,yIzq].coordsVert;
+		Vector3 derecho = tablero[xDer,yDer].coordsVert;
+		Vector3 superior = tablero[xSup,ySup].coordsVert;
+		Vector3 inferior = tablero[xInf,yInf].coordsVert;
+		
+		float x,y,z,pos;
+		
+		if(UnityEngine.Random.Range(0,2) == 0)						//Izquierda
+		{
+			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			x = (1-pos)*centro.x + pos*izquierdo.x;
+			y = (1-pos)*centro.y + pos*izquierdo.y;
+			z = (1-pos)*centro.z + pos*izquierdo.z;
+		}
+		else														//Derecha
+		{
+			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			x = (1-pos)*centro.x + pos*derecho.x;
+			y = (1-pos)*centro.y + pos*derecho.y;
+			z = (1-pos)*centro.z + pos*derecho.z;			
+		}
+		if(UnityEngine.Random.Range(0,2) == 0)						//Arriba
+		{
+			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			x = (1-pos)*x + pos*superior.x;
+			y = (1-pos)*y + pos*superior.y;
+			z = (1-pos)*z + pos*superior.z;
+		}
+		else														//Abajo
+		{
+			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			x = (1-pos)*x + pos*inferior.x;
+			y = (1-pos)*y + pos*inferior.y;
+			z = (1-pos)*z + pos*inferior.z;			
+		}
+		return new Vector3 (x, y, z);
+	}
 		
 	//Devuelve si el vegetal se puede insertar en esa posición o no
 	public bool compruebaAnadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY)
@@ -342,7 +395,8 @@ public class Vida //: MonoBehaviour
 		if(tieneEdificio(posX,posY) || tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == habitabilidadMinima)
 			return false;
 		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
-		Vector3 coordsVert = tablero[posX,posY].coordsVert;
+		Vector3 coordsVert = posicionAleatoriaVegetal(posX,posY);
+		//Vector3 coordsVert = tablero[posX,posY].coordsVert;
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,habitabilidad,tablero[posX,posY].habitat,FuncTablero.creaMesh(coordsVert, modelo));
 		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
 		seres.Add(vegetal);
@@ -353,8 +407,8 @@ public class Vida //: MonoBehaviour
 		tablero[posX,posY].vegetal = vegetal;
 		especie.numSeresEspecie++;
 		pintaPlantasTex(posX,posY);
-		return true;
-	}	
+		return true;	
+	}
 	
 	//Devuelve si el animal se puede insertar en esa posición o no
 	public bool compruebaAnadeAnimal(EspecieAnimal especie,int posX,int posY)
