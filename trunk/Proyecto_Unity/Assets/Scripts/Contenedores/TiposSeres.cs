@@ -104,10 +104,10 @@ public class TiposSeres : MonoBehaviour {
 		energiaAdv = new TipoEdificio("Central de energía avanzada",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
 		
 		/* Vegetales */
-		/*vegetal = new EspecieVegetal(nombre, siguienteTurno, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, 
+		/*vegetal = new EspecieVegetal(nombre, numMaxSeresEspecie, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, 
 									   turnosEvolucionInicial, evolucion, habitabilidadInicial, idTextura, modelos
 		nombre						=>	nombre de la especie
-		siguienteTurno				=>	cada cuantos turnos ejecuta la especie su algoritmo
+		numMaxSeresEspecie			=>	número máximo de seres de esa especie
 		numMaxVegetales				=>	número máximo de vegetales en una misma casilla. Valores desde 1000 para la primera especie y aumentando en sucesivas especies.
 		numIniVegetales				=>	número inicial de vegetales al crearse. Valores desde 100 para la primera especie y aumentando en sucesivas especies.
 		capacidadMigracionLocal		=>	probabilidad en tanto por 1 de que una especie migre a una casilla colindante. La migración también depende de la habitabilidad y del numVegetales. 
@@ -134,7 +134,7 @@ public class TiposSeres : MonoBehaviour {
 		habSeta.Add(-0.6f);//costa
 		habSeta.Add(-1.0f);//tundra
 		habSeta.Add(-1.0f);//inhabitable		
-		seta = new EspecieVegetal("Seta",8,1000,100,0.5f,0.2f,7,20,0.01f,habSeta,1,modelosVegetales.setas);
+		seta = new EspecieVegetal("Seta",50,1000,100,0.05f,0.02f,7,20,0.01f,habSeta,1,modelosVegetales.setas);
 		
 		//Flor: habitats -> llanura
 		//Tier 1. Barata y decente en llanuras. Mediocre produccion de alimento, reproductibilidad buena pero rango de migracion normal.
@@ -148,7 +148,7 @@ public class TiposSeres : MonoBehaviour {
 		habFlor.Add(-1.0f);//costa
 		habFlor.Add(-1.0f);//tundra
 		habFlor.Add(-1.0f);//inhabitable		
-		flor = new EspecieVegetal("Flor",8,1200,150,3.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);//0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
+		flor = new EspecieVegetal("Flor",50,1200,150,0.05f,0.02f,4,10,0.01f,habFlor,2,modelosVegetales.flores);//0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
 
 		//Palo (Caña): habitats -> llanura, costa y desierto
 		//Tier 2. Normal en llanura, desierto y costa, produccion de alimento normal, reproductibilidad normal y rango alto. Alto ratio de evolucion.
@@ -162,7 +162,7 @@ public class TiposSeres : MonoBehaviour {
 		habCana.Add( 0.3f);//costa
 		habCana.Add(-1.0f);//tundra
 		habCana.Add(-1.0f);//inhabitable		
-		palo = new EspecieVegetal("Caña",8,1500,200,0.55f,0.1f,6,8,0.04f,habCana,3,modelosVegetales.canas);
+		palo = new EspecieVegetal("Caña",50,1500,200,0.05f,0.01f,6,8,0.04f,habCana,3,modelosVegetales.canas);
 		
 		//Arbusto: habitats -> llanura, colina, montaña y desierto
 		//Tier 2. Decente en llanura y colina. Produccion normal y reproductibilidad normal. Rango bajo y evolucion lenta pero alta.
@@ -176,7 +176,7 @@ public class TiposSeres : MonoBehaviour {
 		habArbusto.Add(-1.0f);//costa
 		habArbusto.Add(-1.0f);//tundra
 		habArbusto.Add(-1.0f);//inhabitable		
-		arbusto = new EspecieVegetal("Arbusto",8,1800,120,0.4f,0.1f,3,20,0.1f,habArbusto,2,modelosVegetales.arbustos);
+		arbusto = new EspecieVegetal("Arbusto",50,1800,120,0.04f,0.01f,3,20,0.1f,habArbusto,2,modelosVegetales.arbustos);
 
 		//Estrom (Estromatolito): habitats -> costa, desierto y volcanico
 		//Tier 3. Muy buena en costas. Alta produccion de alimento y reproductibilidad un poco baja. Poca migracion y poco radio. Evolucion decente.
@@ -190,7 +190,7 @@ public class TiposSeres : MonoBehaviour {
 		habEstrom.Add( 0.8f);//costa
 		habEstrom.Add(-0.4f);//tundra
 		habEstrom.Add(-1.0f);//inhabitable		
-		estrom = new EspecieVegetal("Estromatolito",10,2400,350,0.3f,0.1f,3,25,0.03f,habEstrom,4,modelosVegetales.estromatolitos);
+		estrom = new EspecieVegetal("Estromatolito",50,2400,350,0.03f,0.01f,3,25,0.03f,habEstrom,4,modelosVegetales.estromatolitos);
 
 		//Cactus: habitats -> desierto
 		//Tier 3. Muy buena en desierto y buena en volcanico. Produccion de alimento decente, reproductibilidad normal, alto ratio de migracion y alta evolucion.
@@ -204,7 +204,7 @@ public class TiposSeres : MonoBehaviour {
 		habCactus.Add(-1.0f);//costa
 		habCactus.Add(-1.0f);//tundra
 		habCactus.Add(-1.0f);//inhabitable		
-		cactus = new EspecieVegetal("Cactus",8,2200,250,0.35f,0.3f,8,12,0.07f,habCactus,0,modelosVegetales.cactus);
+		cactus = new EspecieVegetal("Cactus",50,2200,250,0.03f,0.03f,8,12,0.07f,habCactus,0,modelosVegetales.cactus);
 
 		//Palmera: habitats -> costa
 		//Tier 4. Buenisima en costas y mala en llanuras. Alta produccion, reproductibilidad buena, alta migracion y alta evolucion.
@@ -218,7 +218,7 @@ public class TiposSeres : MonoBehaviour {
 		habPalm.Add( 0.9f);//costa
 		habPalm.Add(-1.0f);//tundra
 		habPalm.Add(-1.0f);//inhabitable		
-		palmera = new EspecieVegetal("Palmera",8,3000,400,0.4f,0.3f,5,15,0.1f,habPalm,3,modelosVegetales.palmeras);
+		palmera = new EspecieVegetal("Palmera",50,3000,400,0.04f,0.03f,5,15,0.1f,habPalm,3,modelosVegetales.palmeras);
 
 		//Pino: habitats -> tundra, colina y montaña
 		//Tier 4. Muy buena en colinas, buena en llanura y mediocreo en montañas. Produccion buena, reproductibilidad buena, migracion mediocre y evolucion alta.
@@ -232,7 +232,7 @@ public class TiposSeres : MonoBehaviour {
 		habPino.Add(-0.1f);//costa
 		habPino.Add(-1.0f);//tundra
 		habPino.Add(-1.0f);//inhabitable		
-		pino = new EspecieVegetal("Pino",8,3500,250,0.5f,0.2f,5,20,0.15f,habPino,4,modelosVegetales.pinos);
+		pino = new EspecieVegetal("Pino",50,3500,250,0.05f,0.02f,5,20,0.15f,habPino,4,modelosVegetales.pinos);
 
 		//Ciprés: habitats -> tundra, colina y montaña
 		//Tier 5. Bueno en muchos habitats. Procuddion muy alta, reproduccion buena, migracion normal y evolucion altisima.
@@ -246,7 +246,7 @@ public class TiposSeres : MonoBehaviour {
 		habCipres.Add(-0.1f);//costa
 		habCipres.Add( 0.6f);//tundra
 		habCipres.Add(-1.0f);//inhabitable		
-		cipres = new EspecieVegetal("Ciprés",8,4000,450,0.65f,0.25f,6,10,0.2f,habCipres,4,modelosVegetales.cipreses);
+		cipres = new EspecieVegetal("Ciprés",50,4000,450,0.06f,0.02f,6,10,0.2f,habCipres,4,modelosVegetales.cipreses);
 
 		//Pino Alto: habitats -> tundra y montaña
 		//Tier 5. Muy bueno en montaña y colina, y decente en mas. Produccion altisima, reproduccion buena, migracion alta y evolucion muy alta.
@@ -260,7 +260,7 @@ public class TiposSeres : MonoBehaviour {
 		habPinoAlto.Add(-0.5f);//costa
 		habPinoAlto.Add( 0.3f);//tundra
 		habPinoAlto.Add(-1.0f);//inhabitable		
-		pinoAlto = new EspecieVegetal("Pino Alto",8,5000,600,0.45f,0.25f,6,12,0.2f,habPinoAlto,1,modelosVegetales.pinosAltos);
+		pinoAlto = new EspecieVegetal("Pino Alto",50,5000,600,0.05f,0.02f,6,12,0.2f,habPinoAlto,1,modelosVegetales.pinosAltos);
 		
 		
 		List<T_habitats> listaHabs = new List<T_habitats>();
@@ -283,7 +283,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb1.Add(buscarAlimento);
 		animacionesHerb1.Add(comer);
 		animacionesHerb1.Add(morir);*/
-		herbivoro1 = new EspecieAnimal("Conejo",1,75,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
+		herbivoro1 = new EspecieAnimal("Conejo",10,75,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
 		
 		listaHabs.Add(T_habitats.desierto);
 		//Cabra: habitats -> llanura, colina y desierto
@@ -293,7 +293,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb2.Add(buscarAlimento);
 		animacionesHerb2.Add(comer);
 		animacionesHerb2.Add(morir);*/
-		herbivoro2 = new EspecieAnimal("Camello",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro2,animacionesHerb2);
+		herbivoro2 = new EspecieAnimal("Camello",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro2,animacionesHerb2);
 		
 		listaHabs.Clear();
 		listaHabs.Add(T_habitats.costa);
@@ -304,7 +304,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb3.Add(buscarAlimento);
 		animacionesHerb3.Add(comer);
 		animacionesHerb3.Add(morir);*/
-		herbivoro3 = new EspecieAnimal("Tortuga",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro3,animacionesHerb3);
+		herbivoro3 = new EspecieAnimal("Tortuga",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro3,animacionesHerb3);
 		
 		listaHabs.Clear();
 		listaHabs.Add(T_habitats.colina);
@@ -317,7 +317,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb4.Add(buscarAlimento);
 		animacionesHerb4.Add(comer);
 		animacionesHerb4.Add(morir);*/
-		herbivoro4 = new EspecieAnimal("Ciervo",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro4,animacionesHerb4);
+		herbivoro4 = new EspecieAnimal("Ciervo",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro4,animacionesHerb4);
 		
 		listaHabs.Remove(T_habitats.tundra);
 		listaHabs.Add(T_habitats.volcanico);
@@ -328,7 +328,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb5.Add(buscarAlimento);
 		animacionesHerb5.Add(comer);
 		animacionesHerb5.Add(morir);*/
-		herbivoro5 = new EspecieAnimal("Salamandra",1,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5,animacionesHerb5);
+		herbivoro5 = new EspecieAnimal("Salamandra",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5,animacionesHerb5);
 		
 		/* Carnivoros */
 		listaHabs.Clear();
@@ -342,7 +342,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn1.Add(buscarAlimento);
 		animacionesCarn1.Add(comer);
 		animacionesCarn1.Add(morir);*/
-		carnivoro1 = new EspecieAnimal("Zorro",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1,animacionesCarn1);
+		carnivoro1 = new EspecieAnimal("Zorro",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1,animacionesCarn1);
 		
 		listaHabs.Add(T_habitats.tundra);
 		listaHabs.Add(T_habitats.montana);
@@ -354,7 +354,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn2.Add(buscarAlimento);
 		animacionesCarn2.Add(comer);
 		animacionesCarn2.Add(morir);*/
-		carnivoro2 = new EspecieAnimal("Lobo",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2,animacionesCarn2);
+		carnivoro2 = new EspecieAnimal("Lobo",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2,animacionesCarn2);
 		
 		listaHabs.Add(T_habitats.desierto);
 		listaHabs.Remove(T_habitats.montana);
@@ -366,7 +366,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn3.Add(buscarAlimento);
 		animacionesCarn3.Add(comer);
 		animacionesCarn3.Add(morir);*/
-		carnivoro3 = new EspecieAnimal("Serpiente",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3,animacionesCarn3);
+		carnivoro3 = new EspecieAnimal("Serpiente",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3,animacionesCarn3);
 		
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Remove(T_habitats.desierto);
@@ -377,7 +377,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn4.Add(buscarAlimento);
 		animacionesCarn4.Add(comer);
 		animacionesCarn4.Add(morir);*/
-		carnivoro4 = new EspecieAnimal("Tigre",1,50,1500,750,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4,animacionesCarn4);
+		carnivoro4 = new EspecieAnimal("Tigre",10,50,1500,750,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4,animacionesCarn4);
 		
 		listaHabs.Add(T_habitats.tundra);
 		listaHabs.Add(T_habitats.volcanico);
@@ -389,12 +389,11 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn5.Add(buscarAlimento);
 		animacionesCarn5.Add(comer);
 		animacionesCarn5.Add(morir);*/
-		carnivoro5 = new EspecieAnimal("Velociraptor",1,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5,animacionesCarn5);
+		carnivoro5 = new EspecieAnimal("Velociraptor",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5,animacionesCarn5);
 		
 	}
 	
-	void Start () {
-		
+	void Start () {		
 		//NO CAMBIAR EL ORDEN CON EL QUE SE AÑADEN
 		//Añadir las descripciones
 		descripciones.Add(descripcionSeta);
@@ -456,7 +455,7 @@ public class TiposSeres : MonoBehaviour {
 		principal.anadeEspecieAnimal(carnivoro4);
 		principal.anadeEspecieAnimal(carnivoro5);
 		
-		principal.vida.actualizaNumTurnos();
+		//principal.vida.actualizaNumTurnos();
 	}
 	
 	public string getDescripcion(int entrada) {
