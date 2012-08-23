@@ -815,7 +815,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[8] && !mejoras.mejorasCompradas[9] && !mejoras.mejorasCompradas[10] || mejoras.mejorasCompradas[11])
+			if (!mejoras.mejorasCompradas[8] || !mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[10] || mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desbloquea el uso de habilidades cuánticas"), "BotonMejoraEnergia4")) {
 				mejoras.compraMejora11 ();
