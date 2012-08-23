@@ -3,7 +3,6 @@ Shader "Planet/RecursosFiltro"
 	Properties 
 	{
 _MainTex("Textura Recursos", 2D) = "gray" {}
-_FiltroOn("Filtro On/Off", Range(0,1) ) = 0.5
 _Emision("Brillo del filtro", Float) = 0.5
 _ComunesOn("_ComunesOn", Float) = 0
 _RarosOn("_RarosOn", Float) = 0
@@ -36,7 +35,6 @@ Fog{
 
 
 sampler2D _MainTex;
-float _FiltroOn;
 float _Emision;
 float _ComunesOn;
 float _RarosOn;

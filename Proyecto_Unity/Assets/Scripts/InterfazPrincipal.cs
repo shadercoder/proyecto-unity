@@ -20,6 +20,7 @@ public class InterfazPrincipal : MonoBehaviour
 	private Vector3 posicionMouseInfoCasilla 	= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
 	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
 	private MejorasNave mejoras;								//El script de mejoras de la nave
+	private Materiales materiales;								//el script Materiales de los filtros
 	private float tiempoUltimoModeloInsercion 	= 0.0f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
 	private float tiempoModeloInsercion 		= 0.1f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
 	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
@@ -142,6 +143,7 @@ public class InterfazPrincipal : MonoBehaviour
 	{
 		principal = gameObject.GetComponent<Principal> ();
 		mejoras = GameObject.FindGameObjectWithTag ("Mejoras").GetComponent<MejorasNave> ();
+		materiales = GameObject.FindGameObjectWithTag("Materiales").GetComponent<Materiales> ();
 		togglesFiltros = new bool[24];
 		togglesFiltrosOld = new bool[24];
 		habitabilidadSeleccion = new float[9];
@@ -757,7 +759,26 @@ public class InterfazPrincipal : MonoBehaviour
 			if (!mejoras.mejorasCompradas[1] && !mejoras.mejorasCompradas[2] && !mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desactiva todos los filtros"), "BotonHabilidadVisionNormal")) {
-				//TODO
+				materiales.habitats.SetFloat("_FiltroOn", 0.0f);
+				
+				materiales.recursos.SetFloat("_ComunesOn",0.0f);
+				materiales.recursos.SetFloat("_RarosOn",0.0f);
+				materiales.recursos.SetFloat("_EdificiosOn",0.0f);
+				
+				for(int i = 0; i< materiales.plantas.Count; i++){
+					materiales.plantas[i].SetFloat("_FiltroOn", 0.0f);
+					materiales.plantas[i].SetColor("_Tinte", Color.white);
+				}
+				for(int i = 0; i< materiales.herbivoros.Count; i++){
+					materiales.herbivoros[i].SetFloat("_FiltroOn", 0.0f);
+					materiales.herbivoros[i].SetColor("_Tinte", Color.white);
+				}
+				
+				for(int i = 0; i< materiales.carnivoros.Count; i++){
+					materiales.carnivoros[i].SetFloat("_FiltroOn", 0.0f);
+					materiales.carnivoros[i].SetColor("_Tinte", Color.white);
+				}
+				
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -771,7 +792,11 @@ public class InterfazPrincipal : MonoBehaviour
 			if (!mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidadFiltroHabitats")) {
-				//TODO
+				if (materiales.habitats.GetFloat("_FiltroOn") == 0.0f)
+					materiales.habitats.SetFloat("_FiltroOn", 1.0f);
+				else {
+					materiales.habitats.SetFloat("_FiltroOn", 0.0f);
+				}
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -1592,85 +1617,241 @@ public class InterfazPrincipal : MonoBehaviour
 			break;
 		}	//Fin switch
 		if (GUI.changed) {
-			//TODO Actualizar lo que hayan hecho los toggles
+			//TODO [Maf] Faltan los botones para desactivar carnivoros y herbivoros del tiron, que no los he encontrado. 
+			//Solo que se desactiven los ya puestos o un toggle ke se activen en rojo los carnivoros y en verde los herbivoros y sino se desactiven? Lo hablamos.
+			/*En todo caso seria algo asi desactivarlos
+			 * for (int i = 0; i< materiales.herbivoros.Count; i++){
+			 * 		materiales.herbivoros[i].SetFloat("_FiltroOn",0.0f);
+			 * 		materiales.herviboros[i].SetColor("_Tinte",Color.white);
+			 * }
+			 * y lo mismo con carnivoros[i].
+			 */
 			for (int i = 0; i < togglesFiltros.Length; i++) {
 				if (togglesFiltros[i] != togglesFiltrosOld[i]) {
 					switch (i) {
 					case 0: 		//Boton minerales comunes
-						//Pongo esto aqui como ejemplo
 						if (togglesFiltros[i])
-							Debug.Log("Pulsado toggle minerales comunes: Activado");
+							materiales.recursos.SetFloat("_ComunesOn",1.0f);
 						else
-							Debug.Log("Pulsado toggle minerales comunes: Desactivado");
+							materiales.recursos.SetFloat("_ComunesOn",0.0f);
 						break;
-					case 1:			//Boton minerales raros
-						
+					case 1:			//Boton radio Edificios
+						if (togglesFiltros[i])
+							materiales.recursos.SetFloat("_EdificiosOn",1.0f);
+						else
+							materiales.recursos.SetFloat("_EdificiosOn",0.0f);
 						break;	
-					case 2: 		//boton radio minerales 1
-						
+					case 2: 		//Boton minerales raros
+						if (togglesFiltros[i])
+							materiales.recursos.SetFloat("_RarosOn",1.0f);
+						else
+							materiales.recursos.SetFloat("_RarosOn",0.0f);
 						break;
-					case 3:			//boton radio minerales 2
-						
+					case 3:			//boton radio Granjas
+						if (togglesFiltros[i])
+							materiales.recursos.SetFloat("_GranjasOn",1.0f);
+						else
+							materiales.recursos.SetFloat("_GranjasOn",0.0f);
 						break;
 					case 4: 		//boton plantas 1
-						
+						if (togglesFiltros[i]) {
+							materiales.plantas[0].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[0].SetColor("_Tinte", new Color(0.7f,0.7f,0.5f));
+						}
+						else {
+							materiales.plantas[0].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[0].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 5: 		//boton plantas 2
-						
+					case 5: 		//boton plantas 3
+						if (togglesFiltros[i]) {
+							materiales.plantas[2].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[2].SetColor("_Tinte", new Color(1.0f, 0.5f, 0.0f));
+						}
+						else {
+							materiales.plantas[2].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[2].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 6: 		//boton plantas 3
-						
+					case 6: 		//boton plantas 5
+						if (togglesFiltros[i]) {
+							materiales.plantas[4].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[4].SetColor("_Tinte", Color.red);
+						}
+						else {
+							materiales.plantas[4].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[4].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 7: 		//boton plantas 4
-						
+					case 7: 		//boton plantas 7
+						if (togglesFiltros[i]) {
+							materiales.plantas[6].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[6].SetColor("_Tinte", new Color(0.0f, 0.7f, 0.7f));
+						}
+						else {
+							materiales.plantas[6].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[6].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 8: 		//boton plantas 5
-						
+					case 8: 		//boton plantas 9
+						if (togglesFiltros[i]) {
+							materiales.plantas[8].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[8].SetColor("_Tinte", new Color(0.5f, 0.0f, 1.0f));
+						}
+						else {
+							materiales.plantas[8].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[8].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 9: 		//boton plantas 6
-						
+					case 9: 		//boton plantas 2
+						if (togglesFiltros[i]) {
+							materiales.plantas[1].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[1].SetColor("_Tinte", new Color(1.0f, 1.0f, 0.0f));
+						}
+						else {
+							materiales.plantas[1].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[1].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 10: 		//boton plantas 7
-						
+					case 10: 		//boton plantas 4
+						if (togglesFiltros[i]) {
+							materiales.plantas[3].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[3].SetColor("_Tinte", new Color(1.0f, 0.3f, 0.0f));
+						}
+						else {
+							materiales.plantas[3].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[3].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 11: 		//boton plantas 8
-						
+					case 11: 		//boton plantas 6
+						if (togglesFiltros[i]) {
+							materiales.plantas[5].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[5].SetColor("_Tinte", Color.green);
+						}
+						else {
+							materiales.plantas[5].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[5].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 12: 		//boton plantas 9
-						
+					case 12: 		//boton plantas 8
+						if (togglesFiltros[i]) {
+							materiales.plantas[7].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[7].SetColor("_Tinte", new Color(0.0f, 0.5f, 1.0f));
+						}
+						else {
+							materiales.plantas[7].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[7].SetColor("_Tinte", Color.white);
+						}
 						break;
 					case 13: 		//boton plantas 10
-						
+						if (togglesFiltros[i]) {
+							materiales.plantas[9].SetFloat("_FiltroOn",1.0f);
+							materiales.plantas[9].SetColor("_Tinte", new Color(1.0f, 0.5f, 1.0f));
+						}
+						else {
+							materiales.plantas[9].SetFloat("_FiltroOn",0.0f);
+							materiales.plantas[9].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 14: 		//boton animales 1
-						
+					case 14: 		//boton herbivoro 1
+						if (togglesFiltros[i]) {
+							materiales.herbivoros[0].SetFloat("_FiltroOn",1.0f);
+							materiales.herbivoros[0].SetColor("_Tinte", Color.green);
+						}
+						else {
+							materiales.herbivoros[0].SetFloat("_FiltroOn",0.0f);
+							materiales.herbivoros[0].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 15: 		//boton animales 2
-						
+					case 15: 		//boton herbivoro 2
+						if (togglesFiltros[i]) {
+							materiales.herbivoros[1].SetFloat("_FiltroOn",1.0f);
+							materiales.herbivoros[1].SetColor("_Tinte", new Color(0.0f, 0.7f, 0.7f));
+						}
+						else {
+							materiales.herbivoros[1].SetFloat("_FiltroOn",0.0f);
+							materiales.herbivoros[1].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 16: 		//boton animales 3
-						
+					case 16: 		//boton herbivoro 3
+						if (togglesFiltros[i]) {
+							materiales.herbivoros[2].SetFloat("_FiltroOn",1.0f);
+							materiales.herbivoros[2].SetColor("_Tinte", new Color(0.0f, 0.5f, 1.0f));
+						}
+						else {
+							materiales.herbivoros[2].SetFloat("_FiltroOn",0.0f);
+							materiales.herbivoros[2].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 17: 		//boton animales 4
-						
+					case 17: 		//boton herbivoro 4
+						if (togglesFiltros[i]) {
+							materiales.herbivoros[3].SetFloat("_FiltroOn",1.0f);
+							materiales.herbivoros[3].SetColor("_Tinte", new Color(0.5f, 0.0f, 1.0f));
+						}
+						else {
+							materiales.herbivoros[3].SetFloat("_FiltroOn",0.0f);
+							materiales.herbivoros[3].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 18: 		//boton animales 5
-						
+					case 18: 		//boton herbivoro 5
+						if (togglesFiltros[i]) {
+							materiales.herbivoros[4].SetFloat("_FiltroOn",1.0f);
+							materiales.herbivoros[4].SetColor("_Tinte", new Color(1.0f, 0.5f, 1.0f));
+						}
+						else {
+							materiales.herbivoros[4].SetFloat("_FiltroOn",0.0f);
+							materiales.herbivoros[4].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 19: 		//boton animales 6
-						
+					case 19: 		//boton carnivoro 1
+						if (togglesFiltros[i]) {
+							materiales.carnivoros[0].SetFloat("_FiltroOn",1.0f);
+							materiales.carnivoros[0].SetColor("_Tinte", new Color(0.7f,0.7f,0.5f));
+						}
+						else {
+							materiales.carnivoros[0].SetFloat("_FiltroOn",0.0f);
+							materiales.carnivoros[0].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 20: 		//boton animales 7
-						
+					case 20: 		//boton carnivoro 2
+						if (togglesFiltros[i]) {
+							materiales.carnivoros[1].SetFloat("_FiltroOn",1.0f);
+							materiales.carnivoros[1].SetColor("_Tinte", new Color(1.0f, 1.0f, 0.0f));
+						}
+						else {
+							materiales.carnivoros[1].SetFloat("_FiltroOn",0.0f);
+							materiales.carnivoros[1].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 21: 		//boton animales 8
-						
+					case 21: 		//boton carnivoro 3
+						if (togglesFiltros[i]) {
+							materiales.carnivoros[2].SetFloat("_FiltroOn",1.0f);
+							materiales.carnivoros[2].SetColor("_Tinte", new Color(1.0f, 0.5f, 0.0f));
+						}
+						else {
+							materiales.carnivoros[2].SetFloat("_FiltroOn",0.0f);
+							materiales.carnivoros[2].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 22: 		//boton animales 9
-						
+					case 22: 		//boton carnivoro 4
+						if (togglesFiltros[i]) {
+							materiales.carnivoros[3].SetFloat("_FiltroOn",1.0f);
+							materiales.carnivoros[3].SetColor("_Tinte", new Color(1.0f, 0.3f, 0.0f));
+						}
+						else {
+							materiales.carnivoros[3].SetFloat("_FiltroOn",0.0f);
+							materiales.carnivoros[3].SetColor("_Tinte", Color.white);
+						}
 						break;
-					case 23: 		//boton animales 10
-						
+					case 23: 		//boton carnivoro 5
+						if (togglesFiltros[i]) {
+							materiales.carnivoros[4].SetFloat("_FiltroOn",1.0f);
+							materiales.carnivoros[4].SetColor("_Tinte", Color.red);
+						}
+						else {
+							materiales.carnivoros[4].SetFloat("_FiltroOn",0.0f);
+							materiales.carnivoros[4].SetColor("_Tinte", Color.white);
+						}
 						break;
 					}
 					togglesFiltrosOld[i] = togglesFiltros[i];
