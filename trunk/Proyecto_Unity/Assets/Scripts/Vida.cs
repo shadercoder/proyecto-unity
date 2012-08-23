@@ -333,13 +333,13 @@ public class Vida //: MonoBehaviour
 	//Devuelve si el vegetal se puede insertar en esa posición o no
 	public bool compruebaAnadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY)
 	{
-		return(!tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] > habitabilidadMinima);	
+		return(!tieneEdificio(posX,posY) && !tieneVegetal(posX,posY) && habitabilidad[(int)tablero[posX,posY].habitat] > habitabilidadMinima);	
 	}	
 	
 	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY)
 	{
-		if(tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == habitabilidadMinima)
+		if(tieneEdificio(posX,posY) || tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == habitabilidadMinima)
 			return false;
 		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
 		Vector3 coordsVert = tablero[posX,posY].coordsVert;
@@ -359,13 +359,13 @@ public class Vida //: MonoBehaviour
 	//Devuelve si el animal se puede insertar en esa posición o no
 	public bool compruebaAnadeAnimal(EspecieAnimal especie,int posX,int posY)
 	{
-		return(!tieneAnimal(posX,posY) && especie.tieneHabitat(tablero[posX,posY].habitat));
+		return(!tieneEdificio(posX,posY) && !tieneAnimal(posX,posY) && especie.tieneHabitat(tablero[posX,posY].habitat));
 	}
 	
 	//Devuelve false si el animal ya existe (no se añade) y true si se añade correctamente	
 	public bool anadeAnimal(EspecieAnimal especie,int posX,int posY)
 	{
-		if(tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
+		if(tieneEdificio(posX,posY) || tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
 		Vector3 coordsVert = tablero[posX,posY].coordsVert;
@@ -404,6 +404,11 @@ public class Vida //: MonoBehaviour
 		//listadoSeresTurnos[turno].Add(edificio);
 		idActualEdificio++;		
 		edificios.Add(edificio);		
+		if(tablero[posX,posY].animal != null)		
+			eliminaAnimal(tablero[posX,posY].animal);			
+		if(tablero[posX,posY].vegetal != null)		
+			eliminaVegetal(tablero[posX,posY].vegetal);			
+		
 		tablero[posX,posY].edificio = edificio;
 		return true;
 	}
