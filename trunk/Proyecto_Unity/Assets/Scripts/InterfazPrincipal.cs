@@ -1147,6 +1147,7 @@ public class InterfazPrincipal : MonoBehaviour
 					//Vector3 coordsVert = new Vector3(principal.vida.tablero[posY, posX].coordsVert.x,principal.vida.tablero[posY, posX].coordsVert.y,hit.normal.z);
 					//Mover la malla
 					modeloInsercion.transform.position = coordsVert;
+					//modeloInsercion.transform.position = hit.point;
 					Vector3 normal = modeloInsercion.transform.position - modeloInsercion.transform.parent.position;
 					modeloInsercion.transform.position = principal.vida.objetoRoca.transform.TransformPoint (modeloInsercion.transform.position);
 					modeloInsercion.transform.rotation = Quaternion.LookRotation (normal);
@@ -1373,7 +1374,7 @@ public class InterfazPrincipal : MonoBehaviour
 						if (animal != null)
 							infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";
 					}
-					//infoCasilla += "\t\tAlto: "+y+"\t\tAncho :"+x;
+					infoCasilla += "\t\tAlto: "+y+"\t\tAncho :"+x;
 				}
 			}
 		} else
