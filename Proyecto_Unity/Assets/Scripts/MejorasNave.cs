@@ -20,10 +20,13 @@ public class MejorasNave : MonoBehaviour {
 	public GameObject GenHab1;				//Desbloqueo de habilidades 1
 	public GameObject GenHab2;				//Desbloqueo de habilidades 2
 	//Almacen
-	public GameObject AlmacenT1;			//Mejora de almacen 1
-	public GameObject AlmacenT2;			//Mejora de almacen 2
-	public GameObject AlmacenAv;			//Desbloquear almacenamiento de componentes avanzados
-	public GameObject AlmacenBio;			//Desbloquear almacenamiento de material biologico
+	public GameObject AlmacenT1C;			//Mejora de almacen 1 Com
+	public GameObject AlmacenT1A;			//Mejora de almacen 1 Adv
+	public GameObject AlmacenT1B;			//Mejora de almacen 1 Bio
+	public GameObject AlmacenT2C;			//Mejora de almacen 2 Com
+	public GameObject AlmacenT2A;			//Mejora de almacen 2 Adv
+	public GameObject AlmacenT2B;			//Mejora de almacen 2 Bio
+	
 	
 	//Variables de control
 	public bool[] mejorasCompradas;
@@ -152,34 +155,35 @@ public class MejorasNave : MonoBehaviour {
 	}
 	
 	//Almacenamiento -------------------------------------------------------------------------------
-	public void compraMejora12() {	//Mejora de almacen nivel 1
-		principal.setEnergiaMax(2000);
-		principal.setCompBasMax(350);
-		principal.setCompAdvMax(200);
-//		principal.setMatBioMax(75);
-		AlmacenT1.GetComponent<MeshRenderer>().enabled = true;
-		mejorasCompradas[12] = true;
-		
-	}
-	
-	public void compraMejora13() {	//Mejora de almacen nivel 2
-		principal.setEnergiaMax(3000);
-		principal.setCompBasMax(600);
-		principal.setCompAdvMax(400);
-		principal.setMatBioMax(50);
-		AlmacenT2.GetComponent<MeshRenderer>().enabled = true;
-		mejorasCompradas[13] = true;
-	}
-	
-	public void compraMejora14() {	//Mejora de alacenamiento de comp adv
+	public void compraMejora12() {	//Mejora de almacenamiento de comp adv
 		principal.setCompAdvMax(75);
-		AlmacenAv.GetComponent<MeshRenderer>().enabled = true;
-		mejorasCompradas[14] = true;
+		AlmacenT1A.GetComponent<MeshRenderer>().enabled = true;
+		mejorasCompradas[12] = true;		
 	}
 	
-	public void compraMejora15() {	//Mejora de almacenamiento de mat bio
+	public void compraMejora13() {	//Mejora de almacenamiento de mat bio	
+		AlmacenT1B.GetComponent<MeshRenderer>().enabled = true;
 		principal.setMatBioMax(10);
-		AlmacenBio.GetComponent<MeshRenderer>().enabled = true;
+		mejorasCompradas[13] = true;	
+	}
+	
+	public void compraMejora14() {	//Mejora de almacen nivel 1
+		principal.setEnergiaMax(2000);
+		principal.setCompBasMax(250);
+		principal.setCompAdvMax(100);
+		principal.setMatBioMax(25);
+		AlmacenT1C.GetComponent<MeshRenderer>().enabled = true;
+		mejorasCompradas[14] = true;	
+	}
+	
+	public void compraMejora15() {	//Mejora de almacen nivel 2
+		principal.setEnergiaMax(3000);
+		principal.setCompBasMax(750);
+		principal.setCompAdvMax(400);
+		principal.setMatBioMax(75);
+		AlmacenT2C.GetComponent<MeshRenderer>().enabled = true;
+		AlmacenT2A.GetComponent<MeshRenderer>().enabled = true;
+		AlmacenT2B.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[15] = true;
 	}
 	

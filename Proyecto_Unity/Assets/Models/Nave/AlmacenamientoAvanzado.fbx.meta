@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: a45d59758f3d71544a6c90d47244bb6d
+guid: 5ceef73c9d8897c4db799df6a8856d4e
 ModelImporter:
   importerVersion: 7
   meshes:
@@ -30,13 +30,5 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: SensorT2
-    4300002: Cube_002
-    4300004: Cube_001
-    4300006: Cube
-    4300008: Vida
-    4300010: Recursos
-    4300012: SensorRecursos
-    7400000: Default Take //// SensoresVida
-    7400002: Default Take //// SensoresVida2
-    7400004: Default Take //// SensoresRecursos
+    4300000: Cube
+    4300002: Avanzados
