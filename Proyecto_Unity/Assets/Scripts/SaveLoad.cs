@@ -798,7 +798,7 @@ public class SaveLoad {
 		int compAvProd = edi.compAvzProducidosPorTurno;
 		int matBioProd = edi.matBioProducidoPorTurno;
 		GameObject modelo = getModeloNoSerializable(edi.modelo);
-		return new Edificio(idSer, tipoEdif, posX, posY, eneCons, compBaCons, compAvCons, matBioCons, eneProd, compBaProd, compAvProd, matBioProd, modelo);
+		return null;//return new Edificio(idSer, tipoEdif, posX, posY, eneCons, compBaCons, compAvCons, matBioCons, eneProd, compBaProd, compAvProd, matBioProd, modelo);
 	}
 	
 	private static EspecieSerializable getEspecieSerializable(Especie esp) {

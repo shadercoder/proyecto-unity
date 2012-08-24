@@ -8,43 +8,71 @@ public class InterfazPrincipal : MonoBehaviour
 
 	// Variables ---------------------------------------------------------------------------------------------------------------------------
 	public GUISkin estilo;
-	private float cuantoW;										//Minima unidad de medida de la interfaz a lo ancho
-	private float cuantoH;										//Minima unidad de medida de la interfaz a lo alto
-	private float aspectRatioNumerico;							//Aspect ratio númerico de la ventana
-	private Principal principal;								//Acceso a los datos principales	
-	private bool mostrarBloqueIzquierdo 		= true;			//Visibilidad del bloque de opciones izquierdo
-	private bool mostrarInfoCasilla 			= true;			//Controla si se muestra la info básica de la casilla a la que estamos apuntando
-	private string infoCasilla 					= "";			//Información básica de la casilla mostrada en la barra de información inferior
-	private float tiempoUltimaInfoCasilla 		= 0.0f;			//Tiempo de la última comprobación de la info básica de una casilla
-	private float tiempoInfoCasilla 			= 0.25f;		//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
-	private Vector3 posicionMouseInfoCasilla 	= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
-	private MejorasNave mejoras;								//El script de mejoras de la nave
-	private Materiales materiales;								//el script Materiales de los filtros
-	private float tiempoUltimoModeloInsercion 	= 0.0f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
-	private float tiempoModeloInsercion 		= 0.1f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
-	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
-	private bool[] togglesFiltros;								//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
-	private bool[] togglesFiltrosOld;							//Toggles en los filtros antes de cambiarlos
-		//Seleccion de seres
-	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
-	private float[] habitabilidadSeleccion;						//La habitabilidad del ser o edificio seleccionado
-	private int tipoSeleccion					= -1;			//Que se ha seleccionado? 0->Planta, 1->Herbivoro, 2->Carnivoro, 3->Edificio
-	
+	private float cuantoW;
+	//Minima unidad de medida de la interfaz a lo ancho
+	private float cuantoH;
+	//Minima unidad de medida de la interfaz a lo alto
+	private float aspectRatioNumerico;
+	//Aspect ratio númerico de la ventana
+	private Principal principal;
+	//Acceso a los datos principales	
+	private bool mostrarBloqueIzquierdo = true;
+	//Visibilidad del bloque de opciones izquierdo
+	private bool mostrarInfoCasilla = true;
+	//Controla si se muestra la info básica de la casilla a la que estamos apuntando
+	private string infoCasilla = "";
+	//Información básica de la casilla mostrada en la barra de información inferior
+	private float tiempoUltimaInfoCasilla = 0.0f;
+	//Tiempo de la última comprobación de la info básica de una casilla
+	private float tiempoInfoCasilla = 0.25f;
+	//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
+	private Vector3 posicionMouseInfoCasilla = Vector3.zero;
+	//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private float escalaTiempoAntesMenu;
+	//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
+	private MejorasNave mejoras;
+	//El script de mejoras de la nave
+	private Materiales materiales;
+	//el script Materiales de los filtros
+	private float tiempoUltimoModeloInsercion = 0.0f;
+	//Cantidad de tiempo entre comprobaciones de inserción de un ser
+	private float tiempoModeloInsercion = 0.1f;
+	//Cantidad de tiempo entre comprobaciones de inserción de un ser
+	private GameObject modeloInsercion;
+	//Modelo usado temporalmente para mostrar donde se insertaría un ser
+	private bool[] togglesFiltros;
+	//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
+	private bool[] togglesFiltrosOld;
+	//Toggles en los filtros antes de cambiarlos
+	//Seleccion de seres
+	private List<string> infoSeleccion;
+	//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
+	private float[] habitabilidadSeleccion;
+	//La habitabilidad del ser o edificio seleccionado
+	private int tipoSeleccion = -1;
+	//Que se ha seleccionado? 0->Planta, 1->Herbivoro, 2->Carnivoro, 3->Edificio
 	//Mejoras posibles
-	private bool mejoraInfoCasilla 				= true;			//La barra inferior de informacion se muestra?
-	private bool mostrarInfoHabitat				= true;			//Se muestra informacion de habitats en ella?
-	private bool mostrarInfoMetalesRaros 		= true;			//Se muestran los metales raros?
-	private bool mostrarInfoSeres 				= true;			//Se muestran los animales y plantas?
-	
+	private bool mejoraInfoCasilla = true;
+	//La barra inferior de informacion se muestra?
+	private bool mostrarInfoHabitat = true;
+	//Se muestra informacion de habitats en ella?
+	private bool mostrarInfoMetalesRaros = true;
+	//Se muestran los metales raros?
+	private bool mostrarInfoSeres = true;
+	//Se muestran los animales y plantas?
 	//Tooltips
-	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private bool activarTooltip 				= false;		//Controla si se muestra o no el tooltip	
-	private float ultimoMov 					= 0.0f;			//Ultima vez que se movio el mouse		
-	private float tiempoTooltip 				= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
-	private bool forzarTooltip 					= false;		//Fuerza que se muestre un tooltip en una situación especial
-	private string mensajeForzarTooltip 		= "";			//Mensaje del tooltip forzado.
-	
+	private Vector3 posicionMouseTooltip = Vector3.zero;
+	//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private bool activarTooltip = false;
+	//Controla si se muestra o no el tooltip	
+	private float ultimoMov = 0.0f;
+	//Ultima vez que se movio el mouse		
+	private float tiempoTooltip = 0.75f;
+	//Tiempo que tarda en aparecer el tooltip	
+	private bool forzarTooltip = false;
+	//Fuerza que se muestre un tooltip en una situación especial
+	private string mensajeForzarTooltip = "";
+	//Mensaje del tooltip forzado.
 	//Enumerados
 	private enum taspectRatio
 	{
@@ -131,24 +159,32 @@ public class InterfazPrincipal : MonoBehaviour
 	private tMenuDerecho tipoMenuDerecho = tMenuDerecho.ninguno;
 
 	//Menus para guardar
-	private Vector2 posicionScroll 		= Vector2.zero;		//La posicion en la que se encuentra la ventana con scroll
-	private int numSaves 				= 0;				//El numero de saves diferentes que hay en el directorio respectivo
-	private int numSavesExtra 			= 0;				//Numero de saves que hay que no se ven al primer vistazo en la scrollview
-	private string[] nombresSaves;							//Los nombres de los ficheros de savegames guardados
+	private Vector2 posicionScroll = Vector2.zero;
+	//La posicion en la que se encuentra la ventana con scroll
+	private int numSaves = 0;
+	//El numero de saves diferentes que hay en el directorio respectivo
+	private int numSavesExtra = 0;
+	//Numero de saves que hay que no se ven al primer vistazo en la scrollview
+	private string[] nombresSaves;
+	//Los nombres de los ficheros de savegames guardados
 	//Sonido
-	private float musicaVol 			= 0.0f;				//A que volumen la musica?
-	private float sfxVol 				= 0.0f;				//A que volumen los efectos?
-	public GameObject sonidoAmbiente;						//El objeto que va a contener la fuente del audio de ambiente
-	public GameObject sonidoFX;								//El objeto que va a contener la fuente de efectos de audio
+	private float musicaVol = 0.0f;
+	//A que volumen la musica?
+	private float sfxVol = 0.0f;
+	//A que volumen los efectos?
+	public GameObject sonidoAmbiente;
+	//El objeto que va a contener la fuente del audio de ambiente
+	public GameObject sonidoFX;
+	//El objeto que va a contener la fuente de efectos de audio
 	void Start ()
 	{
 		principal = gameObject.GetComponent<Principal> ();
 		mejoras = GameObject.FindGameObjectWithTag ("Mejoras").GetComponent<MejorasNave> ();
-		materiales = GameObject.FindGameObjectWithTag("Materiales").GetComponent<Materiales> ();
+		materiales = GameObject.FindGameObjectWithTag ("Materiales").GetComponent<Materiales> ();
 		togglesFiltros = new bool[24];
 		togglesFiltrosOld = new bool[24];
 		habitabilidadSeleccion = new float[9];
-		infoSeleccion = new List<string>();
+		infoSeleccion = new List<string> ();
 		//Cargar la información del numero de saves que hay
 		SaveLoad.compruebaRuta ();
 		numSaves = SaveLoad.FileCount ();
@@ -205,12 +241,12 @@ public class InterfazPrincipal : MonoBehaviour
 			aspectRatio = taspectRatio.aspectRatio16_9;
 			cuantoW = (float)Screen.width / 80;
 			cuantoH = (float)Screen.height / 45;
-		//16:10
+			//16:10
 		} else if (aspectRatioNumerico >= 1.47) {
 			aspectRatio = taspectRatio.aspectRatio16_10;
 			cuantoW = (float)Screen.width / 80;
 			cuantoH = (float)Screen.height / 50;
-		//4:3
+			//4:3
 		} else {
 			aspectRatio = taspectRatio.aspectRatio4_3;
 			cuantoW = (float)Screen.width / 80;
@@ -227,10 +263,9 @@ public class InterfazPrincipal : MonoBehaviour
 		if (posicionFueraDeInterfaz (Input.mousePosition)) {
 			mostrarInfoCasilla = true;
 			if (accion == taccion.insertar)
-				insertarElemento ();
-			else if (Input.GetMouseButtonDown(0)) {
+				insertarElemento (); else if (Input.GetMouseButtonDown (0)) {
 				//Se ha hecho click en el tablero sin insertar nada
-				if (seleccionarObjetoTablero())
+				if (seleccionarObjetoTablero ())
 					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.seleccion;
 //				else
 //					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.ninguno;
@@ -421,9 +456,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[0].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[0].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.seta;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Flor"), "BotonInsertarFlor")) {
@@ -432,9 +467,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[1].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[1].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.flor;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Caña"), "BotonInsertarCana")) {
@@ -443,9 +478,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[2].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[2].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.cana;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Arbusto"), "BotonInsertarArbusto")) {
@@ -454,9 +489,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[3].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[3].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.arbusto;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Estromatolito"), "BotonInsertarEstromatolito")) {
@@ -465,9 +500,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[4].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[4].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.estromatolito;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Cactus"), "BotonInsertarCactus")) {
@@ -476,9 +511,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[5].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[5].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.cactus;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Palmera"), "BotonInsertarPalmera")) {
@@ -487,9 +522,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[6].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[6].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.palmera;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Pino"), "BotonInsertarPino")) {
@@ -498,9 +533,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[7].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[7].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.pino;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Ciprés"), "BotonInsertarCipres")) {
@@ -509,9 +544,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[8].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[8].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.cipres;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Pino Alto"), "BotonInsertarPinoAlto")) {
@@ -520,9 +555,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesVegetales[9].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[9].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.pinoAlto;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW * 2.5f);
 			GUILayout.EndHorizontal ();
@@ -543,9 +578,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[0].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[0].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro1;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Herbivoro2"), "BotonInsertarHerbivoro2")) {
@@ -554,9 +589,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[1].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[1].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro2;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Herbivoro3"), "BotonInsertarHerbivoro3")) {
@@ -565,9 +600,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[2].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[2].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro3;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Herbivoro4"), "BotonInsertarHerbivoro4")) {
@@ -576,9 +611,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[3].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[3].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro4;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Herbivoro5"), "BotonInsertarHerbivoro5")) {
@@ -587,9 +622,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[4].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[4].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro5;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW * 3);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro1"), "BotonInsertarCarnivoro1")) {
@@ -598,9 +633,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[5].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[5].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro1;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro2"), "BotonInsertarCarnivoro2")) {
@@ -609,9 +644,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[6].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[6].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro2;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro3"), "BotonInsertarCarnivoro3")) {
@@ -620,9 +655,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[7].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[7].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro3;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro4"), "BotonInsertarCarnivoro4")) {
@@ -631,9 +666,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[8].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[8].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro4;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro5"), "BotonInsertarCarnivoro5")) {
@@ -642,9 +677,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[9].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[9].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro5;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW * 1.5f);
 			GUILayout.EndHorizontal ();
@@ -666,9 +701,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.fabricaCompBas;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Central de energía"), "BotonInsertarCenEn")) {
@@ -678,9 +713,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.centralEnergia;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Granja"), "BotonInsertarGranja")) {
@@ -690,9 +725,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.granja;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Fábrica de componentes avanzados"), "BotonInsertarFabComAdv")) {
@@ -702,9 +737,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.fabricaCompAdv;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Central de energía avanzada"), "BotonInsertarCenEnAdv")) {
@@ -714,9 +749,9 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.centralEnergiaAdv;
-				seleccionarObjetoInsercion();
+				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			GUILayout.EndHorizontal ();
@@ -865,24 +900,24 @@ public class InterfazPrincipal : MonoBehaviour
 			if (!mejoras.mejorasCompradas[1] && !mejoras.mejorasCompradas[2] && !mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desactiva todos los filtros"), "BotonHabilidadVisionNormal")) {
-				materiales.habitats.SetFloat("_FiltroOn", 0.0f);
+				materiales.habitats.SetFloat ("_FiltroOn", 0.0f);
 				
-				materiales.recursos.SetFloat("_ComunesOn",0.0f);
-				materiales.recursos.SetFloat("_RarosOn",0.0f);
-				materiales.recursos.SetFloat("_EdificiosOn",0.0f);
+				materiales.recursos.SetFloat ("_ComunesOn", 0.0f);
+				materiales.recursos.SetFloat ("_RarosOn", 0.0f);
+				materiales.recursos.SetFloat ("_EdificiosOn", 0.0f);
 				
-				for(int i = 0; i< materiales.plantas.Count; i++){
-					materiales.plantas[i].SetFloat("_FiltroOn", 0.0f);
-					materiales.plantas[i].SetColor("_Tinte", Color.white);
+				for (int i = 0; i < materiales.plantas.Count; i++) {
+					materiales.plantas[i].SetFloat ("_FiltroOn", 0.0f);
+					materiales.plantas[i].SetColor ("_Tinte", Color.white);
 				}
-				for(int i = 0; i< materiales.herbivoros.Count; i++){
-					materiales.herbivoros[i].SetFloat("_FiltroOn", 0.0f);
-					materiales.herbivoros[i].SetColor("_Tinte", Color.white);
+				for (int i = 0; i < materiales.herbivoros.Count; i++) {
+					materiales.herbivoros[i].SetFloat ("_FiltroOn", 0.0f);
+					materiales.herbivoros[i].SetColor ("_Tinte", Color.white);
 				}
 				
-				for(int i = 0; i< materiales.carnivoros.Count; i++){
-					materiales.carnivoros[i].SetFloat("_FiltroOn", 0.0f);
-					materiales.carnivoros[i].SetColor("_Tinte", Color.white);
+				for (int i = 0; i < materiales.carnivoros.Count; i++) {
+					materiales.carnivoros[i].SetFloat ("_FiltroOn", 0.0f);
+					materiales.carnivoros[i].SetColor ("_Tinte", Color.white);
 				}
 				
 			}
@@ -898,10 +933,10 @@ public class InterfazPrincipal : MonoBehaviour
 			if (!mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidadFiltroHabitats")) {
-				if (materiales.habitats.GetFloat("_FiltroOn") == 0.0f)
-					materiales.habitats.SetFloat("_FiltroOn", 1.0f);
+				if (materiales.habitats.GetFloat ("_FiltroOn") == 0.0f)
+					materiales.habitats.SetFloat ("_FiltroOn", 1.0f);
 				else {
-					materiales.habitats.SetFloat("_FiltroOn", 0.0f);
+					materiales.habitats.SetFloat ("_FiltroOn", 0.0f);
 				}
 			}
 			GUI.enabled = true;
@@ -1068,6 +1103,7 @@ public class InterfazPrincipal : MonoBehaviour
 				}
 			}
 
+			
 			GUI.EndScrollView ();
 			if (GUI.Button (new Rect (cuantoW * 44, cuantoH * (posicionGuardar + 13), cuantoW * 5, cuantoH * 2), new GUIContent ("Volver", "Pulsa aquí para volver al menu de opciones"))) {
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
@@ -1123,8 +1159,7 @@ public class InterfazPrincipal : MonoBehaviour
 			break;
 		default:
 			break;
-		}
-		
+		}		
 	}
 
 	private void insertarElemento ()
@@ -1136,13 +1171,13 @@ public class InterfazPrincipal : MonoBehaviour
 				int posY = 0;
 				RaycastHit hit;
 				int tipo = (int)elementoInsercion - 1;
-				if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY,out hit)) {
+				if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY, out hit)) {
 					/*
 					float x = (principal.vida.tablero[posY, posX].coordsVert.x + principal.vida.tablero[posY - 1, posX].coordsVert.x) / 2;
 					float y = (principal.vida.tablero[posY, posX].coordsVert.y + principal.vida.tablero[posY - 1, posX].coordsVert.y) / 2;
 					float z = (principal.vida.tablero[posY, posX].coordsVert.z + principal.vida.tablero[posY - 1, posX].coordsVert.z) / 2;
 					Vector3 coordsVert = new Vector3 (x, y, z);
-					*/
+					*/					
 					Vector3 coordsVert = principal.vida.tablero[posY, posX].coordsVert;
 					//Vector3 coordsVert = new Vector3(principal.vida.tablero[posY, posX].coordsVert.x,principal.vida.tablero[posY, posX].coordsVert.y,hit.normal.z);
 					//Mover la malla
@@ -1168,7 +1203,7 @@ public class InterfazPrincipal : MonoBehaviour
 							forzarTooltip = true;
 							mensajeForzarTooltip = "No hay recursos suficientes";
 						}
-					//Vegetal
+						//Vegetal
 					} else if (tipo >= 5 && tipo < 15) {
 						tipo -= 5;
 						EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
@@ -1178,7 +1213,7 @@ public class InterfazPrincipal : MonoBehaviour
 							forzarTooltip = true;
 							mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
 						}
-					//Animal (herbivoro o carnivoro)
+						//Animal (herbivoro o carnivoro)
 					} else if (tipo >= 15 && tipo < 25) {
 						tipo -= 5;
 						EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
@@ -1195,38 +1230,10 @@ public class InterfazPrincipal : MonoBehaviour
 						//Edificio
 						if (tipo >= 0 && tipo < 5) {
 							TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
-							if (principal.recursosSuficientes (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear)) 
-							{
-								if (principal.vida.anadeEdificio (tedif, posY, posX, 0, 0, 0, 0, 10, 10, 10, 10)) 
-								{
+							if (principal.recursosSuficientes (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear)) {
+								if (principal.vida.anadeEdificio (tedif, posY, posX, 0.5f)) {
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
-//									principal.modificaRecursosPorTurno(10,10,10,10);
-									//[Aris] Los recursos generados se tienen que ajustar o cambiar, pero mejor ir probando
-									//con cosas creibles desde ya. De todas formas esto se tiene que cambiar para que sean
-									//atributos de cada edificio para poder "apagarlos" y por la situacion de cuando se agote la
-									//energia y el dif sea negativo...
-									switch (tipo) {
-									case 0:
-										//Fabrica basica
-										principal.modificaRecursosPorTurno (-1, 5, 0, 0);
-										break;
-									case 1:
-										//Central energia 1
-										principal.modificaRecursosPorTurno (5, 0, 0, 0);
-										break;
-									case 2:
-										//Granja
-										principal.modificaRecursosPorTurno (-5, 0, 0, 1);
-										break;
-									case 3:
-										//Fabrica avanzada
-										principal.modificaRecursosPorTurno (-5, 5, 5, 0);
-										break;
-									case 4:
-										//Central energia 2
-										principal.modificaRecursosPorTurno (25, 0, 0, 0);
-										break;
-									}
+									principal.actualizaConsumoProduccion();
 								} else {
 									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 									efectos.playNumber (Random.Range (1, 3));
@@ -1240,14 +1247,14 @@ public class InterfazPrincipal : MonoBehaviour
 							elementoInsercion = telementoInsercion.ninguno;
 							accion = taccion.ninguna;
 							//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 0);	
-						//Vegetal
+							//Vegetal
 						} else if (tipo >= 5 && tipo < 15) {
 							tipo -= 5;
 							EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
 							principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX);
 							elementoInsercion = telementoInsercion.ninguno;
 							accion = taccion.ninguna;
-						//Animal (herbivoro o carnivoro)
+							//Animal (herbivoro o carnivoro)
 						} else if (tipo >= 15 && tipo < 25) {
 							tipo -= 5;
 							EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
@@ -1256,7 +1263,7 @@ public class InterfazPrincipal : MonoBehaviour
 							accion = taccion.ninguna;
 						}
 						Destroy (modeloInsercion);
-					//Desactivamos inserción
+						//Desactivamos inserción
 					} else if (Input.GetMouseButton (1)) {
 						elementoInsercion = telementoInsercion.ninguno;
 						accion = taccion.ninguna;
@@ -1265,75 +1272,8 @@ public class InterfazPrincipal : MonoBehaviour
 				}
 			}
 		}
-		
-		
 	}
-		/*if(accion == taccion.insertar)
-		{	
-			//pintar modelo en tiempo real y area de efecto si es necesario
-			if(Input.GetMouseButtonDown(0))
-			{
-				int x = 0;
-				int y = 0;
-				if(principal.raycastRoca(Input.mousePosition,ref x,ref y))
-				{
-					int tipo = (int)elementoInsercion - 1;
-					if(tipo >= 0 && tipo < 5)				//Edificio
-					{
-						TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
-						if(principal.recursosSuficientes(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear)) {							
-							if(principal.vida.anadeEdificio(tedif,y,x,0,0,0,0,10,10,10,10)) {
-								principal.consumeRecursos(tedif.energiaConsumidaAlCrear,tedif.compBasConsumidosAlCrear,tedif.compAvzConsumidosAlCrear,tedif.matBioConsumidoAlCrear);
-								switch (tipo) {
-								case 0:		//Fabrica basica
-									principal.modificaRecursosPorTurno(-1,5,0,0);
-									break;
-								case 1:		//Central energia 1
-									principal.modificaRecursosPorTurno(5,0,0,0);
-									break;
-								case 2:		//Granja
-									principal.modificaRecursosPorTurno(-5,0,0,1);
-									break;
-								case 3:		//Fabrica avanzada
-									principal.modificaRecursosPorTurno(-5,5,5,0);
-									break;
-								case 4: 	//Central energia 2
-									principal.modificaRecursosPorTurno(25,0,0,0);
-									break;
-								}								
-							}
-							else {							
-								infoCasilla += "Habitat inadecuado o ya ocupado!";//Mostrar por pantalla que no se ha podido insertar por que el habitat no es el adecuado o xq ya existe un edificio ahi
-							}
-						}
-						else {
-							infoCasilla += "No hay recursos suficientes!";//Mostrar por pantalla que no se ha podido insertar por falta de recursos
-						}						
-						elementoInsercion = telementoInsercion.ninguno;
-						accion = taccion.ninguna;	
-						principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 0);	
-					}					
-					else if(tipo >= 5 && tipo < 15)			//Vegetal
-					{
-						tipo -= 5;
-						EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
-						principal.vida.anadeVegetal(especie,y,x);
-						elementoInsercion = telementoInsercion.ninguno;
-						accion = taccion.ninguna;
-					}
-					else if(tipo >= 15 && tipo < 25)		//Animal (herbivoro o carnivoro)
-					{
-						tipo -= 5;	
-						EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
-						principal.vida.anadeAnimal(especie,y,x);
-						elementoInsercion = telementoInsercion.ninguno;
-						accion = taccion.ninguna;
-					}
-					else
-						return;
-				}			
-			}			
-		}*/		
+	
 	//Obtiene la información básica de la casilla a mostrar en la barra de información inferior
 	private void calculaInfoCasilla ()
 	{
@@ -1344,7 +1284,7 @@ public class InterfazPrincipal : MonoBehaviour
 				int x = 0;
 				int y = 0;
 				RaycastHit hit;
-				if (principal.raycastRoca (Input.mousePosition, ref x, ref y,out hit)) {
+				if (principal.raycastRoca (Input.mousePosition, ref x, ref y, out hit)) {
 					T_habitats habitat = principal.vida.tablero[y, x].habitat;
 					T_elementos elem = principal.vida.tablero[y, x].elementos;
 					Edificio edificio = principal.vida.tablero[y, x].edificio;
@@ -1360,8 +1300,7 @@ public class InterfazPrincipal : MonoBehaviour
 					}
 					
 					if (elem == T_elementos.comunes)
-						infoCasilla += "Elementos: metales comunes" + "\t\t"; 
-					else if (elem == T_elementos.raros && mostrarInfoMetalesRaros)
+						infoCasilla += "Elementos: metales comunes" + "\t\t"; else if (elem == T_elementos.raros && mostrarInfoMetalesRaros)
 						//Desbloqueando mejoras
 						infoCasilla += "Elementos: metales raros" + "\t\t";
 					
@@ -1374,7 +1313,7 @@ public class InterfazPrincipal : MonoBehaviour
 						if (animal != null)
 							infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";
 					}
-					infoCasilla += "\t\tAlto: "+y+"\t\tAncho :"+x;
+					//infoCasilla += "\t\tAlto: " + y + "\t\tAncho :" + x;
 				}
 			}
 		} else
@@ -1579,6 +1518,7 @@ public class InterfazPrincipal : MonoBehaviour
 			default:
 				break;
 			}
+
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoFiltroAnimales");
 			togglesFiltros[14] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[14], new GUIContent ("", "Filtrar la especie Carnivoro1"), "BotonInsertarCarnivoro1");
@@ -1621,12 +1561,13 @@ public class InterfazPrincipal : MonoBehaviour
 				break;
 			}
 
+			
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 13 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 13 * cuantoH), "", "BloqueDerechoFiltroRecursos");
 			togglesFiltros[0] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[0], new GUIContent ("", "Muestra los minerales comunes"), "BotonFiltroRecursosMineralComun");
-			togglesFiltros[1] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[1],new GUIContent ("", "Influencia Energetica"), "BotonFiltroRecursosRadioEnergia");
-			togglesFiltros[2] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[2],new GUIContent ("", "Muestra los minerales raros"), "BotonFiltroRecursosMineralRaro");
-			togglesFiltros[3] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[3],new GUIContent ("", "Terreno de las Granjas"), "BotonFiltroRecursosRadioGranja");
+			togglesFiltros[1] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[1], new GUIContent ("", "Influencia Energetica"), "BotonFiltroRecursosRadioEnergia");
+			togglesFiltros[2] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[2], new GUIContent ("", "Muestra los minerales raros"), "BotonFiltroRecursosMineralRaro");
+			togglesFiltros[3] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[3], new GUIContent ("", "Terreno de las Granjas"), "BotonFiltroRecursosRadioGranja");
 			GUI.EndGroup ();
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
 				tipoMenuDerecho = tMenuDerecho.ninguno;
@@ -1650,6 +1591,7 @@ public class InterfazPrincipal : MonoBehaviour
 				break;
 			}
 
+			
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 20 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 20 * cuantoH), "", "BloqueDerechoFiltroVegetales");
 			togglesFiltros[4] = GUI.Toggle (new Rect (cuantoW * 3, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[4], new GUIContent ("", "Resaltar las Setas"), "BotonInsertarSeta");
@@ -1688,31 +1630,41 @@ public class InterfazPrincipal : MonoBehaviour
 			default:
 				break;
 			}
+
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoInsercion");
-			GUI.Label(new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");	//Este texto es el nombre
-			GUI.Box(new Rect(cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "");							//Esta es la imagen
+			GUI.Label (new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");
+			//Este texto es el nombre
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "");
+			//Esta es la imagen
 			//Habitabilidad --
-			GUI.Label(new Rect(cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[6].ToString("N1"), "Costa"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[1].ToString("N1"), "LLanura"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[2].ToString("N1"), "Colina"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[0].ToString("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[4].ToString("N1"), "Volcanico"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[7].ToString("N1"), "Tundra"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[3].ToString("N1"), "Desierto"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");
 			//Habitabilidad --
-			GUI.Label(new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");				//Titulo de la descripcion
-			GUI.Label(new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");			//Este texto es la descripcion
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
+			//Titulo de la descripcion
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
+			//Este texto es la descripcion
 			switch (tipoSeleccion) {
-			case 0:		//Planta
+			case 0:
+				//Planta
 				break;
-			case 1: 	//Herbivoro
+			case 1:
+				//Herbivoro
 				break;
-			case 2: 	//Carnivoro
+			case 2:
+				//Carnivoro
 				break;
-			case 3: 	//Edificio
+			case 3:
+				//Edificio
 				break;
 			}
+
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
@@ -1738,46 +1690,59 @@ public class InterfazPrincipal : MonoBehaviour
 			default:
 				break;
 			}
+
 			if (infoSeleccion.Count == 0) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.ninguno;
 				break;
 			}
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
-			GUI.Label(new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");	//Este texto es el nombre
-			GUI.Box(new Rect(cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "");							//Esta es la imagen
+			GUI.Label (new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");
+			//Este texto es el nombre
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "");
+			//Esta es la imagen
 			//Habitabilidad --
-			GUI.Label(new Rect(cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[6].ToString("N1"), "Costa"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[1].ToString("N1"), "LLanura"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[2].ToString("N1"), "Colina"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[0].ToString("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[4].ToString("N1"), "Volcanico"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[7].ToString("N1"), "Tundra"), "LabelHabitabilidad");
-			GUI.Label(new Rect(cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent(habitabilidadSeleccion[3].ToString("N1"), "Desierto"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");
 			//Habitabilidad --
-			GUI.Label(new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");				//Titulo de la descripcion
-			GUI.Label(new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");			//Este texto es la descripcion
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
+			//Titulo de la descripcion
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
+			//Este texto es la descripcion
 			switch (tipoSeleccion) {
-			case 0:		//Planta
+			case 0:
+				//Planta
 				break;
-			case 1: 	//Herbivoro
+			case 1:
+				//Herbivoro
 				break;
-			case 2: 	//Carnivoro
+			case 2:
+				//Carnivoro
 				break;
-			case 3: 	//Edificio
+			case 3:
+				//Edificio
+				//edificio.modificaEficiencia(eficiencia);			La eficiencia es lo que se saca en el slider va entre 0.0f y 1.0f,
+				principal.actualizaConsumoProduccion();								
 				break;
 			}
+
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
 				tipoMenuDerecho = tMenuDerecho.ninguno;
 			}
 			break;
-		}	//Fin switch
+		}
+		//Fin switch
 		if (GUI.changed) {
 			//TODO [Maf] Faltan los botones para desactivar carnivoros y herbivoros del tiron, que no los he encontrado. 
 			//Solo que se desactiven los ya puestos o un toggle ke se activen en rojo los carnivoros y en verde los herbivoros y sino se desactiven? Lo hablamos.
-			/*En todo caso seria algo asi desactivarlos
+						/*En todo caso seria algo asi desactivarlos
 			 * for (int i = 0; i< materiales.herbivoros.Count; i++){
 			 * 		materiales.herbivoros[i].SetFloat("_FiltroOn",0.0f);
 			 * 		materiales.herviboros[i].SetColor("_Tinte",Color.white);
@@ -1787,228 +1752,232 @@ public class InterfazPrincipal : MonoBehaviour
 			for (int i = 0; i < togglesFiltros.Length; i++) {
 				if (togglesFiltros[i] != togglesFiltrosOld[i]) {
 					switch (i) {
-					case 0: 		//Boton minerales comunes
+					case 0:
+						//Boton minerales comunes
 						if (togglesFiltros[i])
-							materiales.recursos.SetFloat("_ComunesOn",1.0f);
+							materiales.recursos.SetFloat ("_ComunesOn", 1.0f);
 						else
-							materiales.recursos.SetFloat("_ComunesOn",0.0f);
+							materiales.recursos.SetFloat ("_ComunesOn", 0.0f);
 						break;
-					case 1:			//Boton radio Edificios
+					case 1:
+						//Boton radio Edificios
 						if (togglesFiltros[i])
-							materiales.recursos.SetFloat("_EdificiosOn",1.0f);
+							materiales.recursos.SetFloat ("_EdificiosOn", 1.0f);
 						else
-							materiales.recursos.SetFloat("_EdificiosOn",0.0f);
-						break;	
-					case 2: 		//Boton minerales raros
+							materiales.recursos.SetFloat ("_EdificiosOn", 0.0f);
+						break;
+					case 2:
+						//Boton minerales raros
 						if (togglesFiltros[i])
-							materiales.recursos.SetFloat("_RarosOn",1.0f);
+							materiales.recursos.SetFloat ("_RarosOn", 1.0f);
 						else
-							materiales.recursos.SetFloat("_RarosOn",0.0f);
+							materiales.recursos.SetFloat ("_RarosOn", 0.0f);
 						break;
-					case 3:			//boton radio Granjas
+					case 3:
+						//boton radio Granjas
 						if (togglesFiltros[i])
-							materiales.recursos.SetFloat("_GranjasOn",1.0f);
+							materiales.recursos.SetFloat ("_GranjasOn", 1.0f);
 						else
-							materiales.recursos.SetFloat("_GranjasOn",0.0f);
+							materiales.recursos.SetFloat ("_GranjasOn", 0.0f);
 						break;
-					case 4: 		//boton plantas 1
+					case 4:
+						//boton plantas 1
 						if (togglesFiltros[i]) {
-							materiales.plantas[0].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[0].SetColor("_Tinte", new Color(0.7f,0.7f,0.5f));
-						}
-						else {
-							materiales.plantas[0].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[0].SetColor("_Tinte", Color.white);
-						}
-						break;
-					case 5: 		//boton plantas 3
-						if (togglesFiltros[i]) {
-							materiales.plantas[2].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[2].SetColor("_Tinte", new Color(1.0f, 0.5f, 0.0f));
-						}
-						else {
-							materiales.plantas[2].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[2].SetColor("_Tinte", Color.white);
+							materiales.plantas[0].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[0].SetColor ("_Tinte", new Color (0.7f, 0.7f, 0.5f));
+						} else {
+							materiales.plantas[0].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[0].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 6: 		//boton plantas 5
+					case 5:
+						//boton plantas 3
 						if (togglesFiltros[i]) {
-							materiales.plantas[4].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[4].SetColor("_Tinte", Color.red);
-						}
-						else {
-							materiales.plantas[4].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[4].SetColor("_Tinte", Color.white);
+							materiales.plantas[2].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[2].SetColor ("_Tinte", new Color (1.0f, 0.5f, 0.0f));
+						} else {
+							materiales.plantas[2].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[2].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 7: 		//boton plantas 7
+					case 6:
+						//boton plantas 5
 						if (togglesFiltros[i]) {
-							materiales.plantas[6].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[6].SetColor("_Tinte", new Color(0.0f, 0.7f, 0.7f));
-						}
-						else {
-							materiales.plantas[6].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[6].SetColor("_Tinte", Color.white);
+							materiales.plantas[4].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[4].SetColor ("_Tinte", Color.red);
+						} else {
+							materiales.plantas[4].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[4].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 8: 		//boton plantas 9
+					case 7:
+						//boton plantas 7
 						if (togglesFiltros[i]) {
-							materiales.plantas[8].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[8].SetColor("_Tinte", new Color(0.5f, 0.0f, 1.0f));
-						}
-						else {
-							materiales.plantas[8].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[8].SetColor("_Tinte", Color.white);
+							materiales.plantas[6].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[6].SetColor ("_Tinte", new Color (0.0f, 0.7f, 0.7f));
+						} else {
+							materiales.plantas[6].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[6].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 9: 		//boton plantas 2
+					case 8:
+						//boton plantas 9
 						if (togglesFiltros[i]) {
-							materiales.plantas[1].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[1].SetColor("_Tinte", new Color(1.0f, 1.0f, 0.0f));
-						}
-						else {
-							materiales.plantas[1].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[1].SetColor("_Tinte", Color.white);
+							materiales.plantas[8].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[8].SetColor ("_Tinte", new Color (0.5f, 0.0f, 1.0f));
+						} else {
+							materiales.plantas[8].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[8].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 10: 		//boton plantas 4
+					case 9:
+						//boton plantas 2
 						if (togglesFiltros[i]) {
-							materiales.plantas[3].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[3].SetColor("_Tinte", new Color(1.0f, 0.3f, 0.0f));
-						}
-						else {
-							materiales.plantas[3].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[3].SetColor("_Tinte", Color.white);
+							materiales.plantas[1].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[1].SetColor ("_Tinte", new Color (1.0f, 1.0f, 0.0f));
+						} else {
+							materiales.plantas[1].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[1].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 11: 		//boton plantas 6
+					case 10:
+						//boton plantas 4
 						if (togglesFiltros[i]) {
-							materiales.plantas[5].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[5].SetColor("_Tinte", Color.green);
-						}
-						else {
-							materiales.plantas[5].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[5].SetColor("_Tinte", Color.white);
+							materiales.plantas[3].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[3].SetColor ("_Tinte", new Color (1.0f, 0.3f, 0.0f));
+						} else {
+							materiales.plantas[3].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[3].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 12: 		//boton plantas 8
+					case 11:
+						//boton plantas 6
 						if (togglesFiltros[i]) {
-							materiales.plantas[7].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[7].SetColor("_Tinte", new Color(0.0f, 0.5f, 1.0f));
-						}
-						else {
-							materiales.plantas[7].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[7].SetColor("_Tinte", Color.white);
+							materiales.plantas[5].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[5].SetColor ("_Tinte", Color.green);
+						} else {
+							materiales.plantas[5].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[5].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 13: 		//boton plantas 10
+					case 12:
+						//boton plantas 8
 						if (togglesFiltros[i]) {
-							materiales.plantas[9].SetFloat("_FiltroOn",1.0f);
-							materiales.plantas[9].SetColor("_Tinte", new Color(1.0f, 0.5f, 1.0f));
-						}
-						else {
-							materiales.plantas[9].SetFloat("_FiltroOn",0.0f);
-							materiales.plantas[9].SetColor("_Tinte", Color.white);
+							materiales.plantas[7].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[7].SetColor ("_Tinte", new Color (0.0f, 0.5f, 1.0f));
+						} else {
+							materiales.plantas[7].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[7].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 14: 		//boton herbivoro 1
+					case 13:
+						//boton plantas 10
 						if (togglesFiltros[i]) {
-							materiales.herbivoros[0].SetFloat("_FiltroOn",1.0f);
-							materiales.herbivoros[0].SetColor("_Tinte", Color.green);
-						}
-						else {
-							materiales.herbivoros[0].SetFloat("_FiltroOn",0.0f);
-							materiales.herbivoros[0].SetColor("_Tinte", Color.white);
+							materiales.plantas[9].SetFloat ("_FiltroOn", 1.0f);
+							materiales.plantas[9].SetColor ("_Tinte", new Color (1.0f, 0.5f, 1.0f));
+						} else {
+							materiales.plantas[9].SetFloat ("_FiltroOn", 0.0f);
+							materiales.plantas[9].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 15: 		//boton herbivoro 2
+					case 14:
+						//boton herbivoro 1
 						if (togglesFiltros[i]) {
-							materiales.herbivoros[1].SetFloat("_FiltroOn",1.0f);
-							materiales.herbivoros[1].SetColor("_Tinte", new Color(0.0f, 0.7f, 0.7f));
-						}
-						else {
-							materiales.herbivoros[1].SetFloat("_FiltroOn",0.0f);
-							materiales.herbivoros[1].SetColor("_Tinte", Color.white);
+							materiales.herbivoros[0].SetFloat ("_FiltroOn", 1.0f);
+							materiales.herbivoros[0].SetColor ("_Tinte", Color.green);
+						} else {
+							materiales.herbivoros[0].SetFloat ("_FiltroOn", 0.0f);
+							materiales.herbivoros[0].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 16: 		//boton herbivoro 3
+					case 15:
+						//boton herbivoro 2
 						if (togglesFiltros[i]) {
-							materiales.herbivoros[2].SetFloat("_FiltroOn",1.0f);
-							materiales.herbivoros[2].SetColor("_Tinte", new Color(0.0f, 0.5f, 1.0f));
-						}
-						else {
-							materiales.herbivoros[2].SetFloat("_FiltroOn",0.0f);
-							materiales.herbivoros[2].SetColor("_Tinte", Color.white);
+							materiales.herbivoros[1].SetFloat ("_FiltroOn", 1.0f);
+							materiales.herbivoros[1].SetColor ("_Tinte", new Color (0.0f, 0.7f, 0.7f));
+						} else {
+							materiales.herbivoros[1].SetFloat ("_FiltroOn", 0.0f);
+							materiales.herbivoros[1].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 17: 		//boton herbivoro 4
+					case 16:
+						//boton herbivoro 3
 						if (togglesFiltros[i]) {
-							materiales.herbivoros[3].SetFloat("_FiltroOn",1.0f);
-							materiales.herbivoros[3].SetColor("_Tinte", new Color(0.5f, 0.0f, 1.0f));
-						}
-						else {
-							materiales.herbivoros[3].SetFloat("_FiltroOn",0.0f);
-							materiales.herbivoros[3].SetColor("_Tinte", Color.white);
+							materiales.herbivoros[2].SetFloat ("_FiltroOn", 1.0f);
+							materiales.herbivoros[2].SetColor ("_Tinte", new Color (0.0f, 0.5f, 1.0f));
+						} else {
+							materiales.herbivoros[2].SetFloat ("_FiltroOn", 0.0f);
+							materiales.herbivoros[2].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 18: 		//boton herbivoro 5
+					case 17:
+						//boton herbivoro 4
 						if (togglesFiltros[i]) {
-							materiales.herbivoros[4].SetFloat("_FiltroOn",1.0f);
-							materiales.herbivoros[4].SetColor("_Tinte", new Color(1.0f, 0.5f, 1.0f));
-						}
-						else {
-							materiales.herbivoros[4].SetFloat("_FiltroOn",0.0f);
-							materiales.herbivoros[4].SetColor("_Tinte", Color.white);
+							materiales.herbivoros[3].SetFloat ("_FiltroOn", 1.0f);
+							materiales.herbivoros[3].SetColor ("_Tinte", new Color (0.5f, 0.0f, 1.0f));
+						} else {
+							materiales.herbivoros[3].SetFloat ("_FiltroOn", 0.0f);
+							materiales.herbivoros[3].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 19: 		//boton carnivoro 1
+					case 18:
+						//boton herbivoro 5
 						if (togglesFiltros[i]) {
-							materiales.carnivoros[0].SetFloat("_FiltroOn",1.0f);
-							materiales.carnivoros[0].SetColor("_Tinte", new Color(0.7f,0.7f,0.5f));
-						}
-						else {
-							materiales.carnivoros[0].SetFloat("_FiltroOn",0.0f);
-							materiales.carnivoros[0].SetColor("_Tinte", Color.white);
+							materiales.herbivoros[4].SetFloat ("_FiltroOn", 1.0f);
+							materiales.herbivoros[4].SetColor ("_Tinte", new Color (1.0f, 0.5f, 1.0f));
+						} else {
+							materiales.herbivoros[4].SetFloat ("_FiltroOn", 0.0f);
+							materiales.herbivoros[4].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 20: 		//boton carnivoro 2
+					case 19:
+						//boton carnivoro 1
 						if (togglesFiltros[i]) {
-							materiales.carnivoros[1].SetFloat("_FiltroOn",1.0f);
-							materiales.carnivoros[1].SetColor("_Tinte", new Color(1.0f, 1.0f, 0.0f));
-						}
-						else {
-							materiales.carnivoros[1].SetFloat("_FiltroOn",0.0f);
-							materiales.carnivoros[1].SetColor("_Tinte", Color.white);
+							materiales.carnivoros[0].SetFloat ("_FiltroOn", 1.0f);
+							materiales.carnivoros[0].SetColor ("_Tinte", new Color (0.7f, 0.7f, 0.5f));
+						} else {
+							materiales.carnivoros[0].SetFloat ("_FiltroOn", 0.0f);
+							materiales.carnivoros[0].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 21: 		//boton carnivoro 3
+					case 20:
+						//boton carnivoro 2
 						if (togglesFiltros[i]) {
-							materiales.carnivoros[2].SetFloat("_FiltroOn",1.0f);
-							materiales.carnivoros[2].SetColor("_Tinte", new Color(1.0f, 0.5f, 0.0f));
-						}
-						else {
-							materiales.carnivoros[2].SetFloat("_FiltroOn",0.0f);
-							materiales.carnivoros[2].SetColor("_Tinte", Color.white);
+							materiales.carnivoros[1].SetFloat ("_FiltroOn", 1.0f);
+							materiales.carnivoros[1].SetColor ("_Tinte", new Color (1.0f, 1.0f, 0.0f));
+						} else {
+							materiales.carnivoros[1].SetFloat ("_FiltroOn", 0.0f);
+							materiales.carnivoros[1].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 22: 		//boton carnivoro 4
+					case 21:
+						//boton carnivoro 3
 						if (togglesFiltros[i]) {
-							materiales.carnivoros[3].SetFloat("_FiltroOn",1.0f);
-							materiales.carnivoros[3].SetColor("_Tinte", new Color(1.0f, 0.3f, 0.0f));
-						}
-						else {
-							materiales.carnivoros[3].SetFloat("_FiltroOn",0.0f);
-							materiales.carnivoros[3].SetColor("_Tinte", Color.white);
+							materiales.carnivoros[2].SetFloat ("_FiltroOn", 1.0f);
+							materiales.carnivoros[2].SetColor ("_Tinte", new Color (1.0f, 0.5f, 0.0f));
+						} else {
+							materiales.carnivoros[2].SetFloat ("_FiltroOn", 0.0f);
+							materiales.carnivoros[2].SetColor ("_Tinte", Color.white);
 						}
 						break;
-					case 23: 		//boton carnivoro 5
+					case 22:
+						//boton carnivoro 4
 						if (togglesFiltros[i]) {
-							materiales.carnivoros[4].SetFloat("_FiltroOn",1.0f);
-							materiales.carnivoros[4].SetColor("_Tinte", Color.red);
+							materiales.carnivoros[3].SetFloat ("_FiltroOn", 1.0f);
+							materiales.carnivoros[3].SetColor ("_Tinte", new Color (1.0f, 0.3f, 0.0f));
+						} else {
+							materiales.carnivoros[3].SetFloat ("_FiltroOn", 0.0f);
+							materiales.carnivoros[3].SetColor ("_Tinte", Color.white);
 						}
-						else {
-							materiales.carnivoros[4].SetFloat("_FiltroOn",0.0f);
-							materiales.carnivoros[4].SetColor("_Tinte", Color.white);
+						break;
+					case 23:
+						//boton carnivoro 5
+						if (togglesFiltros[i]) {
+							materiales.carnivoros[4].SetFloat ("_FiltroOn", 1.0f);
+							materiales.carnivoros[4].SetColor ("_Tinte", Color.red);
+						} else {
+							materiales.carnivoros[4].SetFloat ("_FiltroOn", 0.0f);
+							materiales.carnivoros[4].SetColor ("_Tinte", Color.white);
 						}
 						break;
 					}
@@ -2017,56 +1986,58 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 		}
 	}
-	
-	private bool seleccionarObjetoTablero() {
+
+	private bool seleccionarObjetoTablero ()
+	{
 		int x = 0;
 		int y = 0;
 		RaycastHit hit;
-		if (principal.raycastRoca (Input.mousePosition, ref x, ref y,out hit)) {
+		if (principal.raycastRoca (Input.mousePosition, ref x, ref y, out hit)) {
 			Edificio edificio = principal.vida.tablero[y, x].edificio;
 			Vegetal vegetal = principal.vida.tablero[y, x].vegetal;
 			Animal animal = principal.vida.tablero[y, x].animal;
-			infoSeleccion.Clear();
+			infoSeleccion.Clear ();
 			if (animal != null || vegetal != null || edificio != null) {
 				if (animal != null) {
-					infoSeleccion.Add(animal.especie.nombre);									//Cadena infoSeleccion[0]
-					TiposSeres tiposSeres = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
-					infoSeleccion.Add(tiposSeres.getDescripcion(tiposSeres.getNumeroSer(animal.especie)));		//Cadena infoSeleccion[1]
-					habitabilidadSeleccion[0] = (animal.especie.habitats.Contains(T_habitats.montana)) ? 1 : -1;
-					habitabilidadSeleccion[1] = animal.especie.habitats.Contains(T_habitats.llanura) ? 1 : -1;
-					habitabilidadSeleccion[2] = animal.especie.habitats.Contains(T_habitats.colina) ? 1 : -1;
-					habitabilidadSeleccion[3] = animal.especie.habitats.Contains(T_habitats.desierto) ? 1 : -1;
-					habitabilidadSeleccion[4] = animal.especie.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
-					habitabilidadSeleccion[6] = animal.especie.habitats.Contains(T_habitats.costa) ? 1 : -1;
-					habitabilidadSeleccion[7] = animal.especie.habitats.Contains(T_habitats.tundra) ? 1 : -1;
+					infoSeleccion.Add (animal.especie.nombre);
+					//Cadena infoSeleccion[0]
+					TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+					infoSeleccion.Add (tiposSeres.getDescripcion (tiposSeres.getNumeroSer (animal.especie)));
+					//Cadena infoSeleccion[1]
+					habitabilidadSeleccion[0] = (animal.especie.habitats.Contains (T_habitats.montana)) ? 1 : -1;
+					habitabilidadSeleccion[1] = animal.especie.habitats.Contains (T_habitats.llanura) ? 1 : -1;
+					habitabilidadSeleccion[2] = animal.especie.habitats.Contains (T_habitats.colina) ? 1 : -1;
+					habitabilidadSeleccion[3] = animal.especie.habitats.Contains (T_habitats.desierto) ? 1 : -1;
+					habitabilidadSeleccion[4] = animal.especie.habitats.Contains (T_habitats.volcanico) ? 1 : -1;
+					habitabilidadSeleccion[6] = animal.especie.habitats.Contains (T_habitats.costa) ? 1 : -1;
+					habitabilidadSeleccion[7] = animal.especie.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 					//Cadena infoSeleccion[2]
 					if (animal.especie.tipo == tipoAlimentacionAnimal.carnivoro) {
-						infoSeleccion.Add("Carnivoro");
+						infoSeleccion.Add ("Carnivoro");
 						tipoSeleccion = 2;
-					}
-					else {
-						infoSeleccion.Add("Herbivoro");
+					} else {
+						infoSeleccion.Add ("Herbivoro");
 						tipoSeleccion = 1;
 					}
 					//-----------------------
 					//Cadena infoSeleccion[3]
-					if (animal.reserva < (animal.especie.reservaMaxima / 4)) { 	//Menor al 25%
-						infoSeleccion.Add("Hambiento!");
-					}
-					else if (animal.reserva < (animal.especie.reservaMaxima / 2)) { 	//Menor al 50%
-						infoSeleccion.Add("Bastante");
-					}
-					else if (animal.reserva < (animal.especie.reservaMaxima / 4) * 3) { 	//Menor al 75%
-						infoSeleccion.Add("Poca");
-					}
-					else
-						infoSeleccion.Add("LLeno");
+					if (animal.reserva < (animal.especie.reservaMaxima / 4)) {
+						//Menor al 25%
+						infoSeleccion.Add ("Hambiento!");
+					} else if (animal.reserva < (animal.especie.reservaMaxima / 2)) {
+						//Menor al 50%
+						infoSeleccion.Add ("Bastante");
+					} else if (animal.reserva < (animal.especie.reservaMaxima / 4) * 3) {
+						//Menor al 75%
+						infoSeleccion.Add ("Poca");
+					} else
+						infoSeleccion.Add ("LLeno");
 					//-----------------------
 					
 					//Cadena infoSeleccion[4]
 					string temp = "";
 					switch (animal.estado) {
-					case tipoEstadoAnimal.buscarAlimento: 
+					case tipoEstadoAnimal.buscarAlimento:
 						temp = "Buscando comida\n";
 						break;
 					case tipoEstadoAnimal.comer:
@@ -2082,15 +2053,16 @@ public class InterfazPrincipal : MonoBehaviour
 						temp = "Naciendo\n";
 						break;
 					}
-					infoSeleccion.Add(temp);
+					infoSeleccion.Add (temp);
 					//------------------------
 					
 					return true;
-				}
-				else if (vegetal != null) {
-					infoSeleccion.Add(vegetal.especie.nombre);									//Cadena infoSeleccion[0]
-					TiposSeres temp = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
-					infoSeleccion.Add(temp.getDescripcion(temp.getNumeroSer(vegetal.especie)));		//Cadena infoSeleccion[1]
+				} else if (vegetal != null) {
+					infoSeleccion.Add (vegetal.especie.nombre);
+					//Cadena infoSeleccion[0]
+					TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+					infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (vegetal.especie)));
+					//Cadena infoSeleccion[1]
 					habitabilidadSeleccion[0] = vegetal.habitabilidad[0];
 					habitabilidadSeleccion[1] = vegetal.habitabilidad[1];
 					habitabilidadSeleccion[2] = vegetal.habitabilidad[2];
@@ -2098,79 +2070,86 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[4] = vegetal.habitabilidad[4];
 					habitabilidadSeleccion[6] = vegetal.habitabilidad[6];
 					habitabilidadSeleccion[7] = vegetal.habitabilidad[7];
-					infoSeleccion.Add(vegetal.numVegetales.ToString());		//Cadena infoSeleccion[2]					
+					infoSeleccion.Add (vegetal.numVegetales.ToString ());
+					//Cadena infoSeleccion[2]					
 					tipoSeleccion = 0;
 					return true;
-				}
-				else if (edificio != null) {
-					infoSeleccion.Add(edificio.tipo.nombre);									//Cadena infoSeleccion[0]
-					TiposSeres temp = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
-					infoSeleccion.Add(temp.getDescripcion(temp.getNumeroSer(edificio.tipo)));		//Cadena infoSeleccion[1]
-					habitabilidadSeleccion[0] = edificio.tipo.habitats.Contains(T_habitats.montana) ? 1 : -1;
-					habitabilidadSeleccion[1] = edificio.tipo.habitats.Contains(T_habitats.llanura) ? 1 : -1;
-					habitabilidadSeleccion[2] = edificio.tipo.habitats.Contains(T_habitats.colina) ? 1 : -1;
-					habitabilidadSeleccion[3] = edificio.tipo.habitats.Contains(T_habitats.desierto) ? 1 : -1;
-					habitabilidadSeleccion[4] = edificio.tipo.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
-					habitabilidadSeleccion[6] = edificio.tipo.habitats.Contains(T_habitats.costa) ? 1 : -1;
-					habitabilidadSeleccion[7] = edificio.tipo.habitats.Contains(T_habitats.tundra) ? 1 : -1;
+				} else if (edificio != null) {
+					infoSeleccion.Add (edificio.tipo.nombre);
+					//Cadena infoSeleccion[0]
+					TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+					infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (edificio.tipo)));
+					//Cadena infoSeleccion[1]
+					habitabilidadSeleccion[0] = edificio.tipo.habitats.Contains (T_habitats.montana) ? 1 : -1;
+					habitabilidadSeleccion[1] = edificio.tipo.habitats.Contains (T_habitats.llanura) ? 1 : -1;
+					habitabilidadSeleccion[2] = edificio.tipo.habitats.Contains (T_habitats.colina) ? 1 : -1;
+					habitabilidadSeleccion[3] = edificio.tipo.habitats.Contains (T_habitats.desierto) ? 1 : -1;
+					habitabilidadSeleccion[4] = edificio.tipo.habitats.Contains (T_habitats.volcanico) ? 1 : -1;
+					habitabilidadSeleccion[6] = edificio.tipo.habitats.Contains (T_habitats.costa) ? 1 : -1;
+					habitabilidadSeleccion[7] = edificio.tipo.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 					//TODO Poner aqui la info escrita que necesitemos para los edificios
 					
 					tipoSeleccion = 3;
 					return true;
 				}
-			}	//Si la casilla esta vacia...
+			}
+			//Si la casilla esta vacia...
 			tipoSeleccion = -1;
 			return false;
-		}		//Si el raycast falla...
+		}
+		//Si el raycast falla...
 		tipoSeleccion = -1;
 		return false;
 	}
-	
-	private bool seleccionarObjetoInsercion() {
+
+	private bool seleccionarObjetoInsercion ()
+	{
 		int tipo = (int)elementoInsercionDerecho - 1;
 		TipoEdificio edificio = null;
 		EspecieVegetal vegetal = null;
 		EspecieAnimal animal = null;
 		if (tipo >= 0 && tipo < 5) {
 			edificio = principal.vida.tiposEdificios[tipo];
-		//Vegetal
+			//Vegetal
 		} else if (tipo >= 5 && tipo < 15) {
 			tipo -= 5;
 			vegetal = (EspecieVegetal)principal.vida.especies[tipo];
-		//Animal (herbivoro o carnivoro)
+			//Animal (herbivoro o carnivoro)
 		} else if (tipo >= 15 && tipo < 25) {
 			tipo -= 5;
 			animal = (EspecieAnimal)principal.vida.especies[tipo];
 		}
-		infoSeleccion.Clear();
+		infoSeleccion.Clear ();
 		if (animal != null || vegetal != null || edificio != null) {
 			if (animal != null) {
-				infoSeleccion.Add(animal.nombre);									//Cadena infoSeleccion[0]
-				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
-				infoSeleccion.Add(tiposSeres.getDescripcion(tiposSeres.getNumeroSer(animal)));		//Cadena infoSeleccion[1]
-				habitabilidadSeleccion[0] = (animal.habitats.Contains(T_habitats.montana)) ? 1 : -1;
-				habitabilidadSeleccion[1] = animal.habitats.Contains(T_habitats.llanura) ? 1 : -1;
-				habitabilidadSeleccion[2] = animal.habitats.Contains(T_habitats.colina) ? 1 : -1;
-				habitabilidadSeleccion[3] = animal.habitats.Contains(T_habitats.desierto) ? 1 : -1;
-				habitabilidadSeleccion[4] = animal.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
-				habitabilidadSeleccion[6] = animal.habitats.Contains(T_habitats.costa) ? 1 : -1;
-				habitabilidadSeleccion[7] = animal.habitats.Contains(T_habitats.tundra) ? 1 : -1;
+				infoSeleccion.Add (animal.nombre);
+				//Cadena infoSeleccion[0]
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				infoSeleccion.Add (tiposSeres.getDescripcion (tiposSeres.getNumeroSer (animal)));
+				//Cadena infoSeleccion[1]
+				habitabilidadSeleccion[0] = (animal.habitats.Contains (T_habitats.montana)) ? 1 : -1;
+				habitabilidadSeleccion[1] = animal.habitats.Contains (T_habitats.llanura) ? 1 : -1;
+				habitabilidadSeleccion[2] = animal.habitats.Contains (T_habitats.colina) ? 1 : -1;
+				habitabilidadSeleccion[3] = animal.habitats.Contains (T_habitats.desierto) ? 1 : -1;
+				habitabilidadSeleccion[4] = animal.habitats.Contains (T_habitats.volcanico) ? 1 : -1;
+				habitabilidadSeleccion[6] = animal.habitats.Contains (T_habitats.costa) ? 1 : -1;
+				habitabilidadSeleccion[7] = animal.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 				//Cadena infoSeleccion[2]
 				if (animal.tipo == tipoAlimentacionAnimal.carnivoro) {
-					infoSeleccion.Add("Carnivoro");
+					infoSeleccion.Add ("Carnivoro");
 					tipoSeleccion = 2;
-				}
-				else {
-					infoSeleccion.Add("Herbivoro");
+				} else {
+					infoSeleccion.Add ("Herbivoro");
 					tipoSeleccion = 1;
 				}
 				//-----------------------
 				return true;
-			}
-			else if (vegetal != null) {
-				infoSeleccion.Add(vegetal.nombre);									//Cadena infoSeleccion[0]
-				TiposSeres temp = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
-				infoSeleccion.Add(temp.getDescripcion(temp.getNumeroSer(vegetal)));		//Cadena infoSeleccion[1]
+			} else if (vegetal != null) {
+				infoSeleccion.Add (vegetal.nombre);
+				//Cadena infoSeleccion[0]
+				TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (vegetal)));
+				//Cadena infoSeleccion[1]
 				habitabilidadSeleccion[0] = vegetal.habitabilidadInicial[0];
 				habitabilidadSeleccion[1] = vegetal.habitabilidadInicial[1];
 				habitabilidadSeleccion[2] = vegetal.habitabilidadInicial[2];
@@ -2180,24 +2159,26 @@ public class InterfazPrincipal : MonoBehaviour
 				habitabilidadSeleccion[7] = vegetal.habitabilidadInicial[7];
 				tipoSeleccion = 0;
 				return true;
-			}
-			else if (edificio != null) {
-				infoSeleccion.Add(edificio.nombre);									//Cadena infoSeleccion[0]
-				TiposSeres temp = GameObject.FindGameObjectWithTag("TiposSeres").GetComponent<TiposSeres>();
-				infoSeleccion.Add(temp.getDescripcion(temp.getNumeroSer(edificio)));		//Cadena infoSeleccion[1]
-				habitabilidadSeleccion[0] = edificio.habitats.Contains(T_habitats.montana) ? 1 : -1;
-				habitabilidadSeleccion[1] = edificio.habitats.Contains(T_habitats.llanura) ? 1 : -1;
-				habitabilidadSeleccion[2] = edificio.habitats.Contains(T_habitats.colina) ? 1 : -1;
-				habitabilidadSeleccion[3] = edificio.habitats.Contains(T_habitats.desierto) ? 1 : -1;
-				habitabilidadSeleccion[4] = edificio.habitats.Contains(T_habitats.volcanico) ? 1 : -1;
-				habitabilidadSeleccion[6] = edificio.habitats.Contains(T_habitats.costa) ? 1 : -1;
-				habitabilidadSeleccion[7] = edificio.habitats.Contains(T_habitats.tundra) ? 1 : -1;
+			} else if (edificio != null) {
+				infoSeleccion.Add (edificio.nombre);
+				//Cadena infoSeleccion[0]
+				TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (edificio)));
+				//Cadena infoSeleccion[1]
+				habitabilidadSeleccion[0] = edificio.habitats.Contains (T_habitats.montana) ? 1 : -1;
+				habitabilidadSeleccion[1] = edificio.habitats.Contains (T_habitats.llanura) ? 1 : -1;
+				habitabilidadSeleccion[2] = edificio.habitats.Contains (T_habitats.colina) ? 1 : -1;
+				habitabilidadSeleccion[3] = edificio.habitats.Contains (T_habitats.desierto) ? 1 : -1;
+				habitabilidadSeleccion[4] = edificio.habitats.Contains (T_habitats.volcanico) ? 1 : -1;
+				habitabilidadSeleccion[6] = edificio.habitats.Contains (T_habitats.costa) ? 1 : -1;
+				habitabilidadSeleccion[7] = edificio.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 				//TODO Poner aqui la info escrita que necesitemos para los edificios
 				
 				tipoSeleccion = 3;
 				return true;
 			}
-		}	//Si la casilla esta vacia...
+		}
+		//Si la casilla esta vacia...
 		tipoSeleccion = -1;
 		return false;
 	}

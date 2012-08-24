@@ -70,7 +70,7 @@ public class Principal : MonoBehaviour {
 	void FixedUpdate() {
 		//Algoritmo de vida		
 		tiempoPaso += Time.deltaTime;		
-		if(algoritmoActivado && tiempoPaso > 3.0f) 		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
+		if(algoritmoActivado && tiempoPaso > 1.0f) 		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
 		{		
 			actualizaRecursos();
 			vida.algoritmoVida(numPasos);
@@ -322,8 +322,7 @@ public class Principal : MonoBehaviour {
 	{
 		materialBiologicoDif += materialPorTurno;
 	}
-	
-	
+		
 	//Actualiza los recursos sumando o restando los consumidos por turno
 	public void actualizaRecursos()
 	{
@@ -374,6 +373,17 @@ public class Principal : MonoBehaviour {
 			materialBiologico = 0;
 			//Desactivar cosas hasta que el número de material biológico sea >= 0 y avisarlo por el bloque de mensajes			
 		}		
+	}
+	
+	//Actualiza la diferencia de recursos por turno comprobando los edificios
+	public void actualizaConsumoProduccion()
+	{
+		int energia,compBas,compAvz,matBio;
+		vida.calculaConsumoProduccion(out energia,out compBas,out compAvz,out matBio);
+		energiaDif = energia;
+		componentesBasicosDif = compBas;
+		componentesAvanzadosDif = compAvz;
+		materialBiologicoDif = matBio;
 	}
 	
 	public void setEnergiaMax(int nuevo) {
