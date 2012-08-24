@@ -9,12 +9,12 @@ ModelImporter:
     generateColliders: 0
     swapUVs: 0
   tangentSpace:
-    normalImportMode: 1
+    normalImportMode: 0
     tangentImportMode: 1
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
@@ -33,5 +33,6 @@ AssetImporter:
     4300000: Cylinder
     4300002: central_energia_av
     4300004: Central_Energia
+    4300006: CentralEnergia
     7400000: Default Take //// edificio1
     7400002: Default Take //// Centra de Energia

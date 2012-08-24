@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
@@ -25,10 +25,22 @@ ModelImporter:
     //RootNode:
     - 100000
     - 400000
+    - 11100000
+    Fabrica_Componentes_avanzados:
+    - 100002
+    - 400002
     - 3300000
     - 2300000
+    Camera:
+    - 100004
+    - 400004
+    Lamp:
+    - 100006
+    - 400006
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
     4300000: Cone
     4300002: FabCompAdv
+    4300004: Fab_Comp_Av
+    4300006: Fabrica_Componentes_avanzados

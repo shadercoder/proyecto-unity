@@ -10,10 +10,10 @@ FBXHeaderExtension:  {
 		Version: 1000
 		Year: 2012
 		Month: 08
-		Day: 09
-		Hour: 23
-		Minute: 52
-		Second: 09
+		Day: 24
+		Hour: 16
+		Minute: 55
+		Second: 30
 		Millisecond: 0
 	}
 	Creator: "FBX SDK/FBX Plugins build 20070228"
@@ -21,7 +21,7 @@ FBXHeaderExtension:  {
 		FlagPLE: 0
 	}
 }
-CreationTime: "2012-08-09 23:52:09:000"
+CreationTime: "2012-08-24 16:55:30:000"
 Creator: "Blender version 2.63 (sub 0)"
 
 ; Object definitions
@@ -57,7 +57,7 @@ Definitions:  {
 ;------------------------------------------------------------------
 
 Objects:  {
-	Model: "Model::FCA", "Mesh" {
+	Model: "Model::Granja", "Mesh" {
 		Version: 232
 		Properties60:  {
 			Property: "QuaternionInterpolate", "bool", "",0
@@ -550,7 +550,7 @@ Objects:  {
 			}
 		}
 	}
-	Material: "Material::Granja__Granja_difuso_png", "" {
+	Material: "Material::Granja__Granja_UVs", "" {
 		Version: 102
 		ShadingModel: "lambert"
 		MultiLayer: 0
@@ -580,7 +580,7 @@ Objects:  {
 			Property: "Reflectivity", "double", "",0
 		}
 	}
-	Video: "Video::Granja_difuso_png", "Clip" {
+	Video: "Video::Granja_UVs", "Clip" {
 		Type: "Clip"
 		Properties60:  {
 			Property: "FrameRate", "double", "",0
@@ -601,10 +601,10 @@ Objects:  {
 		Filename: "Granja difuso.png"
 		RelativeFilename: "Textures\Granja difuso.png"
 	}
-	Texture: "Texture::Granja_difuso_png", "TextureVideoClip" {
+	Texture: "Texture::Granja_UVs", "TextureVideoClip" {
 		Type: "TextureVideoClip"
 		Version: 202
-		TextureName: "Texture::Granja_difuso_png"
+		TextureName: "Texture::Granja_UVs"
 		Properties60:  {
 			Property: "Translation", "Vector", "A+",0,0,0
 			Property: "Rotation", "Vector", "A+",0,0,0
@@ -622,7 +622,7 @@ Objects:  {
 			Property: "TextureScalingPivot", "Vector3D", "",0,0,0
 			Property: "VideoProperty", "object", ""
 		}
-		Media: "Video::Granja_difuso_png"
+		Media: "Video::Granja_UVs"
 		FileName: "Granja difuso.png"
 		RelativeFilename: "Textures\Granja difuso.png"
 		ModelUVTranslation: 0,0
@@ -637,7 +637,7 @@ Objects:  {
 		}
 		NbPoseNodes: 1
 		PoseNode:  {
-			Node: "Model::FCA"
+			Node: "Model::Granja"
 			Matrix: 1.000000000000000,0.000000000000000,0.000000000000000,0.000000000000000,0.000000000000000,0.000000000000000,-1.000000000000000,0.000000000000000,0.000000000000000,1.000000000000000,0.000000000000000,0.000000000000000,0.000000000000000,0.000000000000000,0.000000000000000,1.000000000000000
 		}
 	}
@@ -659,7 +659,7 @@ Objects:  {
 ;------------------------------------------------------------------
 
 Relations:  {
-	Model: "Model::FCA", "Mesh" {
+	Model: "Model::Granja", "Mesh" {
 	}
 	Model: "Model::Producer Perspective", "Camera" {
 	}
@@ -677,11 +677,11 @@ Relations:  {
 	}
 	Model: "Model::Camera Switcher", "CameraSwitcher" {
 	}
-	Material: "Material::Granja__Granja_difuso_png", "" {
+	Material: "Material::Granja__Granja_UVs", "" {
 	}
-	Texture: "Texture::Granja_difuso_png", "TextureVideoClip" {
+	Texture: "Texture::Granja_UVs", "TextureVideoClip" {
 	}
-	Video: "Video::Granja_difuso_png", "Clip" {
+	Video: "Video::Granja_UVs", "Clip" {
 	}
 }
 
@@ -689,10 +689,10 @@ Relations:  {
 ;------------------------------------------------------------------
 
 Connections:  {
-	Connect: "OO", "Model::FCA", "Model::Scene"
-	Connect: "OO", "Material::Granja__Granja_difuso_png", "Model::FCA"
-	Connect: "OO", "Texture::Granja_difuso_png", "Model::FCA"
-	Connect: "OO", "Video::Granja_difuso_png", "Texture::Granja_difuso_png"
+	Connect: "OO", "Model::Granja", "Model::Scene"
+	Connect: "OO", "Material::Granja__Granja_UVs", "Model::Granja"
+	Connect: "OO", "Texture::Granja_UVs", "Model::Granja"
+	Connect: "OO", "Video::Granja_UVs", "Texture::Granja_UVs"
 }
 ;Takes and animation section
 ;----------------------------------------------------
