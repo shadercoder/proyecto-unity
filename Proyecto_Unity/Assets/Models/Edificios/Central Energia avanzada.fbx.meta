@@ -9,12 +9,12 @@ ModelImporter:
     generateColliders: 0
     swapUVs: 0
   tangentSpace:
-    normalImportMode: 1
+    normalImportMode: 0
     tangentImportMode: 1
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 2
+    generation: 1
   animations:
     generation: 0
     bakeAnimations: 0
@@ -35,3 +35,4 @@ AssetImporter:
     4300004: Cube_001
     4300006: Cube
     4300008: central_energia_av
+    4300010: Central_Energia_Avanzada
