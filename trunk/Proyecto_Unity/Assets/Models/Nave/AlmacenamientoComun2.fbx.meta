@@ -3,7 +3,7 @@ guid: 441063bffb7856c428d061c50a15630e
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.05
+    scaleFactor: 0.04
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
@@ -31,3 +31,4 @@ AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
     4300000: Comunes_001
+    4300002: Comunes2

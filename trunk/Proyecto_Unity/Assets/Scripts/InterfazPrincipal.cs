@@ -768,28 +768,28 @@ public class InterfazPrincipal : MonoBehaviour
 			//Sensores -----------------------------------------------------
 			if (mejoras.mejorasCompradas[0])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Habilita la información de la barra inferior"), "BotonMejoraInformacion")) {
+			if (GUILayout.Button (new GUIContent ("", "Sistema de Sondeo General"), "BotonMejoraInformacion")) {
 				mejoras.compraMejora0 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Habilita la detección de hábitats"), "BotonMejoraHabitats")) {
+			if (GUILayout.Button (new GUIContent ("", "Deteccion de Ecosistemas"), "BotonMejoraHabitats")) {
 				mejoras.compraMejora1 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[2])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Habilita la deteccion de metales raros"), "BotonMejoraMetalesRaros")) {
+			if (GUILayout.Button (new GUIContent ("", "Espectometro"), "BotonMejoraMetalesRaros")) {
 				mejoras.compraMejora2 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Habilita la deteccion de animales y vegetales"), "BotonMejoraVida")) {
+			if (GUILayout.Button (new GUIContent ("", "Sensor Biometrico"), "BotonMejoraVida")) {
 				mejoras.compraMejora3 ();
 			}
 			GUI.enabled = true;
@@ -798,21 +798,21 @@ public class InterfazPrincipal : MonoBehaviour
 			//Se pueden añadir mas condiciones como el coste
 			if (mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Mejora de motor nivel 1"), "BotonMejoraMotor1")) {
+			if (GUILayout.Button (new GUIContent ("", "Motores auxiliares Basicos"), "BotonMejoraMotor1")) {
 				mejoras.compraMejora4 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Mejora de motor nivel 2"), "BotonMejoraMotor2")) {
+			if (GUILayout.Button (new GUIContent ("", "Motores Orbitales"), "BotonMejoraMotor2")) {
 				mejoras.compraMejora5 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[6])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Aislamiento magnético (viaje por los polos)"), "BotonMejoraMotor3")) {
+			if (GUILayout.Button (new GUIContent ("", "Aislamiento magnético"), "BotonMejoraMotor3")) {
 				mejoras.compraMejora6 ();
 			}
 			GUI.enabled = true;
@@ -831,57 +831,57 @@ public class InterfazPrincipal : MonoBehaviour
 			//Energia ------------------------------------------------------
 			if (mejoras.mejorasCompradas[8])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Añade un condensador de energía para ampliar la energía máxima"), "BotonMejoraEnergia1")) {
+			if (GUILayout.Button (new GUIContent ("", "Condensador Auxiliar"), "BotonMejoraEnergia1")) {
 				mejoras.compraMejora8 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[9])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Añade un condensador de energía mejorado"), "BotonMejoraEnergia2")) {
+			if (GUILayout.Button (new GUIContent ("", "Acumulador de Energia en Anillo"), "BotonMejoraEnergia2")) {
 				mejoras.compraMejora9 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[9] || mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Desbloquea el uso de habilidades avanzadas"), "BotonMejoraEnergia3")) {
+			if (GUILayout.Button (new GUIContent ("", "Array de Paneles Solares"), "BotonMejoraEnergia3")) {
 				mejoras.compraMejora10 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[8] || !mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[10] || mejoras.mejorasCompradas[11])
+			if (!mejoras.mejorasCompradas[8] || !mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[10] && mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Desbloquea el uso de habilidades cuánticas"), "BotonMejoraEnergia4")) {
+			if (GUILayout.Button (new GUIContent ("", "Generador de Fusión"), "BotonMejoraEnergia4")) {
 				mejoras.compraMejora11 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 6);
 			//Almacenamiento -----------------------------------------------
-			if (mejoras.mejorasCompradas[12] || mejoras.mejorasCompradas[13] || !mejoras.mejorasCompradas[14])
+			if (mejoras.mejorasCompradas[12])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Añade un contenedor para almacenar más recursos"), "BotonMejoraAlmacen1")) {
+			if (GUILayout.Button (new GUIContent ("", "Contenedores para Componentes Avanzados"), "BotonMejoraAlmacen1")) {
 				mejoras.compraMejora12 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[13] || !mejoras.mejorasCompradas[12] || !mejoras.mejorasCompradas[15])
+			if (mejoras.mejorasCompradas[13])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Mejora del contenedor para almacenar todavía más recursos"), "BotonMejoraAlmacen2")) {
+			if (GUILayout.Button (new GUIContent ("", "Contenedores para Material Biologico"), "BotonMejoraAlmacen2")) {
 				mejoras.compraMejora13 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[14])
+			if (!mejoras.mejorasCompradas[12] || !mejoras.mejorasCompradas[13] || mejoras.mejorasCompradas[14])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Permite almacenar componentes avanzados"), "BotonMejoraAlmacen3")) {
+			if (GUILayout.Button (new GUIContent ("", "Ampliacion de Carga 1"), "BotonMejoraAlmacen3")) {
 				mejoras.compraMejora14 ();
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[14] || !mejoras.mejorasCompradas[12] || mejoras.mejorasCompradas[15])
+			if (!mejoras.mejorasCompradas[14] || mejoras.mejorasCompradas[15])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Permite almacenar material biológico"), "BotonMejoraAlmacen4")) {
+			if (GUILayout.Button (new GUIContent ("", "Ampliacion de Carga 2"), "BotonMejoraAlmacen4")) {
 				mejoras.compraMejora15 ();
 			}
 			GUI.enabled = true;
