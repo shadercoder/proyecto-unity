@@ -443,15 +443,13 @@ public class Vida //: MonoBehaviour
 	}
 	
 	//Devuelve false si el edificio ya existe (no se añade) y true si se añade correctamente	
-	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY,int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno,
-	                			int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno)
+	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY,float eficiencia)
 	{
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = tipoEdificio.modelos[UnityEngine.Random.Range(0,tipoEdificio.modelos.Count)];
 		Vector3 coordsVert = tablero[posX,posY].coordsVert;	
-		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,energiaConsumidaPorTurno,compBasConsumidosPorTurno,compAvzConsumidosPorTurno,matBioConsumidoPorTurno,
-		                                 energiaProducidaPorTurno,compBasProducidosPorTurno,compAvzProducidosPorTurno,matBioProducidoPorTurno,FuncTablero.creaMesh(coordsVert,modelo));
+		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,eficiencia,FuncTablero.creaMesh(coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
 		seres.Add(edificio);
 		//int turno = (turnoActual + tipoEdificio.siguienteTurno)%numMaxTurnos;
@@ -864,7 +862,7 @@ public class Vida //: MonoBehaviour
 		}
 	}
 	
-	public void calculaConsumoProduccion(ref int energia,ref int compBas,ref int compAvz,ref int matBio)
+	public void calculaConsumoProduccion(out int energia,out int compBas,out int compAvz,out int matBio)
 	{
 		energia = compBas = compAvz = matBio = 0;
 		for(int i = 0; i < edificios.Count; i++)
@@ -892,7 +890,14 @@ public class TipoEdificio
 	public int compAvzConsumidosAlCrear;
 	public int matBioConsumidoAlCrear;
 	public T_elementos elemNecesarioAlConstruir;
-	public int siguienteTurno;							//Numero de turnos hasta que el edificio vuelva a ejecutar el algoritmo
+	public int energiaConsumidaPorTurnoMax;
+	public int compBasConsumidosPorTurnoMax;
+	public int compAvzConsumidosPorTurnoMax;
+	public int matBioConsumidoPorTurnoMax;
+	public int energiaProducidaPorTurnoMax;
+	public int compBasProducidosPorTurnoMax;
+	public int compAvzProducidosPorTurnoMax;
+	public int matBioProducidoPorTurnoMax;
 	public List<GameObject> modelos;					//Distintos modelos que pueden representar al edificio		
 	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
@@ -924,61 +929,48 @@ public class TipoEdificio
 		return true;
 	}
 	
-	public TipoEdificio(string nombre, int siguienteTurno,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
-	                    T_elementos elemNecesarioAlConstruir,GameObject modelo)
-	{
-		habitats = new List<T_habitats>();
-		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
-		aniadirHabitat(habitat);
-		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
-		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
-		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
-		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
-		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
-		modelos = new List<GameObject>();
-		modelos.Add(modelo);
-	}
-	public TipoEdificio(string nombre, int siguienteTurno,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
-	                    T_elementos elemNecesarioAlConstruir,GameObject modelo)
+	public TipoEdificio(string nombre, List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	                    T_elementos elemNecesarioAlConstruir,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
+	                	int energiaProducidaPorTurnoMax,int compBasProducidosPorTurnoMax,int compAvzProducidosPorTurnoMax,int matBioProducidoPorTurnoMax,GameObject modelo)
 	{
 		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
 		this.habitats = habitats;
 		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
 		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
 		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
 		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
+		this.energiaConsumidaPorTurnoMax = energiaConsumidaPorTurnoMax;
+		this.compBasConsumidosPorTurnoMax = compBasConsumidosPorTurnoMax;
+		this.compAvzConsumidosPorTurnoMax = compAvzConsumidosPorTurnoMax;
+		this.matBioConsumidoPorTurnoMax = matBioConsumidoPorTurnoMax;
+		this.energiaProducidaPorTurnoMax = energiaProducidaPorTurnoMax;
+		this.compBasProducidosPorTurnoMax = compBasProducidosPorTurnoMax;
+		this.compAvzProducidosPorTurnoMax = compAvzProducidosPorTurnoMax;
+		this.matBioProducidoPorTurnoMax = matBioProducidoPorTurnoMax;
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 	}
 	
-	public TipoEdificio(string nombre, int siguienteTurno,T_habitats habitat,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
-	                    T_elementos elemNecesarioAlConstruir,List<GameObject> modelos)
-	{
-		habitats = new List<T_habitats>();
-		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
-		aniadirHabitat(habitat);
-		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
-		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
-		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
-		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
-		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
-		this.modelos = modelos;
-	}
-	public TipoEdificio(string nombre, int siguienteTurno,List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
-	                    T_elementos elemNecesarioAlConstruir,List<GameObject> modelos)
+	public TipoEdificio(string nombre, List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	                    T_elementos elemNecesarioAlConstruir,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
+	                	int energiaProducidaPorTurnoMax,int compBasProducidosPorTurnoMax,int compAvzProducidosPorTurnoMax,int matBioProducidoPorTurnoMax,List<GameObject> modelos)
 	{
 		this.nombre = nombre;
-		this.siguienteTurno = siguienteTurno;
 		this.habitats = habitats;
 		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
 		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
 		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
 		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
+		this.energiaConsumidaPorTurnoMax = energiaConsumidaPorTurnoMax;
+		this.compBasConsumidosPorTurnoMax = compBasConsumidosPorTurnoMax;
+		this.compAvzConsumidosPorTurnoMax = compAvzConsumidosPorTurnoMax;
+		this.matBioConsumidoPorTurnoMax = matBioConsumidoPorTurnoMax;
+		this.energiaProducidaPorTurnoMax = energiaProducidaPorTurnoMax;
+		this.compBasProducidosPorTurnoMax = compBasProducidosPorTurnoMax;
+		this.compAvzProducidosPorTurnoMax = compAvzProducidosPorTurnoMax;
+		this.matBioProducidoPorTurnoMax = matBioProducidoPorTurnoMax;
 		this.modelos = modelos;		
 	}
 }
@@ -1328,26 +1320,27 @@ public class Edificio : Ser
 	public int compBasProducidosPorTurno;
 	public int compAvzProducidosPorTurno;
 	public int matBioProducidoPorTurno;
+	public float eficiencia;	
 	
-	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno,
-	                int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno,GameObject modelo)
+	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,float eficiencia,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.tipo = tipo;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
 		this.posX = posX;
 		this.posY = posY;
-		this.energiaConsumidaPorTurno = energiaConsumidaPorTurno;
-		this.compBasConsumidosPorTurno = compBasConsumidosPorTurno;
-		this.compAvzConsumidosPorTurno = compAvzConsumidosPorTurno;
-		this.matBioConsumidoPorTurno = matBioConsumidoPorTurno;
-		this.energiaProducidaPorTurno = energiaProducidaPorTurno;
-		this.compBasProducidosPorTurno = compBasProducidosPorTurno;
-		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
-		this.matBioProducidoPorTurno = matBioProducidoPorTurno;
+		this.eficiencia = eficiencia;
+		this.energiaConsumidaPorTurno =  (int)(tipo.energiaConsumidaPorTurnoMax * eficiencia);
+		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
+		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
+		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
+		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia);
+		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia);
+		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia);
+		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia);
 		this.modelo = modelo;
 	}
-	public void modificaConsumo(int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno)
+	/*public void modificaConsumo(int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno)
 	{
 		this.energiaConsumidaPorTurno = energiaConsumidaPorTurno;
 		this.compBasConsumidosPorTurno = compBasConsumidosPorTurno;
@@ -1360,19 +1353,18 @@ public class Edificio : Ser
 		this.energiaProducidaPorTurno = energiaProducidaPorTurno;
 		this.compBasProducidosPorTurno = compBasProducidosPorTurno;
 		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
-		this.matBioProducidoPorTurno = matBioProducidoPorTurno;
-		
-	}
-	public void modificaConsumoProduccion(int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno,
-	                int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno)
+		this.matBioProducidoPorTurno = matBioProducidoPorTurno;		
+	}*/
+	public void modificaEficiencia(float eficiencia)
 	{
-		this.energiaConsumidaPorTurno = energiaConsumidaPorTurno;
-		this.compBasConsumidosPorTurno = compBasConsumidosPorTurno;
-		this.compAvzConsumidosPorTurno = compAvzConsumidosPorTurno;
-		this.matBioConsumidoPorTurno = matBioConsumidoPorTurno;
-		this.energiaProducidaPorTurno = energiaProducidaPorTurno;
-		this.compBasProducidosPorTurno = compBasProducidosPorTurno;
-		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
-		this.matBioProducidoPorTurno = matBioProducidoPorTurno;
+		this.eficiencia = eficiencia;
+		this.energiaConsumidaPorTurno = (int)(tipo.energiaConsumidaPorTurnoMax * eficiencia);
+		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
+		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
+		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
+		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia);
+		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia);
+		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia);
+		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia);		
 	}
 }

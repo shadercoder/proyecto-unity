@@ -97,11 +97,11 @@ public class TiposSeres : MonoBehaviour {
 		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,850,300,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
 		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,1000,500,250,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
 		*/
-		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",10,habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.fabCompBas);
-		energia = new TipoEdificio("Central de energía",10,habsEdificios,0,0,0,0,T_elementos.comunes,modelosEdificios.centralEnergia);
-		granja = new TipoEdificio("Granja",10,habsEdificios,0,0,0,0,T_elementos.nada,modelosEdificios.granja);
-		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
-		energiaAdv = new TipoEdificio("Central de energía avanzada",10,habsEdificiosAdv,0,0,0,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
+		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",habsEdificios,0,0,0,0,T_elementos.comunes,10,0,0,0,0,100,0,0,modelosEdificios.fabCompBas);
+		energia = new TipoEdificio("Central de energía",habsEdificios,0,0,0,0,T_elementos.comunes,0,0,0,0,200,0,0,0,modelosEdificios.centralEnergia);
+		granja = new TipoEdificio("Granja",habsEdificios,0,0,0,0,T_elementos.nada,1000,0,0,0,0,0,0,0,modelosEdificios.granja);
+		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,0,0,0,0,T_elementos.raros,1000,0,0,0,0,0,500,0,modelosEdificios.fabCompAdv);
+		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,0,0,0,0,T_elementos.raros,0,0,0,0,1000,0,0,0,modelosEdificios.centralEnergiaAdv);
 		
 		/* Vegetales */
 		/*vegetal = new EspecieVegetal(nombre, numMaxSeresEspecie, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, 
