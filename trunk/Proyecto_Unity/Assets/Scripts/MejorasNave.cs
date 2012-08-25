@@ -106,14 +106,13 @@ public class MejorasNave : MonoBehaviour {
 	//Motores -----------------------------------------------------------------------------------
 	public void compraMejora4() {	//Mejora de velocidad nivel 1
 		controles.mejoraVelocidad1();
-		ocultaMotores();
 		MotorT1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[4] = true;
 	}
 	
 	public void compraMejora5() {	//Mejora de velocidad nivel 2
 		controles.mejoraVelocidad2();
-		ocultaMotores();
+		MotorT1.GetComponent<MeshRenderer>().enabled = false;		
 		MotorT2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[5] = true;		
 	}
@@ -189,12 +188,5 @@ public class MejorasNave : MonoBehaviour {
 		for(int i = 0; i < AlmacenT2B.Count; i++)
 		    AlmacenT2B[i].GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[15] = true;
-	}
-	
-	public void ocultaMotores(){
-//		MotorT1.GetComponent<MeshRenderer>().enabled = false;
-//		MotorT2.GetComponent<MeshRenderer>().enabled = false;
-//		MotorT3.GetComponent<MeshRenderer>().enabled = false;
-//		MotorT4.GetComponent<MeshRenderer>().enabled = false;	
 	}
 }
