@@ -8,71 +8,44 @@ public class InterfazPrincipal : MonoBehaviour
 
 	// Variables ---------------------------------------------------------------------------------------------------------------------------
 	public GUISkin estilo;
-	private float cuantoW;
-	//Minima unidad de medida de la interfaz a lo ancho
-	private float cuantoH;
-	//Minima unidad de medida de la interfaz a lo alto
-	private float aspectRatioNumerico;
-	//Aspect ratio númerico de la ventana
-	private Principal principal;
-	//Acceso a los datos principales	
-	private bool mostrarBloqueIzquierdo = true;
-	//Visibilidad del bloque de opciones izquierdo
-	private bool mostrarInfoCasilla = true;
-	//Controla si se muestra la info básica de la casilla a la que estamos apuntando
-	private string infoCasilla = "";
-	//Información básica de la casilla mostrada en la barra de información inferior
-	private float tiempoUltimaInfoCasilla = 0.0f;
-	//Tiempo de la última comprobación de la info básica de una casilla
-	private float tiempoInfoCasilla = 0.25f;
-	//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
-	private Vector3 posicionMouseInfoCasilla = Vector3.zero;
-	//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private float escalaTiempoAntesMenu;
-	//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
-	private MejorasNave mejoras;
-	//El script de mejoras de la nave
-	private Materiales materiales;
-	//el script Materiales de los filtros
-	private float tiempoUltimoModeloInsercion = 0.0f;
-	//Cantidad de tiempo entre comprobaciones de inserción de un ser
-	private float tiempoModeloInsercion = 0.1f;
-	//Cantidad de tiempo entre comprobaciones de inserción de un ser
-	private GameObject modeloInsercion;
-	//Modelo usado temporalmente para mostrar donde se insertaría un ser
-	private bool[] togglesFiltros;
-	//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
-	private bool[] togglesFiltrosOld;
-	//Toggles en los filtros antes de cambiarlos
+	private float cuantoW;										//Minima unidad de medida de la interfaz a lo ancho
+	private float cuantoH;										//Minima unidad de medida de la interfaz a lo alto
+	private float aspectRatioNumerico;							//Aspect ratio númerico de la ventana
+	private Principal principal;								//Acceso a los datos principales	
+	private bool mostrarBloqueIzquierdo 		= true;			//Visibilidad del bloque de opciones izquierdo
+	private bool mostrarInfoCasilla 			= true;			//Controla si se muestra la info básica de la casilla a la que estamos apuntando
+	private string infoCasilla 					= "";			//Información básica de la casilla mostrada en la barra de información inferior
+	private float tiempoUltimaInfoCasilla 		= 0.0f;			//Tiempo de la última comprobación de la info básica de una casilla
+	private float tiempoInfoCasilla 			= 0.25f;		//Cantidad mínima de tiempo entre comprobaciones de la info básica de una casilla
+	private Vector3 posicionMouseInfoCasilla 	= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private float escalaTiempoAntesMenu;						//Guarda la escala de tiempo que esta seleccionada al entrar al menu para restablecerla después
+	private MejorasNave mejoras;								//El script de mejoras de la nave
+	private Materiales materiales;								//el script Materiales de los filtros
+	private float tiempoUltimoModeloInsercion 	= 0.0f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
+	private float tiempoModeloInsercion 		= 0.1f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
+	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
+	private bool[] togglesFiltros;								//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
+	private bool[] togglesFiltrosOld;							//Toggles en los filtros antes de cambiarlos
+	
 	//Seleccion de seres
-	private List<string> infoSeleccion;
-	//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
-	private float[] habitabilidadSeleccion;
-	//La habitabilidad del ser o edificio seleccionado
-	private int tipoSeleccion = -1;
-	//Que se ha seleccionado? 0->Planta, 1->Herbivoro, 2->Carnivoro, 3->Edificio
+	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
+	private float[] habitabilidadSeleccion;						//La habitabilidad del ser o edificio seleccionado
+	private int tipoSeleccion 					= -1;			//Que se ha seleccionado? 0->Planta, 1->Herbivoro, 2->Carnivoro, 3->Edificio
+	
 	//Mejoras posibles
-	private bool mejoraInfoCasilla = true;
-	//La barra inferior de informacion se muestra?
-	private bool mostrarInfoHabitat = true;
-	//Se muestra informacion de habitats en ella?
-	private bool mostrarInfoMetalesRaros = true;
-	//Se muestran los metales raros?
-	private bool mostrarInfoSeres = true;
-	//Se muestran los animales y plantas?
+	private bool mejoraInfoCasilla 				= true;			//La barra inferior de informacion se muestra?
+	private bool mostrarInfoHabitat 			= true;			//Se muestra informacion de habitats en ella?
+	private bool mostrarInfoMetalesRaros 		= true;			//Se muestran los metales raros?
+	private bool mostrarInfoSeres 				= true;			//Se muestran los animales y plantas?
+	
 	//Tooltips
-	private Vector3 posicionMouseTooltip = Vector3.zero;
-	//Guarda la ultima posicion del mouse para calcular los tooltips	
-	private bool activarTooltip = false;
-	//Controla si se muestra o no el tooltip	
-	private float ultimoMov = 0.0f;
-	//Ultima vez que se movio el mouse		
-	private float tiempoTooltip = 0.75f;
-	//Tiempo que tarda en aparecer el tooltip	
-	private bool forzarTooltip = false;
-	//Fuerza que se muestre un tooltip en una situación especial
-	private string mensajeForzarTooltip = "";
-	//Mensaje del tooltip forzado.
+	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
+	private bool activarTooltip 				= false;		//Controla si se muestra o no el tooltip	
+	private float ultimoMov 					= 0.0f;			//Ultima vez que se movio el mouse		
+	private float tiempoTooltip 				= 0.75f;		//Tiempo que tarda en aparecer el tooltip	
+	private bool forzarTooltip 					= false;		//Fuerza que se muestre un tooltip en una situación especial
+	private string mensajeForzarTooltip 		= "";			//Mensaje del tooltip forzado.
+	
 	//Enumerados
 	private enum taspectRatio
 	{
@@ -159,23 +132,17 @@ public class InterfazPrincipal : MonoBehaviour
 	private tMenuDerecho tipoMenuDerecho = tMenuDerecho.ninguno;
 
 	//Menus para guardar
-	private Vector2 posicionScroll = Vector2.zero;
-	//La posicion en la que se encuentra la ventana con scroll
-	private int numSaves = 0;
-	//El numero de saves diferentes que hay en el directorio respectivo
-	private int numSavesExtra = 0;
-	//Numero de saves que hay que no se ven al primer vistazo en la scrollview
-	private string[] nombresSaves;
-	//Los nombres de los ficheros de savegames guardados
+	private Vector2 posicionScroll 		= Vector2.zero;		//La posicion en la que se encuentra la ventana con scroll
+	private int numSaves 				= 0;				//El numero de saves diferentes que hay en el directorio respectivo
+	private int numSavesExtra 			= 0;				//Numero de saves que hay que no se ven al primer vistazo en la scrollview
+	private string[] nombresSaves;							//Los nombres de los ficheros de savegames guardados
+	
 	//Sonido
-	private float musicaVol = 0.0f;
-	//A que volumen la musica?
-	private float sfxVol = 0.0f;
-	//A que volumen los efectos?
-	public GameObject sonidoAmbiente;
-	//El objeto que va a contener la fuente del audio de ambiente
-	public GameObject sonidoFX;
-	//El objeto que va a contener la fuente de efectos de audio
+	private float musicaVol 			= 0.0f;				//A que volumen la musica?
+	private float sfxVol 				= 0.0f;				//A que volumen los efectos?
+	public GameObject sonidoAmbiente;						//El objeto que va a contener la fuente del audio de ambiente
+	public GameObject sonidoFX;								//El objeto que va a contener la fuente de efectos de audio
+	
 	void Start ()
 	{
 		principal = gameObject.GetComponent<Principal> ();
@@ -1671,7 +1638,6 @@ public class InterfazPrincipal : MonoBehaviour
 				tipoMenuDerecho = tMenuDerecho.ninguno;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.ninguno;
 			}
-			break;
 			break;
 		case tMenuDerecho.seleccion:
 			switch (aspectRatio) {
