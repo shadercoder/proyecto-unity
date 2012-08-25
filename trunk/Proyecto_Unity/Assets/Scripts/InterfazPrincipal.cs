@@ -230,7 +230,8 @@ public class InterfazPrincipal : MonoBehaviour
 		if (posicionFueraDeInterfaz (Input.mousePosition)) {
 			mostrarInfoCasilla = true;
 			if (accion == taccion.insertar)
-				insertarElemento (); else if (Input.GetMouseButtonDown (0)) {
+				insertarElemento (); 
+			else if (Input.GetMouseButtonDown (0)) {
 				//Se ha hecho click en el tablero sin insertar nada
 				if (seleccionarObjetoTablero ())
 					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.seleccion;
@@ -1198,7 +1199,41 @@ public class InterfazPrincipal : MonoBehaviour
 						if (tipo >= 0 && tipo < 5) {
 							TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
 							if (principal.recursosSuficientes (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear)) {
-								if (principal.vida.anadeEdificio (tedif, posY, posX, 0.5f)) {
+								float eficiencia = 0.5f;
+								int radioAccion;
+								List<Tupla<int,int,bool>> matrizRadioAccion;
+								if(eficiencia < 0.25f)
+								{
+									radioAccion = 0;
+									matrizRadioAccion = new List<Tupla<int, int, bool>>();
+								}
+								else if(eficiencia < 0.5f)
+								{
+									radioAccion = 2;
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio2Circular(posX,posY);
+								}
+								else if(eficiencia < 0.75f)
+								{
+									radioAccion = 3;
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(posX,posY);
+								}
+								else if(eficiencia < 1.0f)
+								{
+									radioAccion = 4;
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(posX,posY);
+								}
+								else
+								{
+									radioAccion = 5;
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(posX,posY);
+								}
+								int numMetales = 0;
+								if(tedif.elemNecesarioAlConstruir == T_elementos.comunes)								
+									numMetales = principal.vida.calculaMetalesComunes(matrizRadioAccion);
+								else if(tedif.elemNecesarioAlConstruir == T_elementos.raros)								
+									numMetales = principal.vida.calculaMetalesRaros(matrizRadioAccion);
+										
+								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion)) {
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
 									principal.actualizaConsumoProduccion();
 								} else {
@@ -1280,7 +1315,7 @@ public class InterfazPrincipal : MonoBehaviour
 						if (animal != null)
 							infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";
 					}
-					//infoCasilla += "\t\tAlto: " + y + "\t\tAncho :" + x;
+					infoCasilla += "\t\tAlto: " + y + "\t\tAncho :" + x;
 				}
 			}
 		} else
