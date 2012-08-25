@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
+	
 public class MejorasNave : MonoBehaviour {
 	
 	//Modelos de las piezas
@@ -22,10 +23,10 @@ public class MejorasNave : MonoBehaviour {
 	//Almacen
 	public GameObject AlmacenT1C;			//Mejora de almacen 1 Com
 	public GameObject AlmacenT1A;			//Mejora de almacen 1 Adv
-	public GameObject AlmacenT1B;			//Mejora de almacen 1 Bio
+	public List<GameObject> AlmacenT1B;		//Mejora de almacen 1 Bio
 	public GameObject AlmacenT2C;			//Mejora de almacen 2 Com
 	public GameObject AlmacenT2A;			//Mejora de almacen 2 Adv
-	public GameObject AlmacenT2B;			//Mejora de almacen 2 Bio
+	public List<GameObject> AlmacenT2B;		//Mejora de almacen 2 Bio
 	
 	
 	//Variables de control
@@ -162,7 +163,9 @@ public class MejorasNave : MonoBehaviour {
 	}
 	
 	public void compraMejora13() {	//Mejora de almacenamiento de mat bio	
-		AlmacenT1B.GetComponent<MeshRenderer>().enabled = true;
+		
+		for(int i = 0; i < AlmacenT1B.Count; i++)
+		    AlmacenT1B[i].GetComponent<MeshRenderer>().enabled = true;
 		principal.setMatBioMax(10);
 		mejorasCompradas[13] = true;	
 	}
@@ -183,7 +186,8 @@ public class MejorasNave : MonoBehaviour {
 		principal.setMatBioMax(75);
 		AlmacenT2C.GetComponent<MeshRenderer>().enabled = true;
 		AlmacenT2A.GetComponent<MeshRenderer>().enabled = true;
-		AlmacenT2B.GetComponent<MeshRenderer>().enabled = true;
+		for(int i = 0; i < AlmacenT2B.Count; i++)
+		    AlmacenT2B[i].GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[15] = true;
 	}
 	
