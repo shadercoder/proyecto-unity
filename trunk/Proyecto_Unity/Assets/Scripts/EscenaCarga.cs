@@ -24,12 +24,15 @@ public class EscenaCarga : MonoBehaviour {
 	
 		//Segunda fase
 	public GameObject objetoRoca;
-	public Mesh meshEsfera;														//La esfera sobre la que se harán los cambios
-	private Mesh aguaMesh;														//El objeto con el Mesh extruido del agua
-	private Mesh rocaMesh;														//El objeto con el Mesh extruido de la roca
-	private float tamanoPlayasInit			= 0.035f;							//Entre 0.02 y 0.05 El tamaño de las playas
-	private float nivelAguaInit 			= 0.3f;								//El punto a partir del cual deja de haber mar en la orografía del planeta
-	private float temperaturaInit 			= 0.5f;								//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
+	public Mesh meshEsfera;										//La esfera sobre la que se harán los cambios
+	private Mesh aguaMesh;										//El objeto con el Mesh extruido del agua
+	private Mesh rocaMesh;										//El objeto con el Mesh extruido de la roca
+	private float tamanoPlayasInit			= 0.035f;			//Entre 0.02 y 0.05 El tamaño de las playas
+	private float nivelAguaInit 			= 0.3f;				//El punto a partir del cual deja de haber mar en la orografía del planeta
+	private float temperaturaInit 			= 0.5f;				//Entre 0.0 y 1.0, la temperatura del planeta, que modificará la paleta.
+			//Planeta
+	private string nombrePlaneta			= "";				//El nombre del planeta al que se viaja
+	private string nombreEstrella			= "";				//El nombre de la estrella sobre la que orbita el planeta al que se viaja
 	
 		//Tercera fase
 	public Texture2D texElems;									//Textura donde se representan los elementos del terreno
@@ -308,6 +311,8 @@ public class EscenaCarga : MonoBehaviour {
 		progreso = 1.0f;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada creacionParte2().");
 		yield return new WaitForSeconds(0.01f);
+		nombrePlaneta = "PL" + Random.Range(1, 50000).ToString();
+		nombreEstrella = "SP" + Random.Range(200, 6000).ToString();
 		progreso = 0.0f;
 		trabajando = false;
 		GUI.enabled = true;
@@ -434,53 +439,92 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte1Interfaz() {
+		GUI.Label(new Rect(cuantoW * 2, cuantoH * 7, cuantoW * 15, cuantoH * 1), "Introduzca los parametros de busqueda para el proximo planeta a colonizar.", "label_centrada");
+		
 		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 19));
 		GUILayout.BeginVertical();
 		//Controles para alterar el tipo de terreno a crear aleatoriamente: cosas que no influyan mucho, nombre, etc. o cosas que 
 		//influyan en la creacion del ruido, por ejemplo el numero de octavas a usar podemos llamarlo "factor de erosion" o cosas asi.
 		//Despues de este paso se crea el mapa aleatorio con ruido.
 		
-		GUILayout.Label("Ganancia", "label_centrada");
+		GUILayout.Label("Altura del terreno", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Min");
+		GUILayout.Label("Bajo");
 		gananciaInit = GUILayout.HorizontalSlider(gananciaInit, 0.45f, 0.55f);
-		GUILayout.Label("Max");
+		GUILayout.Label("Alto");
 		GUILayout.EndHorizontal();
-		GUILayout.Label(gananciaInit.ToString());
-		
-//		GUILayout.Space(cuantoH);
-		
-		GUILayout.Label("Escala", "label_centrada");
+		if (gananciaInit <= 0.475f) {
+			GUILayout.Label("Bajo");
+		}
+		else if (gananciaInit <= 0.5f) {
+			GUILayout.Label("Normal");
+		}
+		else if (gananciaInit <= 0.525f) {
+			GUILayout.Label("Alto");
+		}
+		else {
+			GUILayout.Label("Muy alto");
+		}		
+				
+		GUILayout.Label("Numero de continentes", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Max");
+		GUILayout.Label("Bajo");
 		escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.0055f, 0.001f);
-		GUILayout.Label("Min");
+		GUILayout.Label("Alto");
 		GUILayout.EndHorizontal();
-		GUILayout.Label(escalaInit.ToString());
-		
-//		GUILayout.Space(cuantoH);
-		
-		GUILayout.Label("Octavas", "label_centrada");
+		if (escalaInit >= 0.0045f) {
+			GUILayout.Label("Islas peque\u00f1as");
+		}
+		else if (escalaInit >= 0.0033f) {
+			GUILayout.Label("Islas grandes");
+		}
+		else if (escalaInit >= 0.0021f) {
+			GUILayout.Label("Continentes");
+		}
+		else {
+			GUILayout.Label("Grandes continentes");
+		}	
+				
+		GUILayout.Label("Irregularidad del relieve", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Min");
+		GUILayout.Label("Baja");
 		octavasFloat = GUILayout.HorizontalSlider(octavasFloat, 2.0f, 10.0f);
-		GUILayout.Label("Max");
+		GUILayout.Label("Alta");
 		GUILayout.EndHorizontal();
-		GUILayout.Label(octavasFloat.ToString());
-		
-//		GUILayout.Space(cuantoH);
-		
-		GUILayout.Label("Lacunaridad", "label_centrada");
+		if (octavasFloat <= 4.0f) {
+			GUILayout.Label("Terreno liso");
+		}
+		else if (octavasFloat <= 6.0f) {
+			GUILayout.Label("Con relieve");
+		}
+		else if (octavasFloat <= 8.0f) {
+			GUILayout.Label("Escarpado");
+		}
+		else {
+			GUILayout.Label("Muy escarpado");
+		}	
+				
+		GUILayout.Label("Variacion", "label_centrada");
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Min");
+		GUILayout.Label("Baja");
 		lacunaridadInit = GUILayout.HorizontalSlider(lacunaridadInit, 1.4f, 3.1f);
-		GUILayout.Label("Max");
+		GUILayout.Label("Alta");
 		GUILayout.EndHorizontal();
-		GUILayout.Label(lacunaridadInit.ToString());
-		
-//		GUILayout.Space(cuantoH);
-		
-		if (GUILayout.Button(new GUIContent("Generar", "Genera un nuevo planeta"))) {	
+		float lacunaridadInitTemp = (lacunaridadInit - 1.4f) / (3.1f - 1.4f);
+		if (lacunaridadInitTemp <= 0.25f) {
+			GUILayout.Label("Muy regular");
+		}
+		else if (lacunaridadInitTemp <= 0.5f) {
+			GUILayout.Label("Regular");
+		}
+		else if (lacunaridadInitTemp <= 0.75f) {
+			GUILayout.Label("Irregular");
+		}
+		else {
+			GUILayout.Label("Muy irregular");
+		}
+				
+		if (GUILayout.Button(new GUIContent("Buscar", "Busca un planeta con esos parametros."))) {	
 			FuncTablero.setEscala(escalaInit);
 			FuncTablero.setGanancia(gananciaInit);
 			FuncTablero.setLacunaridad(lacunaridadInit);
@@ -501,30 +545,29 @@ public class EscenaCarga : MonoBehaviour {
 			Camera.main.animation.Play("AlejarseHolograma");
 		}
 		GUILayout.Space(cuantoW * 28);
-		if (paso1Completado) {
-			if (GUILayout.Button(new GUIContent("Siguiente", "Pasar a la segunda fase"))) {
-				faseCreacion = 1;	
-			}
+		string tooltipTemp = "Pasar a la segunda fase";
+		if (!paso1Completado) {
+			tooltipTemp	= "Generar un planeta primero";
+			GUI.enabled = false;
 		}
-		else {
-			if (GUILayout.Button(new GUIContent("Siguiente", "Generar un planeta primero"))) {
-				//TODO Sonido de error, el boton con estilo diferente para estar en gris, etc.
-			}
+		if (GUILayout.Button(new GUIContent("Siguiente", tooltipTemp))) {
+			faseCreacion = 1;	
 		}
+		GUI.enabled = true;
 		
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
 	}
 	
 	private void creacionParte2Interfaz() {
+		GUI.Label(new Rect(cuantoW * 2, cuantoH * 7, cuantoW * 15, cuantoH * 1), "Especifique los detalles de la orografia del planeta deseado.", "label_centrada");
+
 		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
 		GUILayout.BeginVertical();
 		//Controles para alterar el tipo de terreno ya creado: tipo de planeta a escoger con la "rampa" adecuada, altura de las montañas, 
 		//cantidad de agua, etc.
 		//Despues de este paso se colorea el mapa creado.
-		
-//		GUILayout.Space(cuantoH * 2);
-		
+				
 		GUILayout.Label("Nivel del agua", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
@@ -536,9 +579,7 @@ public class EscenaCarga : MonoBehaviour {
 		if (GUI.changed) {			
 			objetoRoca.renderer.sharedMaterials[1].SetFloat("_nivelMar", nivelAguaInit);
 		}
-		
-//		GUILayout.Space(cuantoH * 2);
-		
+				
 		GUILayout.Label("Temperatura del planeta", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
@@ -546,9 +587,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
 		GUILayout.Label(temperaturaInit.ToString());
-		
-//		GUILayout.Space(cuantoH * 2);
-		
+				
 		GUILayout.Label("Longitud de las playas", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Min");
@@ -580,6 +619,9 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte3Interfaz() {
+		GUI.Label(new Rect(cuantoW * 5, cuantoH * 12, cuantoW * 15, cuantoH * 1), "Hemos encontrado una coincidencia con los parametros introducidos en el sistema.", "label_centrada");
+		GUI.Label(new Rect(cuantoW * 5, cuantoH * 13, cuantoW * 15, cuantoH * 1), "El planeta encontrado se llama " + nombrePlaneta + " y se encuentra orbitando la estrella " + nombreEstrella + ".", "label_centrada");
+		GUI.Label(new Rect(cuantoW * 5, cuantoH * 14, cuantoW * 15, cuantoH * 1), "Rumbo fijado. Buena suerte en su mision.", "label_centrada");
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Volver", "Volver a la segunda fase"))) {
