@@ -434,13 +434,13 @@ public class Vida //: MonoBehaviour
 	}
 	
 	//Devuelve false si el edificio ya existe (no se añade) y true si se añade correctamente	
-	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY,float eficiencia)
+	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY,float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion)
 	{
 		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
 			return false;
 		GameObject modelo = tipoEdificio.modelos[UnityEngine.Random.Range(0,tipoEdificio.modelos.Count)];
 		Vector3 coordsVert = tablero[posX,posY].coordsVert;	
-		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,eficiencia,FuncTablero.creaMesh(coordsVert,modelo));
+		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,eficiencia,numMetales,matrizRadioAccion,radioAccion,FuncTablero.creaMesh(coordsVert,modelo));
 		edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
 		seres.Add(edificio);
 		//int turno = (turnoActual + tipoEdificio.siguienteTurno)%numMaxTurnos;
@@ -590,6 +590,77 @@ public class Vida //: MonoBehaviour
 		return anadeAnimal(especie,nposX,nposY);
 	}
 	
+	public void calculaConsumoProduccion(out int energia,out int compBas,out int compAvz,out int matBio)
+	{
+		energia = compBas = compAvz = matBio = 0;
+		for(int i = 0; i < edificios.Count; i++)
+		{
+			energia-=edificios[i].energiaConsumidaPorTurno;
+			energia+=edificios[i].energiaProducidaPorTurno;
+			compBas-=edificios[i].compBasConsumidosPorTurno;
+			compBas+=edificios[i].compBasProducidosPorTurno;
+			compAvz-=edificios[i].compAvzConsumidosPorTurno;
+			compAvz+=edificios[i].compAvzProducidosPorTurno;
+			matBio-=edificios[i].matBioConsumidoPorTurno;
+			matBio+=edificios[i].matBioProducidoPorTurno;			
+		}		
+	}
+	
+	//Calcula cuantos metales comunes hay en las posiciones que entran por parametro
+	public int calculaMetalesComunes(List<Tupla<int,int,bool>> posiciones)
+	{
+		int num = 0, x,y;
+		for(int i = 0; i < posiciones.Count; i++)
+		{
+			if(posiciones[i].e3 == true)
+			{
+				x = posiciones[i].e1;
+				y = posiciones[i].e2;
+				if(tablero[x,y].elementos == T_elementos.comunes)
+					num++;
+			}			 
+		}
+		return num;
+	}
+	
+	//Calcula cuantos metales rarod hay en las posiciones que entran por parametro
+	public int calculaMetalesRaros(List<Tupla<int,int,bool>> posiciones)
+	{
+		int num = 0, x,y;
+		for(int i = 0; i < posiciones.Count; i++)
+		{
+			if(posiciones[i].e3 == true)
+			{
+				x = posiciones[i].e1;
+				y = posiciones[i].e2;
+				if(tablero[x,y].elementos == T_elementos.raros)
+					num++;
+			}			 
+		}
+		return num;
+	}
+		
+	//Recolecta material biologico de animales y vegetales en las posiciones indicadas
+	public int recolectaAnimalesVegetales(List<Tupla<int,int,bool>> posiciones, float eficiencia)
+	{
+		int recoleccion = 0, x,y;
+		Animal animal;
+		Vegetal vegetal;
+		for(int i = 0; i < posiciones.Count; i++)		
+			if(posiciones[i].e3 == false)
+			{
+				x = posiciones[i].e1;
+				y = posiciones[i].e2;				
+				animal = tablero[x,y].animal;
+				vegetal = tablero[x,y].vegetal;
+				if(animal != null)
+					recoleccion += animal.extraeReserva(eficiencia);
+				if(vegetal != null)
+					recoleccion += vegetal.extraeReserva(eficiencia);				
+			}		
+		return recoleccion;		
+	}
+	
 	//Devuelve true si el animal se ha alimentado y false si no
 	public bool buscaAlimentoAnimal(Animal animal)
 	{
@@ -601,8 +672,8 @@ public class Vida //: MonoBehaviour
 			{
 				int comida = tablero[animal.posX,animal.posY].vegetal.consumeVegetales(animal.especie.alimentoMaxTurno);
 				animal.ingiereAlimento(comida);
-				if(tablero[animal.posX,animal.posY].vegetal.numVegetales <= 0)
-					eliminaVegetal(tablero[animal.posX,animal.posY].vegetal);
+				//if(tablero[animal.posX,animal.posY].vegetal.numVegetales <= 0)
+				//	eliminaVegetal(tablero[animal.posX,animal.posY].vegetal);
 				return true;				
 			}
 			else
@@ -639,7 +710,7 @@ public class Vida //: MonoBehaviour
 			}			
 		}
 		return false;
-	}
+	}	
 	
 	public void algoritmoVida(int numTurno)
 	{
@@ -842,8 +913,7 @@ public class Vida //: MonoBehaviour
 				}
 			}
 		}					
-		*/
-				
+		*/				
 		contadorPintarTexturaPlantas++;
 		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)
 		{
@@ -851,23 +921,7 @@ public class Vida //: MonoBehaviour
 			texturaPlantasModificado = false;
 			contadorPintarTexturaPlantas = 0;
 		}
-	}
-	
-	public void calculaConsumoProduccion(out int energia,out int compBas,out int compAvz,out int matBio)
-	{
-		energia = compBas = compAvz = matBio = 0;
-		for(int i = 0; i < edificios.Count; i++)
-		{
-			energia-=edificios[i].energiaConsumidaPorTurno;
-			energia+=edificios[i].energiaProducidaPorTurno;
-			compBas-=edificios[i].compBasConsumidosPorTurno;
-			compBas+=edificios[i].compBasProducidosPorTurno;
-			compAvz-=edificios[i].compAvzConsumidosPorTurno;
-			compAvz+=edificios[i].compAvzProducidosPorTurno;
-			matBio-=edificios[i].matBioConsumidoPorTurno;
-			matBio+=edificios[i].matBioProducidoPorTurno;			
-		}		
-	}
+	}		
 }
 
 [System.Serializable]
@@ -1177,6 +1231,14 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		return numVegetales > 0;
 	}
 	
+	//Devuelve la extraccion de la reserva del vegetal al ser recolectado por una granja
+	public int extraeReserva(float eficiencia)
+	{
+		int extraccion = (int)(numVegetales * eficiencia * 0.1f);
+		numVegetales -= extraccion;
+		return extraccion;		
+	}	
+	
 	//Devuelve true si se produce una migración y false si no
 	public bool migracionLocal()
 	{
@@ -1272,11 +1334,12 @@ public class Animal : Ser
 			reserva += comida;		
 	}
 	
-	//Devuelve true si el animal sobrevive y false si muere
-	public bool extraeReservaAnimal(int extraccion)
+	//Devuelve la extraccion de la reserva del animal al ser "recolectado" por una granja
+	public int extraeReserva(float eficiencia)
 	{
+		int extraccion = (int)(reserva * eficiencia * 0.1f);
 		reserva -= extraccion;
-		return reserva > 0;		
+		return extraccion;		
 	}
 	
 	//Devuelve true si el animal se reproducre y false si no	
@@ -1308,8 +1371,6 @@ public class Animal : Ser
 public class Edificio : Ser
 {
 	public TipoEdificio tipo;
-	public int radioAccion;
-	public List<Tupla<int,int,bool>> matrizRadioAccion;
 	public int energiaConsumidaPorTurno;
 	public int compBasConsumidosPorTurno;
 	public int compAvzConsumidosPorTurno;
@@ -1319,75 +1380,60 @@ public class Edificio : Ser
 	public int compAvzProducidosPorTurno;
 	public int matBioProducidoPorTurno;
 	public float eficiencia;	
+	public int numMetales;
+	public List<Tupla<int,int,bool>> matrizRadioAccion;
+	public int matBioSinProcesar;
+	public int radioAccion;
 	
-	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,float eficiencia,GameObject modelo)
+	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion,GameObject modelo)
 	{
 		this.idSer = idSer;
 		this.tipo = tipo;
 		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
 		this.posX = posX;
 		this.posY = posY;
+		this.energiaConsumidaPorTurno =  (int)(tipo.energiaConsumidaPorTurnoMax * eficiencia);
+		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
+		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
+		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
+		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * numMetales);
+		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * numMetales);
+		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * numMetales);
+		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia * numMetales);
+		this.eficiencia = eficiencia;
+		this.numMetales = numMetales;
+		this.matrizRadioAccion = matrizRadioAccion;
+		this.radioAccion = radioAccion;		
+		this.modelo = modelo;
+		matBioSinProcesar = 0;
+	}
+	
+	public void modificaEficiencia(float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion)
+	{
 		this.eficiencia = eficiencia;
 		this.energiaConsumidaPorTurno =  (int)(tipo.energiaConsumidaPorTurnoMax * eficiencia);
 		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
 		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
 		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
-		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia);
-		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia);
-		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia);
-		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia);
-		this.modelo = modelo;
-		if(eficiencia < 0.25f)
-		{
-			radioAccion = 0;
-			matrizRadioAccion = new List<Tupla<int, int, bool>>();
-		}
-		else if(eficiencia < 0.5f)
-		{
-			radioAccion = 3;
-			matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(posX,posY);
-		}
-		else if(eficiencia < 0.75f)
-		{
-			radioAccion = 4;
-			matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(posX,posY);
-		}
-		else if(eficiencia < 1.0f)
-		{
-			radioAccion = 5;
-			matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(posX,posY);
-		}
-		else
-		{
-			radioAccion = 6;
-			matrizRadioAccion = FuncTablero.calculaMatrizRadio6Circular(posX,posY);
-		}		
-	}
-	/*public void modificaConsumo(int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno)
-	{
-		this.energiaConsumidaPorTurno = energiaConsumidaPorTurno;
-		this.compBasConsumidosPorTurno = compBasConsumidosPorTurno;
-		this.compAvzConsumidosPorTurno = compAvzConsumidosPorTurno;
-		this.matBioConsumidoPorTurno = matBioConsumidoPorTurno;
-		
-	}
-	public void modificaProduccion(int energiaProducidaPorTurno,int compBasProducidosPorTurno,int compAvzProducidosPorTurno,int matBioProducidoPorTurno)
-	{
-		this.energiaProducidaPorTurno = energiaProducidaPorTurno;
-		this.compBasProducidosPorTurno = compBasProducidosPorTurno;
-		this.compAvzProducidosPorTurno = compAvzProducidosPorTurno;
-		this.matBioProducidoPorTurno = matBioProducidoPorTurno;		
-	}*/
-	public void modificaEficiencia(float eficiencia)
-	{
+		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * numMetales);
+		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * numMetales);
+		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * numMetales);
+		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia * numMetales);
 		this.eficiencia = eficiencia;
-		this.energiaConsumidaPorTurno = (int)(tipo.energiaConsumidaPorTurnoMax * eficiencia);
-		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
-		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
-		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
-		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia);
-		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia);
-		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia);
-		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia);		
+		this.numMetales = numMetales;
+		this.matrizRadioAccion = matrizRadioAccion;
+		this.radioAccion = radioAccion;
 	}
+	
+	public void ingresaMatBioSinProcesar(int matBio)
+	{
+		matBioSinProcesar += matBio;		
+	}
+	
+	public int procesaMatBio()
+	{
+		int matBio = matBioSinProcesar/10000;
+		matBioSinProcesar %= 10000;	
+		return matBio;
+	}	
 }

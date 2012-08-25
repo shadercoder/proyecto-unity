@@ -1317,6 +1317,25 @@ public class FuncTablero {
 		return posicionesColindantes;
 	}
 	
+	public static List<Tupla<int,int,bool>> calculaMatrizRadio2Circular(int x, int y)
+	{
+		int auxX,auxY;
+		List<Tupla<int,int,bool>> matriz = new List<Tupla<int,int,bool>>();
+		for(int i = -2; i <= 2; i++)
+			for(int j = -2; j <= 2; j++)
+			{
+				auxX = x + i;
+				auxY = y + j;
+				convierteCoordenadas(ref auxX, ref auxY);
+				matriz.Add(new Tupla<int,int,bool>(auxX,auxY,true));
+			}	
+		matriz[0] = new Tupla<int, int, bool>(matriz[0].e1,matriz[0].e2,false);
+		matriz[4] = new Tupla<int, int, bool>(matriz[4].e1,matriz[4].e2,false);
+		matriz[20] = new Tupla<int, int, bool>(matriz[20].e1,matriz[20].e2,false);
+		matriz[24] = new Tupla<int, int, bool>(matriz[24].e1,matriz[24].e2,false);		
+		return matriz;
+	}
+	
 	public static List<Tupla<int,int,bool>> calculaMatrizRadio3Circular(int x, int y)
 	{
 		int auxX,auxY;
@@ -1326,8 +1345,8 @@ public class FuncTablero {
 			{
 				auxX = x + i;
 				auxY = y + j;
-				convierteCoordenadas(ref auxX, ref auxY);
-				matriz.Add(new Tupla<int,int,bool>(auxX,auxY,true));
+				convierteCoordenadas(ref auxY, ref auxX);
+				matriz.Add(new Tupla<int,int,bool>(auxY,auxX,true));
 			}	
 		matriz[0] = new Tupla<int, int, bool>(matriz[0].e1,matriz[0].e2,false);
 		matriz[1] = new Tupla<int, int, bool>(matriz[1].e1,matriz[1].e2,false);
@@ -1343,6 +1362,7 @@ public class FuncTablero {
 		matriz[48] = new Tupla<int, int, bool>(matriz[48].e1,matriz[48].e2,false);		
 		return matriz;
 	}
+		
 	public static List<Tupla<int,int,bool>> calculaMatrizRadio4Circular(int x, int y)
 	{
 		int auxX,auxY;
