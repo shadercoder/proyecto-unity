@@ -775,7 +775,7 @@ public class SaveLoad {
 		resultado.matBioConsumidoPorTurno = edi.matBioConsumidoPorTurno;
 		resultado.matBioProducidoPorTurno = edi.matBioProducidoPorTurno;
 		resultado.idSer = edi.idSer;
-		resultado.matrizRadioAccion = edi.matrizRadioAccion;
+		//resultado.matrizRadioAccion = edi.matrizRadioAccion;
 		resultado.posX = edi.posX;
 		resultado.posY = edi.posY;
 		resultado.radioAccion = edi.radioAccion;

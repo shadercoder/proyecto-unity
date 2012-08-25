@@ -60,7 +60,11 @@ public class Vida //: MonoBehaviour
 	public int contadorPintarTexturaPlantas = 0;
 	public bool texturaPlantasModificado = false;
 	
-	public List<Tupla<int,int>> posicionesColindantes;	
+	public List<Tupla<int,int>> posicionesColindantes;
+	public int[,] matrizRadio3Circular;
+	public int[,] matrizRadio4Circular;
+	public int[,] matrizRadio5Circular;
+	public int[,] matrizRadio6Circular;
 	
 	public Vida()
 	{
@@ -82,7 +86,7 @@ public class Vida //: MonoBehaviour
 		idActualVegetal = 0;
 		idActualAnimal = 0;
 		idActualEdificio = 0;
-		inicializaPosicionesColindantes();
+		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}	
 	
 	public Vida(Casilla[,] tablero, Texture2D texPlantas, Transform objeto)
@@ -107,7 +111,7 @@ public class Vida //: MonoBehaviour
 		idActualEdificio = 0;
 		texturaPlantas = texPlantas;
 		objetoRoca = objeto;
-		inicializaPosicionesColindantes();
+		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}
 	
 	public Vida(Casilla[,] tablero, Texture2D texPlantas)
@@ -131,7 +135,7 @@ public class Vida //: MonoBehaviour
 		idActualAnimal = 0;
 		idActualEdificio = 0;
 		texturaPlantas = texPlantas;
-		inicializaPosicionesColindantes();
+		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}
 	
 	public Vida(Vida vida)
@@ -157,20 +161,7 @@ public class Vida //: MonoBehaviour
 		idActualAnimal = vida.idActualAnimal;
 		idActualEdificio = vida.idActualEdificio;
 		texturaPlantas = vida.texturaPlantas;
-		inicializaPosicionesColindantes();
-	}
-		
-	public void inicializaPosicionesColindantes()
-	{		
-		posicionesColindantes = new List<Tupla<int, int>>();
-		posicionesColindantes.Add(new Tupla<int,int>(-1,-1));
-		posicionesColindantes.Add(new Tupla<int,int>(0,-1));
-		posicionesColindantes.Add(new Tupla<int,int>(1,-1));
-		posicionesColindantes.Add(new Tupla<int,int>(1,0));
-		posicionesColindantes.Add(new Tupla<int,int>(1,1));
-		posicionesColindantes.Add(new Tupla<int,int>(0,1));
-		posicionesColindantes.Add(new Tupla<int,int>(-1,1));
-		posicionesColindantes.Add(new Tupla<int,int>(-1,0));
+		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}
 	
 	/*public void actualizaNumTurnos()
@@ -1281,6 +1272,13 @@ public class Animal : Ser
 			reserva += comida;		
 	}
 	
+	//Devuelve true si el animal sobrevive y false si muere
+	public bool extraeReservaAnimal(int extraccion)
+	{
+		reserva -= extraccion;
+		return reserva > 0;		
+	}
+	
 	//Devuelve true si el animal se reproducre y false si no	
 	public bool reproduccion()
 	{
@@ -1311,7 +1309,7 @@ public class Edificio : Ser
 {
 	public TipoEdificio tipo;
 	public int radioAccion;
-	public int[,] matrizRadioAccion;
+	public List<Tupla<int,int,bool>> matrizRadioAccion;
 	public int energiaConsumidaPorTurno;
 	public int compBasConsumidosPorTurno;
 	public int compAvzConsumidosPorTurno;
@@ -1339,6 +1337,31 @@ public class Edificio : Ser
 		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia);
 		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia);
 		this.modelo = modelo;
+		if(eficiencia < 0.25f)
+		{
+			radioAccion = 0;
+			matrizRadioAccion = new List<Tupla<int, int, bool>>();
+		}
+		else if(eficiencia < 0.5f)
+		{
+			radioAccion = 3;
+			matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(posX,posY);
+		}
+		else if(eficiencia < 0.75f)
+		{
+			radioAccion = 4;
+			matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(posX,posY);
+		}
+		else if(eficiencia < 1.0f)
+		{
+			radioAccion = 5;
+			matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(posX,posY);
+		}
+		else
+		{
+			radioAccion = 6;
+			matrizRadioAccion = FuncTablero.calculaMatrizRadio6Circular(posX,posY);
+		}		
 	}
 	/*public void modificaConsumo(int energiaConsumidaPorTurno,int compBasConsumidosPorTurno,int compAvzConsumidosPorTurno,int matBioConsumidoPorTurno)
 	{

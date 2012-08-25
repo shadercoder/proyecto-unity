@@ -26,6 +26,22 @@ public struct Tupla<T1, T2>
 	}
 }
 
+public struct Tupla<T1, T2, T3>
+{
+	public T1 e1;
+	public T2 e2;
+	public T3 e3;
+	public Tupla(T1 i1,T2 i2,T3 i3)
+	{
+		e1 = i1;
+		e2 = i2;
+		e3 = i3;
+	}
+	/*public void setE1(T1 i1){this = new Tupla<T1, T2, T3>(i1,e2,e3);}
+	public void setE3(T2 i2){this = new Tupla<T1, T2, T3>(e1,i2,e3);}
+	public void setE3(T3 i3){this = new Tupla<T1, T2, T3>(e1,e2,i3);}*/
+	
+}
 public class FuncTablero {
 	
 	//Variables ----------------------------------------------------------------------------------------------------------------------
@@ -1285,5 +1301,177 @@ public class FuncTablero {
 		annoBase += anno;		
 		result = System.String.Format ("Dia: {0,3} A/u00f1o: {1,4}", diaMes, annoBase);
 		return result;
+	}
+	
+	public static List<Tupla<int,int>> calculaPosicionesColindantes()
+	{		
+		List<Tupla<int, int>> posicionesColindantes = new List<Tupla<int, int>>();
+		posicionesColindantes.Add(new Tupla<int,int>(-1,-1));
+		posicionesColindantes.Add(new Tupla<int,int>(0,-1));
+		posicionesColindantes.Add(new Tupla<int,int>(1,-1));
+		posicionesColindantes.Add(new Tupla<int,int>(1,0));
+		posicionesColindantes.Add(new Tupla<int,int>(1,1));
+		posicionesColindantes.Add(new Tupla<int,int>(0,1));
+		posicionesColindantes.Add(new Tupla<int,int>(-1,1));
+		posicionesColindantes.Add(new Tupla<int,int>(-1,0));
+		return posicionesColindantes;
+	}
+	
+	public static List<Tupla<int,int,bool>> calculaMatrizRadio3Circular(int x, int y)
+	{
+		int auxX,auxY;
+		List<Tupla<int,int,bool>> matriz = new List<Tupla<int,int,bool>>();
+		for(int i = -3; i <= 3; i++)
+			for(int j = -3; j <= 3; j++)
+			{
+				auxX = x + i;
+				auxY = y + j;
+				convierteCoordenadas(ref auxX, ref auxY);
+				matriz.Add(new Tupla<int,int,bool>(auxX,auxY,true));
+			}	
+		matriz[0] = new Tupla<int, int, bool>(matriz[0].e1,matriz[0].e2,false);
+		matriz[1] = new Tupla<int, int, bool>(matriz[1].e1,matriz[1].e2,false);
+		matriz[5] = new Tupla<int, int, bool>(matriz[5].e1,matriz[5].e2,false);
+		matriz[6] = new Tupla<int, int, bool>(matriz[6].e1,matriz[6].e2,false);
+		matriz[7] = new Tupla<int, int, bool>(matriz[7].e1,matriz[7].e2,false);
+		matriz[13] = new Tupla<int, int, bool>(matriz[13].e1,matriz[13].e2,false);
+		matriz[35] = new Tupla<int, int, bool>(matriz[35].e1,matriz[35].e2,false);
+		matriz[41] = new Tupla<int, int, bool>(matriz[41].e1,matriz[41].e2,false);
+		matriz[42] = new Tupla<int, int, bool>(matriz[42].e1,matriz[42].e2,false);
+		matriz[43] = new Tupla<int, int, bool>(matriz[43].e1,matriz[43].e2,false);
+		matriz[47] = new Tupla<int, int, bool>(matriz[47].e1,matriz[47].e2,false);
+		matriz[48] = new Tupla<int, int, bool>(matriz[48].e1,matriz[48].e2,false);		
+		return matriz;
+	}
+	public static List<Tupla<int,int,bool>> calculaMatrizRadio4Circular(int x, int y)
+	{
+		int auxX,auxY;
+		List<Tupla<int,int,bool>> matriz = new List<Tupla<int,int,bool>>();
+		for(int i = -4; i <= 4; i++)
+			for(int j = -4; j <= 4; j++)
+			{
+				auxX = x + i;
+				auxY = y + j;
+				convierteCoordenadas(ref auxX, ref auxY);
+				matriz.Add(new Tupla<int,int,bool>(auxX,auxY,true));
+			}	
+		matriz[0] = new Tupla<int, int, bool>(matriz[0].e1,matriz[0].e2,false);
+		matriz[1] = new Tupla<int, int, bool>(matriz[1].e1,matriz[1].e2,false);
+		matriz[2] = new Tupla<int, int, bool>(matriz[2].e1,matriz[2].e2,false);
+		matriz[6] = new Tupla<int, int, bool>(matriz[6].e1,matriz[6].e2,false);
+		matriz[7] = new Tupla<int, int, bool>(matriz[7].e1,matriz[7].e2,false);
+		matriz[8] = new Tupla<int, int, bool>(matriz[8].e1,matriz[8].e2,false);
+		matriz[9] = new Tupla<int, int, bool>(matriz[9].e1,matriz[9].e2,false);
+		matriz[17] = new Tupla<int, int, bool>(matriz[17].e1,matriz[17].e2,false);
+		matriz[18] = new Tupla<int, int, bool>(matriz[18].e1,matriz[18].e2,false);
+		matriz[26] = new Tupla<int, int, bool>(matriz[26].e1,matriz[26].e2,false);
+		matriz[54] = new Tupla<int, int, bool>(matriz[54].e1,matriz[54].e2,false);
+		matriz[62] = new Tupla<int, int, bool>(matriz[62].e1,matriz[62].e2,false);
+		matriz[63] = new Tupla<int, int, bool>(matriz[63].e1,matriz[63].e2,false);
+		matriz[71] = new Tupla<int, int, bool>(matriz[71].e1,matriz[71].e2,false);
+		matriz[72] = new Tupla<int, int, bool>(matriz[72].e1,matriz[72].e2,false);
+		matriz[73] = new Tupla<int, int, bool>(matriz[73].e1,matriz[73].e2,false);
+		matriz[74] = new Tupla<int, int, bool>(matriz[74].e1,matriz[74].e2,false);
+		matriz[78] = new Tupla<int, int, bool>(matriz[78].e1,matriz[78].e2,false);
+		matriz[79] = new Tupla<int, int, bool>(matriz[79].e1,matriz[79].e2,false);
+		matriz[80] = new Tupla<int, int, bool>(matriz[80].e1,matriz[80].e2,false);
+		return matriz;
+	}
+	public static List<Tupla<int,int,bool>> calculaMatrizRadio5Circular(int x, int y)
+	{
+		int auxX,auxY;
+		List<Tupla<int,int,bool>> matriz = new List<Tupla<int,int,bool>>();
+		for(int i = -5; i <= 5; i++)
+			for(int j = -5; j <= 5; j++)
+			{
+				auxX = x + i;
+				auxY = y + j;
+				convierteCoordenadas(ref auxX, ref auxY);
+				matriz.Add(new Tupla<int,int,bool>(auxX,auxY,true));
+			}	
+		matriz[0] = new Tupla<int, int, bool>(matriz[0].e1,matriz[0].e2,false);
+		matriz[1] = new Tupla<int, int, bool>(matriz[1].e1,matriz[1].e2,false);
+		matriz[2] = new Tupla<int, int, bool>(matriz[2].e1,matriz[2].e2,false);
+		matriz[3] = new Tupla<int, int, bool>(matriz[3].e1,matriz[3].e2,false);
+		matriz[7] = new Tupla<int, int, bool>(matriz[7].e1,matriz[7].e2,false);
+		matriz[8] = new Tupla<int, int, bool>(matriz[8].e1,matriz[8].e2,false);
+		matriz[9] = new Tupla<int, int, bool>(matriz[9].e1,matriz[9].e2,false);
+		matriz[10] = new Tupla<int, int, bool>(matriz[10].e1,matriz[10].e2,false);			
+		matriz[11] = new Tupla<int, int, bool>(matriz[11].e1,matriz[11].e2,false);			
+		matriz[12] = new Tupla<int, int, bool>(matriz[12].e1,matriz[12].e2,false);			
+		matriz[20] = new Tupla<int, int, bool>(matriz[20].e1,matriz[20].e2,false);
+		matriz[21] = new Tupla<int, int, bool>(matriz[21].e1,matriz[21].e2,false);			
+		matriz[22] = new Tupla<int, int, bool>(matriz[22].e1,matriz[22].e2,false);			
+		matriz[32] = new Tupla<int, int, bool>(matriz[32].e1,matriz[32].e2,false);			
+		matriz[33] = new Tupla<int, int, bool>(matriz[33].e1,matriz[33].e2,false);			
+		matriz[43] = new Tupla<int, int, bool>(matriz[43].e1,matriz[43].e2,false);			
+		matriz[77] = new Tupla<int, int, bool>(matriz[77].e1,matriz[77].e2,false);			
+		matriz[87] = new Tupla<int, int, bool>(matriz[87].e1,matriz[87].e2,false);			
+		matriz[88] = new Tupla<int, int, bool>(matriz[88].e1,matriz[88].e2,false);			
+		matriz[98] = new Tupla<int, int, bool>(matriz[98].e1,matriz[98].e2,false);			
+		matriz[99] = new Tupla<int, int, bool>(matriz[99].e1,matriz[99].e2,false);			
+		matriz[100] = new Tupla<int, int, bool>(matriz[100].e1,matriz[100].e2,false);			
+		matriz[111] = new Tupla<int, int, bool>(matriz[111].e1,matriz[111].e2,false);			
+		matriz[112] = new Tupla<int, int, bool>(matriz[112].e1,matriz[112].e2,false);			
+		matriz[113] = new Tupla<int, int, bool>(matriz[113].e1,matriz[113].e2,false);			
+		matriz[117] = new Tupla<int, int, bool>(matriz[117].e1,matriz[117].e2,false);			
+		matriz[118] = new Tupla<int, int, bool>(matriz[118].e1,matriz[118].e2,false);			
+		matriz[119] = new Tupla<int, int, bool>(matriz[119].e1,matriz[119].e2,false);			
+		matriz[120] = new Tupla<int, int, bool>(matriz[120].e1,matriz[120].e2,false);			
+		return matriz;
+	}
+	public static List<Tupla<int,int,bool>> calculaMatrizRadio6Circular(int x, int y)
+	{
+		int auxX,auxY;
+		List<Tupla<int,int,bool>> matriz = new List<Tupla<int,int,bool>>();
+		for(int i = -6; i <= 6; i++)
+			for(int j = -6; j <= 6; j++)
+			{
+				auxX = x + i;
+				auxY = y + j;
+				convierteCoordenadas(ref auxX, ref auxY);
+				matriz.Add(new Tupla<int,int,bool>(auxX,auxY,true));
+			}	
+		matriz[0] = new Tupla<int, int, bool>(matriz[0].e1,matriz[0].e2,false);
+		matriz[1] = new Tupla<int, int, bool>(matriz[1].e1,matriz[1].e2,false);
+		matriz[2] = new Tupla<int, int, bool>(matriz[2].e1,matriz[2].e2,false);
+		matriz[3] = new Tupla<int, int, bool>(matriz[3].e1,matriz[3].e2,false);
+		matriz[9] = new Tupla<int, int, bool>(matriz[9].e1,matriz[9].e2,false);
+		matriz[10] = new Tupla<int, int, bool>(matriz[10].e1,matriz[10].e2,false);			
+		matriz[11] = new Tupla<int, int, bool>(matriz[11].e1,matriz[11].e2,false);			
+		matriz[12] = new Tupla<int, int, bool>(matriz[12].e1,matriz[12].e2,false);			
+		matriz[13] = new Tupla<int, int, bool>(matriz[13].e1,matriz[13].e2,false);			
+		matriz[14] = new Tupla<int, int, bool>(matriz[14].e1,matriz[14].e2,false);			
+		matriz[15] = new Tupla<int, int, bool>(matriz[15].e1,matriz[15].e2,false);			
+		matriz[23] = new Tupla<int, int, bool>(matriz[23].e1,matriz[23].e2,false);			
+		matriz[24] = new Tupla<int, int, bool>(matriz[24].e1,matriz[24].e2,false);			
+		matriz[25] = new Tupla<int, int, bool>(matriz[25].e1,matriz[25].e2,false);			
+		matriz[26] = new Tupla<int, int, bool>(matriz[26].e1,matriz[26].e2,false);			
+		matriz[27] = new Tupla<int, int, bool>(matriz[27].e1,matriz[27].e2,false);			
+		matriz[37] = new Tupla<int, int, bool>(matriz[37].e1,matriz[37].e2,false);			
+		matriz[38] = new Tupla<int, int, bool>(matriz[38].e1,matriz[38].e2,false);			
+		matriz[39] = new Tupla<int, int, bool>(matriz[39].e1,matriz[39].e2,false);			
+		matriz[51] = new Tupla<int, int, bool>(matriz[51].e1,matriz[51].e2,false);			
+		matriz[117] = new Tupla<int, int, bool>(matriz[117].e1,matriz[117].e2,false);			
+		matriz[129] = new Tupla<int, int, bool>(matriz[129].e1,matriz[129].e2,false);			
+		matriz[130] = new Tupla<int, int, bool>(matriz[130].e1,matriz[130].e2,false);			
+		matriz[131] = new Tupla<int, int, bool>(matriz[131].e1,matriz[131].e2,false);			
+		matriz[141] = new Tupla<int, int, bool>(matriz[141].e1,matriz[141].e2,false);			
+		matriz[142] = new Tupla<int, int, bool>(matriz[142].e1,matriz[142].e2,false);			
+		matriz[143] = new Tupla<int, int, bool>(matriz[143].e1,matriz[143].e2,false);			
+		matriz[144] = new Tupla<int, int, bool>(matriz[144].e1,matriz[144].e2,false);			
+		matriz[145] = new Tupla<int, int, bool>(matriz[145].e1,matriz[145].e2,false);			
+		matriz[153] = new Tupla<int, int, bool>(matriz[153].e1,matriz[153].e2,false);			
+		matriz[154] = new Tupla<int, int, bool>(matriz[154].e1,matriz[154].e2,false);			
+		matriz[155] = new Tupla<int, int, bool>(matriz[155].e1,matriz[155].e2,false);			
+		matriz[156] = new Tupla<int, int, bool>(matriz[156].e1,matriz[156].e2,false);			
+		matriz[157] = new Tupla<int, int, bool>(matriz[157].e1,matriz[157].e2,false);			
+		matriz[158] = new Tupla<int, int, bool>(matriz[158].e1,matriz[158].e2,false);			
+		matriz[159] = new Tupla<int, int, bool>(matriz[159].e1,matriz[159].e2,false);			
+		matriz[165] = new Tupla<int, int, bool>(matriz[165].e1,matriz[165].e2,false);			
+		matriz[166] = new Tupla<int, int, bool>(matriz[166].e1,matriz[166].e2,false);			
+		matriz[167] = new Tupla<int, int, bool>(matriz[167].e1,matriz[167].e2,false);			
+		matriz[168] = new Tupla<int, int, bool>(matriz[168].e1,matriz[168].e2,false);			
+		return matriz;
 	}
 }
