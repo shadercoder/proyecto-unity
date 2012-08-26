@@ -117,11 +117,13 @@ public class Controles : MonoBehaviour {
 			    if (distanciaNave > distCamaraMax) {
 					distanciaNave = distCamaraMax;
 				}
-		   	}
+		   	}  
 	   	}
 				
 		//Se aplica la rotación y la posición de la cámara respecto a la nave.
 		miTransform.position = miTransform.rotation * new Vector3(0.0f, 0.0f, -distanciaNave) + nave.position;
+		float fov = nave.GetChild(1).GetChild(0).camera.fieldOfView;
+		fov += distanciaNave;
 		
 		//Centrar la camara si se pulsa la tecla "C"
 		if (Input.GetKeyDown(KeyCode.C)) {
