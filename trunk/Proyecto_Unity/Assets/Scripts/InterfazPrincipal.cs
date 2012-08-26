@@ -26,11 +26,13 @@ public class InterfazPrincipal : MonoBehaviour
 	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
 	private bool[] togglesFiltros;								//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
 	private bool[] togglesFiltrosOld;							//Toggles en los filtros antes de cambiarlos
+	private int mejoraHover						= -1;			//La mejora que se esta viendo (al hacer hover con el raton)
+	private int habilidadHover					= -1;			//La habilidad que se esta viendo (al hacer hover con el raton)
 	
 	//Seleccion de seres
 	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
 	private float[] habitabilidadSeleccion;						//La habitabilidad del ser o edificio seleccionado
-	private int tipoSeleccion 					= -1;			//Que se ha seleccionado? 0->Planta, 1->Herbivoro, 2->Carnivoro, 3->Edificio
+	private int tipoSeleccion 					= -1;			//Que se ha seleccionado? 
 	
 	//Mejoras posibles
 	private bool mejoraInfoCasilla 				= true;			//La barra inferior de informacion se muestra?
@@ -127,7 +129,9 @@ public class InterfazPrincipal : MonoBehaviour
 		filtroRecursos,
 		filtroVegetales,
 		insercion,
-		seleccion
+		seleccion,
+		mejoras,
+		habilidades
 	}
 	private tMenuDerecho tipoMenuDerecho = tMenuDerecho.ninguno;
 
@@ -730,6 +734,8 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarMejora:
+			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
+			mejoraHover = -1;
 			GUILayout.BeginArea (new Rect (cuantoW * 22, cuantoH * posicionBloqueMejoras, cuantoW * 36, cuantoH * 7), new GUIContent (), "BloqueSeleccionMejoras");
 			GUILayout.BeginVertical ();
 			GUILayout.Space (cuantoH);
@@ -741,12 +747,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Sistema de Sondeo General"), "BotonMejoraInformacion")) {
 				mejoras.compraMejora0 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 0;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Sistema de Sondeo General");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Deteccion de Ecosistemas"), "BotonMejoraHabitats")) {
 				mejoras.compraMejora1 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 1;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Deteccion de Ecosistemas");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -755,12 +781,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Espectometro"), "BotonMejoraMetalesRaros")) {
 				mejoras.compraMejora2 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 2;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Espectometro");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Sensor Biometrico"), "BotonMejoraVida")) {
 				mejoras.compraMejora3 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 3;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Sensor Biometrico");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 6);
@@ -771,12 +817,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Motores auxiliares Basicos"), "BotonMejoraMotor1")) {
 				mejoras.compraMejora4 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 4;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Motores auxiliares Basicos");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Motores Orbitales"), "BotonMejoraMotor2")) {
 				mejoras.compraMejora5 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 5;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Motores Orbitales");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -785,12 +851,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Aislamiento magnético"), "BotonMejoraMotor3")) {
 				mejoras.compraMejora6 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 6;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Aislamiento magnético");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[7])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Subir la nave de órbita"), "BotonMejoraMotor4")) {
 				mejoras.compraMejora7 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 7;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Subir la nave de órbita");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 1.5f);
@@ -804,12 +890,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Condensador Auxiliar"), "BotonMejoraEnergia1")) {
 				mejoras.compraMejora8 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 8;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Condensador Auxiliar");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[9])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Acumulador de Energia en Anillo"), "BotonMejoraEnergia2")) {
 				mejoras.compraMejora9 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 9;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Acumulador de Energia en Anillo");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -818,12 +924,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Array de Paneles Solares"), "BotonMejoraEnergia3")) {
 				mejoras.compraMejora10 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 10;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Array de Paneles Solares");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[8] || !mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[10] && mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Generador de Fusión"), "BotonMejoraEnergia4")) {
 				mejoras.compraMejora11 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 11;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Generador de Fusión");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 6);
@@ -833,12 +959,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Contenedores para Componentes Avanzados"), "BotonMejoraAlmacen1")) {
 				mejoras.compraMejora12 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 12;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Contenedores para Componentes Avanzados");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[13])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Contenedores para Material Biologico"), "BotonMejoraAlmacen2")) {
 				mejoras.compraMejora13 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 13;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Contenedores para Material Biologico");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -847,12 +993,32 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", "Ampliacion de Carga 1"), "BotonMejoraAlmacen3")) {
 				mejoras.compraMejora14 ();
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 14;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Ampliacion de Carga 1");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[14] || mejoras.mejorasCompradas[15])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Ampliacion de Carga 2"), "BotonMejoraAlmacen4")) {
 				mejoras.compraMejora15 ();
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				mejoraHover = 15;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Ampliacion de Carga 2");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 1.5f);
@@ -862,6 +1028,8 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarHabilidad:
+			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
+			habilidadHover = -1;
 			GUILayout.BeginArea (new Rect (cuantoW * 22, cuantoH * posicionBloque, cuantoW * 36, cuantoH * 4), new GUIContent (), "BloqueSeleccionHabilidades");
 			GUILayout.BeginVertical ();
 			GUILayout.Space (cuantoH);
@@ -930,12 +1098,18 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad6")) {
 				//TODO
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				habilidadHover = 0;
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad7")) {
 				//TODO
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				habilidadHover = 1;
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -944,6 +1118,9 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad8")) {
 				//TODO
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				habilidadHover = 2;
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[11])
@@ -951,12 +1128,18 @@ public class InterfazPrincipal : MonoBehaviour
 			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad9")) {
 				//TODO
 			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				habilidadHover = 3;
+			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad10")) {
 				//TODO
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				habilidadHover = 4;
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 1.5f);
@@ -1744,6 +1927,51 @@ public class InterfazPrincipal : MonoBehaviour
 				tipoMenuDerecho = tMenuDerecho.ninguno;
 			}
 			break;
+		case tMenuDerecho.mejoras:
+			if (mejoraHover == -1) {
+				break;
+			}
+			switch (aspectRatio) {
+			case taspectRatio.aspectRatio16_9:
+				posicionBloqueH = 8.5f;
+				//sobre 45
+				break;
+			case taspectRatio.aspectRatio16_10:
+				posicionBloqueH = 11;
+				//sobre 50
+				break;
+			case taspectRatio.aspectRatio4_3:
+				posicionBloqueH = 16;
+				//sobre 60
+				break;
+			default:
+				break;
+			}
+
+			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
+			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoMejoras");
+			GUI.Label (new Rect (cuantoW, cuantoH * 1, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");	//Este texto es el nombre
+			imagenMejorasBloqueDerecho();
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 8, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");		//Titulo de la descripcion
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 9, 9 * cuantoW, 8 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");	//Este texto es la descripcion
+			//Costes
+			GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[2], "LabelHabitabilidad");	//Coste energia
+			GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
+			GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
+			GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
+			
+
+			GUI.EndGroup ();
+			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
+				tipoMenuDerecho = tMenuDerecho.ninguno;
+				mejoraHover = -1;
+			}
+			break;
+		case tMenuDerecho.habilidades:
+		
+			break;
+		default: 
+			break;
 		}
 		//Fin switch
 		if (GUI.changed) {
@@ -2359,6 +2587,15 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn5");
 			break;
 		default: 
+			break;
+		}
+	}
+	
+	private void imagenMejorasBloqueDerecho() {
+		switch (mejoraHover) {
+			//TODO Añadir las imagenes de las mejoras y mostrarlas en el mismo lugar todas
+		default: 
+//			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejora1");
 			break;
 		}
 	}

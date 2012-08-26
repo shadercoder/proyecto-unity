@@ -1137,9 +1137,8 @@ public class EspecieAnimal : Especie
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public tipoAlimentacionAnimal tipo;					//herbivoro o carnivoro 
 	public List<T_habitats> habitats;					//Diferentes hábitat en los que puede estar	
-	public List<Animation> animaciones;
 		
-	public EspecieAnimal(string nombre, int numMaxSeresEspecie, int consumo, int reservaMaxima, int alimentoMaxTurno, int aguanteInicial, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos, List<Animation> animaciones)
+	public EspecieAnimal(string nombre, int numMaxSeresEspecie, int consumo, int reservaMaxima, int alimentoMaxTurno, int aguanteInicial, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos)
 	{
 		this.nombre = nombre;
 		this.numMaxSeresEspecie = numMaxSeresEspecie;
@@ -1151,7 +1150,6 @@ public class EspecieAnimal : Especie
 		this.tipo = tipo;
 		this.habitats = habitats;
 		this.modelos = modelos;
-		this.animaciones = animaciones;
 		numSeresEspecie = 0;
 	}
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
