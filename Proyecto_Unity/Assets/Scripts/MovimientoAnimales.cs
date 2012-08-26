@@ -18,11 +18,11 @@ public class MovimientoAnimales : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (enMovimiento) {
-			if (this.transform.position != posObjetivo) {
-				this.transform.position = Vector3.Lerp(posInicio, posObjetivo, (Time.time - tiempoInicioMov) / tiempoMovimiento);
-				Vector3 norm = this.transform.position - this.transform.parent.position;
-				this.transform.rotation = Quaternion.LookRotation(norm);
-//				this.animation.CrossFade("move");
+			if (this.transform.parent.position != posObjetivo) {
+				this.transform.parent.position = Vector3.Lerp(posInicio, posObjetivo, (Time.time - tiempoInicioMov) / tiempoMovimiento);
+				Vector3 norm = this.transform.parent.position - this.transform.parent.parent.position;
+				this.transform.parent.rotation = Quaternion.LookRotation(norm);
+				this.animation.CrossFade("move");
 			}
 			else {
 				enMovimiento = false;

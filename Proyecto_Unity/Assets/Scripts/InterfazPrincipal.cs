@@ -1154,15 +1154,15 @@ public class InterfazPrincipal : MonoBehaviour
 					Vector3 normal = modeloInsercion.transform.position - modeloInsercion.transform.parent.position;
 					modeloInsercion.transform.position = principal.vida.objetoRoca.transform.TransformPoint (modeloInsercion.transform.position);
 					modeloInsercion.transform.rotation = Quaternion.LookRotation (normal);
-					modeloInsercion.renderer.material.SetFloat ("_FiltroOn", 1.0f);
-					modeloInsercion.renderer.material.SetColor ("_Tinte", Color.red);
+					modeloInsercion.GetComponentInChildren<Renderer>().material.SetFloat ("_FiltroOn", 1.0f);
+					modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.red);
 					forzarTooltip = false;
 					//Edificio
 					if (tipo >= 0 && tipo < 5) {
 						TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
 						if (principal.recursosSuficientes (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear)) {
 							if (principal.vida.compruebaAnadeEdificio (tedif, posY, posX))
-								modeloInsercion.renderer.material.SetColor ("_Tinte", Color.green);
+								modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.green);
 							else {
 								forzarTooltip = true;
 								mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
@@ -1176,7 +1176,7 @@ public class InterfazPrincipal : MonoBehaviour
 						tipo -= 5;
 						EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
 						if (principal.vida.compruebaAnadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX))
-							modeloInsercion.renderer.material.SetColor ("_Tinte", Color.green);
+							modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.green);
 						else {
 							forzarTooltip = true;
 							mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
@@ -1186,7 +1186,7 @@ public class InterfazPrincipal : MonoBehaviour
 						tipo -= 5;
 						EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
 						if (principal.vida.compruebaAnadeAnimal (especie, posY, posX))
-							modeloInsercion.renderer.material.SetColor ("_Tinte", Color.green);
+							modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.green);
 						else {
 							forzarTooltip = true;
 							mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
