@@ -534,6 +534,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarAnimal:
+			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 			GUILayout.BeginArea (new Rect (cuantoW * 22, cuantoH * posicionBloque, cuantoW * 36, cuantoH * 4), new GUIContent (), "BloqueSeleccionAnimales");
 			GUILayout.BeginVertical ();
 			elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.ninguno;
@@ -656,6 +657,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarEdificio:
+			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 			GUILayout.BeginArea (new Rect (cuantoW * 32, cuantoH * posicionBloque, cuantoW * 16, cuantoH * 4), new GUIContent (), "BloqueSeleccionEdificios");
 			GUILayout.BeginVertical ();
 			elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.ninguno;
@@ -1651,10 +1653,8 @@ public class InterfazPrincipal : MonoBehaviour
 
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoInsercion");
-			GUI.Label (new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");
-			//Este texto es el nombre
-			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "");
-			//Esta es la imagen
+			GUI.Label (new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");	//Este texto es el nombre
+			imagenInsercionBloqueDerecho();
 			//Habitabilidad --
 			GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
@@ -1664,23 +1664,18 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Label (new Rect (cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");
 			//Habitabilidad --
-			GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
-			//Titulo de la descripcion
-			GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
-			//Este texto es la descripcion
-			switch (tipoSeleccion) {
-			case 0:
-				//Planta
-				break;
-			case 1:
-				//Herbivoro
-				break;
-			case 2:
-				//Carnivoro
-				break;
-			case 3:
-				//Edificio
-				break;
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");		//Titulo de la descripcion
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");	//Este texto es la descripcion
+			GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[2], "LabelHabitabilidad");	//Coste energia
+			GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
+			GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
+			GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
+			if (tipoSeleccion >= 20) { //Si es un edificio...
+				GUI.Label(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 2), "", "InsercionEdificiosExtraProduccion");
+				GUI.Label(new Rect(cuantoW * 2, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[6], "LabelHabitabilidad");
+				GUI.Label(new Rect(cuantoW * 4, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[7], "LabelHabitabilidad");
+				GUI.Label(new Rect(cuantoW * 6, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[8], "LabelHabitabilidad");
+				GUI.Label(new Rect(cuantoW * 8, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[9], "LabelHabitabilidad");
 			}
 
 			GUI.EndGroup ();
@@ -1716,8 +1711,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
 			GUI.Label (new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");
 			//Este texto es el nombre
-			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "");
-			//Esta es la imagen
+			imagenSeleccionBloqueDerecho();
 			//Habitabilidad --
 			GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
@@ -1731,23 +1725,19 @@ public class InterfazPrincipal : MonoBehaviour
 			//Titulo de la descripcion
 			GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
 			//Este texto es la descripcion
-			switch (tipoSeleccion) {
-			case 0:
-				//Planta
-				break;
-			case 1:
-				//Herbivoro
-				break;
-			case 2:
-				//Carnivoro
-				break;
-			case 3:
-				//Edificio
-				//edificio.modificaEficiencia(eficiencia);			La eficiencia es lo que se saca en el slider va entre 0.0f y 1.0f,
-				principal.actualizaConsumoProduccion();								
-				break;
+			if (tipoSeleccion < 10) {
+				//Plantas
 			}
-
+			else if (tipoSeleccion < 15) {
+				//Herbivoros
+			}
+			else if (tipoSeleccion < 20) {
+				//Carnivoros
+			}
+			else {
+				//Edificios
+//				principal.actualizaConsumoProduccion();	
+			}
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
@@ -2019,7 +2009,8 @@ public class InterfazPrincipal : MonoBehaviour
 					infoSeleccion.Add (animal.especie.nombre);
 					//Cadena infoSeleccion[0]
 					TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-					infoSeleccion.Add (tiposSeres.getDescripcion (tiposSeres.getNumeroSer (animal.especie)));
+					tipoSeleccion = tiposSeres.getNumeroSer(animal.especie);
+					infoSeleccion.Add (tiposSeres.getDescripcion (tipoSeleccion));
 					//Cadena infoSeleccion[1]
 					habitabilidadSeleccion[0] = (animal.especie.habitats.Contains (T_habitats.montana)) ? 1 : -1;
 					habitabilidadSeleccion[1] = animal.especie.habitats.Contains (T_habitats.llanura) ? 1 : -1;
@@ -2031,10 +2022,8 @@ public class InterfazPrincipal : MonoBehaviour
 					//Cadena infoSeleccion[2]
 					if (animal.especie.tipo == tipoAlimentacionAnimal.carnivoro) {
 						infoSeleccion.Add ("Carnivoro");
-						tipoSeleccion = 2;
 					} else {
 						infoSeleccion.Add ("Herbivoro");
-						tipoSeleccion = 1;
 					}
 					//-----------------------
 					//Cadena infoSeleccion[3]
@@ -2078,7 +2067,8 @@ public class InterfazPrincipal : MonoBehaviour
 					infoSeleccion.Add (vegetal.especie.nombre);
 					//Cadena infoSeleccion[0]
 					TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-					infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (vegetal.especie)));
+					tipoSeleccion = temp.getNumeroSer(vegetal.especie);
+					infoSeleccion.Add (temp.getDescripcion (tipoSeleccion));
 					//Cadena infoSeleccion[1]
 					habitabilidadSeleccion[0] = vegetal.habitabilidad[0];
 					habitabilidadSeleccion[1] = vegetal.habitabilidad[1];
@@ -2089,13 +2079,13 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[7] = vegetal.habitabilidad[7];
 					infoSeleccion.Add (vegetal.numVegetales.ToString ());
 					//Cadena infoSeleccion[2]					
-					tipoSeleccion = 0;
 					return true;
 				} else if (edificio != null) {
 					infoSeleccion.Add (edificio.tipo.nombre);
 					//Cadena infoSeleccion[0]
 					TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-					infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (edificio.tipo)));
+					tipoSeleccion = temp.getNumeroSer(edificio.tipo);
+					infoSeleccion.Add (temp.getDescripcion (tipoSeleccion));
 					//Cadena infoSeleccion[1]
 					habitabilidadSeleccion[0] = edificio.tipo.habitats.Contains (T_habitats.montana) ? 1 : -1;
 					habitabilidadSeleccion[1] = edificio.tipo.habitats.Contains (T_habitats.llanura) ? 1 : -1;
@@ -2106,7 +2096,6 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[7] = edificio.tipo.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 					//TODO Poner aqui la info escrita que necesitemos para los edificios
 					
-					tipoSeleccion = 3;
 					return true;
 				}
 			}
@@ -2139,11 +2128,10 @@ public class InterfazPrincipal : MonoBehaviour
 		infoSeleccion.Clear ();
 		if (animal != null || vegetal != null || edificio != null) {
 			if (animal != null) {
-				infoSeleccion.Add (animal.nombre);
-				//Cadena infoSeleccion[0]
+				infoSeleccion.Add (animal.nombre);	//Cadena infoSeleccion[0]
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				infoSeleccion.Add (tiposSeres.getDescripcion (tiposSeres.getNumeroSer (animal)));
-				//Cadena infoSeleccion[1]
+				tipoSeleccion = tiposSeres.getNumeroSer(animal);
+				infoSeleccion.Add (tiposSeres.getDescripcion (tipoSeleccion));	//Cadena infoSeleccion[1]
 				habitabilidadSeleccion[0] = (animal.habitats.Contains (T_habitats.montana)) ? 1 : -1;
 				habitabilidadSeleccion[1] = animal.habitats.Contains (T_habitats.llanura) ? 1 : -1;
 				habitabilidadSeleccion[2] = animal.habitats.Contains (T_habitats.colina) ? 1 : -1;
@@ -2151,22 +2139,26 @@ public class InterfazPrincipal : MonoBehaviour
 				habitabilidadSeleccion[4] = animal.habitats.Contains (T_habitats.volcanico) ? 1 : -1;
 				habitabilidadSeleccion[6] = animal.habitats.Contains (T_habitats.costa) ? 1 : -1;
 				habitabilidadSeleccion[7] = animal.habitats.Contains (T_habitats.tundra) ? 1 : -1;
-				//Cadena infoSeleccion[2]
+				//Cadena infoSeleccion[2-5]
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(animal));
+				infoSeleccion.Add(costes[0].ToString());	//Coste en energia
+				infoSeleccion.Add(costes[1].ToString());	//Coste en comp bas
+				infoSeleccion.Add(costes[2].ToString());	//Coste en comp adv
+				infoSeleccion.Add(costes[3].ToString());	//Coste en mat bio
+				//---------
+				//Cadena infoSeleccion[6]
 				if (animal.tipo == tipoAlimentacionAnimal.carnivoro) {
 					infoSeleccion.Add ("Carnivoro");
-					tipoSeleccion = 2;
 				} else {
 					infoSeleccion.Add ("Herbivoro");
-					tipoSeleccion = 1;
 				}
 				//-----------------------
 				return true;
 			} else if (vegetal != null) {
-				infoSeleccion.Add (vegetal.nombre);
-				//Cadena infoSeleccion[0]
+				infoSeleccion.Add (vegetal.nombre);	//Cadena infoSeleccion[0]
 				TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (vegetal)));
-				//Cadena infoSeleccion[1]
+				tipoSeleccion = temp.getNumeroSer (vegetal);
+				infoSeleccion.Add (temp.getDescripcion (tipoSeleccion));	//Cadena infoSeleccion[1]
 				habitabilidadSeleccion[0] = vegetal.habitabilidadInicial[0];
 				habitabilidadSeleccion[1] = vegetal.habitabilidadInicial[1];
 				habitabilidadSeleccion[2] = vegetal.habitabilidadInicial[2];
@@ -2174,13 +2166,20 @@ public class InterfazPrincipal : MonoBehaviour
 				habitabilidadSeleccion[4] = vegetal.habitabilidadInicial[4];
 				habitabilidadSeleccion[6] = vegetal.habitabilidadInicial[6];
 				habitabilidadSeleccion[7] = vegetal.habitabilidadInicial[7];
-				tipoSeleccion = 0;
+				//Cadena infoSeleccion[2-5]
+				List<int> costes = temp.getCostes(temp.getNumeroSer(vegetal));
+				infoSeleccion.Add(costes[0].ToString());	//Coste en energia
+				infoSeleccion.Add(costes[1].ToString());	//Coste en comp bas
+				infoSeleccion.Add(costes[2].ToString());	//Coste en comp adv
+				infoSeleccion.Add(costes[3].ToString());	//Coste en mat bio
+				//---------
 				return true;
 			} else if (edificio != null) {
 				infoSeleccion.Add (edificio.nombre);
 				//Cadena infoSeleccion[0]
 				TiposSeres temp = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				infoSeleccion.Add (temp.getDescripcion (temp.getNumeroSer (edificio)));
+				tipoSeleccion = temp.getNumeroSer (edificio);
+				infoSeleccion.Add (temp.getDescripcion (tipoSeleccion));
 				//Cadena infoSeleccion[1]
 				habitabilidadSeleccion[0] = edificio.habitats.Contains (T_habitats.montana) ? 1 : -1;
 				habitabilidadSeleccion[1] = edificio.habitats.Contains (T_habitats.llanura) ? 1 : -1;
@@ -2190,13 +2189,177 @@ public class InterfazPrincipal : MonoBehaviour
 				habitabilidadSeleccion[6] = edificio.habitats.Contains (T_habitats.costa) ? 1 : -1;
 				habitabilidadSeleccion[7] = edificio.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 				//TODO Poner aqui la info escrita que necesitemos para los edificios
-				
-				tipoSeleccion = 3;
+				//Cadena infoSeleccion[2-5]
+				infoSeleccion.Add(edificio.energiaConsumidaAlCrear.ToString());		//Coste en energia
+				infoSeleccion.Add(edificio.compBasConsumidosAlCrear.ToString());	//Coste en comp bas
+				infoSeleccion.Add(edificio.compAvzConsumidosAlCrear.ToString());	//Coste en comp adv
+				infoSeleccion.Add(edificio.matBioConsumidoAlCrear.ToString());		//Coste en mat bio
+				//---------
+				//Cadena infoSeleccion[6-9]
+				infoSeleccion.Add("" + (edificio.energiaProducidaPorTurnoMax - edificio.energiaConsumidaPorTurnoMax));		//Produccion de energia
+				infoSeleccion.Add("" + (edificio.compBasProducidosPorTurnoMax - edificio.compBasConsumidosPorTurnoMax));	//Produccion en comp bas
+				infoSeleccion.Add("" + (edificio.compAvzProducidosPorTurnoMax - edificio.compAvzConsumidosPorTurnoMax));	//Produccion en comp adv
+				infoSeleccion.Add("" + (edificio.matBioProducidoPorTurnoMax - edificio.matBioConsumidoPorTurnoMax));		//Produccion en mat bio
+				//---------
 				return true;
 			}
 		}
 		//Si la casilla esta vacia...
 		tipoSeleccion = -1;
 		return false;
+	}
+	
+	private void imagenInsercionBloqueDerecho() {
+		switch ((int)elementoInsercionDerecho) {
+		case 1:		//fabricaCompBas
+			break;
+		case 2: 	//central energia
+			break;
+		case 3: 	//granja
+			break;
+		case 4: 	//fab comp adv
+			break;
+		case 5: 	//energia adv
+			break;
+		case 6: 	//seta
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta1");
+			break;
+		case 7: 	//flot
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta2");
+			break;
+		case 8: 	//caña
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta3");
+			break;
+		case 9: 	//arbusto
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta4");
+			break;
+		case 10: 	//estromatolito
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta5");
+			break;
+		case 11: 	//cactus
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta6");
+			break;
+		case 12: 	//palmeta
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta7");
+			break;
+		case 13: 	//pino
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta8");
+			break;
+		case 14: 	//cipres
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta9");
+			break;
+		case 15: 	//pinoalto
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta10");
+			break;
+		case 16: 	//herb1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb1");
+			break;
+		case 17: 	//herb2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb2");
+			break;
+		case 18: 	//herb3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb3");
+			break;
+		case 19: 	//herb4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb4");
+			break;
+		case 20: 	//herb5
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb5");
+			break;
+		case 21: 	//carn1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn1");
+			break;
+		case 22: 	//carn2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn2");
+			break;
+		case 23: 	//carn3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn3");
+			break;
+		case 24: 	//carn4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn4");
+			break;
+		case 25: 	//carn5
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn5");
+			break;
+		default: 
+			break;
+		}
+	}
+	
+	private void imagenSeleccionBloqueDerecho() {
+		switch (tipoSeleccion) {
+		case 20:		//fabricaCompBas
+			break;
+		case 21: 	//central energia
+			break;
+		case 22: 	//granja
+			break;
+		case 23: 	//fab comp adv
+			break;
+		case 24: 	//energia adv
+			break;
+		case 0: 	//seta
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta1");
+			break;
+		case 1: 	//flot
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta2");
+			break;
+		case 2: 	//caña
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta3");
+			break;
+		case 3: 	//arbusto
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta4");
+			break;
+		case 4: 	//estromatolito
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta5");
+			break;
+		case 5: 	//cactus
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta6");
+			break;
+		case 6: 	//palmeta
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta7");
+			break;
+		case 7: 	//pino
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta8");
+			break;
+		case 8: 	//cipres
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta9");
+			break;
+		case 9: 	//pinoalto
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta10");
+			break;
+		case 10: 	//herb1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb1");
+			break;
+		case 11: 	//herb2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb2");
+			break;
+		case 12: 	//herb3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb3");
+			break;
+		case 13: 	//herb4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb4");
+			break;
+		case 14: 	//herb5
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHerb5");
+			break;
+		case 15: 	//carn1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn1");
+			break;
+		case 16: 	//carn2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn2");
+			break;
+		case 17: 	//carn3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn3");
+			break;
+		case 18: 	//carn4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn4");
+			break;
+		case 19: 	//carn5
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaCarn5");
+			break;
+		default: 
+			break;
+		}
 	}
 }
