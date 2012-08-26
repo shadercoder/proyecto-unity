@@ -389,7 +389,7 @@ public class Vida //: MonoBehaviour
 		Vector3 coordsVert = posicionAleatoriaVegetal(posX,posY);
 		//Vector3 coordsVert = tablero[posX,posY].coordsVert;
 		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,habitabilidad,tablero[posX,posY].habitat,FuncTablero.creaMesh(coordsVert, modelo));
-		vegetal.modelo.transform.position = objetoRoca.TransformPoint(vegetal.modelo.transform.position);
+		vegetal.modelos[0].transform.position = objetoRoca.TransformPoint(vegetal.modelos[0].transform.position);
 		seres.Add(vegetal);
 		//int turno = (turnoActual + especie.siguienteTurno)%numMaxTurnos;
 		//listadoSeresTurnos[turno].Add(vegetal);
@@ -501,7 +501,8 @@ public class Vida //: MonoBehaviour
 	{
 		if(!vegetales.Contains(vegetal))
 			return false;
-		UnityEngine.Object.Destroy(vegetal.modelo);
+		for(int i = 0; i < vegetal.modelos.Count; i++)			
+			UnityEngine.Object.Destroy(vegetal.modelos[i]);
 		//listadoSeresTurnos[turnoActual].Remove(vegetal);
 		tablero[vegetal.posX,vegetal.posY].vegetal = null;
 		seres.Remove(vegetal);
@@ -552,32 +553,19 @@ public class Vida //: MonoBehaviour
 	public bool desplazaAnimal(Animal animal,int nposX,int nposY)
 	{		
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
-		//while(animal.posX != nposX || animal.posY != nposY)		
-		//{			
-			if(!tieneEdificio(nposX,nposY) && !tieneAnimal(nposX,nposY) && animal.especie.tieneHabitat(tablero[nposX,nposY].habitat))
-			{
-				tablero[animal.posX,animal.posY].animal = null;
-				animal.desplazarse(nposX,nposY);
-				tablero[nposX,nposY].animal = animal;
-				//Mover la malla
-				/*float x = (tablero[nposX,nposY].coordsVert.x + tablero[nposX-1,nposY].coordsVert.x)/2;
-				float y = (tablero[nposX,nposY].coordsVert.y + tablero[nposX-1,nposY].coordsVert.y)/2;
-				float z = (tablero[nposX,nposY].coordsVert.z + tablero[nposX-1,nposY].coordsVert.z)/2;
-				Vector3 coordsVert = new Vector3(x,y,z);
-				*/
-				Vector3 coordsVert = tablero[nposX,nposY].coordsVert;
-				animal.modelo.transform.position = coordsVert;				
-				Vector3 normal = animal.modelo.transform.position - animal.modelo.transform.parent.position;
-				animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
-				animal.modelo.transform.rotation = Quaternion.LookRotation(normal);
-				return true;
-			}	
-			/*if(nposX > animal.posX) nposX--;
-			else if(nposX < animal.posX) nposX++;
-			if(nposY > animal.posY) nposY--;
-			else if(nposY < animal.posY) nposY++;
-			FuncTablero.convierteCoordenadas(ref nposX,ref nposY);*/				
-		//}
+		if(!tieneEdificio(nposX,nposY) && !tieneAnimal(nposX,nposY) && animal.especie.tieneHabitat(tablero[nposX,nposY].habitat))
+		{
+			tablero[animal.posX,animal.posY].animal = null;
+			animal.desplazarse(nposX,nposY);
+			tablero[nposX,nposY].animal = animal;
+			//Mover la malla
+			Vector3 coordsVert = tablero[nposX,nposY].coordsVert;
+			animal.modelo.transform.position = coordsVert;				
+			Vector3 normal = animal.modelo.transform.position - animal.modelo.transform.parent.position;
+			animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
+			animal.modelo.transform.rotation = Quaternion.LookRotation(normal);
+			return true;
+		}	
 		return false;
 	}
 	
@@ -661,6 +649,25 @@ public class Vida //: MonoBehaviour
 		return recoleccion;		
 	}
 	
+	public void actualizaModelosVegetal(Vegetal vegetal)
+	{
+		float cantidad = (float)(vegetal.numVegetales)/(float)(vegetal.especie.numMaxVegetales);
+		int numModelos = (int)(vegetal.especie.numMaxModelos * cantidad);
+		if(numModelos > vegetal.modelos.Count)
+		{
+			GameObject modelo = vegetal.especie.modelos[UnityEngine.Random.Range(0,vegetal.especie.modelos.Count)];
+			Vector3 coordsVert = posicionAleatoriaVegetal(vegetal.posX,vegetal.posY);
+			modelo = FuncTablero.creaMesh(coordsVert, modelo);
+			modelo.transform.position = objetoRoca.TransformPoint(modelo.transform.position);
+			vegetal.modelos.Add(modelo);					
+		}
+		else if (numModelos < vegetal.modelos.Count && vegetal.modelos.Count > 1)
+		{
+			UnityEngine.Object.Destroy(vegetal.modelos[vegetal.modelos.Count-1]);
+			vegetal.modelos.RemoveAt(vegetal.modelos.Count-1);
+		}
+	}
+	
 	//Devuelve true si el animal se ha alimentado y false si no
 	public bool buscaAlimentoAnimal(Animal animal)
 	{
@@ -740,7 +747,9 @@ public class Vida //: MonoBehaviour
 				if(vegetal.migracionLocal())
 					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,1);
 				if(vegetal.migracionGlobal())
-					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,vegetal.especie.radioMigracion);				
+					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,vegetal.especie.radioMigracion);
+				
+				actualizaModelosVegetal(vegetal);
 			}
 			else if(ser is Animal)
 			{
@@ -1051,9 +1060,10 @@ public class EspecieVegetal : Especie
 	public float evolucion;								//Valor en el que mejora la habitabilidad en el habitat actual
 	public List<float> habitabilidadInicial;			//Habitabilidad inicial para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
 	public int idTextura;
-		
+	public int numMaxModelos;
+	
 	public EspecieVegetal(string nombre, int numMaxSeresEspecie, int numMaxVegetales, int numIniVegetales, float capacidadMigracionLocal, float capacidadMigracionGlobal, 
-	                      int radioMigracion, int turnosEvolucionInicial, float evolucion, List<float> habitabilidadInicial, int idTextura, GameObject modelo)
+	                      int radioMigracion, int turnosEvolucionInicial, float evolucion, List<float> habitabilidadInicial, int idTextura, int numMaxModelos, GameObject modelo)
 	{
 		this.nombre = nombre;
 		this.numMaxSeresEspecie = numMaxSeresEspecie;		
@@ -1066,12 +1076,14 @@ public class EspecieVegetal : Especie
 		this.evolucion = evolucion;
 		this.habitabilidadInicial = habitabilidadInicial;
 		this.idTextura = idTextura;
+		this.numMaxModelos = numMaxModelos;
 		modelos = new List<GameObject>();
 		modelos.Add(modelo);
 		numSeresEspecie = 0;
+		this.numMaxModelos = numMaxModelos;
 	}
 	public EspecieVegetal(string nombre, int numMaxSeresEspecie, int numMaxVegetales, int numIniVegetales, float capacidadMigracionLocal,float capacidadMigracionGlobal, 
-	                      int radioMigracion, int turnosEvolucionInicial, float evolucion, List<float> habitabilidadInicial, int idTextura, List<GameObject> modelos)
+	                      int radioMigracion, int turnosEvolucionInicial, float evolucion, List<float> habitabilidadInicial, int idTextura, int numMaxModelos, List<GameObject> modelos)
 	{
 		this.nombre = nombre;
 		this.numMaxSeresEspecie = numMaxSeresEspecie;
@@ -1084,6 +1096,7 @@ public class EspecieVegetal : Especie
 		this.evolucion = evolucion;
 		this.habitabilidadInicial = habitabilidadInicial;
 		this.idTextura = idTextura;
+		this.numMaxModelos = numMaxModelos;
 		this.modelos = modelos;
 		numSeresEspecie = 0;
 	}	
@@ -1144,7 +1157,7 @@ public class Ser
 	public int idSer;								//Id del ser
 	public int posX;
 	public int posY;	
-	public GameObject modelo;
+	
 }
 
 [System.Serializable]
@@ -1155,6 +1168,7 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 	public List<float> habitabilidad;				//Habitabilidad actual para cada hábitat desde -1.0(no puede habitar) hasta 1.0 (habita de forma ideal)
 	public int indiceHabitat;						//Habitat en el que se encuentra actualmente el vegetal
 	public int turnosEvolucion;						//Turnos que quedan para que el vegetal evolucione mejorando la habitabilidad del habitat actual
+	public List<GameObject> modelos;
 	
 	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, T_habitats habitatActual, GameObject modelo)
 	{
@@ -1169,7 +1183,8 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		for(int i = 0; i < especie.habitabilidadInicial.Count;i++)
 			habitabilidad.Add(especie.habitabilidadInicial[i]);
 		this.indiceHabitat = (int)habitatActual;
-		this.modelo = modelo;
+		this.modelos = new List<GameObject>();
+		modelos.Add(modelo);
 	}
 	
 	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, List<float> habitabilidad, T_habitats habitatActual, GameObject modelo)
@@ -1183,7 +1198,8 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		this.turnosEvolucion = especie.turnosEvolucionInicial;
 		this.habitabilidad = habitabilidad;
 		this.indiceHabitat = (int)habitatActual;
-		this.modelo = modelo;
+		this.modelos = new List<GameObject>();
+		modelos.Add(modelo);
 	}
 	
 	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, T_habitats habitatActual, int numVegetales,GameObject modelo)
@@ -1196,7 +1212,8 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		this.numVegetales = numVegetales;
 		this.turnosEvolucion = especie.turnosEvolucionInicial;
 		this.indiceHabitat = (int)habitatActual;
-		this.modelo = modelo;
+		this.modelos = new List<GameObject>();
+		modelos.Add(modelo);
 	}	
 	
 	public void modificaHabitat(T_habitats habitat)
@@ -1290,6 +1307,7 @@ public class Animal : Ser
 	public int turnosParaReproduccion;				//Número de turnos que quedan para que el animal se reproduzca, al llegar a 0 se reproduce y se resetea a reproductibilidad
 	public int aguante;								//Número de turnos seguidos (que le quedan) que puede desplazarse sin agotarse
 	public tipoEstadoAnimal estado;					//Estado en el que se encuentra el animal
+	public GameObject modelo;
 	
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY,GameObject modelo)
 	{
@@ -1384,6 +1402,7 @@ public class Edificio : Ser
 	public List<Tupla<int,int,bool>> matrizRadioAccion;
 	public int matBioSinProcesar;
 	public int radioAccion;
+	public GameObject modelo;
 	
 	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion,GameObject modelo)
 	{

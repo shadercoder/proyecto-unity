@@ -134,7 +134,7 @@ public class TiposSeres : MonoBehaviour {
 		habSeta.Add(-0.6f);//costa
 		habSeta.Add(-1.0f);//tundra
 		habSeta.Add(-1.0f);//inhabitable		
-		seta = new EspecieVegetal("Seta",50,1000,100,0.05f,0.02f,7,20,0.01f,habSeta,1,modelosVegetales.setas);
+		seta = new EspecieVegetal("Seta",50,1000,100,0.05f,0.02f,7,20,0.01f,habSeta,1,10,modelosVegetales.setas);
 		
 		//Flor: habitats -> llanura
 		//Tier 1. Barata y decente en llanuras. Mediocre produccion de alimento, reproductibilidad buena pero rango de migracion normal.
@@ -148,7 +148,7 @@ public class TiposSeres : MonoBehaviour {
 		habFlor.Add(-1.0f);//costa
 		habFlor.Add(-1.0f);//tundra
 		habFlor.Add(-1.0f);//inhabitable		
-		flor = new EspecieVegetal("Flor",50,1200,150,0.05f,0.02f,4,10,0.01f,habFlor,2,modelosVegetales.flores);//0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
+		flor = new EspecieVegetal("Flor",50,1200,150,0.05f,0.02f,4,10,0.01f,habFlor,2,10,modelosVegetales.flores);//0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
 
 		//Palo (Caña): habitats -> llanura, costa y desierto
 		//Tier 2. Normal en llanura, desierto y costa, produccion de alimento normal, reproductibilidad normal y rango alto. Alto ratio de evolucion.
@@ -162,7 +162,7 @@ public class TiposSeres : MonoBehaviour {
 		habCana.Add( 0.3f);//costa
 		habCana.Add(-1.0f);//tundra
 		habCana.Add(-1.0f);//inhabitable		
-		palo = new EspecieVegetal("Caña",50,1500,200,0.05f,0.01f,6,8,0.04f,habCana,3,modelosVegetales.canas);
+		palo = new EspecieVegetal("Caña",50,1500,200,0.05f,0.01f,6,8,0.04f,habCana,3,10,modelosVegetales.canas);
 		
 		//Arbusto: habitats -> llanura, colina, montaña y desierto
 		//Tier 2. Decente en llanura y colina. Produccion normal y reproductibilidad normal. Rango bajo y evolucion lenta pero alta.
@@ -176,7 +176,7 @@ public class TiposSeres : MonoBehaviour {
 		habArbusto.Add(-1.0f);//costa
 		habArbusto.Add(-1.0f);//tundra
 		habArbusto.Add(-1.0f);//inhabitable		
-		arbusto = new EspecieVegetal("Arbusto",50,1800,120,0.04f,0.01f,3,20,0.1f,habArbusto,2,modelosVegetales.arbustos);
+		arbusto = new EspecieVegetal("Arbusto",50,1800,120,0.04f,0.01f,3,20,0.1f,habArbusto,2,5,modelosVegetales.arbustos);
 
 		//Estrom (Estromatolito): habitats -> costa, desierto y volcanico
 		//Tier 3. Muy buena en costas. Alta produccion de alimento y reproductibilidad un poco baja. Poca migracion y poco radio. Evolucion decente.
@@ -190,7 +190,7 @@ public class TiposSeres : MonoBehaviour {
 		habEstrom.Add( 0.8f);//costa
 		habEstrom.Add(-0.4f);//tundra
 		habEstrom.Add(-1.0f);//inhabitable		
-		estrom = new EspecieVegetal("Estromatolito",50,2400,350,0.03f,0.01f,3,25,0.03f,habEstrom,4,modelosVegetales.estromatolitos);
+		estrom = new EspecieVegetal("Estromatolito",50,2400,350,0.03f,0.01f,3,25,0.03f,habEstrom,4,5,modelosVegetales.estromatolitos);
 
 		//Cactus: habitats -> desierto
 		//Tier 3. Muy buena en desierto y buena en volcanico. Produccion de alimento decente, reproductibilidad normal, alto ratio de migracion y alta evolucion.
@@ -204,7 +204,7 @@ public class TiposSeres : MonoBehaviour {
 		habCactus.Add(-1.0f);//costa
 		habCactus.Add(-1.0f);//tundra
 		habCactus.Add(-1.0f);//inhabitable		
-		cactus = new EspecieVegetal("Cactus",50,2200,250,0.03f,0.03f,8,12,0.07f,habCactus,0,modelosVegetales.cactus);
+		cactus = new EspecieVegetal("Cactus",50,2200,250,0.03f,0.03f,8,12,0.07f,habCactus,0,3,modelosVegetales.cactus);
 
 		//Palmera: habitats -> costa
 		//Tier 4. Buenisima en costas y mala en llanuras. Alta produccion, reproductibilidad buena, alta migracion y alta evolucion.
@@ -218,7 +218,7 @@ public class TiposSeres : MonoBehaviour {
 		habPalm.Add( 0.9f);//costa
 		habPalm.Add(-1.0f);//tundra
 		habPalm.Add(-1.0f);//inhabitable		
-		palmera = new EspecieVegetal("Palmera",50,3000,400,0.04f,0.03f,5,15,0.1f,habPalm,3,modelosVegetales.palmeras);
+		palmera = new EspecieVegetal("Palmera",50,3000,400,0.04f,0.03f,5,15,0.1f,habPalm,3,5,modelosVegetales.palmeras);
 
 		//Pino: habitats -> tundra, colina y montaña
 		//Tier 4. Muy buena en colinas, buena en llanura y mediocreo en montañas. Produccion buena, reproductibilidad buena, migracion mediocre y evolucion alta.
@@ -232,7 +232,7 @@ public class TiposSeres : MonoBehaviour {
 		habPino.Add(-0.1f);//costa
 		habPino.Add(-1.0f);//tundra
 		habPino.Add(-1.0f);//inhabitable		
-		pino = new EspecieVegetal("Pino",50,3500,250,0.05f,0.02f,5,20,0.15f,habPino,4,modelosVegetales.pinos);
+		pino = new EspecieVegetal("Pino",50,3500,250,0.05f,0.02f,5,20,0.15f,habPino,4,5,modelosVegetales.pinos);
 
 		//Ciprés: habitats -> tundra, colina y montaña
 		//Tier 5. Bueno en muchos habitats. Procuddion muy alta, reproduccion buena, migracion normal y evolucion altisima.
@@ -246,7 +246,7 @@ public class TiposSeres : MonoBehaviour {
 		habCipres.Add(-0.1f);//costa
 		habCipres.Add( 0.6f);//tundra
 		habCipres.Add(-1.0f);//inhabitable		
-		cipres = new EspecieVegetal("Ciprés",50,4000,450,0.06f,0.02f,6,10,0.2f,habCipres,4,modelosVegetales.cipreses);
+		cipres = new EspecieVegetal("Ciprés",50,4000,450,0.06f,0.02f,6,10,0.2f,habCipres,4,5,modelosVegetales.cipreses);
 
 		//Pino Alto: habitats -> tundra y montaña
 		//Tier 5. Muy bueno en montaña y colina, y decente en mas. Produccion altisima, reproduccion buena, migracion alta y evolucion muy alta.
@@ -260,9 +260,7 @@ public class TiposSeres : MonoBehaviour {
 		habPinoAlto.Add(-0.5f);//costa
 		habPinoAlto.Add( 0.3f);//tundra
 		habPinoAlto.Add(-1.0f);//inhabitable		
-		pinoAlto = new EspecieVegetal("Pino Alto",50,5000,600,0.05f,0.02f,6,12,0.2f,habPinoAlto,1,modelosVegetales.pinosAltos);
-		
-		
+		pinoAlto = new EspecieVegetal("Pino Alto",50,5000,600,0.05f,0.02f,6,12,0.2f,habPinoAlto,1,5,modelosVegetales.pinosAltos);
 		List<T_habitats> listaHabs = new List<T_habitats>();
 		listaHabs.Add(T_habitats.costa);
 		listaHabs.Add(T_habitats.llanura);
