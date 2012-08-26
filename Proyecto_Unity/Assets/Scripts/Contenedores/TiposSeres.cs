@@ -54,12 +54,12 @@ public class TiposSeres : MonoBehaviour {
 	private string descripcionHerb2				= "[RELLENAR] desc Conejo";
 	private string descripcionHerb3				= "[RELLENAR] desc Vacas";
 	private string descripcionHerb4				= "[RELLENAR] desc Jirafas";
-	private string descripcionHerb5				= "[RELLENAR] desc Tortuga";
+	private string descripcionHerb5				= "[RELLENAR] desc Estegosaurio";
 	private string descripcionCarn1				= "[RELLENAR] desc Rata";
-	private string descripcionCarn2				= "[RELLENAR] desc Zorro";
-	private string descripcionCarn3				= "[RELLENAR] desc Arana";
+	private string descripcionCarn2				= "[RELLENAR] desc Lobo";
+	private string descripcionCarn3				= "[RELLENAR] desc Tigre";
 	private string descripcionCarn4				= "[RELLENAR] desc Oso";
-	private string descripcionCarn5				= "[RELLENAR] desc Dino";
+	private string descripcionCarn5				= "[RELLENAR] desc T-Rex";
 	private string descripcionFabBas			= "En este edificio se producen componentes de construccion basicos, necesarios para casi todas las construcciones que puede erigir la nave y para las reparaciones.";
 	private string descripcionEnergia1			= "A traves de un reactor de fusion y otro de fision, este edificio produce una alta cantidad de energia. Este combinado de reacciones es practicamente inagotable y limpio.";
 	private string descripcionGranja			= "Recolectando seres vivos de los alrededores, la granja es capaz de refinar compuestos de material biologico esenciales para el fin de la mision encomendada a la nave.";
@@ -146,6 +146,9 @@ public class TiposSeres : MonoBehaviour {
 		idTextura					=>	id de la textura que se pinta debajo del modelo
 		modelos						=>	lista de los diferentes modelos que tiene la especie		
 		*/
+		
+		//VEGETALES ------------------------------------------------------------
+		
 		//Seta: habitats -> llanura y colina
 		//Tier 1. Barata y normal en llanura y colina. Poca produccion de comida pero alta reproductibilidad y rango de migracion
 		List<float> habSeta = new List<float>();
@@ -336,6 +339,9 @@ public class TiposSeres : MonoBehaviour {
 		costePinoAlto.Add(130);//Coste comp adv
 		costePinoAlto.Add(25);//Coste mat bio
 		
+		
+		//ANIMALES ----------------------------------------------------
+		
 		List<T_habitats> listaHabs = new List<T_habitats>();
 		listaHabs.Add(T_habitats.costa);
 		listaHabs.Add(T_habitats.llanura);
@@ -345,83 +351,59 @@ public class TiposSeres : MonoBehaviour {
 		
 		
 		/* Herbivoros */
-		listaHabs.Clear();
+		listaHabs = new List<T_habitats>();;
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.costa);
 		
 		//Caracol: habitats -> 
-		List<Animation> animacionesHerb1 = new List<Animation>();
-		/*animacionesHerb1.Add(nacer);
-		animacionesHerb1.Add(descansar);
-		animacionesHerb1.Add(buscarAlimento);
-		animacionesHerb1.Add(comer);
-		animacionesHerb1.Add(morir);*/
-		herbivoro1 = new EspecieAnimal("Conejo",10,75,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
+		herbivoro1 = new EspecieAnimal("Caracol",10,75,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1);
 		costeHerb1 = new List<int>();
 		costeHerb1.Add(250);//Coste energia
 		costeHerb1.Add(150);//Coste comp bas
 		costeHerb1.Add(0);//Coste comp adv
 		costeHerb1.Add(10);//Coste mat bio
 		
+		listaHabs = new List<T_habitats>();
+		listaHabs.Add(T_habitats.llanura);
+		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.desierto);
 		//Conejo: habitats -> 
-		List<Animation> animacionesHerb2 = new List<Animation>();
-		/*animacionesHerb2.Add(nacer);
-		animacionesHerb2.Add(descansar);
-		animacionesHerb2.Add(buscarAlimento);
-		animacionesHerb2.Add(comer);
-		animacionesHerb2.Add(morir);*/
-		herbivoro2 = new EspecieAnimal("Camello",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro2,animacionesHerb2);
+		herbivoro2 = new EspecieAnimal("Conejo",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro2);
 		costeHerb2 = new List<int>();
 		costeHerb2.Add(330);//Coste energia
 		costeHerb2.Add(180);//Coste comp bas
 		costeHerb2.Add(0);//Coste comp adv
 		costeHerb2.Add(15);//Coste mat bio
 		
-		listaHabs.Clear();
+		listaHabs = new List<T_habitats>();
 		listaHabs.Add(T_habitats.costa);
 		//Vacas: habitats ->
-		List<Animation> animacionesHerb3 = new List<Animation>();
-		/*animacionesHerb3.Add(nacer);
-		animacionesHerb3.Add(descansar);
-		animacionesHerb3.Add(buscarAlimento);
-		animacionesHerb3.Add(comer);
-		animacionesHerb3.Add(morir);*/
-		herbivoro3 = new EspecieAnimal("Tortuga",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro3,animacionesHerb3);
+		herbivoro3 = new EspecieAnimal("Vaca",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro3);
 		costeHerb3 = new List<int>();
 		costeHerb3.Add(400);//Coste energia
 		costeHerb3.Add(200);//Coste comp bas
 		costeHerb3.Add(30);//Coste comp adv
 		costeHerb3.Add(25);//Coste mat bio
 		
-		listaHabs.Clear();
+		listaHabs = new List<T_habitats>();
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
-		
 		//Jirafas: habitats -> 
-		List<Animation> animacionesHerb4 = new List<Animation>();
-		/*animacionesHerb4.Add(nacer);
-		animacionesHerb4.Add(descansar);
-		animacionesHerb4.Add(buscarAlimento);
-		animacionesHerb4.Add(comer);
-		animacionesHerb4.Add(morir);*/
-		herbivoro4 = new EspecieAnimal("Ciervo",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro4,animacionesHerb4);
+		herbivoro4 = new EspecieAnimal("Jirafa",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro4);
 		costeHerb4 = new List<int>();
 		costeHerb4.Add(530);//Coste energia
 		costeHerb4.Add(250);//Coste comp bas
 		costeHerb4.Add(95);//Coste comp adv
 		costeHerb4.Add(35);//Coste mat bio
 		
+		listaHabs = new List<T_habitats>();
+		listaHabs.Add(T_habitats.montana);
+		listaHabs.Add(T_habitats.volcanico);
+		listaHabs.Add(T_habitats.colina);
 		//Tortuga: habitats-> 
-		List<Animation> animacionesHerb5 = new List<Animation>();
-		/*animacionesHerb5.Add(nacer);
-		animacionesHerb5.Add(descansar);
-		animacionesHerb5.Add(buscarAlimento);
-		animacionesHerb5.Add(comer);
-		animacionesHerb5.Add(morir);*/
-		herbivoro5 = new EspecieAnimal("Salamandra",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5,animacionesHerb5);
+		herbivoro5 = new EspecieAnimal("Estegosaurio",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5);
 		costeHerb5 = new List<int>();
 		costeHerb5.Add(650);//Coste energia
 		costeHerb5.Add(280);//Coste comp bas
@@ -429,28 +411,25 @@ public class TiposSeres : MonoBehaviour {
 		costeHerb5.Add(50);//Coste mat bio
 		
 		/* Carnivoros */
-		//Rata: habitats -> 
-		List<Animation> animacionesCarn1 = new List<Animation>();
-		/*animacionesCarn1.Add(nacer);
-		animacionesCarn1.Add(descansar);
-		animacionesCarn1.Add(buscarAlimento);
-		animacionesCarn1.Add(comer);
-		animacionesCarn1.Add(morir);*/
-		carnivoro1 = new EspecieAnimal("Zorro",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1,animacionesCarn1);
+		
+		//Zorro: habitats ->
+		listaHabs = new List<T_habitats>();
+		listaHabs.Add(T_habitats.tundra);
+		listaHabs.Add(T_habitats.llanura);
+		listaHabs.Add(T_habitats.colina);
+		carnivoro1 = new EspecieAnimal("Rata",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1);
 		costeCarn1 = new List<int>();
 		costeCarn1.Add(300);//Coste energia
 		costeCarn1.Add(180);//Coste comp bas
 		costeCarn1.Add(20);//Coste comp adv
 		costeCarn1.Add(15);//Coste mat bio
 		
-		//Zorro: habitats -> 
-		List<Animation> animacionesCarn2 = new List<Animation>();
-		/*animacionesCarn2.Add(nacer);
-		animacionesCarn2.Add(descansar);
-		animacionesCarn2.Add(buscarAlimento);
-		animacionesCarn2.Add(comer);
-		animacionesCarn2.Add(morir);*/
-		carnivoro2 = new EspecieAnimal("Lobo",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2,animacionesCarn2);
+		//Lobo: habitats -> 
+		listaHabs = new List<T_habitats>();
+		listaHabs.Add(T_habitats.llanura);
+		listaHabs.Add(T_habitats.colina);
+		listaHabs.Add(T_habitats.desierto);
+		carnivoro2 = new EspecieAnimal("Lobo",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2);
 		costeCarn2 = new List<int>();
 		costeCarn2.Add(380);//Coste energia
 		costeCarn2.Add(220);//Coste comp bas
@@ -458,41 +437,34 @@ public class TiposSeres : MonoBehaviour {
 		costeCarn2.Add(25);//Coste mat bio
 		
 		//Araña: habitats -> 
-		List<Animation> animacionesCarn3 = new List<Animation>();
-		/*animacionesCarn3.Add(nacer);
-		animacionesCarn3.Add(descansar);
-		animacionesCarn3.Add(buscarAlimento);
-		animacionesCarn3.Add(comer);
-		animacionesCarn3.Add(morir);*/
-		carnivoro3 = new EspecieAnimal("Serpiente",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3,animacionesCarn3);
+		listaHabs = new List<T_habitats>();
+		listaHabs.Add(T_habitats.llanura);
+		listaHabs.Add(T_habitats.colina);
+		listaHabs.Add(T_habitats.desierto);
+		carnivoro3 = new EspecieAnimal("Tigre",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3);
 		costeCarn3 = new List<int>();
 		costeCarn3.Add(490);//Coste energia
 		costeCarn3.Add(340);//Coste comp bas
 		costeCarn3.Add(140);//Coste comp adv
 		costeCarn3.Add(50);//Coste mat bio
 		
-		//Oso: habitats -> 
-		List<Animation> animacionesCarn4 = new List<Animation>();
-		/*animacionesCarn4.Add(nacer);
-		animacionesCarn4.Add(descansar);
-		animacionesCarn4.Add(buscarAlimento);
-		animacionesCarn4.Add(comer);
-		animacionesCarn4.Add(morir);*/
-		carnivoro4 = new EspecieAnimal("Tigre",10,50,1500,750,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4,animacionesCarn4);
+		//Oso: habitats ->
+		listaHabs = new List<T_habitats>();
+		listaHabs.Add(T_habitats.llanura);
+		listaHabs.Add(T_habitats.colina);
+		listaHabs.Add(T_habitats.desierto);
+		carnivoro4 = new EspecieAnimal("Oso",10,50,1500,750,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4);
 		costeCarn4 = new List<int>();
 		costeCarn4.Add(660);//Coste energia
 		costeCarn4.Add(400);//Coste comp bas
 		costeCarn4.Add(250);//Coste comp adv
 		costeCarn4.Add(80);//Coste mat bio
 		
-		//Velocitaptor: habitats -> 
-		List<Animation> animacionesCarn5 = new List<Animation>();
-		/*animacionesCarn5.Add(nacer);
-		animacionesCarn5.Add(descansar);
-		animacionesCarn5.Add(buscarAlimento);
-		animacionesCarn5.Add(comer);
-		animacionesCarn5.Add(morir);*/
-		carnivoro5 = new EspecieAnimal("Velociraptor",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5,animacionesCarn5);
+		//Velocitaptor: habitats ->
+		listaHabs.Add(T_habitats.llanura);
+		listaHabs.Add(T_habitats.colina);
+		listaHabs.Add(T_habitats.desierto);
+		carnivoro5 = new EspecieAnimal("Tiranosaurio",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5);
 		costeCarn5 = new List<int>();
 		costeCarn5.Add(800);//Coste energia
 		costeCarn5.Add(550);//Coste comp bas
