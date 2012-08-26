@@ -3,7 +3,7 @@ guid: 5bfb5759d5a031b45a205eb3a564fb5e
 ModelImporter:
   importerVersion: 7
   meshes:
-    scaleFactor: 0.5
+    scaleFactor: 0.25
     useFileUnits: 1
     meshCompression: 0
     generateColliders: 0
