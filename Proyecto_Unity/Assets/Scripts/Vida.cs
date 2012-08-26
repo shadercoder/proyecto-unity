@@ -66,6 +66,8 @@ public class Vida //: MonoBehaviour
 	public int[,] matrizRadio5Circular;
 	public int[,] matrizRadio6Circular;
 	
+	private const float	tiempoTurno = 3.0f;
+	
 	public Vida()
 	{
 		especies = new List<Especie>();
@@ -553,19 +555,40 @@ public class Vida //: MonoBehaviour
 	public bool desplazaAnimal(Animal animal,int nposX,int nposY)
 	{		
 		FuncTablero.convierteCoordenadas(ref nposX,ref nposY);
-		if(!tieneEdificio(nposX,nposY) && !tieneAnimal(nposX,nposY) && animal.especie.tieneHabitat(tablero[nposX,nposY].habitat))
-		{
-			tablero[animal.posX,animal.posY].animal = null;
-			animal.desplazarse(nposX,nposY);
-			tablero[nposX,nposY].animal = animal;
-			//Mover la malla
-			Vector3 coordsVert = tablero[nposX,nposY].coordsVert;
-			animal.modelo.transform.position = coordsVert;				
-			Vector3 normal = animal.modelo.transform.position - animal.modelo.transform.parent.position;
-			animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
-			animal.modelo.transform.rotation = Quaternion.LookRotation(normal);
-			return true;
-		}	
+		//while(animal.posX != nposX || animal.posY != nposY)		
+		//{			
+			if(!tieneEdificio(nposX,nposY) && !tieneAnimal(nposX,nposY) && animal.especie.tieneHabitat(tablero[nposX,nposY].habitat))
+			{
+				tablero[animal.posX,animal.posY].animal = null;
+				animal.desplazarse(nposX,nposY);
+				tablero[nposX,nposY].animal = animal;
+				//Mover la malla
+				/*float x = (tablero[nposX,nposY].coordsVert.x + tablero[nposX-1,nposY].coordsVert.x)/2;
+				float y = (tablero[nposX,nposY].coordsVert.y + tablero[nposX-1,nposY].coordsVert.y)/2;
+				float z = (tablero[nposX,nposY].coordsVert.z + tablero[nposX-1,nposY].coordsVert.z)/2;
+				Vector3 coordsVert = new Vector3(x,y,z);
+				*/
+				//Comento esto para probar las animaciones
+				/*
+				Vector3 coordsVert = tablero[nposX,nposY].coordsVert;
+				animal.modelo.transform.position = coordsVert;				
+				Vector3 normal = animal.modelo.transform.position - animal.modelo.transform.parent.position;
+				animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
+				animal.modelo.transform.rotation = Quaternion.LookRotation(normal);
+				return true;
+				*/
+			
+				Vector3 coordsVert = tablero[nposX,nposY].coordsVert;
+				coordsVert = objetoRoca.TransformPoint(coordsVert);
+				animal.modelo.GetComponent<MovimientoAnimales>().moverAnimal(coordsVert, tiempoTurno);
+				return true;
+			}	
+			/*if(nposX > animal.posX) nposX--;
+			else if(nposX < animal.posX) nposX++;
+			if(nposY > animal.posY) nposY--;
+			else if(nposY < animal.posY) nposY++;
+			FuncTablero.convierteCoordenadas(ref nposX,ref nposY);*/				
+		//}
 		return false;
 	}
 	

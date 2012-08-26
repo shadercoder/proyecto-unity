@@ -34,8 +34,10 @@ public class Principal : MonoBehaviour {
 	public Vida vida;													//Tablero lógico del algoritmo		
 	private float tiempoPaso					= 0.0f;					//El tiempo que lleva el paso actual del algoritmo
 	public int numPasos							= 0;					//Numero de pasos del algoritmo ejecutados
-	private bool algoritmoActivado				= true;				//Se encuentra activado el algoritmo de la vida?
-	private bool algoritmoPasoAPaso = false;
+	private bool algoritmoActivado				= true;					//Se encuentra activado el algoritmo de la vida?
+	private bool algoritmoPasoAPaso 			= false;
+	private const float tiempoTurno				= 3.0f;					//El tiempo que dura un turno del algoritmo
+	
 	//Escala de tiempo
 	public float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	
@@ -70,7 +72,7 @@ public class Principal : MonoBehaviour {
 	void FixedUpdate() {
 		//Algoritmo de vida		
 		tiempoPaso += Time.deltaTime;		
-		if(algoritmoActivado && tiempoPaso > 3.0f) 		//El 1.0f significa que se ejecuta un paso cada 1.0 segundos, cuando la escala temporal esta a 1.0
+		if(algoritmoActivado && tiempoPaso > tiempoTurno)
 		{		
 			actualizaRecursos();
 			vida.algoritmoVida(numPasos);
