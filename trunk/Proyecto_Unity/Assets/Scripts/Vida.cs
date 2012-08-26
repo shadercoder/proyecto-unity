@@ -716,7 +716,7 @@ public class Vida //: MonoBehaviour
 					nPosY = animal.posY + posicionesColindantes[i].e2;					
 					FuncTablero.convierteCoordenadas(ref nPosX,ref nPosY);
 					if(desplazaAnimal(animal,nPosX,nPosY))
-						break;
+						return false;
 				}				
 			}
 		}
@@ -728,7 +728,7 @@ public class Vida //: MonoBehaviour
 				nPosX = animal.posX + posicionesColindantes[i].e1;
 				nPosY = animal.posY + posicionesColindantes[i].e2;					
 				FuncTablero.convierteCoordenadas(ref nPosX,ref nPosY);
-				if(tablero[nPosX,nPosY].animal != null)
+				if(tablero[nPosX,nPosY].animal != null && animal.esHabitable(tablero[nPosX,nPosY].habitat))
 					if(tablero[nPosX,nPosY].animal.especie.tipo == tipoAlimentacionAnimal.herbivoro)					
 					{
 						int comida = tablero[nPosX,nPosY].animal.reserva % animal.especie.alimentoMaxTurno;
@@ -738,7 +738,15 @@ public class Vida //: MonoBehaviour
 						desplazaAnimal(animal,nPosX,nPosY);
 						return true;					
 					}
-			}			
+			}
+			for(int i = 0; i < posicionesColindantes.Count; i++)
+			{
+				nPosX = animal.posX + posicionesColindantes[i].e1;
+				nPosY = animal.posY + posicionesColindantes[i].e2;					
+				FuncTablero.convierteCoordenadas(ref nPosX,ref nPosY);
+				if(desplazaAnimal(animal,nPosX,nPosY))					
+					return false;
+			}
 		}
 		return false;
 	}	
@@ -1405,6 +1413,12 @@ public class Animal : Ser
 		this.posX = posXin;
 		this.posY = posYin;
 	}		
+	
+	//Devuelve si un hábitat es habitable para un vegetal
+	public bool esHabitable(T_habitats habitat)
+	{
+		return (especie.habitats.Contains(habitat));
+	}
 }
 
 [System.Serializable]
