@@ -1523,21 +1523,37 @@ public class InterfazPrincipal : MonoBehaviour
 
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoFiltroAnimales");
-			togglesFiltros[14] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[14], new GUIContent ("", "Filtrar la especie Carnivoro1"), "BotonInsertarCarnivoro1");
-			togglesFiltros[15] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[15], new GUIContent ("", "Filtrar la especie Carnivoro2"), "BotonInsertarCarnivoro2");
-			togglesFiltros[16] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[16], new GUIContent ("", "Filtrar la especie Carnivoro3"), "BotonInsertarCarnivoro3");
-			togglesFiltros[17] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[17], new GUIContent ("", "Filtrar la especie Carnivoro4"), "BotonInsertarCarnivoro4");
-			togglesFiltros[18] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[18], new GUIContent ("", "Filtrar la especie Carnivoro5"), "BotonInsertarCarnivoro5");
-			togglesFiltros[19] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[19], new GUIContent ("", "Filtrar la especie Herbivoro1"), "BotonInsertarHerbivoro1");
-			togglesFiltros[20] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[20], new GUIContent ("", "Filtrar la especie Herbivoro2"), "BotonInsertarHerbivoro2");
-			togglesFiltros[21] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[21], new GUIContent ("", "Filtrar la especie Herbivoro3"), "BotonInsertarHerbivoro3");
-			togglesFiltros[22] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[22], new GUIContent ("", "Filtrar la especie Herbivoro4"), "BotonInsertarHerbivoro4");
-			togglesFiltros[23] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[23], new GUIContent ("", "Filtrar la especie Herbivoro5"), "BotonInsertarHerbivoro5");
+			togglesFiltros[19] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[19], new GUIContent ("", "Filtrar la especie Carnivoro1"), "BotonInsertarCarnivoro1");
+			togglesFiltros[20] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[20], new GUIContent ("", "Filtrar la especie Carnivoro2"), "BotonInsertarCarnivoro2");
+			togglesFiltros[21] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[21], new GUIContent ("", "Filtrar la especie Carnivoro3"), "BotonInsertarCarnivoro3");
+			togglesFiltros[22] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[22], new GUIContent ("", "Filtrar la especie Carnivoro4"), "BotonInsertarCarnivoro4");
+			togglesFiltros[23] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[23], new GUIContent ("", "Filtrar la especie Carnivoro5"), "BotonInsertarCarnivoro5");
+			togglesFiltros[14] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[14], new GUIContent ("", "Filtrar la especie Herbivoro1"), "BotonInsertarHerbivoro1");
+			togglesFiltros[15] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[15], new GUIContent ("", "Filtrar la especie Herbivoro2"), "BotonInsertarHerbivoro2");
+			togglesFiltros[16] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[16], new GUIContent ("", "Filtrar la especie Herbivoro3"), "BotonInsertarHerbivoro3");
+			togglesFiltros[17] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[17], new GUIContent ("", "Filtrar la especie Herbivoro4"), "BotonInsertarHerbivoro4");
+			togglesFiltros[18] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[18], new GUIContent ("", "Filtrar la especie Herbivoro5"), "BotonInsertarHerbivoro5");
 			if (GUI.Button (new Rect (cuantoW * 2, cuantoH * 23, cuantoW * 2, cuantoH * 2), new GUIContent ("", "Desactivar filtros de Carnivoros"), "BotonFiltroAnimalesOffCarnivoros")) {
-				
+				for (int i = 0; i< materiales.carnivoros.Count; i++){
+					if (materiales.carnivoros[i] != null) {
+				  		materiales.carnivoros[i].SetFloat("_FiltroOn",0.0f);
+				  		materiales.carnivoros[i].SetColor("_Tinte",Color.white);
+					}
+			  	}
+				for (int i = 19; i <= 23; i++) {
+					togglesFiltros[i] = false;
+				}
 			}
 			if (GUI.Button (new Rect (cuantoW * 7, cuantoH * 23, cuantoW * 2, cuantoH * 2), new GUIContent ("", "Desactivar filtros de Herbivoros"), "BotonFiltroAnimalesOffHerbivoros")) {
-				
+				for (int i = 0; i< materiales.herbivoros.Count; i++){
+					if (materiales.herbivoros[i] != null) {
+				  		materiales.herbivoros[i].SetFloat("_FiltroOn",0.0f);
+				  		materiales.herbivoros[i].SetColor("_Tinte",Color.white);
+					}
+			  	}
+				for (int i = 14; i <= 18; i++) {
+					togglesFiltros[i] = false;
+				}
 			}
 			GUI.EndGroup ();
 			//TODO Botones de filtros de animales
