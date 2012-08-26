@@ -68,8 +68,8 @@ public class FuncTablero {
 	private static float temperatura = 0.5f;								//La temperatura del planeta, que influye en la generacion de habitats
 	
 	//Para el tablero
-	public static int anchoTablero = 256;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
-	public static int altoTablero = 128;			//El alto del tablero lógico (debe ser potencia de 2 tambien)
+	public static int anchoTablero = 32;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
+	public static int altoTablero = 16;			//El alto del tablero lógico (debe ser potencia de 2 tambien)
 	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
@@ -796,10 +796,10 @@ public class FuncTablero {
 		//Comentar para generar indices nuevos------------
 		int[] indices = SaveLoad.LoadIndices().indices;
 		
-//		//Descomentar para generar indices nuevos---------
+		//Descomentar para generar indices nuevos---------
 //		Vector2[] uvs = mesh.uv;
-//		//int[] indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
-//		int[] indices = calculaVerticesCasilla(texHeightmap.width, texHeightmap.height, mesh); //calculo de vertices con raycast.
+//		int[] indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
+//		//int[] indices = calculaVerticesCasilla(texHeightmap.width, texHeightmap.height, mesh); //calculo de vertices con raycast.
 //		SaveLoad.SaveIndices(indices);
 		
 		//Generacion de indices ----------------------------------------------
