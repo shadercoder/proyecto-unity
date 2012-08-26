@@ -581,7 +581,7 @@ public class Vida //: MonoBehaviour
 			
 				Vector3 coordsVert = tablero[nposX,nposY].coordsVert;
 				coordsVert = objetoRoca.TransformPoint(coordsVert);
-				animal.modelo.GetComponent<MovimientoAnimales>().moverAnimal(coordsVert, tiempoTurno);
+				animal.modelo.GetComponentInChildren<MovimientoAnimales>().moverAnimal(coordsVert, tiempoTurno);
 				return true;
 			}	
 			/*if(nposX > animal.posX) nposX--;

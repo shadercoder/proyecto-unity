@@ -1162,14 +1162,19 @@ public class FuncTablero {
 	
 	public static GameObject creaMesh(Vector3 posicion, GameObject mesh) {
 		GameObject creacion = GameObject.Instantiate(mesh) as GameObject;
+		GameObject contenedor = new GameObject("contenedor" + creacion.name);
+		creacion.transform.position = Vector3.zero;
 		creacion.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-		creacion.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
-		creacion.transform.position = posicion;
-		Vector3 normal = posicion - creacion.transform.parent.position;
-		creacion.transform.rotation = Quaternion.LookRotation(normal);
+		contenedor.transform.parent = GameObject.FindGameObjectWithTag("Planeta").transform;
+		creacion.transform.parent = contenedor.transform;
+		contenedor.transform.position = posicion;
+		Vector3 normal = posicion - contenedor.transform.parent.position;
+		creacion.transform.localRotation = Quaternion.identity;
+		contenedor.transform.rotation = Quaternion.LookRotation(normal);
+		
 		//creacion.transform.Rotate(0,0,UnityEngine.Random.Range(0,180),Space.Self);
 
-		return creacion;
+		return contenedor;
 	}
 	
 	public static Mesh extruyeVerticesTex(Mesh mesh, Texture2D tex, float extrusion, Vector3 centro) {
