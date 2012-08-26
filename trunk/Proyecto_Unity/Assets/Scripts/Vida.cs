@@ -35,7 +35,7 @@ public class Vida //: MonoBehaviour
 	//Transform del objeto roca, para mover los meshes
 	public Transform objetoRoca;
 	//Estructuras
-	public Casilla[,] tablero;										//Tablero lógico que representa las casillas
+	public Casilla[,] tablero;										//Tablero lógico que representa las casilla
 	public List<Especie> especies;									//Listado de todas las especies
 	public List<EspecieVegetal> especiesVegetales;					//Listado de todas las especies vegetales
 	public List<EspecieAnimal> especiesAnimales;					//Listado de todas las especies animales
@@ -44,7 +44,7 @@ public class Vida //: MonoBehaviour
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
 	public List<Edificio> edificios;								//Listado de todos los edificios	
-	//public List<Ser>[] listadoSeresTurnos;							//Listado que contiene los turnos en los que cada ser ejecuta algoritmo
+	//public List<Ser>[] listadoSeresTurnos;						//Listado que contiene los turnos en los que cada ser ejecuta algoritmo
 	
 	//public int numMaxTurnos;
 	//public int turnoActual;
@@ -374,6 +374,7 @@ public class Vida //: MonoBehaviour
 			z = (1-pos)*z + pos*inferior.z;			
 		}
 		return new Vector3 (x, y, z);
+		
 	}
 		
 	//Devuelve si el vegetal se puede insertar en esa posición o no

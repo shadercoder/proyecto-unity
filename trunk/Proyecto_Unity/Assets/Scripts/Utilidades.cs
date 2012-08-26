@@ -68,8 +68,8 @@ public class FuncTablero {
 	private static float temperatura = 0.5f;								//La temperatura del planeta, que influye en la generacion de habitats
 	
 	//Para el tablero
-	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
-	public static int altoTablero = 64;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
+	public static int anchoTablero = 256;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
+	public static int altoTablero = 128;			//El alto del tablero lógico (debe ser potencia de 2 tambien)
 	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
 	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
@@ -305,17 +305,18 @@ public class FuncTablero {
 				}
 				else if ((nivelAgua + tamanoPlaya/4 <= media) && (media < alturaColinas)) {
 					//Area de colina. Habitats posibles: LLanura y tundra
-					//Con un 5% es desierto, con un 15% es tundra y con un 80% es llanura
-					float posDesierto = 0.05f;
-					float posTundra = 0.15f;;
+					//Con un 2% es desierto, con un 5% es tundra y con un 93% es llanura
+					float posDesierto = 0.02f;
+					float posTundra = 0.05f;;
 					
 					//TODO Esto es un planteamiento posible de como usar la temperatura
 					posTundra -= tempeLineal * 0.1f;		//La temperatura hace que haya menos tundras
 					posDesierto += tempeLineal * 0.05f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
-					posTundra += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.15f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.15f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.2f;
+					posTundra += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
 					
 					if (numero > posTundra) {
 						habitatTemp = T_habitats.llanura;
@@ -432,16 +433,17 @@ public class FuncTablero {
 				}
 				else if ((nivelAgua + tamanoPlaya/4 <= media) && (media < alturaColinas)) {
 					//Area de colina. Habitats posibles: LLanura y tundra
-					//Con un 5% es desierto, con un 15% es tundra y con un 80% es llanura
-					float posDesierto = 0.05f;
-					float posTundra = 0.15f;;
+					//Con un 2% es desierto, con un 5% es tundra y con un 93% es llanura
+					float posDesierto = 0.02f;
+					float posTundra = 0.05f;;
 					
 					//TODO Esto es un planteamiento posible de como usar la temperatura
 					posTundra -= tempeLineal * 0.1f;		//La temperatura hace que haya menos tundras
 					posDesierto += tempeLineal * 0.05f;		//La temperatura hace que haya mas desiertos
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.15f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.2f;
 					posTundra += numCasillasCercanasHabitat(T_habitats.tundra, habitats, i, j) * 0.15f;
 					
 					if (numero > posTundra) {
@@ -559,14 +561,14 @@ public class FuncTablero {
 				else if ((nivelAgua + tamanoPlaya/4 <= media) && (media < alturaColinas)) {
 					//Area de llanuras. Habitats posibles: LLanura y desierto
 					//Con un 5% es desierto y con un 95% es llanura
-					float posDesierto = 0.1f;
+					float posDesierto = 0.05f;
 					
 					//TODO Posible uso de temperatura
 					posDesierto += tempeLineal * 0.05f;
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
-					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
-					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.05f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.15f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.2f;
 					if (numero <= posDesierto) {
 						habitatTemp = T_habitats.desierto;
 						if (UnityEngine.Random.Range(0,11) == 0)
@@ -584,7 +586,7 @@ public class FuncTablero {
 				}
 				else if ((alturaColinas <= media) && (media < alturaMontana)) {
 					//Área de colina. Habitats posibles: Colina, desierto y volcanico
-					//Con un 1% es volcanico, con un 10% es desierto y con un 89% es colina
+					//Con un 1% es volcanico, con un 5% es desierto y con un 94% es colina
 					float posVolcanico = 0.01f;
 					float posDesierto = 0.05f;
 					
@@ -594,7 +596,7 @@ public class FuncTablero {
 					
 					float numero = UnityEngine.Random.Range(0.0f, 1.0f);
 					posVolcanico += numCasillasCercanasHabitat(T_habitats.volcanico, habitats, i, j) * 0.05f;
-					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.05f;
+					posDesierto += numCasillasCercanasHabitat(T_habitats.desierto, habitats, i, j) * 0.1f;
 					if (numero <= posVolcanico) {
 						habitatTemp = T_habitats.volcanico;
 						elemTemp = T_elementos.raros;
@@ -616,7 +618,7 @@ public class FuncTablero {
 				}
 				else { //if (alturaMontana < media)
 					//Área de montaña. Habitats posibles: montaña y volcanico
-					//Con un 10% es volcanico y con un 90% es montaña
+					//Con un 5% es volcanico y con un 95% es montaña
 					float posibilidad = 0.05f;
 					
 					//TODO Posible uso de temperatura
@@ -794,10 +796,11 @@ public class FuncTablero {
 		//Comentar para generar indices nuevos------------
 		int[] indices = SaveLoad.LoadIndices().indices;
 		
-		//Descomentar para generar indices nuevos---------
-		//Vector2[] uvs = mesh.uv;
-		//int[] indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
-		//SaveLoad.SaveIndices(indices);
+//		//Descomentar para generar indices nuevos---------
+//		Vector2[] uvs = mesh.uv;
+//		//int[] indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
+//		int[] indices = calculaVerticesCasilla(texHeightmap.width, texHeightmap.height, mesh); //calculo de vertices con raycast.
+//		SaveLoad.SaveIndices(indices);
 		
 		//Generacion de indices ----------------------------------------------
 		
@@ -848,6 +851,30 @@ public class FuncTablero {
 		return resultado;
 	}
 	
+	private static int[] calculaVerticesCasilla(int width, int height, Mesh mesh){
+		int[] resultado = new int[altoTablero * anchoTablero];
+		Vector3 origen;
+		RaycastHit hit;
+		Vector2 pixel;
+		Vector3 direccion;
+		
+		for (int i = 0; i< mesh.normals.Length; i++){
+			//por cada vertice lanzo un raycast en direccion la normal
+			origen = mesh.normals[i] * 10;
+			direccion = mesh.normals[i] - origen;
+			Physics.Raycast(origen,direccion,out hit);
+			//Debug.DrawLine(origen, direccion, Color.red,500.0f);
+			//en cada normal (una por vertice) ha dado en un pixel de la textura, sus coordenadas normalizadas. Las denormalizamos con las dimensiones de la textura
+			pixel = new Vector2(hit.textureCoord.x*width, hit.textureCoord.y*height);
+			//calculamos a que casilla corresponde con una regla de 3
+			int posX = (int)pixel.x / relTexTabAncho;
+			int posY = (int)pixel.y / relTexTabAlto;
+			int indice = posX + posY*anchoTablero;
+			resultado[indice] = i;
+		}
+		return resultado;
+	}                                         
+	                                            
 	private static Casilla[,] mueveVertices(Casilla[,] tableroIn) {
 		Casilla[,] tableroOut;
 		tableroOut = tableroIn;
