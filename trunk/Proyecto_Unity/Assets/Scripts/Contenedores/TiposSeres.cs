@@ -50,22 +50,22 @@ public class TiposSeres : MonoBehaviour {
 	private string descripcionPino				= "Los pinos son arboles de gran tama\u00f1o que crecen en llanuras, colinas y en menor medida en monta\u00f1as. Ademas de su gran resistencia, se adaptan muy bien al entorno en el que crecen.";
 	private string descripcionCipres			= "Pocos habitats existen donde un cipres no pueda nacer. Estos arboles crecen muy rapido y tienen un factor de adaptacion extraordinariamente alto, lo que les permite sobrevivir en todo tipo de lugares.";
 	private string descripcionPinoAlto			= "El pino alto se encuentra con frecuencia en colinas y monta\u00f1as, aunque puede vivir en mas lugares. Es un arbol enorme y con muchas hojas que representa lo mas alto en la cadena de los vegetales.";
-	private string descripcionHerb1				= "RELLENAR";
-	private string descripcionHerb2				= "RELLENAR";
-	private string descripcionHerb3				= "RELLENAR";
-	private string descripcionHerb4				= "RELLENAR";
-	private string descripcionHerb5				= "RELLENAR";
-	private string descripcionCarn1				= "RELLENAR";
-	private string descripcionCarn2				= "RELLENAR";
-	private string descripcionCarn3				= "RELLENAR";
-	private string descripcionCarn4				= "RELLENAR";
-	private string descripcionCarn5				= "RELLENAR";
+	private string descripcionHerb1				= "Lento pero seguro, el caracol consume poco y gasta poco, lo que le confiere una durabilidad bastante elevada. Su reproducción hermafrodita es rapida y sencilla, y se traduce en abundancia de caracoles. Presa fácil!";
+	private string descripcionHerb2				= "[RELLENAR] desc Conejo";
+	private string descripcionHerb3				= "[RELLENAR] desc Vacas";
+	private string descripcionHerb4				= "[RELLENAR] desc Jirafas";
+	private string descripcionHerb5				= "[RELLENAR] desc Tortuga";
+	private string descripcionCarn1				= "[RELLENAR] desc Rata";
+	private string descripcionCarn2				= "[RELLENAR] desc Zorro";
+	private string descripcionCarn3				= "[RELLENAR] desc Arana";
+	private string descripcionCarn4				= "[RELLENAR] desc Oso";
+	private string descripcionCarn5				= "[RELLENAR] desc Dino";
 	private string descripcionFabBas			= "En este edificio se producen componentes de construccion basicos, necesarios para casi todas las construcciones que puede erigir la nave y para las reparaciones.";
 	private string descripcionEnergia1			= "A traves de un reactor de fusion y otro de fision, este edificio produce una alta cantidad de energia. Este combinado de reacciones es practicamente inagotable y limpio.";
 	private string descripcionGranja			= "Recolectando seres vivos de los alrededores, la granja es capaz de refinar compuestos de material biologico esenciales para el fin de la mision encomendada a la nave.";
 	private string descripcionFabAdv			= "La fabrica de componentes avanzados recolecta ciertos metales raros para producir materiales complejos y muy valiosos, permitiendo construir e investigar en nuevos frentes.";
 	private string descripcionEnergia2			= "Creando un campo de contencion magnetica muy poderoso, este edificio capta y utiliza materia oscura para producir una ingente cantidad de energia.";
-	
+		
 	//Variables del script
 	private ModelosEdificios modelosEdificios;
 	private ModelosVegetales modelosVegetales;
@@ -274,7 +274,7 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.costa);
 		
-		//Conejo: habitats -> costa, llanura y colina		
+		//Caracol: habitats -> 
 		List<Animation> animacionesHerb1 = new List<Animation>();
 		/*animacionesHerb1.Add(nacer);
 		animacionesHerb1.Add(descansar);
@@ -284,7 +284,7 @@ public class TiposSeres : MonoBehaviour {
 		herbivoro1 = new EspecieAnimal("Conejo",10,75,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1,animacionesHerb1);
 		
 		listaHabs.Add(T_habitats.desierto);
-		//Cabra: habitats -> llanura, colina y desierto
+		//Conejo: habitats -> 
 		List<Animation> animacionesHerb2 = new List<Animation>();
 		/*animacionesHerb2.Add(nacer);
 		animacionesHerb2.Add(descansar);
@@ -295,7 +295,7 @@ public class TiposSeres : MonoBehaviour {
 		
 		listaHabs.Clear();
 		listaHabs.Add(T_habitats.costa);
-		//Tortuga: habitats -> costa
+		//Vacas: habitats ->
 		List<Animation> animacionesHerb3 = new List<Animation>();
 		/*animacionesHerb3.Add(nacer);
 		animacionesHerb3.Add(descansar);
@@ -308,7 +308,8 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
-		//Ciervo: habitats -> colina, tundra y montaña
+		
+		//Jirafas: habitats -> 
 		List<Animation> animacionesHerb4 = new List<Animation>();
 		/*animacionesHerb4.Add(nacer);
 		animacionesHerb4.Add(descansar);
@@ -317,9 +318,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesHerb4.Add(morir);*/
 		herbivoro4 = new EspecieAnimal("Ciervo",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro4,animacionesHerb4);
 		
-		listaHabs.Remove(T_habitats.tundra);
-		listaHabs.Add(T_habitats.volcanico);
-		//Salamandra: habitats-> colina, montaña y volcanico
+		//Tortuga: habitats-> 
 		List<Animation> animacionesHerb5 = new List<Animation>();
 		/*animacionesHerb5.Add(nacer);
 		animacionesHerb5.Add(descansar);
@@ -329,11 +328,7 @@ public class TiposSeres : MonoBehaviour {
 		herbivoro5 = new EspecieAnimal("Salamandra",10,100,1000,250,5,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5,animacionesHerb5);
 		
 		/* Carnivoros */
-		listaHabs.Clear();
-		listaHabs.Add(T_habitats.llanura);
-		listaHabs.Add(T_habitats.colina);
-		listaHabs.Add(T_habitats.costa);
-		//Zorro: habitats -> costa, llanura y colina
+		//Rata: habitats -> 
 		List<Animation> animacionesCarn1 = new List<Animation>();
 		/*animacionesCarn1.Add(nacer);
 		animacionesCarn1.Add(descansar);
@@ -342,10 +337,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn1.Add(morir);*/
 		carnivoro1 = new EspecieAnimal("Zorro",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1,animacionesCarn1);
 		
-		listaHabs.Add(T_habitats.tundra);
-		listaHabs.Add(T_habitats.montana);
-		listaHabs.Remove(T_habitats.costa);
-		//Lobo: habitats -> llanura, colina, tundra y montaña
+		//Zorro: habitats -> 
 		List<Animation> animacionesCarn2 = new List<Animation>();
 		/*animacionesCarn2.Add(nacer);
 		animacionesCarn2.Add(descansar);
@@ -354,10 +346,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn2.Add(morir);*/
 		carnivoro2 = new EspecieAnimal("Lobo",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2,animacionesCarn2);
 		
-		listaHabs.Add(T_habitats.desierto);
-		listaHabs.Remove(T_habitats.montana);
-		listaHabs.Remove(T_habitats.tundra);
-		//Serpiente: habitats -> llanura, desierto y colina
+		//Araña: habitats -> 
 		List<Animation> animacionesCarn3 = new List<Animation>();
 		/*animacionesCarn3.Add(nacer);
 		animacionesCarn3.Add(descansar);
@@ -366,9 +355,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn3.Add(morir);*/
 		carnivoro3 = new EspecieAnimal("Serpiente",10,100,1000,250,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3,animacionesCarn3);
 		
-		listaHabs.Add(T_habitats.montana);
-		listaHabs.Remove(T_habitats.desierto);
-		//Tigre: habitats -> llanura, colina, montaña
+		//Oso: habitats -> 
 		List<Animation> animacionesCarn4 = new List<Animation>();
 		/*animacionesCarn4.Add(nacer);
 		animacionesCarn4.Add(descansar);
@@ -377,10 +364,7 @@ public class TiposSeres : MonoBehaviour {
 		animacionesCarn4.Add(morir);*/
 		carnivoro4 = new EspecieAnimal("Tigre",10,50,1500,750,5,5,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4,animacionesCarn4);
 		
-		listaHabs.Add(T_habitats.tundra);
-		listaHabs.Add(T_habitats.volcanico);
-		listaHabs.Remove(T_habitats.montana);
-		//Velocitaptor: habitats -> llanura, colina, tundra y volcanico
+		//Velocitaptor: habitats -> 
 		List<Animation> animacionesCarn5 = new List<Animation>();
 		/*animacionesCarn5.Add(nacer);
 		animacionesCarn5.Add(descansar);

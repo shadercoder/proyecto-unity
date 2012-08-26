@@ -28,6 +28,23 @@ public class MejorasNave : MonoBehaviour {
 	public GameObject AlmacenT2A;			//Mejora de almacen 2 Adv
 	public List<GameObject> AlmacenT2B;		//Mejora de almacen 2 Bio
 	
+	//Descripciones
+	private string descripcionMejInfo			= "Usando unos sensores opticos de lo mas rudimentario la nave tendra acceso a informacion relevante en una zona limitada. Algo es algo. \n(Muestra Información Básica de las casillas)";
+	private string descripcionMejHabitats		= "Un módulo de sensores de altura, temperatura, humedad, condiciones de viento y varios factores más que recopila informacion y elabora un mapa de los diferentes ecosistemas que presenta el planeta \n(Habilita el mostrar el Mapa de Habitats en Habilidades)";
+	private string descripcionMejRaros			= "Utilizando un preciso medidor de radiacción estos sensores localizan los minerales más valiosos del subsuelo tras analizar las longitudes de onda mas exóticas. \n(Habilita la deteccion de Recursos en Habilidades)";
+	private string descripcionMejVida			= "Utilizando tecnicas de predicción, visión térmica e introduciendo a los seres vivos marcadores a base de isotopos radioactivos (inocuos!) tendremos controlada a la fauna y la flora local con este sensor. \n(Habilita la Visualizacion de Vida en menu Habilidades)";
+	private string descripcionMejMotorT1		= "Unos motores convencionales para la navegación espacial. No son lo mas optimo. No son lo mas eficiente. ¿Que si vas más rápido? Si. (Aumenta la velocidad de la nave)";
+	private string descripcionMejMotorT2		= "Motores especialmente diseñados para la navegacion en orbitas geoestacionarias bajas. Cancelacion inercial, correccion de deriva gravitacional y un monton de tecnicismos. Estos si que si. \n(Mejora notablemente la velocidad de la nave)";
+	private string descripcionMejAislamiento	= "Un escudo magnetico propio protege de los rayos cósmicos que azotan las zonas mas inhospitas del planeta. \n(Permite transitar cerca de los polos)";
+	private string descripcionMejMotOrtbit		= "Aumenta la potencia del repulsor gravitacional y eleva la nave a una orbita superior. \n(Eleva la nave sobre el planeta)";
+	private string descripcionMejAlmAv			= "Contenedores de condiciones controladas adaptados a material delicado permiten almacenar materiales sensibles a las adversas condiciones del espacio. \n(Permite almacenar Componentes Avanzados)";
+	private string descripcionMejAlmBio			= "Para almacenar el material mas sensible obtenido de los serves vivos en condiciones higienicas e impolutas, a salvo de radiacciones, mimetizando la gravedad, temperatura y humedad de un planeta en un contenedor. \n(Permite almacenar Material Biológico)";
+	private string descripcionMejAlm1			= "Mejorando los algoritmos de ordenación de los contenedores de la nave se obtiene un incremento en la capacidad de almacenaje. Viene con un contenedor gratis. \n(Mejora la Capazidad de Almacenamiento)";
+	private string descripcionMejAlm2			= "Añadiendo contenedores de cada clase se amplia enormemente el espacio de almacenaje. (Mejora la Capacidad de Carga)";
+	private string descripcionMejEner1			= "Añade un condensador con receptores de microondas para almacenar el excedente de energia producido por las centrales planetarias. \n(Aumenta la Energia Maxima disponible)";
+	private string descripcionMejEner2			= "Añade un condensador en forma de anillo que aumenta la capacidad energetica de forma considerable. Además sirve de soporte para otras piezas. \n(Aumenta la Energia MAxima disponible y desbloquea otras mejoras)";
+	private string descripcionMejHab1			= "[RELLENAR]habilita skill1";
+	private string descripcionMejHab2			= "[RELLENAR]habilita skill2";
 	
 	//Variables de control
 	public bool[] mejorasCompradas;
