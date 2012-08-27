@@ -1936,7 +1936,7 @@ public class InterfazPrincipal : MonoBehaviour
 				break;
 			}
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
-			if (tipoSeleccion < 20) {
+			if (tipoSeleccion < 20) {	//Animales y plantas
 				GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
 				//Habitabilidad --
 				GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
@@ -1952,7 +1952,7 @@ public class InterfazPrincipal : MonoBehaviour
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
 				//Este texto es la descripcion
 			}
-			else {
+			else {	//Edificios
 				GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSelEdificio");
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 8, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
 				//Titulo de la descripcion
@@ -1965,12 +1965,21 @@ public class InterfazPrincipal : MonoBehaviour
 			
 			if (tipoSeleccion < 10) {
 				//Plantas
-			}
-			else if (tipoSeleccion < 15) {
-				//Herbivoros
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 19, 9 * cuantoW, 1 * cuantoH), "NUMERO DE PLANTAS:", "LabelDescripcionTitulo");
+				GUI.Label (new Rect (cuantoW * 2, cuantoH * 20, 8 * cuantoW, 4 * cuantoH), infoSeleccion[2], "LabelDescripcionContenido");
 			}
 			else if (tipoSeleccion < 20) {
-				//Carnivoros
+				//Animales
+				//2 carnivoro-herbivoro
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 19, 9 * cuantoW, 1 * cuantoH), "ALIMENTACION:", "LabelDescripcionTitulo");
+				GUI.Label (new Rect (cuantoW * 2, cuantoH * 20, 8 * cuantoW, 4 * cuantoH), infoSeleccion[2], "LabelDescripcionContenido");
+				//3 comida dentro (reserva)
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 21, 9 * cuantoW, 1 * cuantoH), "HAMBRE:", "LabelDescripcionTitulo");
+				GUI.Label (new Rect (cuantoW * 2, cuantoH * 22, 8 * cuantoW, 4 * cuantoH), infoSeleccion[3], "LabelDescripcionContenido");
+				//4 estado
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 23, 9 * cuantoW, 1 * cuantoH), "ESTADO:", "LabelDescripcionTitulo");
+				GUI.Label (new Rect (cuantoW * 2, cuantoH * 24, 8 * cuantoW, 4 * cuantoH), infoSeleccion[4], "LabelDescripcionContenido");
+				
 			}
 			else {
 				//Edificios

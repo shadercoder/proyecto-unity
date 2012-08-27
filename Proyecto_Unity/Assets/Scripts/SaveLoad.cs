@@ -16,31 +16,40 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SaveData {
 
-	//Variables a salvar
+	//VARIABLES A SALVAR
+	//Textura heightmap
 	public int heightmapW;
 	public int heightmapH;
 	public float[] heightmapData;
+	//Textura elementos
 	public int elementosW;
 	public int elementosH;
 	public float[] elementosData;
+	//Textura plantas
 	public int plantasW;
 	public int plantasH;
 	public float[] plantasData;
+	//Textura habitats
 	public int habitatsW;
 	public int habitatsH;
 	public float[] habitatsData;
+	//Textura habitats estetica
 	public int esteticaW;
 	public int esteticaH;
 	public float[] esteticaData;
+	//Vida
 	public VidaSerializable vidaData;
+	//Mesh roca
 	public float[] rocaVertices;
 	public float[] rocaNormals;
 	public float[] rocaUVs;
 	public int[] rocaTriangulos;
+	//Mesh agua
 	public float[] aguaVertices;
 	public float[] aguaNormals;
 	public float[] aguaUVs;
 	public int[] aguaTriangulos;
+	//Variables de control del planeta
 	public float nivelAgua;
 	public float tamanoPlaya;
 
@@ -77,6 +86,12 @@ public class VidaSerializable {
 	public int contadorPintarTexturaPlantas;
 	public bool texturaPlantasModificado;
 	
+	public List<Tupla<int,int>> posicionesColindantes;
+	public int[,] matrizRadio3Circular;
+	public int[,] matrizRadio4Circular;
+	public int[,] matrizRadio5Circular;
+	public int[,] matrizRadio6Circular;
+	
 	public VidaSerializable() {}
 }
 
@@ -105,7 +120,8 @@ public class EspecieSerializable {
 
 	public int idEspecie;
 	public string nombre;
-	public List<T_habitats> habitats;
+	public int numMaxSeresEspecie;
+	public int numSeresEspecie;	
 	public int[] modelos;
 	
 	public EspecieSerializable() {}
@@ -118,8 +134,6 @@ public class SerSerializable {
 	public int idSer;
 	public int posX;
 	public int posY;
-	public int indiceModelo;
-	public int modelo;
 	
 	public SerSerializable() {}
 }
@@ -130,6 +144,9 @@ public class VegetalSerializable {
 
 	public EspecieVegetalSerializable especie;
 	public int numVegetales;
+	public List<float> habitabilidad;
+	public int indiceHabitat;
+	public int turnosEvolucion;	
 	public int idSer;
 	public int posX;
 	public int posY;
@@ -145,6 +162,8 @@ public class AnimalSerializable {
 	public EspecieAnimalSerializable especie;
 	public int reserva;
 	public int turnosParaReproduccion;
+	public int aguante;	
+	public tipoEstadoAnimal estado;	
 	public int idSer;
 	public int posX;
 	public int posY;
@@ -158,8 +177,6 @@ public class AnimalSerializable {
 public class EdificioSerializable {
 
 	public TipoEdificioSerializable tipo;
-	public int radioAccion;
-	public int[,] matrizRadioAccion;
 	public int energiaConsumidaPorTurno;
 	public int compBasConsumidosPorTurno;
 	public int compAvzConsumidosPorTurno;
@@ -168,6 +185,11 @@ public class EdificioSerializable {
 	public int compBasProducidosPorTurno;
 	public int compAvzProducidosPorTurno;
 	public int matBioProducidoPorTurno;
+	public float eficiencia;	
+	public int numMetales;
+	public List<Tupla<int,int,bool>> matrizRadioAccion;
+	public int matBioSinProcesar;
+	public int radioAccion;
 	public int idSer;
 	public int posX;
 	public int posY;
@@ -181,15 +203,20 @@ public class EdificioSerializable {
 public class EspecieVegetalSerializable {
 	public int numMaxVegetales;
 	public int numIniVegetales;
-	public float capacidadReproductiva;
 	public float capacidadMigracionLocal;
 	public float capacidadMigracionGlobal;
 	public int radioMigracion;
+	public int turnosEvolucionInicial;
+	public float evolucion;
+	public List<float> habitabilidadInicial;
 	public int idTextura;
+	public int numMaxModelos;
+	
 	
 	public int idEspecie;
 	public string nombre;
-	public List<T_habitats> habitats;
+	public int numMaxSeresEspecie;
+	public int numSeresEspecie;	
 	public int[] modelos;
 	
 	public EspecieVegetalSerializable() {}
@@ -200,15 +227,16 @@ public class EspecieVegetalSerializable {
 public class EspecieAnimalSerializable {
 	public int consumo;
 	public int reservaMaxima;
-	public int alimentoQueProporciona;
 	public int alimentoMaxTurno;
-	public int aguante;
+	public int aguanteInicial;
 	public int reproductibilidad;
-	public tipoAlimentacionAnimal tipo;	
+	public tipoAlimentacionAnimal tipo;
+	public List<T_habitats> habitats;
 	
 	public int idEspecie;
 	public string nombre;
-	public List<T_habitats> habitats;
+	public int numMaxSeresEspecie;
+	public int numSeresEspecie;	
 	public int[] modelos;
 	
 	public EspecieAnimalSerializable() {}
@@ -218,13 +246,21 @@ public class EspecieAnimalSerializable {
 [System.Serializable]
 public class TipoEdificioSerializable {
 	public int idTipoEdificio;
-	public string nombre;
+	public string nombre;	
 	public List<T_habitats> habitats;
 	public int energiaConsumidaAlCrear;
 	public int compBasConsumidosAlCrear;
 	public int compAvzConsumidosAlCrear;
 	public int matBioConsumidoAlCrear;
 	public T_elementos elemNecesarioAlConstruir;
+	public int energiaConsumidaPorTurnoMax;
+	public int compBasConsumidosPorTurnoMax;
+	public int compAvzConsumidosPorTurnoMax;
+	public int matBioConsumidoPorTurnoMax;
+	public int energiaProducidaPorTurnoMax;
+	public int compBasProducidosPorTurnoMax;
+	public int compAvzProducidosPorTurnoMax;
+	public int matBioProducidoPorTurnoMax;
 	public int[] modelos;
 	
 	public TipoEdificioSerializable() {}
@@ -577,6 +613,37 @@ public class SaveLoad {
 		vidaSerializable.numEspeciesVegetales = vida.numEspeciesVegetales;
 		vidaSerializable.numTiposEdificios = vida.numTiposEdificios;
 		vidaSerializable.texturaPlantasModificado = vida.texturaPlantasModificado;
+		
+		vidaSerializable.posicionesColindantes = new List<Tupla<int,int>>();
+		for (int i = 0; i < vida.posicionesColindantes.Count; i++) {
+			Tupla<int,int> tupla = new Tupla<int, int>(vida.posicionesColindantes[i].e1, vida.posicionesColindantes[i].e2);
+			vidaSerializable.posicionesColindantes.Add(tupla);
+		}
+		vidaSerializable.matrizRadio3Circular = new int[vida.matrizRadio3Circular.GetLength(0), vida.matrizRadio3Circular.GetLength(1)];
+		for (int i = 0; i < vida.matrizRadio3Circular.GetLength(0); i++) {
+			for (int j = 0; j < vida.matrizRadio3Circular.GetLength(1); j++) {
+				vidaSerializable.matrizRadio3Circular[i,j] = vida.matrizRadio3Circular[i,j];
+			}
+		}
+		vidaSerializable.matrizRadio4Circular = new int[vida.matrizRadio4Circular.GetLength(0), vida.matrizRadio4Circular.GetLength(1)];
+		for (int i = 0; i < vida.matrizRadio4Circular.GetLength(0); i++) {
+			for (int j = 0; j < vida.matrizRadio4Circular.GetLength(1); j++) {
+				vidaSerializable.matrizRadio4Circular[i,j] = vida.matrizRadio4Circular[i,j];
+			}
+		}
+		vidaSerializable.matrizRadio5Circular = new int[vida.matrizRadio5Circular.GetLength(0), vida.matrizRadio5Circular.GetLength(1)];
+		for (int i = 0; i < vida.matrizRadio5Circular.GetLength(0); i++) {
+			for (int j = 0; j < vida.matrizRadio5Circular.GetLength(1); j++) {
+				vidaSerializable.matrizRadio5Circular[i,j] = vida.matrizRadio5Circular[i,j];
+			}
+		}
+		vidaSerializable.matrizRadio6Circular = new int[vida.matrizRadio6Circular.GetLength(0), vida.matrizRadio6Circular.GetLength(1)];
+		for (int i = 0; i < vida.matrizRadio6Circular.GetLength(0); i++) {
+			for (int j = 0; j < vida.matrizRadio6Circular.GetLength(1); j++) {
+				vidaSerializable.matrizRadio6Circular[i,j] = vida.matrizRadio6Circular[i,j];
+			}
+		}
+		
 		generarTableroSerializable(vida.tablero, ref vidaSerializable.tablero);
 
 	}
@@ -585,6 +652,7 @@ public class SaveLoad {
 	 * unos datos serializables.
 	 */
 	private static void rehacerVida(ref Vida vida, VidaSerializable vidaSerializable) {
+		//Variables de Vida
 		vida.animales = new List<Animal>();
 		for (int i = 0; i < vidaSerializable.animales.Count; i++) {
 			vida.animales.Add(getAnimalNoSerializable(vidaSerializable.animales[i]));
@@ -626,6 +694,37 @@ public class SaveLoad {
 		vida.numEspeciesVegetales = vidaSerializable.numEspeciesVegetales;
 		vida.numTiposEdificios = vidaSerializable.numTiposEdificios;
 		vida.texturaPlantasModificado = vidaSerializable.texturaPlantasModificado;
+		
+		vida.posicionesColindantes = new List<Tupla<int,int>>();
+		for (int i = 0; i < vidaSerializable.posicionesColindantes.Count; i++) {
+			Tupla<int,int> tupla = new Tupla<int, int>(vidaSerializable.posicionesColindantes[i].e1, vidaSerializable.posicionesColindantes[i].e2);
+			vida.posicionesColindantes.Add(tupla);
+		}
+		vida.matrizRadio3Circular = new int[vidaSerializable.matrizRadio3Circular.GetLength(0), vidaSerializable.matrizRadio3Circular.GetLength(1)];
+		for (int i = 0; i < vidaSerializable.matrizRadio3Circular.GetLength(0); i++) {
+			for (int j = 0; j < vidaSerializable.matrizRadio3Circular.GetLength(1); j++) {
+				vida.matrizRadio3Circular[i,j] = vidaSerializable.matrizRadio3Circular[i,j];
+			}
+		}
+		vida.matrizRadio4Circular = new int[vidaSerializable.matrizRadio4Circular.GetLength(0), vidaSerializable.matrizRadio4Circular.GetLength(1)];
+		for (int i = 0; i < vidaSerializable.matrizRadio4Circular.GetLength(0); i++) {
+			for (int j = 0; j < vidaSerializable.matrizRadio4Circular.GetLength(1); j++) {
+				vida.matrizRadio4Circular[i,j] = vidaSerializable.matrizRadio4Circular[i,j];
+			}
+		}
+		vida.matrizRadio5Circular = new int[vidaSerializable.matrizRadio5Circular.GetLength(0), vidaSerializable.matrizRadio5Circular.GetLength(1)];
+		for (int i = 0; i < vidaSerializable.matrizRadio5Circular.GetLength(0); i++) {
+			for (int j = 0; j < vidaSerializable.matrizRadio5Circular.GetLength(1); j++) {
+				vida.matrizRadio5Circular[i,j] = vidaSerializable.matrizRadio5Circular[i,j];
+			}
+		}
+		vida.matrizRadio6Circular = new int[vidaSerializable.matrizRadio6Circular.GetLength(0), vidaSerializable.matrizRadio6Circular.GetLength(1)];
+		for (int i = 0; i < vidaSerializable.matrizRadio6Circular.GetLength(0); i++) {
+			for (int j = 0; j < vidaSerializable.matrizRadio6Circular.GetLength(1); j++) {
+				vida.matrizRadio6Circular[i,j] = vidaSerializable.matrizRadio6Circular[i,j];
+			}
+		}
+		
 		rehacerTablero(vidaSerializable.tablero, ref vida.tablero);
 
 	}
@@ -703,18 +802,14 @@ public class SaveLoad {
 	private static SerSerializable getSerSerializable(Ser ser) {
 		SerSerializable resultado = new SerSerializable();
 		resultado.idSer = ser.idSer;
-		//resultado.indiceModelo = ser.indiceModelo;
 		resultado.posX = ser.posX;
 		resultado.posY = ser.posY;
-//		resultado.modelo = getModeloSerializable();
 		return resultado;
 	}
 	
 	private static Ser getSerNoSerializable(SerSerializable ser) {
 		Ser resultado = new Ser();
 		resultado.idSer = ser.idSer;
-		//resultado.indiceModelo = ser.indiceModelo;
-//		resultado.modelo = getModeloNoSerializable(ser.modelo);
 		resultado.posX = ser.posX;
 		resultado.posY = ser.posY;
 		return resultado;
@@ -728,6 +823,12 @@ public class SaveLoad {
 		resultado.posY = veg.posY;
 		resultado.modelo = getModeloSerializable(veg.especie);
 		resultado.especie = getEspecieVegSerializable(veg.especie);
+		resultado.indiceHabitat = veg.indiceHabitat;
+		resultado.turnosEvolucion = veg.turnosEvolucion;
+		resultado.habitabilidad = new List<float>();
+		for (int i = 0; i < veg.habitabilidad.Count; i++) {
+			resultado.habitabilidad.Add(veg.habitabilidad[i]);
+		}
 		return resultado;
 	}
 	
@@ -736,9 +837,18 @@ public class SaveLoad {
 		EspecieVegetal especieVeg = getEspecieVegNoSerializable(veg.especie);
 		int posX = veg.posX;
 		int posY = veg.posY;
-		GameObject modelo = getModeloNoSerializable(veg.modelo);
+		List<GameObject> modelo = new List<GameObject>();
+		for (int i = 0; i < 4; i++) {
+			modelo.Add(getModeloNoSerializable(veg.modelo, i));
+		}
+		int indiceHabitat = veg.indiceHabitat;
+		int turnosEvolucion = veg.turnosEvolucion;
 		int numVeg = veg.numVegetales;
-		return null;//return new Vegetal(idSer, especieVeg, posX, posY, numVeg, modelo);
+		List<float> habitabilidad = new List<float>();
+		for (int i = 0; i < veg.habitabilidad.Count; i++) {
+			habitabilidad.Add(veg.habitabilidad[i]);
+		}
+		return new Vegetal(idSer, especieVeg, posX, posY, habitabilidad, indiceHabitat, modelo, numVeg, turnosEvolucion);
 	}
 	
 	private static AnimalSerializable getAnimalSerializable(Animal ani) {
@@ -747,6 +857,8 @@ public class SaveLoad {
 		resultado.posX = ani.posX;
 		resultado.posY = ani.posY;
 		resultado.reserva = ani.reserva;
+		resultado.aguante = ani.aguante;
+		resultado.estado = ani.estado;
 		resultado.turnosParaReproduccion = ani.turnosParaReproduccion;
 		resultado.modelo = getModeloSerializable(ani.especie);
 		resultado.especie = getEspecieAniSerializable(ani.especie);
@@ -761,7 +873,9 @@ public class SaveLoad {
 		GameObject modelo = getModeloNoSerializable(ani.modelo);
 		int res = ani.reserva;
 		int repr = ani.turnosParaReproduccion;
-		return new Animal(idSer, especieAni, posX, posY, res, repr, modelo);
+		int aguante = ani.aguante;
+		tipoEstadoAnimal estado = ani.estado;
+		return new Animal(idSer, especieAni, posX, posY, res, repr, modelo, aguante, estado);
 	}
 	
 	private static EdificioSerializable getEdificioSerializable(Edificio edi) {
@@ -781,6 +895,18 @@ public class SaveLoad {
 		resultado.radioAccion = edi.radioAccion;
 		resultado.modelo = getModeloSerializable(edi.tipo);
 		resultado.tipo = getTipoEdifSerializable(edi.tipo);
+		resultado.eficiencia = edi.eficiencia;
+		resultado.numMetales = edi.numMetales;
+		resultado.matBioSinProcesar = edi.matBioSinProcesar;
+		resultado.radioAccion = edi.radioAccion;
+		resultado.matrizRadioAccion = new List<Tupla<int, int, bool>>();
+		for (int i = 0; i < edi.matrizRadioAccion.Count; i++) {
+			Tupla<int, int, bool> tupla = new Tupla<int, int, bool>();
+			tupla.e1 = edi.matrizRadioAccion[i].e1;
+			tupla.e2 = edi.matrizRadioAccion[i].e2;
+			tupla.e3 = edi.matrizRadioAccion[i].e3;
+			resultado.matrizRadioAccion.Add(tupla);
+		}
 		return resultado;
 	}
 	
@@ -797,18 +923,28 @@ public class SaveLoad {
 		int compBaProd = edi.compBasProducidosPorTurno;
 		int compAvProd = edi.compAvzProducidosPorTurno;
 		int matBioProd = edi.matBioProducidoPorTurno;
+		float eficiencia = edi.eficiencia;
+		int numMetales = edi.numMetales;
+		int matBioSin = edi.matBioSinProcesar;
+		int radioAccion = edi.radioAccion;
+		List<Tupla<int, int, bool>> matrizRadioAccion = new List<Tupla<int, int, bool>>();
+		for (int i = 0; i < edi.matrizRadioAccion.Count; i++) {
+			Tupla<int, int, bool> tupla = new Tupla<int, int, bool>();
+			tupla.e1 = edi.matrizRadioAccion[i].e1;
+			tupla.e2 = edi.matrizRadioAccion[i].e2;
+			tupla.e3 = edi.matrizRadioAccion[i].e3;
+			matrizRadioAccion.Add(tupla);
+		}
 		GameObject modelo = getModeloNoSerializable(edi.modelo);
-		return null;//return new Edificio(idSer, tipoEdif, posX, posY, eneCons, compBaCons, compAvCons, matBioCons, eneProd, compBaProd, compAvProd, matBioProd, modelo);
+		return new Edificio(idSer, tipoEdif, posX, posY, eficiencia, numMetales, matrizRadioAccion, radioAccion, modelo, eneCons, compBaCons, compAvCons, matBioCons, eneProd, compBaProd, compAvProd, matBioProd, matBioSin);
 	}
 	
 	private static EspecieSerializable getEspecieSerializable(Especie esp) {
 		EspecieSerializable resultado = new EspecieSerializable();
 		resultado.idEspecie = esp.idEspecie;
 		resultado.nombre = esp.nombre;
-		resultado.habitats = new List<T_habitats>();
-		/*for (int i = 0; i < esp.habitats.Count; i++) {
-			resultado.habitats.Add(esp.habitats[i]);
-		}*/
+		resultado.numMaxSeresEspecie = esp.numMaxSeresEspecie;
+		resultado.numSeresEspecie = esp.numSeresEspecie;
 		resultado.modelos = new int[esp.modelos.Count];
 		for (int i = 0; i < esp.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(esp);
@@ -820,10 +956,8 @@ public class SaveLoad {
 		Especie resultado = new Especie();
 		resultado.idEspecie = esp.idEspecie;
 		resultado.nombre = esp.nombre;
-		/*resultado.habitats = new List<T_habitats>();
-		for (int i = 0; i < esp.habitats.Count; i++) {
-			resultado.habitats.Add(esp.habitats[i]);
-		}*/
+		resultado.numMaxSeresEspecie = esp.numMaxSeresEspecie;
+		resultado.numSeresEspecie = esp.numSeresEspecie;
 		resultado.modelos = new List<GameObject>();
 		for (int i = 0; i < esp.modelos.Length; i++) {
 			resultado.modelos.Add(getModeloNoSerializable(esp.modelos[i]));
@@ -835,30 +969,45 @@ public class SaveLoad {
 		string nombre = veg.nombre;
 		int numMaxVegetales = veg.numMaxVegetales;
 		int numIniVegetales = veg.numIniVegetales;
-		float capacidadReproductiva = veg.capacidadReproductiva;
 		float capacidadMigracionLocal = veg.capacidadMigracionLocal;
 		float capacidadMigracionGlobal = veg.capacidadMigracionGlobal;
 		int radioMigracion = veg.radioMigracion;
-		List<T_habitats> habitats = veg.habitats;
 		int idTextura = veg.idTextura;
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < veg.modelos.Length; i++)
-			modelos.Add(getModeloNoSerializable(veg.modelos[i]));
-		return null;//return new EspecieVegetal(nombre, num numMaxVegetales, numIniVegetales, capacidadReproductiva, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, habitats, idTextura, modelos);
+			modelos.Add(getModeloNoSerializable(veg.modelos[i], i));
+		int turnosEvolucion = veg.turnosEvolucionInicial;
+		float evolucion = veg.evolucion;
+		int numMaxModelos = veg.numMaxModelos;
+		int idEspecie = veg.idEspecie;
+		int numMaxSeresEspecie = veg.numMaxSeresEspecie;
+		int numSeresEspecie = veg.numSeresEspecie;
+		List<float> habitabilidad = new List<float>();
+		for (int i = 0; i < veg.habitabilidadInicial.Count; i++) {
+			habitabilidad.Add(veg.habitabilidadInicial[i]);
+		}		
+		return new EspecieVegetal(nombre, numMaxSeresEspecie, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, turnosEvolucion, evolucion, habitabilidad, idTextura, numMaxModelos, modelos, numSeresEspecie, idEspecie);//return new EspecieVegetal(nombre, num numMaxVegetales, numIniVegetales, capacidadReproductiva, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, habitats, idTextura, modelos);
 	}
 	
 	private static EspecieVegetalSerializable getEspecieVegSerializable(EspecieVegetal veg) {
 		EspecieVegetalSerializable resultado = new EspecieVegetalSerializable();
 		resultado.capacidadMigracionGlobal = veg.capacidadMigracionGlobal;
 		resultado.capacidadMigracionLocal = veg.capacidadMigracionLocal;
-		//resultado.capacidadReproductiva = veg.capacidadReproductiva;
 		resultado.idEspecie = veg.idEspecie;
 		resultado.idTextura = veg.idTextura;
 		resultado.nombre = veg.nombre;
 		resultado.numIniVegetales = veg.numIniVegetales;
 		resultado.numMaxVegetales = veg.numMaxVegetales;
 		resultado.radioMigracion = veg.radioMigracion;
-		//resultado.habitats = veg.habitats;
+		resultado.turnosEvolucionInicial = veg.turnosEvolucionInicial;
+		resultado.evolucion = veg.evolucion;
+		resultado.numMaxModelos = veg.numMaxModelos;
+		resultado.habitabilidadInicial = new List<float>();
+		for (int i = 0; i < veg.habitabilidadInicial.Count; i++) {
+			resultado.habitabilidadInicial.Add(veg.habitabilidadInicial[i]);
+		}
+		resultado.numMaxSeresEspecie = veg.numMaxSeresEspecie;
+		resultado.numSeresEspecie = veg.numSeresEspecie;
 		resultado.modelos = new int[veg.modelos.Count];
 		for (int i = 0; i < veg.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(veg);
@@ -870,16 +1019,18 @@ public class SaveLoad {
 		string nombre = ani.nombre;
 		int consumo = ani.consumo;
 		int reservaMax = ani.reservaMaxima;
-		int alimento = ani.alimentoQueProporciona;
 		int alimentoMaxTurno = ani.alimentoMaxTurno;
-		int aguante = ani.aguante;
+		int aguanteInicial = ani.aguanteInicial;
 		int repro = ani.reproductibilidad;
 		tipoAlimentacionAnimal tipoAlim = ani.tipo;
-		List<T_habitats> habitats = ani.habitats;		
-		List<GameObject> modelos = new List<GameObject>();
+		List<T_habitats> habitats = ani.habitats;
+		int idEspecie = ani.idEspecie;
+		int numMaxSeresEspecie = ani.numMaxSeresEspecie;
+		int numSeresEspecie = ani.numSeresEspecie;
+		List<GameObject> modelos = new List<GameObject>();		
 		for (int i = 0; i < ani.modelos.Length; i++)
-			modelos.Add(getModeloNoSerializable(ani.modelos[i]));
-		return null;//return new EspecieAnimal(nombre, consumo, reservaMax, alimento, alimentoMaxTurno, aguante, repro, tipoAlim, habitats, modelos);
+			modelos.Add(getModeloNoSerializable(ani.modelos[i], i));
+		return new EspecieAnimal(nombre, numMaxSeresEspecie, consumo, reservaMax, alimentoMaxTurno, aguanteInicial, repro, tipoAlim, habitats, modelos, numSeresEspecie, idEspecie);
 	}
 	
 	private static EspecieAnimalSerializable getEspecieAniSerializable(EspecieAnimal ani) {
@@ -887,9 +1038,8 @@ public class SaveLoad {
 		resultado.nombre = ani.nombre;
 		resultado.consumo = ani.consumo;
 		resultado.reservaMaxima = ani.reservaMaxima;
-		//resultado.alimentoQueProporciona = ani.alimentoQueProporciona;
+		resultado.aguanteInicial = ani.aguanteInicial;
 		resultado.alimentoMaxTurno = ani.alimentoMaxTurno;
-		//resultado.aguante = ani.aguanteInicial;
 		resultado.reproductibilidad = ani.reproductibilidad;
 		resultado.tipo = ani.tipo;
 		resultado.habitats = ani.habitats;
@@ -897,10 +1047,14 @@ public class SaveLoad {
 		for (int i = 0; i < ani.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(ani);
 		}
+		resultado.idEspecie = ani.idEspecie;
+		resultado.numMaxSeresEspecie = ani.numMaxSeresEspecie;
+		resultado.numSeresEspecie = ani.numSeresEspecie;
 		return resultado;
 	}
 	
 	private static TipoEdificio getTipoEdifNoSerializable(TipoEdificioSerializable edi) {
+		int idTipoEdificio = edi.idTipoEdificio;
 		string nombre = edi.nombre;
 		List<T_habitats> habitats = edi.habitats;
 		int eneCons = edi.energiaConsumidaAlCrear;
@@ -908,14 +1062,23 @@ public class SaveLoad {
 		int compAvCons = edi.compAvzConsumidosAlCrear;
 		int matBioCons = edi.matBioConsumidoAlCrear;
 		T_elementos elemNeces = edi.elemNecesarioAlConstruir;
+		int eneConsMax = edi.energiaConsumidaPorTurnoMax;
+		int compBaConsMax = edi.compBasConsumidosPorTurnoMax;
+		int compAvConsMax = edi.compAvzConsumidosPorTurnoMax;
+		int matBioConsMax = edi.matBioConsumidoPorTurnoMax;		
+		int eneProdMax = edi.energiaProducidaPorTurnoMax;
+		int compBaProdMax = edi.compBasProducidosPorTurnoMax;
+		int compAvProdMax = edi.compAvzProducidosPorTurnoMax;
+		int matBioProdMax = edi.matBioProducidoPorTurnoMax;
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < edi.modelos.Length; i++)
-			modelos.Add(getModeloNoSerializable(edi.modelos[i]));
-		return null;//return new TipoEdificio(nombre, habitats, eneCons, compBaCons, compAvCons, matBioCons, elemNeces, modelos);
+			modelos.Add(getModeloNoSerializable(edi.modelos[i], i));
+		return new TipoEdificio(nombre, habitats, eneCons, compBaCons, compAvCons, matBioCons, elemNeces, eneConsMax, compBaConsMax, compAvConsMax, matBioConsMax, eneProdMax, compBaProdMax, compAvProdMax, matBioProdMax, modelos, idTipoEdificio);
 	}
 	
 	private static TipoEdificioSerializable getTipoEdifSerializable(TipoEdificio edi) {
 		TipoEdificioSerializable resultado = new TipoEdificioSerializable();
+		resultado.idTipoEdificio = edi.idTipoEdificio;
 		resultado.nombre = edi.nombre;
 		resultado.habitats = edi.habitats;
 		resultado.energiaConsumidaAlCrear = edi.energiaConsumidaAlCrear;
@@ -923,6 +1086,16 @@ public class SaveLoad {
 		resultado.compAvzConsumidosAlCrear = edi.compAvzConsumidosAlCrear;
 		resultado.matBioConsumidoAlCrear = edi.matBioConsumidoAlCrear;
 		resultado.elemNecesarioAlConstruir = edi.elemNecesarioAlConstruir;
+		
+		resultado.energiaConsumidaPorTurnoMax = edi.energiaConsumidaPorTurnoMax;
+		resultado.compBasConsumidosPorTurnoMax = edi.compBasConsumidosPorTurnoMax;
+		resultado.compAvzConsumidosPorTurnoMax = edi.compAvzConsumidosPorTurnoMax;
+		resultado.matBioConsumidoPorTurnoMax = edi.matBioConsumidoPorTurnoMax;
+		resultado.energiaProducidaPorTurnoMax = edi.energiaProducidaPorTurnoMax;
+		resultado.compBasProducidosPorTurnoMax = edi.compBasProducidosPorTurnoMax;
+		resultado.compAvzProducidosPorTurnoMax = edi.compAvzProducidosPorTurnoMax;
+		resultado.matBioProducidoPorTurnoMax = edi.matBioProducidoPorTurnoMax;
+		
 		resultado.modelos = new int[edi.modelos.Count];
 		for (int i = 0; i < edi.modelos.Count; i++) {
 			resultado.modelos[i] = getModeloSerializable(edi);
@@ -938,58 +1111,58 @@ public class SaveLoad {
 			}
 		}
 		switch (referencia) {
-			//Edificios [0-4]
-		case 0:		//Fabrica componentes basicos
+			//Edificios [20-24]
+		case 20:		//Fabrica componentes basicos
 			return GameObject.Instantiate(modelosEdificios.fabCompBas) as GameObject;
-		case 1:		//Central de energia
+		case 21:		//Central de energia
 			return GameObject.Instantiate(modelosEdificios.centralEnergia) as GameObject;
-		case 2:		//Granja
+		case 22:		//Granja
 			return GameObject.Instantiate(modelosEdificios.granja) as GameObject;
-		case 3:		//Fabrica componentes avanzados
+		case 23:		//Fabrica componentes avanzados
 			return GameObject.Instantiate(modelosEdificios.fabCompAdv) as GameObject;
-		case 4:		//Central energia avanzada
+		case 24:		//Central energia avanzada
 			return GameObject.Instantiate(modelosEdificios.centralEnergiaAdv) as GameObject;
-		//Animales [5-14]
-		case 5:		//Conejo
+		//Animales [10-19]
+		case 10:		//Conejo
 			return GameObject.Instantiate(modelosAnimales.herbivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 6:		//Camello
+		case 11:		//Camello
 			return GameObject.Instantiate(modelosAnimales.herbivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 7:		//Tortuga
+		case 12:		//Tortuga
 			return GameObject.Instantiate(modelosAnimales.herbivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 8:		//Ciervo
+		case 13:		//Ciervo
 			return GameObject.Instantiate(modelosAnimales.herbivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 9:		//Salamandra
+		case 14:		//Salamandra
 			return GameObject.Instantiate(modelosAnimales.herbivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 10:	//Zorro
+		case 15:		//Zorro
 			return GameObject.Instantiate(modelosAnimales.carnivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 11:	//Lobo
+		case 16:		//Lobo
 			return GameObject.Instantiate(modelosAnimales.carnivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 12:	//Serpiente
+		case 17:		//Serpiente
 			return GameObject.Instantiate(modelosAnimales.carnivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 13:	//Tigre
+		case 18:		//Tigre
 			return GameObject.Instantiate(modelosAnimales.carnivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 14:	//Velociraptor
+		case 19:		//Velociraptor
 			return GameObject.Instantiate(modelosAnimales.carnivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
-		//Vegetales [15-24]
-		case 15:	//Seta
+		//Vegetales [0-9]
+		case 0:	//Seta
 			return GameObject.Instantiate(modelosVegetales.setas[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 16:	//Flor
+		case 1:	//Flor
 			return GameObject.Instantiate(modelosVegetales.flores[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 17:	//Caña
+		case 2:	//Caña
 			return GameObject.Instantiate(modelosVegetales.canas[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 18:	//Arbusto
+		case 3:	//Arbusto
 			return GameObject.Instantiate(modelosVegetales.arbustos[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 19:	//Estromatolito
+		case 4:	//Estromatolito
 			return GameObject.Instantiate(modelosVegetales.estromatolitos[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 20:	//Cactus
+		case 5:	//Cactus
 			return GameObject.Instantiate(modelosVegetales.cactus[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 21:	//Palmera
+		case 6:	//Palmera
 			return GameObject.Instantiate(modelosVegetales.palmeras[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 22:	//Pino
+		case 7:	//Pino
 			return GameObject.Instantiate(modelosVegetales.pinos[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 23:	//Cipres
+		case 8:	//Cipres
 			return GameObject.Instantiate(modelosVegetales.cipreses[UnityEngine.Random.Range(0,4)]) as GameObject;
-		case 24:	//Pino alto
+		case 9:	//Pino alto
 			return GameObject.Instantiate(modelosVegetales.pinosAltos[UnityEngine.Random.Range(0,4)]) as GameObject;
 		default:
 			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializable(int) no es valida! Num = " + referencia.ToString());
@@ -997,69 +1170,91 @@ public class SaveLoad {
 		}
 	}
 	
-	private static int getModeloSerializable(Especie esp) {		//Sobrecargado
-		string nombre = esp.nombre;
-		//Herbívoros
-		if (nombre == "Conejo")
-			return 5;
-		if (nombre == "Camello")
-			return 6;
-		if (nombre == "Tortuga")
-			return 7;
-		if (nombre == "Ciervo")
-			return 8;
-		if (nombre == "Salamandra")
-			return 9;
-		//Carnívoros
-		if (nombre == "Zorro")
-			return 10;
-		if (nombre == "Lobo")
-			return 11;
-		if (nombre == "Serpiente")
-			return 12;
-		if (nombre == "Tigre")
-			return 13;
-		if (nombre == "Velociraptor")
-			return 14;
-		//Plantas
-		if (nombre == "Seta")
-			return 15;
-		if (nombre == "Flor")
-			return 16;
-		if (nombre == "Caña")
-			return 17;
-		if (nombre == "Arbusto")
-			return 18;
-		if (nombre == "Estromatolito")
-			return 19;
-		if (nombre == "Cactus")
-			return 20;
-		if (nombre == "Palmera")
-			return 21;
-		if (nombre == "Pino")
-			return 22;
-		if (nombre == "Ciprés")
-			return 23;
-		if (nombre == "Pino Alto")
-			return 24;
-		Debug.LogError("La especie introducida en getModeloSerializable(Especie) no es valida! Nombre: " + nombre + " Especie: " + esp.ToString());
-		return -1;
+	private static GameObject getModeloNoSerializable(int referencia, int numero) {
+		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null) {
+			if (!iniciaVariablesEstaticas()) {
+				Debug.LogError("Error al iniciar variables estaticas. Puede estar en una escena incorrecta?");
+				return null;
+			}
+		}
+		switch (referencia) {
+			//Edificios [20-24]
+		case 20:		//Fabrica componentes basicos
+			return GameObject.Instantiate(modelosEdificios.fabCompBas) as GameObject;
+		case 21:		//Central de energia
+			return GameObject.Instantiate(modelosEdificios.centralEnergia) as GameObject;
+		case 22:		//Granja
+			return GameObject.Instantiate(modelosEdificios.granja) as GameObject;
+		case 23:		//Fabrica componentes avanzados
+			return GameObject.Instantiate(modelosEdificios.fabCompAdv) as GameObject;
+		case 24:		//Central energia avanzada
+			return GameObject.Instantiate(modelosEdificios.centralEnergiaAdv) as GameObject;
+		//Animales [10-19]
+		case 10:		//Conejo
+			return GameObject.Instantiate(modelosAnimales.herbivoro1[numero]) as GameObject;
+		case 11:		//Camello
+			return GameObject.Instantiate(modelosAnimales.herbivoro2[numero]) as GameObject;
+		case 12:		//Tortuga
+			return GameObject.Instantiate(modelosAnimales.herbivoro3[numero]) as GameObject;
+		case 13:		//Ciervo
+			return GameObject.Instantiate(modelosAnimales.herbivoro4[numero]) as GameObject;
+		case 14:		//Salamandra
+			return GameObject.Instantiate(modelosAnimales.herbivoro5[numero]) as GameObject;
+		case 15:		//Zorro
+			return GameObject.Instantiate(modelosAnimales.carnivoro1[numero]) as GameObject;
+		case 16:		//Lobo
+			return GameObject.Instantiate(modelosAnimales.carnivoro2[numero]) as GameObject;
+		case 17:		//Serpiente
+			return GameObject.Instantiate(modelosAnimales.carnivoro3[numero]) as GameObject;
+		case 18:		//Tigre
+			return GameObject.Instantiate(modelosAnimales.carnivoro4[numero]) as GameObject;
+		case 19:		//Velociraptor
+			return GameObject.Instantiate(modelosAnimales.carnivoro5[numero]) as GameObject;
+		//Vegetales [0-9]
+		case 0:	//Seta
+			return GameObject.Instantiate(modelosVegetales.setas[numero]) as GameObject;
+		case 1:	//Flor
+			return GameObject.Instantiate(modelosVegetales.flores[numero]) as GameObject;
+		case 2:	//Caña
+			return GameObject.Instantiate(modelosVegetales.canas[numero]) as GameObject;
+		case 3:	//Arbusto
+			return GameObject.Instantiate(modelosVegetales.arbustos[numero]) as GameObject;
+		case 4:	//Estromatolito
+			return GameObject.Instantiate(modelosVegetales.estromatolitos[numero]) as GameObject;
+		case 5:	//Cactus
+			return GameObject.Instantiate(modelosVegetales.cactus[numero]) as GameObject;
+		case 6:	//Palmera
+			return GameObject.Instantiate(modelosVegetales.palmeras[numero]) as GameObject;
+		case 7:	//Pino
+			return GameObject.Instantiate(modelosVegetales.pinos[numero]) as GameObject;
+		case 8:	//Cipres
+			return GameObject.Instantiate(modelosVegetales.cipreses[numero]) as GameObject;
+		case 9:	//Pino alto
+			return GameObject.Instantiate(modelosVegetales.pinosAltos[numero]) as GameObject;
+		default:
+			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializable(int) no es valida! Num = " + referencia.ToString());
+			return GameObject.CreatePrimitive(PrimitiveType.Cube);
+		}
+	}
+	
+	private static int getModeloSerializable(Especie esp) {
+		if (esp.nombre.Equals("Caracol") || esp.nombre.Equals("Conejo") || esp.nombre.Equals("Vaca") || esp.nombre.Equals("Jirafa") || esp.nombre.Equals("Estegosaurio") || esp.nombre.Equals("Rata") || esp.nombre.Equals("Lobo") || esp.nombre.Equals("Tigre") || esp.nombre.Equals("Oso") || esp.nombre.Equals("Tiranosaurio")) {
+			return esp.idEspecie + 10;
+		}
+		else
+			return esp.idEspecie;
+	}
+	
+	private static int getModeloSerializable(EspecieVegetal esp) {		//Sobrecargado
+		return esp.idEspecie;
+	}
+	
+	private static int getModeloSerializable(EspecieAnimal esp) {		//Sobrecargado
+		return esp.idEspecie + 10;
 	}
 	
 	private static int getModeloSerializable(TipoEdificio tipo) {
-		string nombre = tipo.nombre;
-		if (nombre == "Fábrica de componentes básicos")
-			return 0;
-		if (nombre == "Central de energía")
-			return 1;
-		if (nombre == "Granja")
-			return 2;
-		if (nombre == "Fábrica de componentes avanzados")
-			return 3;
-		if (nombre == "Central de energía avanzada")
-			return 4;
-		Debug.LogError("El tipo de edificio introducido en getModeloSerializable(TipoEdificio) no es valido! Nombre: " + nombre + " Tipo: " + tipo.ToString());
-		return -1;
+		return tipo.idTipoEdificio + 20;
 	}
 	
 	private static bool iniciaVariablesEstaticas() {
