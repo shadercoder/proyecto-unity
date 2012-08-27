@@ -276,7 +276,7 @@ public class InterfazPrincipal : MonoBehaviour
 		if (GUI.Button (new Rect (cuantoW * 5, cuantoH * 2, cuantoW * 1, cuantoH * 1), new GUIContent ("", "Velocidad 2x"), "BotonVelocidad2"))
 			principal.setEscalaTiempo (2.0f);
 		if (GUI.Button (new Rect (cuantoW * 6, cuantoH * 2, cuantoW * 1, cuantoH * 1), new GUIContent ("", "Velocidad 5x"), "BotonVelocidad5"))
-			principal.setEscalaTiempo (20.0f);
+			principal.setEscalaTiempo (5.0f);
 		//Energia
 		GUI.Box (new Rect (cuantoW * 12, cuantoH * 0, cuantoW * 2, cuantoH * 2), new GUIContent ("", "Energía"), "IconoEnergia");
 		GUI.Box (new Rect (cuantoW * 14, cuantoH * 0, cuantoW * 7, cuantoH * 2), new GUIContent ("", principal.energia.ToString () + "/" + principal.energiaMax.ToString ()), "BoxEnergia");

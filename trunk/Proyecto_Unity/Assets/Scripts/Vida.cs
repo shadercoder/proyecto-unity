@@ -757,7 +757,6 @@ public class Vida //: MonoBehaviour
 		Vegetal vegetal;
 		Animal animal;
 		Edificio edificio;
-		
 		for(int i = 0; i < seres.Count; i++)
 		{
 			ser = seres[i];
@@ -1351,6 +1350,7 @@ public class Animal : Ser
 		this.posY = posY;
 		this.modelo = modelo;
 		estado = tipoEstadoAnimal.nacer;
+		modelo.GetComponentInChildren<MovimientoAnimales>().hazAnimacion(estado);
 	}
 	
 	public Animal(int idSer,EspecieAnimal especie,int posX,int posY, int res, int turnos, GameObject modelo)
@@ -1365,6 +1365,7 @@ public class Animal : Ser
 		this.posY = posY;
 		this.modelo = modelo;
 		estado = tipoEstadoAnimal.nacer;
+		modelo.GetComponentInChildren<MovimientoAnimales>().hazAnimacion(estado);
 	}
 	
 	//Devuelve true si el animal sobrevive y false si muere
