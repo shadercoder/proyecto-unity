@@ -22,7 +22,7 @@ public class MovimientoAnimales : MonoBehaviour {
 				this.transform.parent.position = Vector3.Lerp(posInicio, posObjetivo, (Time.time - tiempoInicioMov) / tiempoMovimiento);
 				Vector3 norm = this.transform.parent.position - this.transform.parent.parent.position;
 				this.transform.parent.rotation = Quaternion.LookRotation(norm);
-				this.animation.CrossFade("move");
+				this.animation.CrossFade("mover");
 			}
 			else {
 				enMovimiento = false;
