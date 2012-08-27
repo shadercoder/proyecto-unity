@@ -1118,8 +1118,12 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad7")) {
-				//TODO
+			if (GUILayout.Button (new GUIContent ("", "Foco Solar"), "BotonHabilidad7")) {
+				//TODO Foco solar
+				if (Camera.main.light.enabled)
+					Camera.main.light.enabled = false;
+				else
+					Camera.main.light.enabled=true;
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 1;
