@@ -21,7 +21,8 @@ public class MovimientoAnimales : MonoBehaviour {
 			if (this.transform.parent.position != posObjetivo) {
 				this.transform.parent.position = Vector3.Lerp(posInicio, posObjetivo, (Time.time - tiempoInicioMov) / tiempoMovimiento);
 				Vector3 norm = this.transform.parent.position - this.transform.parent.parent.position;
-				this.transform.parent.rotation = Quaternion.LookRotation(norm);
+				Vector3 direccion = posObjetivo - this.transform.parent.position;
+				this.transform.parent.rotation = Quaternion.LookRotation(norm, direccion);
 				
 				this.animation.Play("mover");
 			}
@@ -34,9 +35,42 @@ public class MovimientoAnimales : MonoBehaviour {
 	
 	public void moverAnimal(Vector3 puntoIn, float tiempoIn) {
 		posObjetivo = puntoIn;
-		posInicio = this.transform.position;
+		posInicio = this.transform.parent.position;
 		tiempoInicioMov = Time.time;
 		tiempoMovimiento = tiempoIn;
 		enMovimiento = true;
+	}
+	
+	public void hazAnimacion(tipoEstadoAnimal estadoIn) {
+		switch (estadoIn) {
+		case tipoEstadoAnimal.comer:
+			this.animation.Play("comer");
+			break;
+		case tipoEstadoAnimal.descansar:
+			int temp = Random.Range(0, 3);
+			switch (temp) {
+			case 0: 
+				this.animation.Play("descansar1");
+				break;
+			case 1:
+				this.animation.Play("descansar2");
+				break;
+			case 2:
+				this.animation.Play("descansar3");
+				break;
+			default:
+				this.animation.Play("descansar1");
+				break;
+			}			
+			break;
+		case tipoEstadoAnimal.morir:
+			this.animation.Play("morir");
+			break;
+		case tipoEstadoAnimal.nacer:
+			this.animation.Play("nacer");
+			break;
+		default:
+			break;
+		}
 	}
 }
