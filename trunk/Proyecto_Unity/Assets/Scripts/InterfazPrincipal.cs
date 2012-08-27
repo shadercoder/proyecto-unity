@@ -1096,16 +1096,20 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW * 3);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad6")) {
-				//TODO
+			if (GUILayout.Button (new GUIContent ("", "Foco Solar"), "BotonHabilidad6")) {
+				//TODO activar/desactivar foco solar
+				if (Camera.main.light.enabled)
+					Camera.main.light.enabled = false;
+				else
+					Camera.main.light.enabled=true;
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 0;
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
 				infoSeleccion.Clear();
-				infoSeleccion.Add("BotonHabilidad6");
+				infoSeleccion.Add("Foco Solar");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
-				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("10");	//Coste ener
 				infoSeleccion.Add("0");	//Coste comp bas
 				infoSeleccion.Add("0");	//comp adv
 				infoSeleccion.Add("0");	//mat bio
