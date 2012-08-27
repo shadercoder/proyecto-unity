@@ -756,7 +756,7 @@ public class Vida //: MonoBehaviour
 		Ser ser;
 		Vegetal vegetal;
 		Animal animal;
-		Edificio edificio;
+//		Edificio edificio;
 		for(int i = 0; i < seres.Count; i++)
 		{
 			ser = seres[i];
@@ -823,10 +823,10 @@ public class Vida //: MonoBehaviour
 				}
 				animal.modelo.GetComponentInChildren<MovimientoAnimales>().hazAnimacion(animal.estado);
 			}	
-			else if(ser is Edificio)
-			{
-				edificio = (Edificio)ser;				
-			}
+//			else if(ser is Edificio)
+//			{
+//				edificio = (Edificio)ser;				
+//			}
 		}
 		
 		
@@ -1056,8 +1056,33 @@ public class TipoEdificio
 		this.compBasProducidosPorTurnoMax = compBasProducidosPorTurnoMax;
 		this.compAvzProducidosPorTurnoMax = compAvzProducidosPorTurnoMax;
 		this.matBioProducidoPorTurnoMax = matBioProducidoPorTurnoMax;
-		this.modelos = modelos;		
+		this.modelos = modelos;
 	}
+	
+	public TipoEdificio(string nombre, List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
+	                    T_elementos elemNecesarioAlConstruir,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
+	                	int energiaProducidaPorTurnoMax,int compBasProducidosPorTurnoMax,int compAvzProducidosPorTurnoMax,int matBioProducidoPorTurnoMax,List<GameObject> modelos, int idTipoEdificioIn)
+	{
+		this.nombre = nombre;
+		this.habitats = habitats;
+		this.energiaConsumidaAlCrear = energiaConsumidaAlCrear;
+		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
+		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
+		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
+		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
+		this.energiaConsumidaPorTurnoMax = energiaConsumidaPorTurnoMax;
+		this.compBasConsumidosPorTurnoMax = compBasConsumidosPorTurnoMax;
+		this.compAvzConsumidosPorTurnoMax = compAvzConsumidosPorTurnoMax;
+		this.matBioConsumidoPorTurnoMax = matBioConsumidoPorTurnoMax;
+		this.energiaProducidaPorTurnoMax = energiaProducidaPorTurnoMax;
+		this.compBasProducidosPorTurnoMax = compBasProducidosPorTurnoMax;
+		this.compAvzProducidosPorTurnoMax = compAvzProducidosPorTurnoMax;
+		this.matBioProducidoPorTurnoMax = matBioProducidoPorTurnoMax;
+		this.modelos = modelos;
+		this.idTipoEdificio = idTipoEdificioIn;
+	}
+	
+	
 }
 
 [System.Serializable]
@@ -1129,8 +1154,28 @@ public class EspecieVegetal : Especie
 		this.idTextura = idTextura;
 		this.numMaxModelos = numMaxModelos;
 		this.modelos = modelos;
-		numSeresEspecie = 0;
-	}	
+		this.numSeresEspecie = 0;
+	}
+	
+	public EspecieVegetal(string nombre, int numMaxSeresEspecie, int numMaxVegetales, int numIniVegetales, float capacidadMigracionLocal,float capacidadMigracionGlobal, 
+	                      int radioMigracion, int turnosEvolucionInicial, float evolucion, List<float> habitabilidadInicial, int idTextura, int numMaxModelos, List<GameObject> modelos, int numSeresEspecieIn, int idEspecieIn)
+	{
+		this.nombre = nombre;
+		this.numMaxSeresEspecie = numMaxSeresEspecie;
+		this.numMaxVegetales = numMaxVegetales;
+		this.numIniVegetales = numIniVegetales;
+		this.capacidadMigracionLocal = capacidadMigracionLocal;
+		this.capacidadMigracionGlobal = capacidadMigracionGlobal;
+		this.radioMigracion = radioMigracion;
+		this.turnosEvolucionInicial = turnosEvolucionInicial;
+		this.evolucion = evolucion;
+		this.habitabilidadInicial = habitabilidadInicial;
+		this.idTextura = idTextura;
+		this.numMaxModelos = numMaxModelos;
+		this.modelos = modelos;
+		this.numSeresEspecie = numSeresEspecieIn;
+		this.idEspecie = idEspecieIn;
+	}
 }
 
 public enum tipoAlimentacionAnimal {herbivoro,carnivoro};
@@ -1159,6 +1204,23 @@ public class EspecieAnimal : Especie
 		this.modelos = modelos;
 		numSeresEspecie = 0;
 	}
+	
+	public EspecieAnimal(string nombre, int numMaxSeresEspecie, int consumo, int reservaMaxima, int alimentoMaxTurno, int aguanteInicial, int reproductibilidad, tipoAlimentacionAnimal tipo, List<T_habitats> habitats, List<GameObject> modelos, int numSeresIn, int idEspecieIn)
+	{
+		this.nombre = nombre;
+		this.numMaxSeresEspecie = numMaxSeresEspecie;
+		this.consumo = consumo;
+		this.reservaMaxima = reservaMaxima;
+		this.alimentoMaxTurno = alimentoMaxTurno;
+		this.aguanteInicial = aguanteInicial;
+		this.reproductibilidad = reproductibilidad;	
+		this.tipo = tipo;
+		this.habitats = habitats;
+		this.modelos = modelos;
+		this.numSeresEspecie = numSeresIn;
+		this.idEspecie = idEspecieIn;
+	}
+	
 	//Devuelve true si ha conseguido introducir el hábitat, false si ya ha sido introducido
 	public bool aniadirHabitat(T_habitats habitat)
 	{
@@ -1229,6 +1291,20 @@ public class Vegetal : Ser 							//Representa una población de vegetales de un
 		this.indiceHabitat = (int)habitatActual;
 		this.modelos = new List<GameObject>();
 		modelos.Add(modelo);
+	}
+	
+	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, List<float> habitabilidad, int habitatActual, List<GameObject> modelosIn, int numVeg, int turnosEvo)
+	{
+		this.idSer = idSer;
+		this.especie = especie;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
+		this.posX = posX;
+		this.posY = posY;
+		this.numVegetales = numVeg;		
+		this.turnosEvolucion = turnosEvo;
+		this.habitabilidad = habitabilidad;
+		this.indiceHabitat = habitatActual;
+		this.modelos = modelosIn;
 	}
 	
 	public Vegetal(int idSer, EspecieVegetal especie, int posX, int posY, T_habitats habitatActual, int numVegetales,GameObject modelo)
@@ -1368,6 +1444,20 @@ public class Animal : Ser
 		modelo.GetComponentInChildren<MovimientoAnimales>().hazAnimacion(estado);
 	}
 	
+	public Animal(int idSer,EspecieAnimal especie,int posX,int posY, int res, int turnos, GameObject modelo, int aguanteIn, tipoEstadoAnimal estadoIn)
+	{
+		this.idSer = idSer;
+		this.especie = especie;
+		this.reserva = res;
+		this.turnosParaReproduccion = turnos;		
+		this.aguante = aguanteIn;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);	
+		this.posX = posX;
+		this.posY = posY;
+		this.modelo = modelo;
+		this.estado = estadoIn;
+	}
+	
 	//Devuelve true si el animal sobrevive y false si muere
 	public bool consumirAlimento()
 	{		
@@ -1479,6 +1569,29 @@ public class Edificio : Ser
 		this.numMetales = numMetales;
 		this.matrizRadioAccion = matrizRadioAccion;
 		this.radioAccion = radioAccion;
+	}
+	
+	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion,GameObject modelo, int eneConIn, int compBasConIn, int compAdvConIn, int bioConIn, int eneProdIn, int compBasProdIn, int compAdvProdIn, int bioProdIn, int bioSinProcesar)
+	{
+		this.idSer = idSer;
+		this.tipo = tipo;
+		FuncTablero.convierteCoordenadas(ref posX,ref posY);		
+		this.posX = posX;
+		this.posY = posY;
+		this.energiaConsumidaPorTurno =  eneConIn;
+		this.compBasConsumidosPorTurno = compBasConIn;
+		this.compAvzConsumidosPorTurno = compAdvConIn;
+		this.matBioConsumidoPorTurno = bioConIn;
+		this.energiaProducidaPorTurno = eneProdIn;
+		this.compBasProducidosPorTurno = compBasProdIn;
+		this.compAvzProducidosPorTurno = compAdvProdIn;
+		this.matBioProducidoPorTurno = bioProdIn;
+		this.eficiencia = eficiencia;
+		this.numMetales = numMetales;
+		this.matrizRadioAccion = matrizRadioAccion;
+		this.radioAccion = radioAccion;		
+		this.modelo = modelo;
+		this.matBioSinProcesar = bioSinProcesar;
 	}
 	
 	public void ingresaMatBioSinProcesar(int matBio)
