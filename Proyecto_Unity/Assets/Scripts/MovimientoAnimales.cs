@@ -47,22 +47,22 @@ public class MovimientoAnimales : MonoBehaviour {
 			this.animation.Play("comer");
 			break;
 		case tipoEstadoAnimal.descansar:
-			this.transform.RotateAroundLocal(Vector3.forward, 90);
-			int temp = Random.Range(0, 3);
-			switch (temp) {
-			case 0: 
-				this.animation.Play("descansar1");
-				break;
-			case 1:
-				this.animation.Play("descansar2");
-				break;
-			case 2:
-				this.animation.Play("descansar3");
-				break;
-			default:
-				this.animation.Play("descansar1");
-				break;
-			}			
+			this.animation.Play("descansar1");
+//			int temp = Random.Range(0, 3);
+//			switch (temp) {
+//			case 0: 
+//				this.animation.Play("descansar1");
+//				break;
+//			case 1:
+//				this.animation.Play("descansar2");
+//				break;
+//			case 2:
+//				this.animation.Play("descansar3");
+//				break;
+//			default:
+//				this.animation.Play("descansar1");
+//				break;
+//			}			
 			break;
 		case tipoEstadoAnimal.morir:
 			this.animation.Play("morir");

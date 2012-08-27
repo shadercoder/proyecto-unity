@@ -356,8 +356,8 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.costa);
 		
-		//Caracol: habitats -> 
-		herbivoro1 = new EspecieAnimal("Caracol",10,75,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1);
+		//Caracol: habitats -> 						75
+		herbivoro1 = new EspecieAnimal("Caracol",10,5,2000,500,4,5,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro1);
 		costeHerb1 = new List<int>();
 		costeHerb1.Add(250);//Coste energia
 		costeHerb1.Add(150);//Coste comp bas
