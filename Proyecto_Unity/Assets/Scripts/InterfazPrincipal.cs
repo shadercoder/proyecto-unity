@@ -1030,7 +1030,6 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarHabilidad:
-			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
 			habilidadHover = -1;
 			GUILayout.BeginArea (new Rect (cuantoW * 22, cuantoH * posicionBloque, cuantoW * 36, cuantoH * 4), new GUIContent (), "BloqueSeleccionHabilidades");
 			GUILayout.BeginVertical ();
@@ -1102,6 +1101,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 0;
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
 				infoSeleccion.Clear();
 				infoSeleccion.Add("BotonHabilidad6");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
@@ -1119,6 +1119,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 1;
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
 				infoSeleccion.Clear();
 				infoSeleccion.Add("BotonHabilidad7");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
@@ -1136,6 +1137,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 2;
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
 				infoSeleccion.Clear();
 				infoSeleccion.Add("BotonHabilidad8");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
@@ -1153,6 +1155,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 3;
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
 				infoSeleccion.Clear();
 				infoSeleccion.Add("BotonHabilidad9");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
@@ -1170,6 +1173,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 4;
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
 				infoSeleccion.Clear();
 				infoSeleccion.Add("BotonHabilidad10");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
@@ -2015,6 +2019,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
 			GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
 			GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
+			GUI.EndGroup();
 			break;
 		case tMenuDerecho.habilidades:
 			if (habilidadHover == -1) {
@@ -2048,6 +2053,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
 			GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
 			GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
+			GUI.EndGroup();
 			break;
 		default: 
 			break;
