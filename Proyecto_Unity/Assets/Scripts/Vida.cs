@@ -822,7 +822,7 @@ public class Vida //: MonoBehaviour
 					default:break;
 					}
 				}
-				animal.modelo.GetComponent<MovimientoAnimales>().hazAnimacion(animal.estado);
+				animal.modelo.GetComponentInChildren<MovimientoAnimales>().hazAnimacion(animal.estado);
 			}	
 			else if(ser is Edificio)
 			{

@@ -44,12 +44,12 @@ public class MejorasNave : MonoBehaviour {
 	private string descripcionMejAlm2			= "Añadiendo contenedores de cada clase se amplia enormemente el espacio de almacenaje. (Mejora la Capacidad de Carga)";
 	private string descripcionMejEner1			= "Añade un condensador con receptores de microondas para almacenar el excedente de energia producido por las centrales planetarias. \n(Aumenta la Energia Maxima disponible)";
 	private string descripcionMejEner2			= "Añade un condensador en forma de anillo que aumenta la capacidad energetica de forma considerable. Además sirve de soporte para otras piezas. \n(Aumenta la Energia MAxima disponible y desbloquea otras mejoras)";
-	private string descripcionMejHab1			= "[RELLENAR]habilita skill1";
+	private string descripcionMejHab1			= "Un array de paneles solares capta la energia de la estrella durante el dia, y la almacena para su posterior uso. (Habilita el Foco Solar)";
 	private string descripcionMejHab2			= "[RELLENAR]habilita skill2";
 	
 	//Descripciones habilidades
 	private List<string> habilidades;			//Todas las descripciones de las habilidades
-	private string descripcionHab1				= "[RELLENAR] Hab 1";
+	private string descripcionHab1				= "El Foco Solar es totalmente ecologico. Utiliza la energia captada cuando la nave esta bajo la accion directa de la radiaccion solar y la redirige a las zonas donde es interesante. Aun no se ha comprobado si este fenomeno es perjudicial para los animales, pero de momento no hemos recibido ninguna queja.";
 	private string descripcionHab2				= "[RELLENAR] Hab 2";
 	private string descripcionHab3				= "[RELLENAR] Hab 3";
 	private string descripcionHab4				= "[RELLENAR] Hab 4";
