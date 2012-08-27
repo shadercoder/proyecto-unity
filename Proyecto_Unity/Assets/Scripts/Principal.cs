@@ -94,7 +94,17 @@ public class Principal : MonoBehaviour {
 			if(algoritmoPasoAPaso)
  				algoritmoPasoAPaso = false;
             else
-				algoritmoPasoAPaso = true;		
+				algoritmoPasoAPaso = true;	
+		if(Input.GetKeyDown(KeyCode.Alpha1)) 
+			setEscalaTiempo(0.0f);	
+		if(Input.GetKeyDown(KeyCode.Alpha2)) 
+			setEscalaTiempo(1.0f);	
+		if(Input.GetKeyDown(KeyCode.Alpha3)) 
+			setEscalaTiempo(2.0f);	
+		if(Input.GetKeyDown(KeyCode.Alpha4)) 
+			setEscalaTiempo(5.0f);	
+		if(Input.GetKeyDown(KeyCode.Alpha5)) 
+			setEscalaTiempo(50.0f);			
 	}
 	
 	public void setEscalaTiempo(float nuevaEscala)
