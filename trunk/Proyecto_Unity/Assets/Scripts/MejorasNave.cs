@@ -28,7 +28,7 @@ public class MejorasNave : MonoBehaviour {
 	public GameObject AlmacenT2A;			//Mejora de almacen 2 Adv
 	public List<GameObject> AlmacenT2B;		//Mejora de almacen 2 Bio
 	
-	//Descripciones
+	//Descripciones mejoras
 	private List<string> descripciones;			//Todas las descripciones de las mejoras escritas debajo
 	private string descripcionMejInfo			= "Usando unos sensores opticos de lo mas rudimentario la nave tendra acceso a informacion relevante en una zona limitada. Algo es algo. \n(Muestra Información Básica de las casillas)";
 	private string descripcionMejHabitats		= "Un módulo de sensores de altura, temperatura, humedad, condiciones de viento y varios factores más que recopila informacion y elabora un mapa de los diferentes ecosistemas que presenta el planeta \n(Habilita el mostrar el Mapa de Habitats en Habilidades)";
@@ -46,6 +46,14 @@ public class MejorasNave : MonoBehaviour {
 	private string descripcionMejEner2			= "Añade un condensador en forma de anillo que aumenta la capacidad energetica de forma considerable. Además sirve de soporte para otras piezas. \n(Aumenta la Energia MAxima disponible y desbloquea otras mejoras)";
 	private string descripcionMejHab1			= "[RELLENAR]habilita skill1";
 	private string descripcionMejHab2			= "[RELLENAR]habilita skill2";
+	
+	//Descripciones habilidades
+	private List<string> habilidades;			//Todas las descripciones de las habilidades
+	private string descripcionHab1				= "[RELLENAR] Hab 1";
+	private string descripcionHab2				= "[RELLENAR] Hab 2";
+	private string descripcionHab3				= "[RELLENAR] Hab 3";
+	private string descripcionHab4				= "[RELLENAR] Hab 4";
+	private string descripcionHab5				= "[RELLENAR] Hab 5";
 	
 	//Variables de control
 	public bool[] mejorasCompradas;
@@ -113,6 +121,13 @@ public class MejorasNave : MonoBehaviour {
 		descripciones.Add(descripcionMejAlm2);
 		descripciones.Add(descripcionMejAlmAv);
 		descripciones.Add(descripcionMejAlmBio);
+			//Y habilidades...
+		habilidades = new List<string>();
+		habilidades.Add(descripcionHab1);
+		habilidades.Add(descripcionHab2);
+		habilidades.Add(descripcionHab3);
+		habilidades.Add(descripcionHab4);
+		habilidades.Add(descripcionHab5);
 	}
 	
 	//Sensores -----------------------------------------------------------------------------------
@@ -228,28 +243,14 @@ public class MejorasNave : MonoBehaviour {
 	}
 	
 	public string getDescripcionMejora(int entrada) {
+		if (entrada < 0 || entrada >= descripciones.Count)
+			return "";
 		return descripciones[entrada];
 	}
 	
-	public string getNombreMejora(int entrada) {
-		switch (entrada) {
-		case 0: return "MejoraInfo";
-		case 1: return "Deteccion de habitats";
-		case 2: return "Detector de metales raros";
-		case 3: return "Sensor de vida";
-		case 4: return "Motor nv1";
-		case 5: return "Motor nv2";
-		case 6: return "Aislamiento magnetico";
-		case 7: return "Orbita superior";
-		case 8: return "Energia nv1";
-		case 9: return "Energia nv2";
-		case 10: return "Habilidades 1";
-		case 11: return "Habilidades 2";
-		case 12: return "Almacen nv1";
-		case 13: return "Almacen nv2";
-		case 14: return "Almacen de componentes";
-		case 15: return "Almacen de material bio";
-		default: return "Desconocida";
-		}
+	public string getDescripcionHabilidad(int entrada) {
+		if (entrada < 0 || entrada >= habilidades.Count)
+			return "";
+		return habilidades[entrada];
 	}
 }

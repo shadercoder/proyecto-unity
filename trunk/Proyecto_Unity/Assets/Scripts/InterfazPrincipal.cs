@@ -32,7 +32,9 @@ public class InterfazPrincipal : MonoBehaviour
 	//Seleccion de seres
 	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
 	private float[] habitabilidadSeleccion;						//La habitabilidad del ser o edificio seleccionado
-	private int tipoSeleccion 					= -1;			//Que se ha seleccionado? 
+	private int tipoSeleccion 					= -1;			//Que se ha seleccionado?
+	private Edificio edificioSeleccionado;						//El edificio que se ha seleccionado, para poder modificar sus atributos
+	private float sliderEficiencia				= 0.0f;			//La eficiencia del edificio seleccionado
 	
 	//Mejoras posibles
 	private bool mejoraInfoCasilla 				= true;			//La barra inferior de informacion se muestra?
@@ -1100,6 +1102,13 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 0;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("BotonHabilidad6");
+				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -1110,6 +1119,13 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 1;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("BotonHabilidad7");
+				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -1120,6 +1136,13 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 2;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("BotonHabilidad8");
+				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -1130,6 +1153,13 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 3;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("BotonHabilidad9");
+				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
@@ -1140,6 +1170,13 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 4;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("BotonHabilidad10");
+				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
+				infoSeleccion.Add("0");	//Coste ener
+				infoSeleccion.Add("0");	//Coste comp bas
+				infoSeleccion.Add("0");	//comp adv
+				infoSeleccion.Add("0");	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 1.5f);
@@ -1562,10 +1599,10 @@ public class InterfazPrincipal : MonoBehaviour
 			//Posición donde termina el bloque izquierdo
 			xini = 0;
 		//Tamaño mínimo de la ventana
-		//if(mostrarBloqueDerecho)
-		//xfin = ?									//Posición donde empieza el bloque derecho
-		//else
-		xfin = cuantoW * 80;
+		if(tipoMenuDerecho != InterfazPrincipal.tMenuDerecho.ninguno)
+			xfin = cuantoW * 69;									//Posición donde empieza el bloque derecho
+		else
+			xfin = cuantoW * 80;
 		//Tamaño máximo de la ventana
 		if (accion == taccion.seleccionarVegetal || accion == taccion.seleccionarAnimal || accion == taccion.seleccionarEdificio || accion == taccion.seleccionarMejora || accion == taccion.seleccionarHabilidad) {
 			int posicionBloqueSeleccion = 0;
@@ -1891,23 +1928,33 @@ public class InterfazPrincipal : MonoBehaviour
 				break;
 			}
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
-			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
+			if (tipoSeleccion < 20) {
+				GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
+				//Habitabilidad --
+				GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
+				GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
+				GUI.Label (new Rect (cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), "LabelHabitabilidad");
+				GUI.Label (new Rect (cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
+				GUI.Label (new Rect (cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), "LabelHabitabilidad");
+				GUI.Label (new Rect (cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), "LabelHabitabilidad");
+				GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");
+				//Habitabilidad --
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
+				//Titulo de la descripcion
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
+				//Este texto es la descripcion
+			}
+			else {
+				GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSelEdificio");
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 8, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
+				//Titulo de la descripcion
+				GUI.Label (new Rect (cuantoW * 1, cuantoH * 9, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
+				//Este texto es la descripcion
+			}
 			GUI.Label (new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");
 			//Este texto es el nombre
 			imagenSeleccionBloqueDerecho();
-			//Habitabilidad --
-			GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
-			GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
-			GUI.Label (new Rect (cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), "LabelHabitabilidad");
-			GUI.Label (new Rect (cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
-			GUI.Label (new Rect (cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), "LabelHabitabilidad");
-			GUI.Label (new Rect (cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), "LabelHabitabilidad");
-			GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");
-			//Habitabilidad --
-			GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
-			//Titulo de la descripcion
-			GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
-			//Este texto es la descripcion
+			
 			if (tipoSeleccion < 10) {
 				//Plantas
 			}
@@ -1919,7 +1966,16 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			else {
 				//Edificios
-//				principal.actualizaConsumoProduccion();	
+				sliderEficiencia = edificioSeleccionado.eficiencia;
+				sliderEficiencia = GUI.HorizontalSlider(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 1), sliderEficiencia, 0.0f, 1.0f);
+				edificioSeleccionado.eficiencia = (float)((int)(sliderEficiencia * 100.0f) / 25) * 0.25f;
+				
+				GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[2], "LabelHabitabilidad");	//Coste energia
+				GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
+				GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
+				GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
+				if (GUI.changed)
+					principal.actualizaConsumoProduccion();	
 			}
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
@@ -1959,16 +2015,39 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
 			GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
 			GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
-			
-
-			GUI.EndGroup ();
-			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
-				tipoMenuDerecho = tMenuDerecho.ninguno;
-				mejoraHover = -1;
-			}
 			break;
 		case tMenuDerecho.habilidades:
-		
+			if (habilidadHover == -1) {
+				break;
+			}
+			switch (aspectRatio) {
+			case taspectRatio.aspectRatio16_9:
+				posicionBloqueH = 8.5f;
+				//sobre 45
+				break;
+			case taspectRatio.aspectRatio16_10:
+				posicionBloqueH = 11;
+				//sobre 50
+				break;
+			case taspectRatio.aspectRatio4_3:
+				posicionBloqueH = 16;
+				//sobre 60
+				break;
+			default:
+				break;
+			}
+
+			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
+			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoHabilidades");
+			GUI.Label (new Rect (cuantoW, cuantoH * 1, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");	//Este texto es el nombre
+			imagenHabilidadesBloqueDerecho();
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 8, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");		//Titulo de la descripcion
+			GUI.Label (new Rect (cuantoW * 1, cuantoH * 9, 9 * cuantoW, 8 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");	//Este texto es la descripcion
+			//Costes
+			GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[2], "LabelHabitabilidad");	//Coste energia
+			GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
+			GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
+			GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
 			break;
 		default: 
 			break;
@@ -2323,7 +2402,13 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[6] = edificio.tipo.habitats.Contains (T_habitats.costa) ? 1 : -1;
 					habitabilidadSeleccion[7] = edificio.tipo.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 					//TODO Poner aqui la info escrita que necesitemos para los edificios
-					
+					//Cadena infoSeleccion[2-5]
+					infoSeleccion.Add("" + (edificio.energiaProducidaPorTurno - edificio.energiaConsumidaPorTurno));		//Produccion de energia
+					infoSeleccion.Add("" + (edificio.compBasProducidosPorTurno - edificio.compBasConsumidosPorTurno));	//Produccion en comp bas
+					infoSeleccion.Add("" + (edificio.compAvzProducidosPorTurno - edificio.compAvzConsumidosPorTurno));	//Produccion en comp adv
+					infoSeleccion.Add("" + (edificio.matBioProducidoPorTurno - edificio.matBioConsumidoPorTurno));		//Produccion en mat bio
+					//---------
+					edificioSeleccionado = edificio;
 					return true;
 				}
 			}
@@ -2596,6 +2681,15 @@ public class InterfazPrincipal : MonoBehaviour
 			//TODO Añadir las imagenes de las mejoras y mostrarlas en el mismo lugar todas
 		default: 
 //			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejora1");
+			break;
+		}
+	}
+	
+	private void imagenHabilidadesBloqueDerecho() {
+		switch (mejoraHover) {
+			//TODO Añadir las imagenes de las habilidades y mostrarlas en el mismo lugar todas
+		default: 
+//			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad1");
 			break;
 		}
 	}
