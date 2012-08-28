@@ -404,6 +404,27 @@ public class Vida //: MonoBehaviour
 		return true;	
 	}
 	
+	//Devuelve false si el vegetal ya existe (no se añade) y true si se añade correctamente	
+	public bool anadeVegetal(EspecieVegetal especie,List<float> habitabilidad,float habitabilidadMinima,int posX,int posY,Vector3 pos)
+	{
+		if(tieneEdificio(posX,posY) || tieneVegetal(posX,posY) || habitabilidad[(int)tablero[posX,posY].habitat] == habitabilidadMinima)
+			return false;
+		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
+		Vector3 coordsVert = pos;
+		//Vector3 coordsVert = tablero[posX,posY].coordsVert;
+		Vegetal vegetal = new Vegetal(idActualVegetal,especie,posX,posY,habitabilidad,tablero[posX,posY].habitat,FuncTablero.creaMesh(coordsVert, modelo));
+		//vegetal.modelos[0].transform.position = objetoRoca.TransformPoint(vegetal.modelos[0].transform.position);
+		seres.Add(vegetal);
+		//int turno = (turnoActual + especie.siguienteTurno)%numMaxTurnos;
+		//listadoSeresTurnos[turno].Add(vegetal);
+		idActualVegetal++;
+		vegetales.Add(vegetal);
+		tablero[posX,posY].vegetal = vegetal;
+		especie.numSeresEspecie++;
+		pintaPlantasTex(posX,posY);
+		return true;	
+	}
+	
 	//Devuelve si el animal se puede insertar en esa posición o no
 	public bool compruebaAnadeAnimal(EspecieAnimal especie,int posX,int posY)
 	{
@@ -430,10 +451,54 @@ public class Vida //: MonoBehaviour
 		return true;
 	}
 	
+	//Devuelve false si el animal ya existe (no se añade) y true si se añade correctamente	
+	public bool anadeAnimal(EspecieAnimal especie,int posX,int posY,Vector3 pos)
+	{
+		if(tieneEdificio(posX,posY) || tieneAnimal(posX,posY) || !especie.tieneHabitat(tablero[posX,posY].habitat))
+			return false;
+		GameObject modelo = especie.modelos[UnityEngine.Random.Range(0,especie.modelos.Count)];
+		Vector3 coordsVert = pos;
+		Animal animal = new Animal(idActualAnimal,especie,posX,posY,FuncTablero.creaMesh(coordsVert, modelo));
+		//animal.modelo.transform.position = objetoRoca.TransformPoint(animal.modelo.transform.position);
+		seres.Add(animal);		
+		//int turno = (turnoActual + especie.siguienteTurno)%numMaxTurnos;
+		//listadoSeresTurnos[turno].Add(animal);
+		idActualAnimal++;
+		animales.Add(animal);		
+		tablero[posX,posY].animal = animal;
+		especie.numSeresEspecie++;
+		Debug.Log("A\u00F1adido animal");		
+		return true;
+	}
+	
 	//Devuelve si el edificio se puede insertar en esa posición o no
 	public bool compruebaAnadeEdificio(TipoEdificio tipoEdificio,int posX,int posY)
 	{
 		return(!tieneEdificio(posX,posY) && tipoEdificio.tieneHabitat(tablero[posX,posY].habitat));
+	}
+	
+	//Devuelve false si el edificio ya existe (no se añade) y true si se añade correctamente	
+	public bool anadeEdificio(TipoEdificio tipoEdificio,int posX,int posY,float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion,Vector3 pos)
+	{
+		if(tieneEdificio(posX,posY) || !tipoEdificio.tieneHabitat(tablero[posX,posY].habitat))
+			return false;
+					
+		GameObject modelo = tipoEdificio.modelos[UnityEngine.Random.Range(0,tipoEdificio.modelos.Count)];
+		Vector3 coordsVert = pos;	
+		Edificio edificio = new Edificio(idActualEdificio,tipoEdificio,posX,posY,eficiencia,numMetales,matrizRadioAccion,radioAccion,FuncTablero.creaMesh(coordsVert,modelo));
+		//edificio.modelo.transform.position = objetoRoca.TransformPoint(edificio.modelo.transform.position);
+		seres.Add(edificio);
+		//int turno = (turnoActual + tipoEdificio.siguienteTurno)%numMaxTurnos;
+		//listadoSeresTurnos[turno].Add(edificio);
+		idActualEdificio++;		
+		edificios.Add(edificio);		
+		if(tablero[posX,posY].animal != null)		
+			eliminaAnimal(tablero[posX,posY].animal);			
+		if(tablero[posX,posY].vegetal != null)		
+			eliminaVegetal(tablero[posX,posY].vegetal);			
+		
+		tablero[posX,posY].edificio = edificio;
+		return true;
 	}
 	
 	//Devuelve false si el edificio ya existe (no se añade) y true si se añade correctamente	
