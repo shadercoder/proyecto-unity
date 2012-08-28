@@ -380,7 +380,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUI.enabled = true;
 		//[Beta] ---------------------------------------------
 		if (GUILayout.Button(new GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_3")) {
-			Camera.main.animation.Play("AcercarsePantalla");
+//			Camera.main.animation.Play("AcercarsePantalla");
 			estado = 2;
 		}
 		if (GUILayout.Button(new GUIContent("Cr\u00e9ditos", "Visualiza los cr\u00e9ditos"), "boton_menu_3")) { //U+00E9 es el caracter unicode 'é'
@@ -430,7 +430,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.EndArea();
 		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al men\u00fa"), "boton_atras")) {
 			PlayerPrefs.Save();
-			Camera.main.animation.Play("AlejarsePantalla");
+//			Camera.main.animation.Play("AlejarsePantalla");
 			estado = 0;
 		}
 	}
