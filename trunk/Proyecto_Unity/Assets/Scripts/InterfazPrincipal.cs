@@ -1392,19 +1392,13 @@ public class InterfazPrincipal : MonoBehaviour
 				RaycastHit hit;
 				int tipo = (int)elementoInsercion - 1;
 				if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY, out hit)) {
-					/*
-					float x = (principal.vida.tablero[posY, posX].coordsVert.x + principal.vida.tablero[posY - 1, posX].coordsVert.x) / 2;
-					float y = (principal.vida.tablero[posY, posX].coordsVert.y + principal.vida.tablero[posY - 1, posX].coordsVert.y) / 2;
-					float z = (principal.vida.tablero[posY, posX].coordsVert.z + principal.vida.tablero[posY - 1, posX].coordsVert.z) / 2;
-					Vector3 coordsVert = new Vector3 (x, y, z);
-					*/					
-					Vector3 coordsVert = principal.vida.tablero[posY, posX].coordsVert;
+					//Vector3 coordsVert = principal.vida.tablero[posY, posX].coordsVert;
 					//Vector3 coordsVert = new Vector3(principal.vida.tablero[posY, posX].coordsVert.x,principal.vida.tablero[posY, posX].coordsVert.y,hit.normal.z);
 					//Mover la malla
-					modeloInsercion.transform.position = coordsVert;
-					//modeloInsercion.transform.position = hit.point;
+					//modeloInsercion.transform.position = coordsVert;
+					modeloInsercion.transform.position = hit.point;
 					Vector3 normal = modeloInsercion.transform.position - modeloInsercion.transform.parent.position;
-					modeloInsercion.transform.position = principal.vida.objetoRoca.transform.TransformPoint (modeloInsercion.transform.position);
+					//modeloInsercion.transform.position = principal.vida.objetoRoca.transform.TransformPoint (modeloInsercion.transform.position);
 					modeloInsercion.transform.rotation = Quaternion.LookRotation (normal);
 					modeloInsercion.GetComponentInChildren<Renderer>().material.SetFloat ("_FiltroOn", 1.0f);
 					modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.red);
@@ -1485,7 +1479,8 @@ public class InterfazPrincipal : MonoBehaviour
 								else if(tedif.elemNecesarioAlConstruir == T_elementos.raros)								
 									numMetales = principal.vida.calculaMetalesRaros(matrizRadioAccion);
 										
-								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion)) {
+								//if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion)) {
+								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion, hit.point)) {
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
 									principal.actualizaConsumoProduccion();
 								} else {
@@ -1505,14 +1500,16 @@ public class InterfazPrincipal : MonoBehaviour
 						} else if (tipo >= 5 && tipo < 15) {
 							tipo -= 5;
 							EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
-							principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX);
+							//principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX);
+							principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX, hit.point);
 							elementoInsercion = telementoInsercion.ninguno;
 							accion = taccion.ninguna;
 							//Animal (herbivoro o carnivoro)
 						} else if (tipo >= 15 && tipo < 25) {
 							tipo -= 5;
 							EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
-							principal.vida.anadeAnimal (especie, posY, posX);
+							//principal.vida.anadeAnimal (especie, posY, posX);
+							principal.vida.anadeAnimal (especie, posY, posX,hit.point);
 							elementoInsercion = telementoInsercion.ninguno;
 							accion = taccion.ninguna;
 						}
