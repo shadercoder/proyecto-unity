@@ -839,7 +839,7 @@ public class SaveLoad {
 		int posY = veg.posY;
 		List<GameObject> modelo = new List<GameObject>();
 		for (int i = 0; i < 4; i++) {
-			modelo.Add(getModeloNoSerializable(veg.modelo, i));
+			modelo.Add(getModeloNoSerializableReal(veg.modelo));
 		}
 		int indiceHabitat = veg.indiceHabitat;
 		int turnosEvolucion = veg.turnosEvolucion;
@@ -870,7 +870,7 @@ public class SaveLoad {
 		EspecieAnimal especieAni = getEspecieAniNoSerializable(ani.especie);
 		int posX = ani.posX;
 		int posY = ani.posY;
-		GameObject modelo = getModeloNoSerializable(ani.modelo);
+		GameObject modelo = getModeloNoSerializableReal(ani.modelo);
 		int res = ani.reserva;
 		int repr = ani.turnosParaReproduccion;
 		int aguante = ani.aguante;
@@ -935,7 +935,7 @@ public class SaveLoad {
 			tupla.e3 = edi.matrizRadioAccion[i].e3;
 			matrizRadioAccion.Add(tupla);
 		}
-		GameObject modelo = getModeloNoSerializable(edi.modelo);
+		GameObject modelo = getModeloNoSerializableReal(edi.modelo);
 		return new Edificio(idSer, tipoEdif, posX, posY, eficiencia, numMetales, matrizRadioAccion, radioAccion, modelo, eneCons, compBaCons, compAvCons, matBioCons, eneProd, compBaProd, compAvProd, matBioProd, matBioSin);
 	}
 	
@@ -960,7 +960,7 @@ public class SaveLoad {
 		resultado.numSeresEspecie = esp.numSeresEspecie;
 		resultado.modelos = new List<GameObject>();
 		for (int i = 0; i < esp.modelos.Length; i++) {
-			resultado.modelos.Add(getModeloNoSerializable(esp.modelos[i]));
+			resultado.modelos.Add(getModeloNoSerializableReferencia(esp.modelos[i], i));
 		}
 		return resultado;
 	}
@@ -975,7 +975,7 @@ public class SaveLoad {
 		int idTextura = veg.idTextura;
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < veg.modelos.Length; i++)
-			modelos.Add(getModeloNoSerializable(veg.modelos[i], i));
+			modelos.Add(getModeloNoSerializableReferencia(veg.modelos[i], i));
 		int turnosEvolucion = veg.turnosEvolucionInicial;
 		float evolucion = veg.evolucion;
 		int numMaxModelos = veg.numMaxModelos;
@@ -1029,7 +1029,7 @@ public class SaveLoad {
 		int numSeresEspecie = ani.numSeresEspecie;
 		List<GameObject> modelos = new List<GameObject>();		
 		for (int i = 0; i < ani.modelos.Length; i++)
-			modelos.Add(getModeloNoSerializable(ani.modelos[i], i));
+			modelos.Add(getModeloNoSerializableReferencia(ani.modelos[i], i));
 		return new EspecieAnimal(nombre, numMaxSeresEspecie, consumo, reservaMax, alimentoMaxTurno, aguanteInicial, repro, tipoAlim, habitats, modelos, numSeresEspecie, idEspecie);
 	}
 	
@@ -1072,7 +1072,7 @@ public class SaveLoad {
 		int matBioProdMax = edi.matBioProducidoPorTurnoMax;
 		List<GameObject> modelos = new List<GameObject>();
 		for (int i = 0; i < edi.modelos.Length; i++)
-			modelos.Add(getModeloNoSerializable(edi.modelos[i], i));
+			modelos.Add(getModeloNoSerializableReferencia(edi.modelos[i], i));
 		return new TipoEdificio(nombre, habitats, eneCons, compBaCons, compAvCons, matBioCons, elemNeces, eneConsMax, compBaConsMax, compAvConsMax, matBioConsMax, eneProdMax, compBaProdMax, compAvProdMax, matBioProdMax, modelos, idTipoEdificio);
 	}
 	
@@ -1103,74 +1103,77 @@ public class SaveLoad {
 		return resultado;
 	}
 	
-	private static GameObject getModeloNoSerializable(int referencia) {
+	private static GameObject getModeloNoSerializableReal(int referencia/*, Vector3 pos*/) {
 		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null) {
 			if (!iniciaVariablesEstaticas()) {
 				Debug.LogError("Error al iniciar variables estaticas. Puede estar en una escena incorrecta?");
 				return null;
 			}
 		}
+		//[Debug] -----------------
+		Vector3 pos = Vector3.zero;
+		// ------------------------
 		switch (referencia) {
 			//Edificios [20-24]
 		case 20:		//Fabrica componentes basicos
-			return GameObject.Instantiate(modelosEdificios.fabCompBas) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosEdificios.fabCompBas);
 		case 21:		//Central de energia
-			return GameObject.Instantiate(modelosEdificios.centralEnergia) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosEdificios.centralEnergia) as GameObject;
 		case 22:		//Granja
-			return GameObject.Instantiate(modelosEdificios.granja) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosEdificios.granja) as GameObject;
 		case 23:		//Fabrica componentes avanzados
-			return GameObject.Instantiate(modelosEdificios.fabCompAdv) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosEdificios.fabCompAdv) as GameObject;
 		case 24:		//Central energia avanzada
-			return GameObject.Instantiate(modelosEdificios.centralEnergiaAdv) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosEdificios.centralEnergiaAdv) as GameObject;
 		//Animales [10-19]
 		case 10:		//Conejo
-			return GameObject.Instantiate(modelosAnimales.herbivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 11:		//Camello
-			return GameObject.Instantiate(modelosAnimales.herbivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 12:		//Tortuga
-			return GameObject.Instantiate(modelosAnimales.herbivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 13:		//Ciervo
-			return GameObject.Instantiate(modelosAnimales.herbivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 14:		//Salamandra
-			return GameObject.Instantiate(modelosAnimales.herbivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 15:		//Zorro
-			return GameObject.Instantiate(modelosAnimales.carnivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 16:		//Lobo
-			return GameObject.Instantiate(modelosAnimales.carnivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 17:		//Serpiente
-			return GameObject.Instantiate(modelosAnimales.carnivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 18:		//Tigre
-			return GameObject.Instantiate(modelosAnimales.carnivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 19:		//Velociraptor
-			return GameObject.Instantiate(modelosAnimales.carnivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
 		//Vegetales [0-9]
 		case 0:	//Seta
-			return GameObject.Instantiate(modelosVegetales.setas[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.setas[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 1:	//Flor
-			return GameObject.Instantiate(modelosVegetales.flores[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.flores[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 2:	//Caña
-			return GameObject.Instantiate(modelosVegetales.canas[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.canas[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 3:	//Arbusto
-			return GameObject.Instantiate(modelosVegetales.arbustos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.arbustos[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 4:	//Estromatolito
-			return GameObject.Instantiate(modelosVegetales.estromatolitos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.estromatolitos[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 5:	//Cactus
-			return GameObject.Instantiate(modelosVegetales.cactus[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.cactus[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 6:	//Palmera
-			return GameObject.Instantiate(modelosVegetales.palmeras[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.palmeras[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 7:	//Pino
-			return GameObject.Instantiate(modelosVegetales.pinos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.pinos[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 8:	//Cipres
-			return GameObject.Instantiate(modelosVegetales.cipreses[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.cipreses[UnityEngine.Random.Range(0,4)]) as GameObject;
 		case 9:	//Pino alto
-			return GameObject.Instantiate(modelosVegetales.pinosAltos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			return FuncTablero.creaMesh(pos, modelosVegetales.pinosAltos[UnityEngine.Random.Range(0,4)]) as GameObject;
 		default:
-			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializable(int) no es valida! Num = " + referencia.ToString());
+			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializableReal(int, Vector3) no es valida! Num = " + referencia.ToString());
 			return GameObject.CreatePrimitive(PrimitiveType.Cube);
 		}
 	}
 	
-	private static GameObject getModeloNoSerializable(int referencia, int numero) {
+	private static GameObject getModeloNoSerializableReferencia(int referencia, int numero) {
 		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null) {
 			if (!iniciaVariablesEstaticas()) {
 				Debug.LogError("Error al iniciar variables estaticas. Puede estar en una escena incorrecta?");
@@ -1180,59 +1183,59 @@ public class SaveLoad {
 		switch (referencia) {
 			//Edificios [20-24]
 		case 20:		//Fabrica componentes basicos
-			return GameObject.Instantiate(modelosEdificios.fabCompBas) as GameObject;
+			return modelosEdificios.fabCompBas;
 		case 21:		//Central de energia
-			return GameObject.Instantiate(modelosEdificios.centralEnergia) as GameObject;
+			return modelosEdificios.centralEnergia;
 		case 22:		//Granja
-			return GameObject.Instantiate(modelosEdificios.granja) as GameObject;
+			return modelosEdificios.granja;
 		case 23:		//Fabrica componentes avanzados
-			return GameObject.Instantiate(modelosEdificios.fabCompAdv) as GameObject;
+			return modelosEdificios.fabCompAdv;
 		case 24:		//Central energia avanzada
-			return GameObject.Instantiate(modelosEdificios.centralEnergiaAdv) as GameObject;
+			return modelosEdificios.centralEnergiaAdv;
 		//Animales [10-19]
-		case 10:		//Conejo
-			return GameObject.Instantiate(modelosAnimales.herbivoro1[numero]) as GameObject;
-		case 11:		//Camello
-			return GameObject.Instantiate(modelosAnimales.herbivoro2[numero]) as GameObject;
-		case 12:		//Tortuga
-			return GameObject.Instantiate(modelosAnimales.herbivoro3[numero]) as GameObject;
-		case 13:		//Ciervo
-			return GameObject.Instantiate(modelosAnimales.herbivoro4[numero]) as GameObject;
-		case 14:		//Salamandra
-			return GameObject.Instantiate(modelosAnimales.herbivoro5[numero]) as GameObject;
-		case 15:		//Zorro
-			return GameObject.Instantiate(modelosAnimales.carnivoro1[numero]) as GameObject;
+		case 10:		//Caracol
+			return modelosAnimales.herbivoro1[numero];
+		case 11:		//Conejo
+			return modelosAnimales.herbivoro2[numero];
+		case 12:		//Vaca
+			return modelosAnimales.herbivoro3[numero];
+		case 13:		//Jirafa
+			return modelosAnimales.herbivoro4[numero];
+		case 14:		//Estegosaurio
+			return modelosAnimales.herbivoro5[numero];
+		case 15:		//Rata
+			return modelosAnimales.carnivoro1[numero];
 		case 16:		//Lobo
-			return GameObject.Instantiate(modelosAnimales.carnivoro2[numero]) as GameObject;
-		case 17:		//Serpiente
-			return GameObject.Instantiate(modelosAnimales.carnivoro3[numero]) as GameObject;
-		case 18:		//Tigre
-			return GameObject.Instantiate(modelosAnimales.carnivoro4[numero]) as GameObject;
-		case 19:		//Velociraptor
-			return GameObject.Instantiate(modelosAnimales.carnivoro5[numero]) as GameObject;
+			return modelosAnimales.carnivoro2[numero];
+		case 17:		//Tigre
+			return modelosAnimales.carnivoro3[numero];
+		case 18:		//Oso
+			return modelosAnimales.carnivoro4[numero];
+		case 19:		//Tiranosaurio
+			return modelosAnimales.carnivoro5[numero];
 		//Vegetales [0-9]
 		case 0:	//Seta
-			return GameObject.Instantiate(modelosVegetales.setas[numero]) as GameObject;
+			return modelosVegetales.setas[numero];
 		case 1:	//Flor
-			return GameObject.Instantiate(modelosVegetales.flores[numero]) as GameObject;
+			return modelosVegetales.flores[numero];
 		case 2:	//Caña
-			return GameObject.Instantiate(modelosVegetales.canas[numero]) as GameObject;
+			return modelosVegetales.canas[numero];
 		case 3:	//Arbusto
-			return GameObject.Instantiate(modelosVegetales.arbustos[numero]) as GameObject;
+			return modelosVegetales.arbustos[numero];
 		case 4:	//Estromatolito
-			return GameObject.Instantiate(modelosVegetales.estromatolitos[numero]) as GameObject;
+			return modelosVegetales.estromatolitos[numero];
 		case 5:	//Cactus
-			return GameObject.Instantiate(modelosVegetales.cactus[numero]) as GameObject;
+			return modelosVegetales.cactus[numero];
 		case 6:	//Palmera
-			return GameObject.Instantiate(modelosVegetales.palmeras[numero]) as GameObject;
+			return modelosVegetales.palmeras[numero];
 		case 7:	//Pino
-			return GameObject.Instantiate(modelosVegetales.pinos[numero]) as GameObject;
+			return modelosVegetales.pinos[numero];
 		case 8:	//Cipres
-			return GameObject.Instantiate(modelosVegetales.cipreses[numero]) as GameObject;
+			return modelosVegetales.cipreses[numero];
 		case 9:	//Pino alto
-			return GameObject.Instantiate(modelosVegetales.pinosAltos[numero]) as GameObject;
+			return modelosVegetales.pinosAltos[numero];
 		default:
-			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializable(int) no es valida! Num = " + referencia.ToString());
+			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializableReferencia(int, int) no es valida! Num = " + referencia.ToString());
 			return GameObject.CreatePrimitive(PrimitiveType.Cube);
 		}
 	}

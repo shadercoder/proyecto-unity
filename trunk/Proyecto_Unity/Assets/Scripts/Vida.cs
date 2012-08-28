@@ -325,7 +325,7 @@ public class Vida //: MonoBehaviour
 	
 	public Vector3 posicionAleatoriaVegetal(int posX,int posY)
 	{		
-		int xIzq = posX;
+		int xIzq = posX; 
 		int yIzq = posY-1;
 		FuncTablero.convierteCoordenadas(ref xIzq,ref yIzq);
 		int xDer = posX;
