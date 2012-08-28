@@ -372,9 +372,13 @@ public class EscenaCarga : MonoBehaviour {
 			Camera.main.animation.Play("AcercarseHolograma");
 			estado = 5;
 		}
-		if (GUILayout.Button(new GUIContent("Cargar", "Cargar un juego guardado"), "boton_menu_2")) {
+		//[Beta] Desactivado hasta que se arregle el save/load
+		GUI.enabled = false;
+		if (GUILayout.Button(new GUIContent("Cargar", "Desactivado en version Beta"), "boton_menu_2")) {
 			estado = 6;
 		}
+		GUI.enabled = true;
+		//[Beta] ---------------------------------------------
 		if (GUILayout.Button(new GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_3")) {
 			Camera.main.animation.Play("AcercarsePantalla");
 			estado = 2;
@@ -466,7 +470,7 @@ public class EscenaCarga : MonoBehaviour {
 			GUILayout.Label("Muy alto");
 		}		
 				
-		GUILayout.Label("Numero de continentes", "label_centrada");
+		GUILayout.Label("Tama\u00f1o de continentes", "label_centrada");
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Bajo");
 		escalaInit = GUILayout.HorizontalSlider(escalaInit, 0.0055f, 0.001f);

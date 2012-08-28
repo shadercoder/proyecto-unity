@@ -591,23 +591,31 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Herbivoro5"), "BotonInsertarHerbivoro5")) {
+			//[Beta] Desactivado animal por no tener los modelos completados aun
+			GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarHerbivoro5")) {
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.herbivoro5;
 				modeloInsercion = principal.vida.especiesAnimales[4].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[4].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
+			GUI.enabled = true;
+			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro5;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW * 3);
-			if (GUILayout.Button (new GUIContent ("", "Carnivoro1"), "BotonInsertarCarnivoro1")) {
+			//[Beta] Desactivado animal por no tener los modelos completados aun
+			GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro1")) {
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.carnivoro1;
 				modeloInsercion = principal.vida.especiesAnimales[5].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[5].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
+			GUI.enabled = true;
+			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro1;
 				seleccionarObjetoInsercion ();
@@ -646,12 +654,16 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Carnivoro5"), "BotonInsertarCarnivoro5")) {
+			//[Beta] Desactivado animal por no tener los modelos completados aun
+			GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro5")) {
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.carnivoro5;
 				modeloInsercion = principal.vida.especiesAnimales[9].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[9].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
+			GUI.enabled = true;
+			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro5;
 				seleccionarObjetoInsercion ();
@@ -1258,8 +1270,12 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.BeginArea (new Rect (cuantoW * 32.5f, cuantoH * posicionBloque, cuantoW * 15, cuantoH * 18), new GUIContent ());
 			GUILayout.BeginVertical ();
 			GUILayout.Box (new GUIContent (), "BloqueMenu", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15));
-			if (GUILayout.Button (new GUIContent ("Guardar partida", "Lleva al menu de guardar partida"), "BotonGuardarPartida", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
+			//[Beta] Desactivado el boton de Guardar Partida
+			GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("Guardar partida", "Desactivado en version Beta"), "BotonGuardarPartida", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarGuardar;
+			GUI.enabled = true;
+			//[Beta] ----------------------------------------
 			if (GUILayout.Button (new GUIContent ("Opciones de audio", "Lleva al menu de opciones de audio"), "BotonOpcionesAudio", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarOpcionesAudio;
 			if (GUILayout.Button (new GUIContent ("Menu principal", "Lleva al menu principal del juego"), "BotonMenuPrincipal", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
@@ -1354,8 +1370,10 @@ public class InterfazPrincipal : MonoBehaviour
 		case taccionMenu.mostrarSalirJuego:
 			GUI.Box (new Rect (cuantoW * 36, cuantoH * posicionConfirmar, cuantoW * 8, cuantoH * 4), new GUIContent (), "BoxConfirmacion");
 			GUI.Label (new Rect (cuantoW * 37.5f, cuantoH * (posicionConfirmar), cuantoW * 6, cuantoH * 2), new GUIContent ("¿Está seguro?"));
-			if (GUI.Button (new Rect (cuantoW * 37, cuantoH * (posicionConfirmar + 2), cuantoW * 2.5f, cuantoH * 1.5f), new GUIContent ("Si", "Pulsa aquí para salir del juego")))
+			if (GUI.Button (new Rect (cuantoW * 37, cuantoH * (posicionConfirmar + 2), cuantoW * 2.5f, cuantoH * 1.5f), new GUIContent ("Si", "Pulsa aquí para salir del juego"))) {
+				PlayerPrefs.Save();
 				Application.Quit ();
+			}
 			if (GUI.Button (new Rect (cuantoW * 40.5f, cuantoH * (posicionConfirmar + 2), cuantoW * 2.5f, cuantoH * 1.5f), new GUIContent ("No", "Pulsa aquí para volver al menu de opciones")))
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
 			break;
@@ -2701,7 +2719,54 @@ public class InterfazPrincipal : MonoBehaviour
 	
 	private void imagenMejorasBloqueDerecho() {
 		switch (mejoraHover) {
-			//TODO Añadir las imagenes de las mejoras y mostrarlas en el mismo lugar todas
+		case 0: 	//Sensor 1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejSensor1");
+			break;
+		case 1: 	//Sensor 2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejSensor2");
+			break;
+		case 2: 	//Sensor 3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejSensor3");
+			break;
+		case 3: 	//Sensor 4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejSensor4");
+			break;
+		case 4: 	//Motor 1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejMotor1");
+			break;
+		case 5: 	//Motor 2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejMotor2");
+			break;
+		case 6: 	//Motor 3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejMotor3");
+			break;
+		case 7: 	//Motor 4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejMotor4");
+			break;
+		case 8: 	//Energia 1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejEnergia1");
+			break;
+		case 9: 	//Energia 2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejEnergia2");
+			break;
+		case 10: 	//Energia 3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejEnergia3");
+			break;
+		case 11: 	//Energia 4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejEnergia4");
+			break;
+		case 12: 	//Almacen 1
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejAlmacen1");
+			break;
+		case 13: 	//Almacen 2
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejAlmacen2");
+			break;
+		case 14: 	//Almacen 3
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejAlmacen3");
+			break;
+		case 15: 	//Almacen 4
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejAlmacen4");
+			break;
 		default: 
 //			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaMejora1");
 			break;
