@@ -1,4 +1,4 @@
-Shader "Planet/Oceano"
+Shader "Planet/OceanoRamp"
 {
 	Properties 
 	{
@@ -34,6 +34,7 @@ ZWrite On
 ZTest LEqual
 ColorMask RGBA
 Fog{
+Color (0,0.05307379,0.06716418,1)
 }
 
 
