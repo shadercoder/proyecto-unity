@@ -1277,7 +1277,8 @@ public class SaveLoad {
   	{ 
 	    SaveIndices save = new SaveIndices();
 		save.indices = indices;
-	    FileStream stream = new FileStream(Application.dataPath + "/Indices.bin", FileMode.Create);
+		compruebaRuta(Application.dataPath + "/Cache/");
+	    FileStream stream = new FileStream(Application.dataPath + "/Cache/Indices.bin", FileMode.Create);
 		Debug.Log("Archivo de indices guardado en: " + Application.dataPath);
 		try {
 		    BinaryFormatter bformatter = new BinaryFormatter();
@@ -1292,7 +1293,7 @@ public class SaveLoad {
   	}
 
   	public static SaveIndices LoadIndices ()  {									//Sobrecargado
-		return LoadIndices(Application.dataPath + "/Indices.bin");
+		return LoadIndices(Application.dataPath + "/Cache/Indices.bin");
 	} 
 	
   	public static SaveIndices LoadIndices(string filePath) 
@@ -1333,15 +1334,18 @@ public class SaveLoad {
 	}
 	
 	public static bool existeFile(string nombre) {
-		if (File.Exists(currentFilePath + nombre))
-            return true;
-		else 
-			return false;
+		return File.Exists(Application.dataPath + nombre);
 	}
 	
 	public static void compruebaRuta() {
 		if (!Directory.Exists(currentFilePath))	{
 			Directory.CreateDirectory(currentFilePath);	
+		}
+	}
+	
+	public static void compruebaRuta(string ruta) {
+		if (!Directory.Exists(ruta))	{
+			Directory.CreateDirectory(ruta);	
 		}
 	}
 	

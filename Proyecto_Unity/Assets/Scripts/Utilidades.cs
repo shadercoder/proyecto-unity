@@ -61,17 +61,17 @@ public class FuncTablero {
 	private static float escala = 0.004f;			//El nivel de zoom sobre el ruido
 	
 	//Terreno
-	private static float nivelAgua = 0.27f;								//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
-	private static float tamanoPlaya = 0.05f;							//El tamaño de las playas. de 0.02 a 0.05 razonable
-	private static float alturaColinas = nivelAgua+(1-nivelAgua)*0.3f;	//La altura a partir de la cual se considera colina (situada a 33% de lo que resta de tierra al establecer el nivel del agua)
-	private static float alturaMontana = nivelAgua+(1-nivelAgua)*0.6f;	//La altura a partir de la cual se considera montaña (situada a 66% de lo que resta de tierra al establecer el nivel del agua)
+	private static float nivelAgua = 0.27f;									//El nivel sobre el que se pondrá agua. 0.45 ya es pasarse
+	private static float tamanoPlaya = 0.05f;								//El tamaño de las playas. de 0.02 a 0.05 razonable
+	private static float alturaColinas = nivelAgua+(1-nivelAgua)*0.3f;		//La altura a partir de la cual se considera colina (situada a 33% de lo que resta de tierra al establecer el nivel del agua)
+	private static float alturaMontana = nivelAgua+(1-nivelAgua)*0.6f;		//La altura a partir de la cual se considera montaña (situada a 66% de lo que resta de tierra al establecer el nivel del agua)
 	private static float temperatura = 0.5f;								//La temperatura del planeta, que influye en la generacion de habitats
 	
 	//Para el tablero
 	public static int anchoTablero = 128;			//El ancho del tablero lógico (debe ser potencia de 2 para cuadrar con la textura)
-	public static int altoTablero = 64;			//El alto del tablero lógico (debe ser potencia de 2 tambien)
+	public static int altoTablero = 64;				//El alto del tablero lógico (debe ser potencia de 2 tambien)
 	public static int casillasPolos	= 3;			//El numero de casillas que serán intransitables en los polos
-	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
+//	public static int numMaxEspecies = 20;			//Numero maximo de especies que puede haber en el tablero (juego) a la vez
 
 	
 	//Funciones --------------------------------------------------------------------------------------------------------------------
@@ -792,15 +792,25 @@ public class FuncTablero {
 		T_habitats[] habitat = calculaHabitats(texHeightmap, texHabitats, texHabitatsEstetica, texElems, out elems);
 		
 		//Generacion de indices ----------------------------------------------
-		
-		//Comentar para generar indices nuevos------------
-		//int[] indices = SaveLoad.LoadIndices().indices;
-		
-		//Descomentar para generar indices nuevos---------
-		Vector2[] uvs = mesh.uv;
-		int[] indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
-		//int[] indices = calculaVerticesCasilla(texHeightmap.width, texHeightmap.height, mesh); //calculo de vertices con raycast.
-		SaveLoad.SaveIndices(indices);
+		bool generaIndices = true;
+		if (PlayerPrefs.HasKey("indices")) {
+			if (PlayerPrefs.GetInt("indices") == anchoTablero && SaveLoad.existeFile("/Cache/Indices.bin")) {
+				generaIndices = false;
+			}
+		}
+		int[] indices;
+		if (generaIndices) {
+			Vector2[] uvs = mesh.uv;
+			indices = calculaIndicesVertices(texHeightmap.width, texHeightmap.height, uvs);
+			//indices = calculaVerticesCasilla(texHeightmap.width, texHeightmap.height, mesh); //calculo de vertices con raycast.
+			SaveLoad.SaveIndices(indices);
+			PlayerPrefs.SetInt("indices", anchoTablero);
+			Debug.Log(formateaTiempo() + ": Generados nuevos indices.");
+		}
+		else {
+			indices = SaveLoad.LoadIndices().indices;
+			Debug.Log(formateaTiempo() + ": Cargados indices ya existentes.");
+		}
 		
 		//Generacion de indices ----------------------------------------------
 		
