@@ -1458,22 +1458,22 @@ public class InterfazPrincipal : MonoBehaviour
 								else if(eficiencia < 0.5f)
 								{
 									radioAccion = 2;
-									matrizRadioAccion = FuncTablero.calculaMatrizRadio2Circular(posX,posY);
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio2Circular(posY,posX);
 								}
 								else if(eficiencia < 0.75f)
 								{
 									radioAccion = 3;
-									matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(posX,posY);
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(posY,posX);
 								}
 								else if(eficiencia < 1.0f)
 								{
 									radioAccion = 4;
-									matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(posX,posY);
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(posY,posX);
 								}
 								else
 								{
 									radioAccion = 5;
-									matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(posX,posY);
+									matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(posY,posX);
 								}
 								int numMetales = 0;
 								if(tedif.metalesAUsar == T_elementos.comunes)								
@@ -2050,6 +2050,7 @@ public class InterfazPrincipal : MonoBehaviour
 			else {
 				//Edificios
 				sliderEficiencia = edificioSeleccionado.eficiencia;
+				//GUI.Label(new Rect(cuantoW * 1, cuantoH * 18, cuantoW * 9, cuantoH * 1),edificioSeleccionado.numMetales.ToString());
 				sliderEficiencia = GUI.HorizontalSlider(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 1), sliderEficiencia, 0.0f, 1.0f);
 				float eficiencia = (float)((int)(sliderEficiencia * 100.0f) / 25) * 0.25f;
 				if(edificioSeleccionado.eficiencia != eficiencia)
