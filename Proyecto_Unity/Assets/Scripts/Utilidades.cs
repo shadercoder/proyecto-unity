@@ -1387,8 +1387,8 @@ public class FuncTablero {
 			{
 				auxX = x + i;
 				auxY = y + j;
-				convierteCoordenadas(ref auxY, ref auxX);
-				matriz.Add(new Tupla<int,int,bool>(auxY,auxX,true));
+				convierteCoordenadas(ref auxX, ref auxY);
+				matriz.Add(new Tupla<int,int,bool>(auxX,auxY,true));
 			}	
 		matriz[0] = new Tupla<int, int, bool>(matriz[0].e1,matriz[0].e2,false);
 		matriz[1] = new Tupla<int, int, bool>(matriz[1].e1,matriz[1].e2,false);
