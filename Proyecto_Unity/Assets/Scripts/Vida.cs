@@ -1249,7 +1249,7 @@ public class EspecieAnimal : Especie
 {
 	public int consumo;									//Alimento que consume por turno
 	public int reservaMaxima;							//Máximo valor para la reserva de comida, es decir, el alimento almacenado para sobrevivir
-	public int alimentoMaxTurno;									//Comida máxima que pueden ingerir por turno
+	public int alimentoMaxTurno;						//Comida máxima que pueden ingerir por turno
 	public int aguanteInicial;							//Número de turnos seguidos que puede desplazarse sin agotarse
 	public int reproductibilidad;						//Número de turnos que dura un ciclo completo de reproducción
 	public tipoAlimentacionAnimal tipo;					//herbivoro o carnivoro 
