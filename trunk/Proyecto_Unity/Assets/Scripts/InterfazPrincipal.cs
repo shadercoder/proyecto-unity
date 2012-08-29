@@ -33,6 +33,8 @@ public class InterfazPrincipal : MonoBehaviour
 	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
 	private float[] habitabilidadSeleccion;						//La habitabilidad del ser o edificio seleccionado
 	private int tipoSeleccion 					= -1;			//Que se ha seleccionado?
+	private Animal animalSeleccionado;							//El animal seleccionado, para actualizar sus atributos en vivo
+	private Vegetal vegetalSeleccionado;						//El vegetal seleccionado, para actualizar sus atributos en vivo
 	private Edificio edificioSeleccionado;						//El edificio que se ha seleccionado, para poder modificar sus atributos
 	private float sliderEficiencia				= 0.0f;			//La eficiencia del edificio seleccionado
 	
@@ -1999,20 +2001,52 @@ public class InterfazPrincipal : MonoBehaviour
 			if (tipoSeleccion < 10) {
 				//Plantas
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 19, 9 * cuantoW, 1 * cuantoH), "NUMERO DE PLANTAS:", "LabelDescripcionTitulo");
-				GUI.Label (new Rect (cuantoW * 2, cuantoH * 20, 8 * cuantoW, 4 * cuantoH), infoSeleccion[2], "LabelDescripcionContenido");
+				GUI.Label (new Rect (cuantoW * 2, cuantoH * 20, 8 * cuantoW, 4 * cuantoH), vegetalSeleccionado.numVegetales.ToString (), "LabelDescripcionContenido");
 			}
 			else if (tipoSeleccion < 20) {
 				//Animales
 				//2 carnivoro-herbivoro
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 19, 9 * cuantoW, 1 * cuantoH), "ALIMENTACION:", "LabelDescripcionTitulo");
-				GUI.Label (new Rect (cuantoW * 2, cuantoH * 20, 8 * cuantoW, 4 * cuantoH), infoSeleccion[2], "LabelDescripcionContenido");
+				if (animalSeleccionado.especie.tipo == tipoAlimentacionAnimal.carnivoro) {
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 20, 8 * cuantoW, 4 * cuantoH), "Carnivoro", "LabelDescripcionContenido");
+				} else {
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 20, 8 * cuantoW, 4 * cuantoH), "Herbivoro", "LabelDescripcionContenido");
+				}
+				//-----------------------
 				//3 comida dentro (reserva)
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 21, 9 * cuantoW, 1 * cuantoH), "HAMBRE:", "LabelDescripcionTitulo");
-				GUI.Label (new Rect (cuantoW * 2, cuantoH * 22, 8 * cuantoW, 4 * cuantoH), infoSeleccion[3], "LabelDescripcionContenido");
+				if (animalSeleccionado.reserva < (animalSeleccionado.especie.reservaMaxima / 4)) {
+					//Menor al 25%
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 22, 8 * cuantoW, 4 * cuantoH), "Hambiento!", "LabelDescripcionContenido");
+				} else if (animalSeleccionado.reserva < (animalSeleccionado.especie.reservaMaxima / 2)) {
+					//Menor al 50%
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 22, 8 * cuantoW, 4 * cuantoH), "Bastante", "LabelDescripcionContenido");
+				} else if (animalSeleccionado.reserva < (animalSeleccionado.especie.reservaMaxima / 4) * 3) {
+					//Menor al 75%
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 22, 8 * cuantoW, 4 * cuantoH), "Poca", "LabelDescripcionContenido");
+				} else
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 22, 8 * cuantoW, 4 * cuantoH), "LLeno", "LabelDescripcionContenido");
+				//-----------------------
 				//4 estado
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 23, 9 * cuantoW, 1 * cuantoH), "ESTADO:", "LabelDescripcionTitulo");
-				GUI.Label (new Rect (cuantoW * 2, cuantoH * 24, 8 * cuantoW, 4 * cuantoH), infoSeleccion[4], "LabelDescripcionContenido");
-				
+				switch (animalSeleccionado.estado) {
+				case tipoEstadoAnimal.buscarAlimento:
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 24, 8 * cuantoW, 4 * cuantoH), "Buscando comida\n", "LabelDescripcionContenido");
+					break;
+				case tipoEstadoAnimal.comer:
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 24, 8 * cuantoW, 4 * cuantoH), "Comiendo\n", "LabelDescripcionContenido");
+					break;
+				case tipoEstadoAnimal.descansar:
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 24, 8 * cuantoW, 4 * cuantoH), "Descansando\n", "LabelDescripcionContenido");
+					break;
+				case tipoEstadoAnimal.morir:
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 24, 8 * cuantoW, 4 * cuantoH), "Muriendo\n", "LabelDescripcionContenido");
+					break;
+				case tipoEstadoAnimal.nacer:
+					GUI.Label (new Rect (cuantoW * 2, cuantoH * 24, 8 * cuantoW, 4 * cuantoH), "Naciendo\n", "LabelDescripcionContenido");
+					break;
+				}
+				//------------------------				
 			}
 			else {
 				//Edificios
@@ -2363,6 +2397,9 @@ public class InterfazPrincipal : MonoBehaviour
 			Vegetal vegetal = principal.vida.tablero[y, x].vegetal;
 			Animal animal = principal.vida.tablero[y, x].animal;
 			infoSeleccion.Clear ();
+			animalSeleccionado = null;
+			vegetalSeleccionado = null;
+			edificioSeleccionado = null;
 			if (animal != null || vegetal != null || edificio != null) {
 				if (animal != null) {
 					infoSeleccion.Add (animal.especie.nombre);
@@ -2378,48 +2415,8 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[4] = animal.especie.habitats.Contains (T_habitats.volcanico) ? 1 : -1;
 					habitabilidadSeleccion[6] = animal.especie.habitats.Contains (T_habitats.costa) ? 1 : -1;
 					habitabilidadSeleccion[7] = animal.especie.habitats.Contains (T_habitats.tundra) ? 1 : -1;
-					//Cadena infoSeleccion[2]
-					if (animal.especie.tipo == tipoAlimentacionAnimal.carnivoro) {
-						infoSeleccion.Add ("Carnivoro");
-					} else {
-						infoSeleccion.Add ("Herbivoro");
-					}
-					//-----------------------
-					//Cadena infoSeleccion[3]
-					if (animal.reserva < (animal.especie.reservaMaxima / 4)) {
-						//Menor al 25%
-						infoSeleccion.Add ("Hambiento!");
-					} else if (animal.reserva < (animal.especie.reservaMaxima / 2)) {
-						//Menor al 50%
-						infoSeleccion.Add ("Bastante");
-					} else if (animal.reserva < (animal.especie.reservaMaxima / 4) * 3) {
-						//Menor al 75%
-						infoSeleccion.Add ("Poca");
-					} else
-						infoSeleccion.Add ("LLeno");
-					//-----------------------
 					
-					//Cadena infoSeleccion[4]
-					string temp = "";
-					switch (animal.estado) {
-					case tipoEstadoAnimal.buscarAlimento:
-						temp = "Buscando comida\n";
-						break;
-					case tipoEstadoAnimal.comer:
-						temp = "Comiendo\n";
-						break;
-					case tipoEstadoAnimal.descansar:
-						temp = "Descansando\n";
-						break;
-					case tipoEstadoAnimal.morir:
-						temp = "Muriendo\n";
-						break;
-					case tipoEstadoAnimal.nacer:
-						temp = "Naciendo\n";
-						break;
-					}
-					infoSeleccion.Add (temp);
-					//------------------------
+					animalSeleccionado = animal;
 					
 					return true;
 				} else if (vegetal != null) {
@@ -2436,8 +2433,8 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[4] = vegetal.habitabilidad[4];
 					habitabilidadSeleccion[6] = vegetal.habitabilidad[6];
 					habitabilidadSeleccion[7] = vegetal.habitabilidad[7];
-					infoSeleccion.Add (vegetal.numVegetales.ToString ());
-					//Cadena infoSeleccion[2]					
+					
+					vegetalSeleccionado = vegetal;
 					return true;
 				} else if (edificio != null) {
 					infoSeleccion.Add (edificio.tipo.nombre);
