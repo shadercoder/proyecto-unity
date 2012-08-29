@@ -1447,7 +1447,7 @@ public class InterfazPrincipal : MonoBehaviour
 						if (tipo >= 0 && tipo < 5) {
 							TipoEdificio tedif = principal.vida.tiposEdificios[tipo];
 							if (principal.recursosSuficientes (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear)) {
-								float eficiencia = 0.5f;
+								float eficiencia = 1.0f;
 								int radioAccion;
 								List<Tupla<int,int,bool>> matrizRadioAccion;
 								if(eficiencia < 0.25f)
@@ -1987,7 +1987,10 @@ public class InterfazPrincipal : MonoBehaviour
 				//Este texto es la descripcion
 			}
 			else {	//Edificios
-				GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSelEdificio");
+				if(edificioSeleccionado.tipo != principal.vida.tiposEdificios[1] && edificioSeleccionado.tipo != principal.vida.tiposEdificios[4])
+					GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSelEdificio");
+				else
+					GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSelEdificioSinEficiencia");
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 8, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
 				//Titulo de la descripcion
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 9, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");
@@ -2051,43 +2054,46 @@ public class InterfazPrincipal : MonoBehaviour
 				//Edificios
 				sliderEficiencia = edificioSeleccionado.eficiencia;
 				//GUI.Label(new Rect(cuantoW * 1, cuantoH * 18, cuantoW * 9, cuantoH * 1),edificioSeleccionado.numMetales.ToString());
-				sliderEficiencia = GUI.HorizontalSlider(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 1), sliderEficiencia, 0.0f, 1.0f);
-				float eficiencia = (float)((int)(sliderEficiencia * 100.0f) / 25) * 0.25f;
-				if(edificioSeleccionado.eficiencia != eficiencia)
+				if(edificioSeleccionado.tipo != principal.vida.tiposEdificios[1] && edificioSeleccionado.tipo != principal.vida.tiposEdificios[4])
 				{
-					int radioAccion;
-					List<Tupla<int,int,bool>> matrizRadioAccion;
-					if(eficiencia < 0.25f)
+					sliderEficiencia = GUI.HorizontalSlider(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 1), sliderEficiencia, 0.0f, 1.0f);
+					float eficiencia = (float)((int)(sliderEficiencia * 100.0f) / 25) * 0.25f;
+					if(edificioSeleccionado.eficiencia != eficiencia)
 					{
-						radioAccion = 0;
-						matrizRadioAccion = new List<Tupla<int, int, bool>>();
+						int radioAccion;
+						List<Tupla<int,int,bool>> matrizRadioAccion;
+						if(eficiencia < 0.25f)
+						{
+							radioAccion = 0;
+							matrizRadioAccion = new List<Tupla<int, int, bool>>();
+						}
+						else if(eficiencia < 0.5f)
+						{
+							radioAccion = 2;
+							matrizRadioAccion = FuncTablero.calculaMatrizRadio2Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+						}
+						else if(eficiencia < 0.75f)
+						{
+							radioAccion = 3;
+							matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+						}
+						else if(eficiencia < 1.0f)
+						{
+							radioAccion = 4;
+							matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+						}
+						else
+						{
+							radioAccion = 5;
+							matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+						}
+						int numMetales = 0;
+						if(edificioSeleccionado.tipo.metalesAUsar == T_elementos.comunes)								
+							numMetales = principal.vida.calculaMetalesComunes(matrizRadioAccion);
+						else if(edificioSeleccionado.tipo.metalesAUsar == T_elementos.raros)								
+							numMetales = principal.vida.calculaMetalesRaros(matrizRadioAccion);
+						edificioSeleccionado.modificaEficiencia(eficiencia,numMetales,matrizRadioAccion,radioAccion);				
 					}
-					else if(eficiencia < 0.5f)
-					{
-						radioAccion = 2;
-						matrizRadioAccion = FuncTablero.calculaMatrizRadio2Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
-					}
-					else if(eficiencia < 0.75f)
-					{
-						radioAccion = 3;
-						matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
-					}
-					else if(eficiencia < 1.0f)
-					{
-						radioAccion = 4;
-						matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
-					}
-					else
-					{
-						radioAccion = 5;
-						matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
-					}
-					int numMetales = 0;
-					if(edificioSeleccionado.tipo.metalesAUsar == T_elementos.comunes)								
-						numMetales = principal.vida.calculaMetalesComunes(matrizRadioAccion);
-					else if(edificioSeleccionado.tipo.metalesAUsar == T_elementos.raros)								
-						numMetales = principal.vida.calculaMetalesRaros(matrizRadioAccion);
-					edificioSeleccionado.modificaEficiencia(eficiencia,numMetales,matrizRadioAccion,radioAccion);				
 				}
 				GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[2], "LabelHabitabilidad");	//Coste energia
 				GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
