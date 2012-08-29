@@ -74,8 +74,12 @@ public class Principal : MonoBehaviour {
 		tiempoPaso += Time.deltaTime;		
 		if(algoritmoActivado && tiempoPaso > tiempoTurno)
 		{		
-			actualizaRecursos();
-			vida.algoritmoVida(numPasos);
+			actualizaRecursos();			
+			int energiaEdificios = 0,compBasEdificios = 0,compAvzEdificios = 0,matBioEdificios = 0;
+			vida.algoritmoVida(numPasos,ref energiaEdificios,ref compBasEdificios,ref compAvzEdificios,ref matBioEdificios);						
+			if(matBioEdificios > 0)
+				matBioEdificios = matBioEdificios;
+			calculaDifRecursosSigTurno(energiaEdificios,compBasEdificios,compAvzEdificios,matBioEdificios);
 			numPasos++;
 			tiempoPaso = 0.0f;
 			if(algoritmoPasoAPaso)
@@ -304,7 +308,7 @@ public class Principal : MonoBehaviour {
 			return false;
 	}
 	
-	//Modifica la cantidad de cada recurso que se consume por turno
+	/*//Modifica la cantidad de cada recurso que se consume por turno
 	public void modificaRecursosPorTurno(int energiaPorTurno,int componentesBasPorTurno,int componentesAvzPorTurno,int materialPorTurno)
 	{
 		energiaDif += energiaPorTurno;
@@ -334,8 +338,19 @@ public class Principal : MonoBehaviour {
 	{
 		materialBiologicoDif += materialPorTurno;
 	}
+	*/	
 		
-	//Actualiza los recursos sumando o restando los consumidos por turno
+	//Actualiza los recursos sumando o restando
+	public void calculaDifRecursosSigTurno(int energiaEdificios,int compBasEdificios,int compAvzEdificios,int matBioEdificios)
+	{		
+		/*calculo de costes y producciones de habilidades y mejoras*/
+		energiaDif = energiaEdificios;//+energiaMejorasHabilidades 
+		componentesBasicosDif = compBasEdificios;//+compBasMejorasHabilidades 
+		componentesAvanzadosDif = compAvzEdificios;//+compAvzMejorasHabilidades 		
+		materialBiologicoDif = matBioEdificios;//+matBioMejorasHabilidades 		
+	}
+	
+	//Actualiza los recursos sumando o restando
 	public void actualizaRecursos()
 	{
 		energia += energiaDif;
@@ -373,7 +388,6 @@ public class Principal : MonoBehaviour {
 			componentesAvanzados = 0;
 			//Desactivar cosas hasta que el número de componentes avanzados sea >= 0 y avisarlo por el bloque de mensajes			
 		}
-		
 		materialBiologico += materialBiologicoDif;
 		if(materialBiologico > materialBiologicoMax)
 		{
@@ -387,7 +401,7 @@ public class Principal : MonoBehaviour {
 		}		
 	}
 	
-	//Actualiza la diferencia de recursos por turno comprobando los edificios
+	/*//Actualiza la diferencia de recursos por turno comprobando los edificios
 	public void actualizaConsumoProduccion()
 	{
 		int energia,compBas,compAvz,matBio;
@@ -396,7 +410,7 @@ public class Principal : MonoBehaviour {
 		componentesBasicosDif = compBas;
 		componentesAvanzadosDif = compAvz;
 		materialBiologicoDif = matBio;
-	}
+	}*/
 	
 	public void setEnergiaMax(int nuevo) {
 		if (nuevo >= 0)
@@ -440,10 +454,10 @@ public class Principal : MonoBehaviour {
 	}
 	
 	public void mejoraEnergia1() {
-		modificaEnergiaPorTurno(3);
+		//modificaEnergiaPorTurno(3);
 	}
 	
 	public void mejoraEnergia2() {
-		modificaEnergiaPorTurno(6);
-	}	
+		//modificaEnergiaPorTurno(6);
+	}
 }

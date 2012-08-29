@@ -252,7 +252,7 @@ public class TipoEdificioSerializable {
 	public int compBasConsumidosAlCrear;
 	public int compAvzConsumidosAlCrear;
 	public int matBioConsumidoAlCrear;
-	public T_elementos elemNecesarioAlConstruir;
+	public T_elementos metalesAUsar;
 	public int energiaConsumidaPorTurnoMax;
 	public int compBasConsumidosPorTurnoMax;
 	public int compAvzConsumidosPorTurnoMax;
@@ -1061,7 +1061,7 @@ public class SaveLoad {
 		int compBaCons = edi.compBasConsumidosAlCrear;
 		int compAvCons = edi.compAvzConsumidosAlCrear;
 		int matBioCons = edi.matBioConsumidoAlCrear;
-		T_elementos elemNeces = edi.elemNecesarioAlConstruir;
+		T_elementos elemNeces = edi.metalesAUsar;
 		int eneConsMax = edi.energiaConsumidaPorTurnoMax;
 		int compBaConsMax = edi.compBasConsumidosPorTurnoMax;
 		int compAvConsMax = edi.compAvzConsumidosPorTurnoMax;
@@ -1085,7 +1085,7 @@ public class SaveLoad {
 		resultado.compBasConsumidosAlCrear = edi.compBasConsumidosAlCrear;
 		resultado.compAvzConsumidosAlCrear = edi.compAvzConsumidosAlCrear;
 		resultado.matBioConsumidoAlCrear = edi.matBioConsumidoAlCrear;
-		resultado.elemNecesarioAlConstruir = edi.elemNecesarioAlConstruir;
+		resultado.metalesAUsar = edi.metalesAUsar;
 		
 		resultado.energiaConsumidaPorTurnoMax = edi.energiaConsumidaPorTurnoMax;
 		resultado.compBasConsumidosPorTurnoMax = edi.compBasConsumidosPorTurnoMax;

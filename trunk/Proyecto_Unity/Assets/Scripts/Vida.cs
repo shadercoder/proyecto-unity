@@ -724,7 +724,7 @@ public class Vida //: MonoBehaviour
 		Animal animal;
 		Vegetal vegetal;
 		for(int i = 0; i < posiciones.Count; i++)		
-			if(posiciones[i].e3 == false)
+			if(posiciones[i].e3 == true)
 			{
 				x = posiciones[i].e1;
 				y = posiciones[i].e2;				
@@ -816,12 +816,14 @@ public class Vida //: MonoBehaviour
 		return false;
 	}	
 	
-	public void algoritmoVida(int numTurno)
+	public void algoritmoVida(int numTurno, ref int energia, ref int compBas, ref int compAvz, ref int matBio)
 	{
 		Ser ser;
 		Vegetal vegetal;
 		Animal animal;
-//		Edificio edificio;
+		Edificio edificio;
+		int energiaEdif,compBasEdif,compAvzEdif,matBioEdif;		
+				
 		for(int i = 0; i < seres.Count; i++)
 		{
 			ser = seres[i];
@@ -888,10 +890,21 @@ public class Vida //: MonoBehaviour
 				}
 				animal.modelo.GetComponentInChildren<MovimientoAnimales>().hazAnimacion(animal.estado);
 			}	
-//			else if(ser is Edificio)
-//			{
-//				edificio = (Edificio)ser;				
-//			}
+			else if(ser is Edificio)
+			{
+				edificio = (Edificio)ser;	
+				edificio.consumoProduccion(out energiaEdif,out compBasEdif,out compAvzEdif,out matBioEdif);
+				energia += energiaEdif;
+				compBas += compBasEdif;
+				compAvz += compAvzEdif;
+				matBio += matBioEdif;
+				if(edificio.tipo.nombre == "Granja")					
+				{
+					int matBioSinProcesar = recolectaAnimalesVegetales(edificio.matrizRadioAccion,edificio.eficiencia);	
+					edificio.ingresaMatBioSinProcesar(matBioSinProcesar);
+					matBio += edificio.procesaMatBio();
+				}
+			}
 		}
 		
 		
@@ -1039,7 +1052,7 @@ public class TipoEdificio
 	public int compBasConsumidosAlCrear;
 	public int compAvzConsumidosAlCrear;
 	public int matBioConsumidoAlCrear;
-	public T_elementos elemNecesarioAlConstruir;
+	public T_elementos metalesAUsar;
 	public int energiaConsumidaPorTurnoMax;
 	public int compBasConsumidosPorTurnoMax;
 	public int compAvzConsumidosPorTurnoMax;
@@ -1080,7 +1093,7 @@ public class TipoEdificio
 	}
 	
 	public TipoEdificio(string nombre, List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
-	                    T_elementos elemNecesarioAlConstruir,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
+	                    T_elementos metalesAUsar,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
 	                	int energiaProducidaPorTurnoMax,int compBasProducidosPorTurnoMax,int compAvzProducidosPorTurnoMax,int matBioProducidoPorTurnoMax,GameObject modelo)
 	{
 		this.nombre = nombre;
@@ -1089,7 +1102,7 @@ public class TipoEdificio
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
 		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
 		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
-		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
+		this.metalesAUsar = metalesAUsar;
 		this.energiaConsumidaPorTurnoMax = energiaConsumidaPorTurnoMax;
 		this.compBasConsumidosPorTurnoMax = compBasConsumidosPorTurnoMax;
 		this.compAvzConsumidosPorTurnoMax = compAvzConsumidosPorTurnoMax;
@@ -1103,7 +1116,7 @@ public class TipoEdificio
 	}
 	
 	public TipoEdificio(string nombre, List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
-	                    T_elementos elemNecesarioAlConstruir,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
+	                    T_elementos metalesAUsar,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
 	                	int energiaProducidaPorTurnoMax,int compBasProducidosPorTurnoMax,int compAvzProducidosPorTurnoMax,int matBioProducidoPorTurnoMax,List<GameObject> modelos)
 	{
 		this.nombre = nombre;
@@ -1112,7 +1125,7 @@ public class TipoEdificio
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
 		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
 		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
-		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
+		this.metalesAUsar = metalesAUsar;
 		this.energiaConsumidaPorTurnoMax = energiaConsumidaPorTurnoMax;
 		this.compBasConsumidosPorTurnoMax = compBasConsumidosPorTurnoMax;
 		this.compAvzConsumidosPorTurnoMax = compAvzConsumidosPorTurnoMax;
@@ -1125,7 +1138,7 @@ public class TipoEdificio
 	}
 	
 	public TipoEdificio(string nombre, List<T_habitats> habitats,int energiaConsumidaAlCrear,int compBasConsumidosAlCrear,int compAvzConsumidosAlCrear,int matBioConsumidoAlCrear,
-	                    T_elementos elemNecesarioAlConstruir,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
+	                    T_elementos metalesAUsar,int energiaConsumidaPorTurnoMax,int compBasConsumidosPorTurnoMax,int compAvzConsumidosPorTurnoMax,int matBioConsumidoPorTurnoMax,
 	                	int energiaProducidaPorTurnoMax,int compBasProducidosPorTurnoMax,int compAvzProducidosPorTurnoMax,int matBioProducidoPorTurnoMax,List<GameObject> modelos, int idTipoEdificioIn)
 	{
 		this.nombre = nombre;
@@ -1134,7 +1147,7 @@ public class TipoEdificio
 		this.compBasConsumidosAlCrear = compBasConsumidosAlCrear;
 		this.compAvzConsumidosAlCrear = compAvzConsumidosAlCrear;
 		this.matBioConsumidoAlCrear = matBioConsumidoAlCrear;
-		this.elemNecesarioAlConstruir = elemNecesarioAlConstruir;
+		this.metalesAUsar = metalesAUsar;
 		this.energiaConsumidaPorTurnoMax = energiaConsumidaPorTurnoMax;
 		this.compBasConsumidosPorTurnoMax = compBasConsumidosPorTurnoMax;
 		this.compAvzConsumidosPorTurnoMax = compAvzConsumidosPorTurnoMax;
@@ -1657,6 +1670,18 @@ public class Edificio : Ser
 		this.radioAccion = radioAccion;		
 		this.modelo = modelo;
 		this.matBioSinProcesar = bioSinProcesar;
+	}
+	
+	public void consumoProduccion(out int energia, out int compBas, out int compAvz, out int matBio)
+	{
+		energia = energiaProducidaPorTurno;
+		energia -= energiaConsumidaPorTurno;
+		compBas = compBasProducidosPorTurno;
+		compBas -= compBasConsumidosPorTurno;
+		compAvz = compAvzProducidosPorTurno;
+		compAvz -= compAvzConsumidosPorTurno;
+		matBio = matBioProducidoPorTurno;
+		matBio -= matBioConsumidoPorTurno;
 	}
 	
 	public void ingresaMatBioSinProcesar(int matBio)
