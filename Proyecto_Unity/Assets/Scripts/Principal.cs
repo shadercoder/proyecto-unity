@@ -76,9 +76,7 @@ public class Principal : MonoBehaviour {
 		{		
 			actualizaRecursos();			
 			int energiaEdificios = 0,compBasEdificios = 0,compAvzEdificios = 0,matBioEdificios = 0;
-			vida.algoritmoVida(numPasos,ref energiaEdificios,ref compBasEdificios,ref compAvzEdificios,ref matBioEdificios);						
-			if(matBioEdificios > 0)
-				matBioEdificios = matBioEdificios;
+			vida.algoritmoVida(numPasos,ref energiaEdificios,ref compBasEdificios,ref compAvzEdificios,ref matBioEdificios);
 			calculaDifRecursosSigTurno(energiaEdificios,compBasEdificios,compAvzEdificios,matBioEdificios);
 			numPasos++;
 			tiempoPaso = 0.0f;
