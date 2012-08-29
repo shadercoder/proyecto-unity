@@ -1620,33 +1620,22 @@ public class Edificio : Ser
 		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
 		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
 		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
-		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * numMetales);
-		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * numMetales);
-		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * numMetales);
-		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia * numMetales);
+		float numCasillas = 0;
+		for(int i = 0; i < matrizRadioAccion.Count; i++)
+			if(matrizRadioAccion[i].e3 == true)
+				numCasillas++;
+		numCasillas /= 2;		//Ponemos el tope Máximo
+		float proporcionMetales = numMetales/numCasillas;
+		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * proporcionMetales);
+		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * proporcionMetales);
+		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * proporcionMetales);
+		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia * proporcionMetales);
 		this.eficiencia = eficiencia;
 		this.numMetales = numMetales;
 		this.matrizRadioAccion = matrizRadioAccion;
 		this.radioAccion = radioAccion;		
 		this.modelo = modelo;
 		matBioSinProcesar = 0;
-	}
-	
-	public void modificaEficiencia(float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion)
-	{
-		this.eficiencia = eficiencia;
-		this.energiaConsumidaPorTurno =  (int)(tipo.energiaConsumidaPorTurnoMax * eficiencia);
-		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
-		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
-		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
-		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * numMetales);
-		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * numMetales);
-		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * numMetales);
-		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia * numMetales);
-		this.eficiencia = eficiencia;
-		this.numMetales = numMetales;
-		this.matrizRadioAccion = matrizRadioAccion;
-		this.radioAccion = radioAccion;
 	}
 	
 	public Edificio(int idSer,TipoEdificio tipo,int posX,int posY,float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion,GameObject modelo, int eneConIn, int compBasConIn, int compAdvConIn, int bioConIn, int eneProdIn, int compBasProdIn, int compAdvProdIn, int bioProdIn, int bioSinProcesar)
@@ -1671,6 +1660,30 @@ public class Edificio : Ser
 		this.modelo = modelo;
 		this.matBioSinProcesar = bioSinProcesar;
 	}
+	
+	public void modificaEficiencia(float eficiencia,int numMetales,List<Tupla<int,int,bool>> matrizRadioAccion,int radioAccion)
+	{
+		this.eficiencia = eficiencia;
+		this.energiaConsumidaPorTurno =  (int)(tipo.energiaConsumidaPorTurnoMax * eficiencia);
+		this.compBasConsumidosPorTurno = (int)(tipo.compBasConsumidosPorTurnoMax * eficiencia);
+		this.compAvzConsumidosPorTurno = (int)(tipo.compAvzConsumidosPorTurnoMax * eficiencia);
+		this.matBioConsumidoPorTurno = (int)(tipo.matBioConsumidoPorTurnoMax * eficiencia);
+		float numCasillas = 0;
+		for(int i = 0; i < matrizRadioAccion.Count; i++)
+			if(matrizRadioAccion[i].e3 == true)
+				numCasillas++;
+		numCasillas /= 2;		//Ponemos el tope Máximo
+		float proporcionMetales = numMetales/numCasillas;
+		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * proporcionMetales);
+		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * proporcionMetales);
+		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * proporcionMetales);
+		this.matBioProducidoPorTurno = (int)(tipo.matBioProducidoPorTurnoMax * eficiencia * proporcionMetales);
+		this.eficiencia = eficiencia;
+		this.numMetales = numMetales;
+		this.matrizRadioAccion = matrizRadioAccion;
+		this.radioAccion = radioAccion;
+	}
+	
 	
 	public void consumoProduccion(out int energia, out int compBas, out int compAvz, out int matBio)
 	{
