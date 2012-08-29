@@ -1476,15 +1476,14 @@ public class InterfazPrincipal : MonoBehaviour
 									matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(posX,posY);
 								}
 								int numMetales = 0;
-								if(tedif.elemNecesarioAlConstruir == T_elementos.comunes)								
+								if(tedif.metalesAUsar == T_elementos.comunes)								
 									numMetales = principal.vida.calculaMetalesComunes(matrizRadioAccion);
-								else if(tedif.elemNecesarioAlConstruir == T_elementos.raros)								
+								else if(tedif.metalesAUsar == T_elementos.raros)								
 									numMetales = principal.vida.calculaMetalesRaros(matrizRadioAccion);
 										
 								//if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion)) {
 								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion, hit.point)) {
-									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
-									principal.actualizaConsumoProduccion();
+									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);									
 								} else {
 									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 									efectos.playNumber (Random.Range (1, 3));
@@ -2052,14 +2051,47 @@ public class InterfazPrincipal : MonoBehaviour
 				//Edificios
 				sliderEficiencia = edificioSeleccionado.eficiencia;
 				sliderEficiencia = GUI.HorizontalSlider(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 1), sliderEficiencia, 0.0f, 1.0f);
-				edificioSeleccionado.eficiencia = (float)((int)(sliderEficiencia * 100.0f) / 25) * 0.25f;
-				
+				float eficiencia = (float)((int)(sliderEficiencia * 100.0f) / 25) * 0.25f;
+				if(edificioSeleccionado.eficiencia != eficiencia)
+				{
+					int radioAccion;
+					List<Tupla<int,int,bool>> matrizRadioAccion;
+					if(eficiencia < 0.25f)
+					{
+						radioAccion = 0;
+						matrizRadioAccion = new List<Tupla<int, int, bool>>();
+					}
+					else if(eficiencia < 0.5f)
+					{
+						radioAccion = 2;
+						matrizRadioAccion = FuncTablero.calculaMatrizRadio2Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+					}
+					else if(eficiencia < 0.75f)
+					{
+						radioAccion = 3;
+						matrizRadioAccion = FuncTablero.calculaMatrizRadio3Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+					}
+					else if(eficiencia < 1.0f)
+					{
+						radioAccion = 4;
+						matrizRadioAccion = FuncTablero.calculaMatrizRadio4Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+					}
+					else
+					{
+						radioAccion = 5;
+						matrizRadioAccion = FuncTablero.calculaMatrizRadio5Circular(edificioSeleccionado.posX,edificioSeleccionado.posY);
+					}
+					int numMetales = 0;
+					if(edificioSeleccionado.tipo.metalesAUsar == T_elementos.comunes)								
+						numMetales = principal.vida.calculaMetalesComunes(matrizRadioAccion);
+					else if(edificioSeleccionado.tipo.metalesAUsar == T_elementos.raros)								
+						numMetales = principal.vida.calculaMetalesRaros(matrizRadioAccion);
+					edificioSeleccionado.modificaEficiencia(eficiencia,numMetales,matrizRadioAccion,radioAccion);				
+				}
 				GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[2], "LabelHabitabilidad");	//Coste energia
 				GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
 				GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
-				GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
-				if (GUI.changed)
-					principal.actualizaConsumoProduccion();	
+				GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio				
 			}
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
