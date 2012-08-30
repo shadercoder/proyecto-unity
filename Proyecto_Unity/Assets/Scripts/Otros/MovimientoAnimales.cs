@@ -46,13 +46,11 @@ public class MovimientoAnimales : MonoBehaviour {
 			this.animation.Play("mover");
 			break;
 		case tipoEstadoAnimal.comer:
-			int temp = Random.Range(5, 25);
-			this.transform.RotateAroundLocal(Vector3.forward, temp);
 			this.animation.Play("comer");
 			break;
 		case tipoEstadoAnimal.descansar:
 			this.animation.Play("descansar1");
-			
+			this.transform.RotateAroundLocal(Vector3.forward, 90);
 			/*this.transform.RotateAroundLocal(Vector3.forward, 90);
 			int temp = Random.Range(0, 3);
 			switch (temp) {
