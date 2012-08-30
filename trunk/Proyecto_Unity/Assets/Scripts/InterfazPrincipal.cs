@@ -1847,9 +1847,17 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 13 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 13 * cuantoH), "", "BloqueDerechoFiltroRecursos");
 			togglesFiltros[0] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[0], new GUIContent ("", "Muestra los minerales comunes"), "BotonFiltroRecursosMineralComun");
+			//[Beta] Desactivado afiltro por no existir aun
+			GUI.enabled = false;
 			togglesFiltros[1] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[1], new GUIContent ("", "Influencia Energetica"), "BotonFiltroRecursosRadioEnergia");
+			GUI.enabled = true;
+			//[Beta] --------------------------------------
 			togglesFiltros[2] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[2], new GUIContent ("", "Muestra los minerales raros"), "BotonFiltroRecursosMineralRaro");
+			//[Beta] Desactivado afiltro por no existir aun
+			GUI.enabled = false;
 			togglesFiltros[3] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[3], new GUIContent ("", "Terreno de las Granjas"), "BotonFiltroRecursosRadioGranja");
+			GUI.enabled = true;
+			//[Beta] --------------------------------------
 			GUI.EndGroup ();
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
 				tipoMenuDerecho = tMenuDerecho.ninguno;
@@ -1934,10 +1942,10 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio
 			if (tipoSeleccion >= 20) { //Si es un edificio...
 				GUI.Label(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 2), "", "InsercionEdificiosExtraProduccion");
-				GUI.Label(new Rect(cuantoW * 2, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[6], "LabelHabitabilidad");
+				GUI.Label(new Rect(cuantoW * 1.6f, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[6], "LabelHabitabilidad");
 				GUI.Label(new Rect(cuantoW * 4, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[7], "LabelHabitabilidad");
-				GUI.Label(new Rect(cuantoW * 6, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[8], "LabelHabitabilidad");
-				GUI.Label(new Rect(cuantoW * 8, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[9], "LabelHabitabilidad");
+				GUI.Label(new Rect(cuantoW * 6.7f, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[8], "LabelHabitabilidad");
+				GUI.Label(new Rect(cuantoW * 9, cuantoH * 20, cuantoW * 1, cuantoH * 1), infoSeleccion[9], "LabelHabitabilidad");
 			}
 
 			GUI.EndGroup ();
@@ -2054,7 +2062,7 @@ public class InterfazPrincipal : MonoBehaviour
 				//Edificios
 				sliderEficiencia = edificioSeleccionado.eficiencia;
 				//GUI.Label(new Rect(cuantoW * 1, cuantoH * 18, cuantoW * 9, cuantoH * 1),edificioSeleccionado.numMetales.ToString());
-				if(edificioSeleccionado.tipo != principal.vida.tiposEdificios[1] && edificioSeleccionado.tipo != principal.vida.tiposEdificios[4])
+				if(tipoSeleccion != 21 && tipoSeleccion != 24)
 				{
 					sliderEficiencia = GUI.HorizontalSlider(new Rect(cuantoW * 1, cuantoH * 19, cuantoW * 9, cuantoH * 1), sliderEficiencia, 0.0f, 1.0f);
 					float eficiencia = (float)((int)(sliderEficiencia * 100.0f) / 25) * 0.25f;
@@ -2095,10 +2103,10 @@ public class InterfazPrincipal : MonoBehaviour
 						edificioSeleccionado.modificaEficiencia(eficiencia,numMetales,matrizRadioAccion,radioAccion);				
 					}
 				}
-				GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[2], "LabelHabitabilidad");	//Coste energia
-				GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), infoSeleccion[3], "LabelHabitabilidad");	//Coste comp bas
-				GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[4], "LabelHabitabilidad");	//Coste comp adv
-				GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), infoSeleccion[5], "LabelHabitabilidad");	//Coste mat bio				
+				GUI.Label(new Rect( cuantoW * 2, cuantoH * 23, cuantoW * 3, cuantoH * 1), "" + (edificioSeleccionado.energiaProducidaPorTurno - edificioSeleccionado.energiaConsumidaPorTurno), "LabelHabitabilidad");	//Coste energia
+				GUI.Label(new Rect( cuantoW * 7, cuantoH * 23, cuantoW * 3, cuantoH * 1), "" + (edificioSeleccionado.compBasProducidosPorTurno - edificioSeleccionado.compBasConsumidosPorTurno), "LabelHabitabilidad");	//Coste comp bas
+				GUI.Label(new Rect( cuantoW * 2, cuantoH * 25, cuantoW * 3, cuantoH * 1), "" + (edificioSeleccionado.compAvzProducidosPorTurno - edificioSeleccionado.compAvzConsumidosPorTurno), "LabelHabitabilidad");	//Coste comp adv
+				GUI.Label(new Rect( cuantoW * 7, cuantoH * 25, cuantoW * 3, cuantoH * 1), "" + (edificioSeleccionado.matBioProducidoPorTurno - edificioSeleccionado.matBioConsumidoPorTurno), "LabelHabitabilidad");	//Coste mat bio				
 			}
 			GUI.EndGroup ();
 			//TODO Botones del filtro de vegetales
@@ -2490,12 +2498,7 @@ public class InterfazPrincipal : MonoBehaviour
 					habitabilidadSeleccion[6] = edificio.tipo.habitats.Contains (T_habitats.costa) ? 1 : -1;
 					habitabilidadSeleccion[7] = edificio.tipo.habitats.Contains (T_habitats.tundra) ? 1 : -1;
 					//TODO Poner aqui la info escrita que necesitemos para los edificios
-					//Cadena infoSeleccion[2-5]
-					infoSeleccion.Add("" + (edificio.energiaProducidaPorTurno - edificio.energiaConsumidaPorTurno));		//Produccion de energia
-					infoSeleccion.Add("" + (edificio.compBasProducidosPorTurno - edificio.compBasConsumidosPorTurno));	//Produccion en comp bas
-					infoSeleccion.Add("" + (edificio.compAvzProducidosPorTurno - edificio.compAvzConsumidosPorTurno));	//Produccion en comp adv
-					infoSeleccion.Add("" + (edificio.matBioProducidoPorTurno - edificio.matBioConsumidoPorTurno));		//Produccion en mat bio
-					//---------
+					
 					edificioSeleccionado = edificio;
 					return true;
 				}
@@ -2600,7 +2603,10 @@ public class InterfazPrincipal : MonoBehaviour
 				infoSeleccion.Add("" + (edificio.energiaProducidaPorTurnoMax - edificio.energiaConsumidaPorTurnoMax));		//Produccion de energia
 				infoSeleccion.Add("" + (edificio.compBasProducidosPorTurnoMax - edificio.compBasConsumidosPorTurnoMax));	//Produccion en comp bas
 				infoSeleccion.Add("" + (edificio.compAvzProducidosPorTurnoMax - edificio.compAvzConsumidosPorTurnoMax));	//Produccion en comp adv
-				infoSeleccion.Add("" + (edificio.matBioProducidoPorTurnoMax - edificio.matBioConsumidoPorTurnoMax));		//Produccion en mat bio
+				if (edificio.nombre == "Granja") 
+					infoSeleccion.Add("?");
+				else
+					infoSeleccion.Add("" + (edificio.matBioProducidoPorTurnoMax - edificio.matBioConsumidoPorTurnoMax));		//Produccion en mat bio
 				//---------
 				return true;
 			}
