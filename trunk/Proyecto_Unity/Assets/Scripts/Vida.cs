@@ -1625,7 +1625,11 @@ public class Edificio : Ser
 			if(matrizRadioAccion[i].e3 == true)
 				numCasillas++;
 		numCasillas /= 2;		//Ponemos el tope Máximo
-		float proporcionMetales = numMetales/numCasillas;
+		float proporcionMetales;
+		if(numCasillas == 0)
+			proporcionMetales = 0;
+		else
+			proporcionMetales = numMetales/numCasillas;
 		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * proporcionMetales);
 		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * proporcionMetales);
 		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * proporcionMetales);
@@ -1673,7 +1677,11 @@ public class Edificio : Ser
 			if(matrizRadioAccion[i].e3 == true)
 				numCasillas++;
 		numCasillas /= 2;		//Ponemos el tope Máximo
-		float proporcionMetales = numMetales/numCasillas;
+		float proporcionMetales;
+		if(numCasillas == 0)
+			proporcionMetales = 0;
+		else
+			proporcionMetales = numMetales/numCasillas;
 		this.energiaProducidaPorTurno = (int)(tipo.energiaProducidaPorTurnoMax * eficiencia * proporcionMetales);
 		this.compBasProducidosPorTurno = (int)(tipo.compBasProducidosPorTurnoMax * eficiencia * proporcionMetales);
 		this.compAvzProducidosPorTurno = (int)(tipo.compAvzProducidosPorTurnoMax * eficiencia * proporcionMetales);
