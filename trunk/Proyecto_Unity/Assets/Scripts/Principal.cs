@@ -8,6 +8,9 @@ public class Principal : MonoBehaviour {
 
 	//Variables ---------------------------------------------------------------------------------------------------------------------------
 	
+	//Trucos
+	public bool developerMode					= true;					//Mientras este a true, maximo de recursos en todo momento
+	
 	//Camaras, texturas y sonido
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
 	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
@@ -83,6 +86,9 @@ public class Principal : MonoBehaviour {
 			if(algoritmoPasoAPaso)
 				algoritmoActivado = false;
 		}
+		if (developerMode) {
+			setDeveloperMode();
+		}
 	}
 	
 	void Update () {
@@ -106,7 +112,15 @@ public class Principal : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.Alpha4)) 
 			setEscalaTiempo(5.0f);	
 		if(Input.GetKeyDown(KeyCode.Alpha5)) 
-			setEscalaTiempo(50.0f);			
+			setEscalaTiempo(50.0f);
+		
+		//Activar/desactivar developer mode (maximos recursos)
+		if (Input.GetKeyDown(KeyCode.G)) {
+			if (developerMode)
+				developerMode = false;
+			else
+				developerMode = true;
+		}
 	}
 	
 	public void setEscalaTiempo(float nuevaEscala)
@@ -457,5 +471,13 @@ public class Principal : MonoBehaviour {
 	
 	public void mejoraEnergia2() {
 		//modificaEnergiaPorTurno(6);
+	}
+	
+	private void setDeveloperMode() {
+		energia = 10000;
+		componentesBasicos = 5000;
+		componentesAvanzados = 5000;
+		materialBiologico = 500;
+		
 	}
 }
