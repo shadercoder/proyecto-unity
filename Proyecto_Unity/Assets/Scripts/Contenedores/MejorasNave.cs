@@ -55,6 +55,25 @@ public class MejorasNave : MonoBehaviour {
 	private string descripcionHab4				= "[RELLENAR] Hab 4";
 	private string descripcionHab5				= "[RELLENAR] Hab 5";
 	
+	//Costes
+	private List<List<int>> costesMejoras;
+	private List<int> costeMej0;
+	private List<int> costeMej1;
+	private List<int> costeMej2;
+	private List<int> costeMej3;
+	private List<int> costeMej4;
+	private List<int> costeMej5;
+	private List<int> costeMej6;
+	private List<int> costeMej7;
+	private List<int> costeMej8;
+	private List<int> costeMej9;
+	private List<int> costeMej10;
+	private List<int> costeMej11;
+	private List<int> costeMej12;
+	private List<int> costeMej13;
+	private List<int> costeMej14;
+	private List<int> costeMej15;
+	
 	//Variables de control
 	public bool[] mejorasCompradas;
 	
@@ -63,6 +82,103 @@ public class MejorasNave : MonoBehaviour {
 	private Controles controles;
 	private InterfazPrincipal interfaz;
 	
+	void Awake() {
+		costeMej0 = new List<int>();		//Sensores 1 (info)
+		costeMej0.Add(600);	//Coste energia
+		costeMej0.Add(100);	//Coste comp bas
+		costeMej0.Add(0);	//Coste comp adv
+		costeMej0.Add(0);	//Coste mat bio
+		
+		costeMej1 = new List<int>();		//Sensores 2 (habitats)
+		costeMej1.Add(800);	//Coste energia
+		costeMej1.Add(150);	//Coste comp bas
+		costeMej1.Add(0);	//Coste comp adv
+		costeMej1.Add(0);	//Coste mat bio
+		
+		costeMej2 = new List<int>();		//Sensores 3 (recursos)
+		costeMej2.Add(900);	//Coste energia
+		costeMej2.Add(200);	//Coste comp bas
+		costeMej2.Add(0);	//Coste comp adv
+		costeMej2.Add(0);	//Coste mat bio
+		
+		costeMej3 = new List<int>();		//Sensores 4 (animales)
+		costeMej3.Add(1000);//Coste energia
+		costeMej3.Add(300);	//Coste comp bas
+		costeMej3.Add(0);	//Coste comp adv
+		costeMej3.Add(0);	//Coste mat bio
+		
+		costeMej4 = new List<int>();		//Motor 1
+		costeMej4.Add(600);	//Coste energia
+		costeMej4.Add(150);	//Coste comp bas
+		costeMej4.Add(0);	//Coste comp adv
+		costeMej4.Add(0);	//Coste mat bio
+		
+		costeMej5 = new List<int>();		//Motor 2
+		costeMej5.Add(2000);	//Coste energia
+		costeMej5.Add(400);		//Coste comp bas
+		costeMej5.Add(50);		//Coste comp adv
+		costeMej5.Add(0);		//Coste mat bio
+		
+		costeMej6 = new List<int>();		//Motor 3 (aislamiento)
+		costeMej6.Add(700);	//Coste energia
+		costeMej6.Add(200);	//Coste comp bas
+		costeMej6.Add(0);	//Coste comp adv
+		costeMej6.Add(0);	//Coste mat bio
+		
+		costeMej7 = new List<int>();		//Motor 4 (orbita)
+		costeMej7.Add(2000);	//Coste energia
+		costeMej7.Add(200);		//Coste comp bas
+		costeMej7.Add(60);		//Coste comp adv
+		costeMej7.Add(0);		//Coste mat bio
+		
+		costeMej8 = new List<int>();		//Energia 1
+		costeMej8.Add(1000);	//Coste energia
+		costeMej8.Add(50);		//Coste comp bas
+		costeMej8.Add(0);		//Coste comp adv
+		costeMej8.Add(0);		//Coste mat bio
+		
+		costeMej9 = new List<int>();		//Energia 2
+		costeMej9.Add(3000);	//Coste energia
+		costeMej9.Add(150);		//Coste comp bas
+		costeMej9.Add(25);		//Coste comp adv
+		costeMej9.Add(0);		//Coste mat bio
+		
+		costeMej10 = new List<int>();		//Energia 3 (habs 1)
+		costeMej10.Add(4500);	//Coste energia
+		costeMej10.Add(350);	//Coste comp bas
+		costeMej10.Add(100);	//Coste comp adv
+		costeMej10.Add(0);		//Coste mat bio
+		
+		costeMej11 = new List<int>();		//Energia 4 (habs 2)
+		costeMej11.Add(7500);	//Coste energia
+		costeMej11.Add(500);	//Coste comp bas
+		costeMej11.Add(300);	//Coste comp adv
+		costeMej11.Add(0);		//Coste mat bio
+		
+		costeMej12 = new List<int>();		//Almacen 1 (comp adv)
+		costeMej12.Add(950);	//Coste energia
+		costeMej12.Add(100);	//Coste comp bas
+		costeMej12.Add(0);		//Coste comp adv
+		costeMej12.Add(0);		//Coste mat bio
+		
+		costeMej13 = new List<int>();		//Almacen 2 (mat bio)
+		costeMej13.Add(900);	//Coste energia
+		costeMej13.Add(190);	//Coste comp bas
+		costeMej13.Add(70);		//Coste comp adv
+		costeMej13.Add(0);		//Coste mat bio
+		
+		costeMej14 = new List<int>();		//Almacen 3 (carga 1)
+		costeMej14.Add(700);	//Coste energia
+		costeMej14.Add(200);	//Coste comp bas
+		costeMej14.Add(75);		//Coste comp adv
+		costeMej14.Add(0);		//Coste mat bio
+		
+		costeMej15 = new List<int>();		//Almacen 4 (carga 2)
+		costeMej15.Add(2600);	//Coste energia
+		costeMej15.Add(450);	//Coste comp bas
+		costeMej15.Add(250);	//Coste comp adv
+		costeMej15.Add(25);		//Coste mat bio
+	}
 	
 	void Start() {
 		//Inicializar cache
@@ -128,6 +244,25 @@ public class MejorasNave : MonoBehaviour {
 		habilidades.Add(descripcionHab3);
 		habilidades.Add(descripcionHab4);
 		habilidades.Add(descripcionHab5);
+		
+		//Inicializar los costes. EL ORDEN ES IMPORTANTE
+		costesMejoras = new List<List<int>>();
+		costesMejoras.Add(costeMej0);
+		costesMejoras.Add(costeMej1);
+		costesMejoras.Add(costeMej2);
+		costesMejoras.Add(costeMej3);
+		costesMejoras.Add(costeMej4);
+		costesMejoras.Add(costeMej5);
+		costesMejoras.Add(costeMej6);
+		costesMejoras.Add(costeMej7);
+		costesMejoras.Add(costeMej8);
+		costesMejoras.Add(costeMej9);
+		costesMejoras.Add(costeMej10);
+		costesMejoras.Add(costeMej11);
+		costesMejoras.Add(costeMej12);
+		costesMejoras.Add(costeMej13);
+		costesMejoras.Add(costeMej14);
+		costesMejoras.Add(costeMej15);
 	}
 	
 	//Sensores -----------------------------------------------------------------------------------
@@ -222,19 +357,19 @@ public class MejorasNave : MonoBehaviour {
 	}
 	
 	public void compraMejora14() {	//Mejora de almacen nivel 1
-		principal.setEnergiaMax(2000);
-		principal.setCompBasMax(250);
-		principal.setCompAdvMax(100);
+		principal.setEnergiaMax(3500);
+		principal.setCompBasMax(500);
+		principal.setCompAdvMax(300);
 		principal.setMatBioMax(25);
 		AlmacenT1C.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[14] = true;	
 	}
 	
 	public void compraMejora15() {	//Mejora de almacen nivel 2
-		principal.setEnergiaMax(3000);
-		principal.setCompBasMax(750);
-		principal.setCompAdvMax(400);
-		principal.setMatBioMax(75);
+		principal.setEnergiaMax(9000);
+		principal.setCompBasMax(1500);
+		principal.setCompAdvMax(1000);
+		principal.setMatBioMax(100);
 		AlmacenT2C.GetComponent<MeshRenderer>().enabled = true;
 		AlmacenT2A.GetComponent<MeshRenderer>().enabled = true;
 		for(int i = 0; i < AlmacenT2B.Count; i++)
@@ -252,5 +387,11 @@ public class MejorasNave : MonoBehaviour {
 		if (entrada < 0 || entrada >= habilidades.Count)
 			return "";
 		return habilidades[entrada];
+	}
+	
+	public List<int> getCosteMejora(int entrada) {
+		if (entrada < 0 || entrada >= costesMejoras.Count)
+			return null;
+		return costesMejoras[entrada];
 	}
 }

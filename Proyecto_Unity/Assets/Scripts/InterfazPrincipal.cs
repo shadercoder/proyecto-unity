@@ -39,10 +39,10 @@ public class InterfazPrincipal : MonoBehaviour
 	private float sliderEficiencia				= 0.0f;			//La eficiencia del edificio seleccionado
 	
 	//Mejoras posibles
-	private bool mejoraInfoCasilla 				= true;			//La barra inferior de informacion se muestra?
-	private bool mostrarInfoHabitat 			= true;			//Se muestra informacion de habitats en ella?
-	private bool mostrarInfoMetalesRaros 		= true;			//Se muestran los metales raros?
-	private bool mostrarInfoSeres 				= true;			//Se muestran los animales y plantas?
+	private bool mejoraInfoCasilla 				= false;			//La barra inferior de informacion se muestra?
+	private bool mostrarInfoHabitat 			= false;			//Se muestra informacion de habitats en ella?
+	private bool mostrarInfoMetalesRaros 		= false;			//Se muestran los metales raros?
+	private bool mostrarInfoSeres 				= false;			//Se muestran los animales y plantas?
 	
 	//Tooltips
 	private Vector3 posicionMouseTooltip 		= Vector3.zero;	//Guarda la ultima posicion del mouse para calcular los tooltips	
@@ -196,6 +196,18 @@ public class InterfazPrincipal : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if (principal.developerMode) {
+			mostrarInfoCasilla = true;
+			mostrarInfoHabitat = true;
+			mostrarInfoMetalesRaros = true;
+			mostrarInfoSeres = true;
+		}
+		else {
+			mostrarInfoCasilla = mejoras.mejorasCompradas[0];
+			mostrarInfoHabitat = mejoras.mejorasCompradas[1];
+			mostrarInfoMetalesRaros = mejoras.mejorasCompradas[2];
+			mostrarInfoSeres = mejoras.mejorasCompradas[3];
+		}
 		controlTooltip ();
 		calculaInfoCasilla ();
 	}
@@ -418,7 +430,6 @@ public class InterfazPrincipal : MonoBehaviour
 		case taccion.mostrarMenu:
 			break;
 		case taccion.seleccionarVegetal:
-			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 			Rect areaTemp = new Rect (cuantoW * 22, cuantoH * posicionBloque, cuantoW * 36, cuantoH * 4);
 			GUILayout.BeginArea (areaTemp, new GUIContent (), "BloqueSeleccionVegetales");
 			elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.ninguno;
@@ -427,111 +438,181 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.BeginHorizontal (GUILayout.Height (cuantoH * 2));
 			GUILayout.Space (cuantoW * 2.5f);
 			if (GUILayout.Button (new GUIContent ("", "Seta"), "BotonInsertarSeta")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[0].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.seta;
 				modeloInsercion = principal.vida.especiesVegetales[0].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[0].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.seta;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Flor"), "BotonInsertarFlor")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[1].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.flor;
 				modeloInsercion = principal.vida.especiesVegetales[1].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[1].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.flor;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Caña"), "BotonInsertarCana")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[2].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.cana;
 				modeloInsercion = principal.vida.especiesVegetales[2].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[2].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.cana;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Arbusto"), "BotonInsertarArbusto")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[3].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.arbusto;
 				modeloInsercion = principal.vida.especiesVegetales[3].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[3].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.arbusto;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Estromatolito"), "BotonInsertarEstromatolito")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[4].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.estromatolito;
 				modeloInsercion = principal.vida.especiesVegetales[4].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[4].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.estromatolito;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Cactus"), "BotonInsertarCactus")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[5].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.cactus;
 				modeloInsercion = principal.vida.especiesVegetales[5].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[5].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.cactus;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Palmera"), "BotonInsertarPalmera")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[6].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.palmera;
 				modeloInsercion = principal.vida.especiesVegetales[6].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[6].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.palmera;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Pino"), "BotonInsertarPino")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[7].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.pino;
 				modeloInsercion = principal.vida.especiesVegetales[7].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[7].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.pino;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Ciprés"), "BotonInsertarCipres")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[8].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.cipres;
 				modeloInsercion = principal.vida.especiesVegetales[8].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[8].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.cipres;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Pino Alto"), "BotonInsertarPinoAlto")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[9].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.pinoAlto;
 				modeloInsercion = principal.vida.especiesVegetales[9].modelos[UnityEngine.Random.Range (0, principal.vida.especiesVegetales[9].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.pinoAlto;
 				seleccionarObjetoInsercion ();
 			}
@@ -542,68 +623,98 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarAnimal:
-			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 			GUILayout.BeginArea (new Rect (cuantoW * 22, cuantoH * posicionBloque, cuantoW * 36, cuantoH * 4), new GUIContent (), "BloqueSeleccionAnimales");
 			GUILayout.BeginVertical ();
 			elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.ninguno;
 			GUILayout.Space (cuantoH);
 			GUILayout.BeginHorizontal (GUILayout.Height (cuantoH * 2));
 			GUILayout.Space (cuantoW * 1.5f);
-			if (GUILayout.Button (new GUIContent ("", "Herbivoro1"), "BotonInsertarHerbivoro1")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar insectos herbivoros"), "BotonInsertarHerbivoro1")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[0].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.herbivoro1;
 				modeloInsercion = principal.vida.especiesAnimales[0].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[0].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro1;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Herbivoro2"), "BotonInsertarHerbivoro2")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar peque\u00f1os roedores"), "BotonInsertarHerbivoro2")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[1].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.herbivoro2;
 				modeloInsercion = principal.vida.especiesAnimales[1].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[1].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro2;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Herbivoro3"), "BotonInsertarHerbivoro3")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar grandes vacunos"), "BotonInsertarHerbivoro3")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[2].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.herbivoro3;
 				modeloInsercion = principal.vida.especiesAnimales[2].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[2].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro3;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Herbivoro4"), "BotonInsertarHerbivoro4")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar herbivoros de la sabana"), "BotonInsertarHerbivoro4")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[3].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.herbivoro4;
 				modeloInsercion = principal.vida.especiesAnimales[3].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[3].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro4;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			//[Beta] Desactivado animal por no tener los modelos completados aun
-			GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarHerbivoro5")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar tortuga gigante"), "BotonInsertarHerbivoro5")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[4].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.herbivoro5;
 				modeloInsercion = principal.vida.especiesAnimales[4].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[4].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			GUI.enabled = true;
-			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.herbivoro5;
 				seleccionarObjetoInsercion ();
 			}
@@ -611,6 +722,12 @@ public class InterfazPrincipal : MonoBehaviour
 			//[Beta] Desactivado animal por no tener los modelos completados aun
 			GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro1")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[5].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.carnivoro1;
 				modeloInsercion = principal.vida.especiesAnimales[5].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[5].modelos.Count)];
@@ -619,39 +736,61 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.enabled = true;
 			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro1;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro2"), "BotonInsertarCarnivoro2")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[6].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.carnivoro2;
 				modeloInsercion = principal.vida.especiesAnimales[6].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[6].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro2;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro3"), "BotonInsertarCarnivoro3")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[7].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.carnivoro3;
 				modeloInsercion = principal.vida.especiesAnimales[7].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[7].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro3;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro4"), "BotonInsertarCarnivoro4")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[8].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.carnivoro4;
 				modeloInsercion = principal.vida.especiesAnimales[8].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[8].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro4;
 				seleccionarObjetoInsercion ();
 			}
@@ -659,6 +798,12 @@ public class InterfazPrincipal : MonoBehaviour
 			//[Beta] Desactivado animal por no tener los modelos completados aun
 			GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro5")) {
+				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[9].idEspecie);
+				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.carnivoro5;
 				modeloInsercion = principal.vida.especiesAnimales[9].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[9].modelos.Count)];
@@ -667,6 +812,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.enabled = true;
 			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro5;
 				seleccionarObjetoInsercion ();
 			}
@@ -677,7 +823,6 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarEdificio:
-			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 			GUILayout.BeginArea (new Rect (cuantoW * 32, cuantoH * posicionBloque, cuantoW * 16, cuantoH * 4), new GUIContent (), "BloqueSeleccionEdificios");
 			GUILayout.BeginVertical ();
 			elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.ninguno;
@@ -685,6 +830,15 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.BeginHorizontal (GUILayout.Height (cuantoH * 2));
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Fábrica de componentes básicos"), "BotonInsertarFabComBas")) {
+				TipoEdificio temp = principal.vida.tiposEdificios[0];
+				int eneTemp = temp.energiaConsumidaAlCrear;
+				int compBasTemp = temp.compBasConsumidosAlCrear;
+				int compAdvTemp = temp.compAvzConsumidosAlCrear;
+				int matBioTemp = temp.matBioConsumidoAlCrear;
+				if (!principal.recursosSuficientes(eneTemp, compBasTemp, compAdvTemp, matBioTemp)) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.fabricaCompBas;
 				modeloInsercion = principal.vida.tiposEdificios[0].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[0].modelos.Count)];
@@ -692,11 +846,21 @@ public class InterfazPrincipal : MonoBehaviour
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.fabricaCompBas;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Central de energía"), "BotonInsertarCenEn")) {
+				TipoEdificio temp = principal.vida.tiposEdificios[1];
+				int eneTemp = temp.energiaConsumidaAlCrear;
+				int compBasTemp = temp.compBasConsumidosAlCrear;
+				int compAdvTemp = temp.compAvzConsumidosAlCrear;
+				int matBioTemp = temp.matBioConsumidoAlCrear;
+				if (!principal.recursosSuficientes(eneTemp, compBasTemp, compAdvTemp, matBioTemp)) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.centralEnergia;
 				modeloInsercion = principal.vida.tiposEdificios[1].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[1].modelos.Count)];
@@ -704,11 +868,21 @@ public class InterfazPrincipal : MonoBehaviour
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.centralEnergia;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Granja"), "BotonInsertarGranja")) {
+				TipoEdificio temp = principal.vida.tiposEdificios[2];
+				int eneTemp = temp.energiaConsumidaAlCrear;
+				int compBasTemp = temp.compBasConsumidosAlCrear;
+				int compAdvTemp = temp.compAvzConsumidosAlCrear;
+				int matBioTemp = temp.matBioConsumidoAlCrear;
+				if (!principal.recursosSuficientes(eneTemp, compBasTemp, compAdvTemp, matBioTemp)) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.granja;
 				modeloInsercion = principal.vida.tiposEdificios[2].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[2].modelos.Count)];
@@ -716,11 +890,21 @@ public class InterfazPrincipal : MonoBehaviour
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.granja;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Fábrica de componentes avanzados"), "BotonInsertarFabComAdv")) {
+				TipoEdificio temp = principal.vida.tiposEdificios[3];
+				int eneTemp = temp.energiaConsumidaAlCrear;
+				int compBasTemp = temp.compBasConsumidosAlCrear;
+				int compAdvTemp = temp.compAvzConsumidosAlCrear;
+				int matBioTemp = temp.matBioConsumidoAlCrear;
+				if (!principal.recursosSuficientes(eneTemp, compBasTemp, compAdvTemp, matBioTemp)) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.fabricaCompAdv;
 				modeloInsercion = principal.vida.tiposEdificios[3].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[3].modelos.Count)];
@@ -728,11 +912,21 @@ public class InterfazPrincipal : MonoBehaviour
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.fabricaCompAdv;
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Central de energía avanzada"), "BotonInsertarCenEnAdv")) {
+				TipoEdificio temp = principal.vida.tiposEdificios[4];
+				int eneTemp = temp.energiaConsumidaAlCrear;
+				int compBasTemp = temp.compBasConsumidosAlCrear;
+				int compAdvTemp = temp.compAvzConsumidosAlCrear;
+				int matBioTemp = temp.matBioConsumidoAlCrear;
+				if (!principal.recursosSuficientes(eneTemp, compBasTemp, compAdvTemp, matBioTemp)) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
 				accion = taccion.insertar;
 				elementoInsercion = telementoInsercion.centralEnergiaAdv;
 				modeloInsercion = principal.vida.tiposEdificios[4].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[4].modelos.Count)];
@@ -740,6 +934,7 @@ public class InterfazPrincipal : MonoBehaviour
 				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.centralEnergiaAdv;
 				seleccionarObjetoInsercion ();
 			}
@@ -750,7 +945,6 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.EndArea ();
 			break;
 		case taccion.seleccionarMejora:
-			tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 			mejoraHover = -1;
 			GUILayout.BeginArea (new Rect (cuantoW * 22, cuantoH * posicionBloqueMejoras, cuantoW * 36, cuantoH * 7), new GUIContent (), "BloqueSeleccionMejoras");
 			GUILayout.BeginVertical ();
@@ -761,68 +955,100 @@ public class InterfazPrincipal : MonoBehaviour
 			if (mejoras.mejorasCompradas[0])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Sistema de Sondeo General"), "BotonMejoraInformacion")) {
-				mejoras.compraMejora0 ();
+				List<int> costeT = mejoras.getCosteMejora(0);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
+				mejoras.compraMejora0();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 0;
+				List<int> costeT = mejoras.getCosteMejora(0);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Sistema de Sondeo General");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Deteccion de Ecosistemas"), "BotonMejoraHabitats")) {
+				List<int> costeT = mejoras.getCosteMejora(1);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora1 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 1;
+				List<int> costeT = mejoras.getCosteMejora(1);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Deteccion de Ecosistemas");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[2])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Espectometro"), "BotonMejoraMetalesRaros")) {
+				List<int> costeT = mejoras.getCosteMejora(2);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora2 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 2;
+				List<int> costeT = mejoras.getCosteMejora(2);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Espectometro");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Sensor Biometrico"), "BotonMejoraVida")) {
+				List<int> costeT = mejoras.getCosteMejora(3);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora3 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 3;
+				List<int> costeT = mejoras.getCosteMejora(3);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Sensor Biometrico");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 6);
@@ -831,68 +1057,100 @@ public class InterfazPrincipal : MonoBehaviour
 			if (mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Motores auxiliares Basicos"), "BotonMejoraMotor1")) {
+				List<int> costeT = mejoras.getCosteMejora(4);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora4 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 4;
+				List<int> costeT = mejoras.getCosteMejora(4);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Motores auxiliares Basicos");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Motores Orbitales"), "BotonMejoraMotor2")) {
+				List<int> costeT = mejoras.getCosteMejora(5);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora5 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 5;
+				List<int> costeT = mejoras.getCosteMejora(5);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Motores Orbitales");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[6])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Aislamiento magnético"), "BotonMejoraMotor3")) {
+				List<int> costeT = mejoras.getCosteMejora(6);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora6 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 6;
+				List<int> costeT = mejoras.getCosteMejora(6);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Aislamiento magnético");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[7])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Subir la nave de órbita"), "BotonMejoraMotor4")) {
+				List<int> costeT = mejoras.getCosteMejora(7);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora7 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 7;
+				List<int> costeT = mejoras.getCosteMejora(7);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Subir la nave de órbita");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 1.5f);
@@ -904,68 +1162,100 @@ public class InterfazPrincipal : MonoBehaviour
 			if (mejoras.mejorasCompradas[8])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Condensador Auxiliar"), "BotonMejoraEnergia1")) {
+				List<int> costeT = mejoras.getCosteMejora(8);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora8 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 8;
+				List<int> costeT = mejoras.getCosteMejora(8);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Condensador Auxiliar");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[9])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Acumulador de Energia en Anillo"), "BotonMejoraEnergia2")) {
+				List<int> costeT = mejoras.getCosteMejora(9);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora9 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 9;
+				List<int> costeT = mejoras.getCosteMejora(9);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Acumulador de Energia en Anillo");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[9] || mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Array de Paneles Solares"), "BotonMejoraEnergia3")) {
+				List<int> costeT = mejoras.getCosteMejora(10);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora10 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 10;
+				List<int> costeT = mejoras.getCosteMejora(10);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Array de Paneles Solares");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[8] || !mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[10] && mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Generador de Fusión"), "BotonMejoraEnergia4")) {
+				List<int> costeT = mejoras.getCosteMejora(11);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora11 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 11;
+				List<int> costeT = mejoras.getCosteMejora(11);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Generador de Fusión");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 6);
@@ -973,68 +1263,100 @@ public class InterfazPrincipal : MonoBehaviour
 			if (mejoras.mejorasCompradas[12])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Contenedores para Componentes Avanzados"), "BotonMejoraAlmacen1")) {
+				List<int> costeT = mejoras.getCosteMejora(12);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora12 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 12;
+				List<int> costeT = mejoras.getCosteMejora(12);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Contenedores para Componentes Avanzados");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[13])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Contenedores para Material Biologico"), "BotonMejoraAlmacen2")) {
+				List<int> costeT = mejoras.getCosteMejora(13);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora13 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 13;
+				List<int> costeT = mejoras.getCosteMejora(13);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Contenedores para Material Biologico");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[12] || !mejoras.mejorasCompradas[13] || mejoras.mejorasCompradas[14])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Ampliacion de Carga 1"), "BotonMejoraAlmacen3")) {
+				List<int> costeT = mejoras.getCosteMejora(14);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora14 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 14;
+				List<int> costeT = mejoras.getCosteMejora(14);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Ampliacion de Carga 1");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[14] || mejoras.mejorasCompradas[15])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Ampliacion de Carga 2"), "BotonMejoraAlmacen4")) {
+				List<int> costeT = mejoras.getCosteMejora(15);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora15 ();
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
 				mejoraHover = 15;
+				List<int> costeT = mejoras.getCosteMejora(15);
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Ampliacion de Carga 2");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 1.5f);
@@ -1483,7 +1805,7 @@ public class InterfazPrincipal : MonoBehaviour
 										
 								//if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion)) {
 								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion, hit.point)) {
-									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);									
+									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
 								} else {
 									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 									efectos.playNumber (Random.Range (1, 3));
@@ -1502,17 +1824,35 @@ public class InterfazPrincipal : MonoBehaviour
 							tipo -= 5;
 							EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
 							//principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX);
-							principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX, hit.point);
-							elementoInsercion = telementoInsercion.ninguno;
-							accion = taccion.ninguna;
+							if (principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX, hit.point)) {
+								TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+								List<int> costes = tiposSeres.getCostes(especie.idEspecie);
+								principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
+								elementoInsercion = telementoInsercion.ninguno;
+								accion = taccion.ninguna;
+							}
+							else {
+								Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+								efectos.playNumber (Random.Range (1, 3));
+								//Sonidos de error son el 1 y 2
+							}
 							//Animal (herbivoro o carnivoro)
 						} else if (tipo >= 15 && tipo < 25) {
 							tipo -= 5;
 							EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
 							//principal.vida.anadeAnimal (especie, posY, posX);
-							principal.vida.anadeAnimal (especie, posY, posX,hit.point);
-							elementoInsercion = telementoInsercion.ninguno;
-							accion = taccion.ninguna;
+							if (principal.vida.anadeAnimal (especie, posY, posX,hit.point)) {
+								TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+								List<int> costes = tiposSeres.getCostes(especie.idEspecie);
+								principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
+								elementoInsercion = telementoInsercion.ninguno;
+								accion = taccion.ninguna;
+							}
+							else {
+								Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+								efectos.playNumber (Random.Range (1, 3));
+								//Sonidos de error son el 1 y 2
+							}
 						}
 						Destroy (modeloInsercion);
 						//Desactivamos inserción
@@ -1550,12 +1890,12 @@ public class InterfazPrincipal : MonoBehaviour
 						else
 							infoCasilla = "Hábitat: " + habitat.ToString () + "\t\t";
 					}
-					
-					if (elem == T_elementos.comunes)
-						infoCasilla += "Elementos: metales comunes" + "\t\t"; else if (elem == T_elementos.raros && mostrarInfoMetalesRaros)
-						//Desbloqueando mejoras
-						infoCasilla += "Elementos: metales raros" + "\t\t";
-					
+					if (mostrarInfoMetalesRaros) {
+						if (elem == T_elementos.comunes)
+							infoCasilla += "Elementos: metales comunes" + "\t\t"; else if (elem == T_elementos.raros && mostrarInfoMetalesRaros)
+							//Desbloqueando mejoras
+							infoCasilla += "Elementos: metales raros" + "\t\t";
+					}
 					if (edificio != null)
 						infoCasilla += "Edificio: " + edificio.tipo.nombre + "\t\t";
 					
@@ -1565,7 +1905,8 @@ public class InterfazPrincipal : MonoBehaviour
 						if (animal != null)
 							infoCasilla += "Animal: " + animal.especie.nombre + "\t\t";
 					}
-					infoCasilla += "\t\tAlto: " + y + "\t\tAncho :" + x;
+					if (principal.developerMode)
+						infoCasilla += "\t\tAlto: " + y + "\t\tAncho :" + x;
 				}
 			}
 		} else
@@ -1786,15 +2127,11 @@ public class InterfazPrincipal : MonoBehaviour
 			togglesFiltros[23] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[23], new GUIContent ("", "Desactivado en la beta"), "BotonInsertarCarnivoro5");
 			GUI.enabled = true;
 			//[Beta] -----------------------------------------------------------
-			togglesFiltros[14] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[14], new GUIContent ("", "Filtrar la especie Herbivoro1"), "BotonInsertarHerbivoro1");
-			togglesFiltros[15] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[15], new GUIContent ("", "Filtrar la especie Herbivoro2"), "BotonInsertarHerbivoro2");
-			togglesFiltros[16] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[16], new GUIContent ("", "Filtrar la especie Herbivoro3"), "BotonInsertarHerbivoro3");
-			togglesFiltros[17] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[17], new GUIContent ("", "Filtrar la especie Herbivoro4"), "BotonInsertarHerbivoro4");
-			//[Beta] Desactivado filtro por no tener los modelos completados aun
-			GUI.enabled = false;
-			togglesFiltros[18] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[18], new GUIContent ("", "Desactivado en la beta"), "BotonInsertarHerbivoro5");
-			GUI.enabled = true;
-			//[Beta] -----------------------------------------------------------
+			togglesFiltros[14] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[14], new GUIContent ("", "Filtrar los insectos herbivoros."), "BotonInsertarHerbivoro1");
+			togglesFiltros[15] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[15], new GUIContent ("", "Filtrar los peque\u00f1os roedores."), "BotonInsertarHerbivoro2");
+			togglesFiltros[16] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[16], new GUIContent ("", "Filtrar los vacunos."), "BotonInsertarHerbivoro3");
+			togglesFiltros[17] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[17], new GUIContent ("", "Filtrar los herbivoros de la sabana."), "BotonInsertarHerbivoro4");
+			togglesFiltros[18] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[18], new GUIContent ("", "Filtrar las tortugas gigantes."), "BotonInsertarHerbivoro5");
 			if (GUI.Button (new Rect (cuantoW * 2, cuantoH * 23, cuantoW * 2, cuantoH * 2), new GUIContent ("", "Desactivar filtros de Carnivoros"), "BotonFiltroAnimalesOffCarnivoros")) {
 				for (int i = 0; i< materiales.carnivoros.Count; i++){
 					if (materiales.carnivoros[i] != null) {

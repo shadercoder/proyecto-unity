@@ -51,15 +51,15 @@ public class TiposSeres : MonoBehaviour {
 	private string descripcionCipres			= "Pocos habitats existen donde un cipres no pueda nacer. Estos arboles crecen muy rapido y tienen un factor de adaptacion extraordinariamente alto, lo que les permite sobrevivir en todo tipo de lugares.";
 	private string descripcionPinoAlto			= "El pino alto se encuentra con frecuencia en colinas y monta\u00f1as, aunque puede vivir en mas lugares. Es un arbol enorme y con muchas hojas que representa lo mas alto en la cadena de los vegetales.";
 	private string descripcionHerb1				= "Lento pero seguro, el caracol consume poco y gasta poco, lo que le confiere una durabilidad bastante elevada. Su reproducción hermafrodita es rapida y sencilla, y se traduce en abundancia de caracoles. Presa fácil!";
-	private string descripcionHerb2				= "[RELLENAR] desc Conejo";
-	private string descripcionHerb3				= "[RELLENAR] desc Vacas";
-	private string descripcionHerb4				= "[RELLENAR] desc Jirafas";
-	private string descripcionHerb5				= "[RELLENAR] desc Estegosaurio";
+	private string descripcionHerb2				= "El conejo es un animal de reproduccion rapida y numerosa. Combinado con un consumo elevado de comira, el conejo puede convertirse tanto en una plaga como en un suministro abundante para los carnivoros";
+	private string descripcionHerb3				= "La familia de los vacunos se caracteriza por 2 cosas: comer mucho y moverse poco. Afortunadamente tampoco son veloces reproduciendose, o no quedaria verde sobre la faz del planeta donde habitara esta especie.";
+	private string descripcionHerb4				= "Los grandes herbivoros de la sabana, entre los que se encuentran la jirafa o la cebra, han adaptado su metabolismo para la escasez de comida, consumiendo muy poca. Tambien a la huida de depredadores, claro...";
+	private string descripcionHerb5				= "La tortuga gigante es un animal enorme que puede vivir muchos a\u00f1os. A pesar de tener un apetito insaciable, el hecho de tener una reproduccion muy lenta permite cierto control sobre sus poblaciones.";
 	private string descripcionCarn1				= "[RELLENAR] desc Rata";
-	private string descripcionCarn2				= "[RELLENAR] desc Lobo";
-	private string descripcionCarn3				= "[RELLENAR] desc Tigre";
-	private string descripcionCarn4				= "[RELLENAR] desc Oso";
-	private string descripcionCarn5				= "[RELLENAR] desc T-Rex";
+	private string descripcionCarn2				= "El lobo es un animal voraz que se alimenta de animales mas peque\u00f1os que el. Caza normalmente en grupos, acorralando a sus presas, aunque también hay casos de especimenes solitarios. Adoran los conejos.";
+	private string descripcionCarn3				= "El tigre es uno de los felinos mas grandes conocidos. Es capaz de alimentarse de animales mas grandes que el a las que despedaza con un solo golpe de sus poderosas zarpas. Afortunadamente, no les gusta cazar mucho.";
+	private string descripcionCarn4				= "Los osos son animales sencillos que no se meten con nadie. Menos cuando tienen hambre, amenazan su territorio, son mas peque\u00f1os que ellos o estan demasiado cerca... Comenzamos. Los osos son animales sencillos.";
+	private string descripcionCarn5				= "Los tiranosaurios representan la cima de la cadena alimenticia desde que existe cadena alimenticia. Son enormes, cualquier animal es su presa y pocos logran escapar de sus fauces. Se recomienda un control de poblacion estricto.";
 	private string descripcionFabBas			= "En este edificio se producen componentes de construccion basicos, necesarios para casi todas las construcciones que puede erigir la nave y para las reparaciones.";
 	private string descripcionEnergia1			= "A traves de un reactor de fusion y otro de fision, este edificio produce una alta cantidad de energia. Este combinado de reacciones es practicamente inagotable y limpio.";
 	private string descripcionGranja			= "Recolectando seres vivos de los alrededores, la granja es capaz de refinar compuestos de material biologico esenciales para el fin de la mision encomendada a la nave.";
@@ -121,11 +121,11 @@ public class TiposSeres : MonoBehaviour {
 		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,850,300,0,0,T_elementos.raros,modelosEdificios.fabCompAdv);
 		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,1000,500,250,0,T_elementos.raros,modelosEdificios.centralEnergiaAdv);
 		*/
-		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",habsEdificios,0,0,0,0,T_elementos.comunes,10,0,0,0,0,50,0,0,modelosEdificios.fabCompBas);
-		energia = new TipoEdificio("Central de energía",habsEdificios,0,0,0,0,T_elementos.comunes,0,0,0,0,200,0,0,0,modelosEdificios.centralEnergia);
-		granja = new TipoEdificio("Granja",habsEdificios,0,0,0,0,T_elementos.nada,200,0,0,0,0,0,0,0,modelosEdificios.granja);
-		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,0,0,0,0,T_elementos.raros,100,0,0,0,0,0,20,0,modelosEdificios.fabCompAdv);
-		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,0,0,0,0,T_elementos.raros,0,0,0,0,150,0,0,0,modelosEdificios.centralEnergiaAdv);
+		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",habsEdificios,150,30,0,0,T_elementos.comunes,10,0,0,0,0,20,0,0,modelosEdificios.fabCompBas);
+		energia = new TipoEdificio("Central de energía",habsEdificios,110,20,0,0,T_elementos.comunes,0,0,0,0,50,0,0,0,modelosEdificios.centralEnergia);
+		granja = new TipoEdificio("Granja",habsEdificios,2500,300,60,0,T_elementos.nada,200,0,0,0,0,0,0,0,modelosEdificios.granja);
+		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,600,150,0,0,T_elementos.raros,100,0,0,0,0,0,20,0,modelosEdificios.fabCompAdv);
+		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,1500,250,50,0,T_elementos.raros,0,0,0,0,150,0,0,0,modelosEdificios.centralEnergiaAdv);
 		
 		/* Vegetales */
 		/*vegetal = new EspecieVegetal(nombre, numMaxSeresEspecie, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, 
@@ -402,7 +402,7 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.montana);
 		//Tortuga: habitats-> 
-		herbivoro5 = new EspecieAnimal("Estegosaurio",6,500,7500,2500,4,6,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5);
+		herbivoro5 = new EspecieAnimal("Tortuga",6,500,7500,2500,4,7,tipoAlimentacionAnimal.herbivoro,listaHabs,modelosAnimales.herbivoro5);
 		costeHerb5 = new List<int>();
 		costeHerb5.Add(650);//Coste energia
 		costeHerb5.Add(280);//Coste comp bas
@@ -411,12 +411,12 @@ public class TiposSeres : MonoBehaviour {
 		
 		/* Carnivoros */
 		
-		//Zorro: habitats ->
+		//Rata: habitats ->
 		listaHabs = new List<T_habitats>();
 		listaHabs.Add(T_habitats.tundra);
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
-		carnivoro1 = new EspecieAnimal("Rata",12,80,2400,1200,7,6,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1);
+		carnivoro1 = new EspecieAnimal("Rata",6,80,2400,1200,7,6,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1);
 		costeCarn1 = new List<int>();
 		costeCarn1.Add(300);//Coste energia
 		costeCarn1.Add(180);//Coste comp bas
@@ -429,20 +429,20 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
-		carnivoro2 = new EspecieAnimal("Lobo",10,170,3400,1700,10,7,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2);
+		carnivoro2 = new EspecieAnimal("Lobo",4,170,3400,1700,10,7,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro2);
 		costeCarn2 = new List<int>();
 		costeCarn2.Add(380);//Coste energia
 		costeCarn2.Add(220);//Coste comp bas
 		costeCarn2.Add(80);//Coste comp adv
 		costeCarn2.Add(25);//Coste mat bio
 		
-		//Araña: habitats -> 
+		//Tigre: habitats -> 
 		listaHabs = new List<T_habitats>();
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.costa);
 		listaHabs.Add(T_habitats.montana);
-		carnivoro3 = new EspecieAnimal("Tigre",8,240,4800,2400,12,7,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3);
+		carnivoro3 = new EspecieAnimal("Tigre",3,200,4800,2400,12,7,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro3);
 		costeCarn3 = new List<int>();
 		costeCarn3.Add(490);//Coste energia
 		costeCarn3.Add(340);//Coste comp bas
@@ -455,19 +455,19 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.montana);
 		listaHabs.Add(T_habitats.tundra);
-		carnivoro4 = new EspecieAnimal("Oso",7,306,6120,3060,11,8,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4);
+		carnivoro4 = new EspecieAnimal("Oso",2,280,6720,3360,11,8,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro4);
 		costeCarn4 = new List<int>();
 		costeCarn4.Add(660);//Coste energia
 		costeCarn4.Add(400);//Coste comp bas
 		costeCarn4.Add(250);//Coste comp adv
 		costeCarn4.Add(80);//Coste mat bio
 		
-		//Velocitaptor: habitats ->
+		//Tiranosaurio: habitats ->
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
 		listaHabs.Add(T_habitats.desierto);
 		listaHabs.Add(T_habitats.volcanico);
-		carnivoro5 = new EspecieAnimal("Tiranosaurio",5,375,15000,7500,15,9,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5);
+		carnivoro5 = new EspecieAnimal("Tiranosaurio",1,375,15000,7500,15,9,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro5);
 		costeCarn5 = new List<int>();
 		costeCarn5.Add(800);//Coste energia
 		costeCarn5.Add(550);//Coste comp bas
