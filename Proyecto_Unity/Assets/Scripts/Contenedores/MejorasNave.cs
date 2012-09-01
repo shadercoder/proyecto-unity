@@ -84,8 +84,8 @@ public class MejorasNave : MonoBehaviour {
 	
 	void Awake() {
 		costeMej0 = new List<int>();		//Sensores 1 (info)
-		costeMej0.Add(600);	//Coste energia
-		costeMej0.Add(100);	//Coste comp bas
+		costeMej0.Add(700);	//Coste energia
+		costeMej0.Add(250);	//Coste comp bas
 		costeMej0.Add(0);	//Coste comp adv
 		costeMej0.Add(0);	//Coste mat bio
 		
@@ -97,26 +97,26 @@ public class MejorasNave : MonoBehaviour {
 		
 		costeMej2 = new List<int>();		//Sensores 3 (recursos)
 		costeMej2.Add(900);	//Coste energia
-		costeMej2.Add(200);	//Coste comp bas
+		costeMej2.Add(300);	//Coste comp bas
 		costeMej2.Add(0);	//Coste comp adv
 		costeMej2.Add(0);	//Coste mat bio
 		
 		costeMej3 = new List<int>();		//Sensores 4 (animales)
 		costeMej3.Add(1000);//Coste energia
-		costeMej3.Add(300);	//Coste comp bas
+		costeMej3.Add(350);	//Coste comp bas
 		costeMej3.Add(0);	//Coste comp adv
 		costeMej3.Add(0);	//Coste mat bio
 		
 		costeMej4 = new List<int>();		//Motor 1
-		costeMej4.Add(600);	//Coste energia
-		costeMej4.Add(150);	//Coste comp bas
+		costeMej4.Add(800);	//Coste energia
+		costeMej4.Add(280);	//Coste comp bas
 		costeMej4.Add(0);	//Coste comp adv
 		costeMej4.Add(0);	//Coste mat bio
 		
 		costeMej5 = new List<int>();		//Motor 2
 		costeMej5.Add(2000);	//Coste energia
-		costeMej5.Add(400);		//Coste comp bas
-		costeMej5.Add(50);		//Coste comp adv
+		costeMej5.Add(700);		//Coste comp bas
+		costeMej5.Add(0);		//Coste comp adv
 		costeMej5.Add(0);		//Coste mat bio
 		
 		costeMej6 = new List<int>();		//Motor 3 (aislamiento)
@@ -127,51 +127,51 @@ public class MejorasNave : MonoBehaviour {
 		
 		costeMej7 = new List<int>();		//Motor 4 (orbita)
 		costeMej7.Add(2000);	//Coste energia
-		costeMej7.Add(200);		//Coste comp bas
+		costeMej7.Add(600);		//Coste comp bas
 		costeMej7.Add(60);		//Coste comp adv
 		costeMej7.Add(0);		//Coste mat bio
 		
 		costeMej8 = new List<int>();		//Energia 1
 		costeMej8.Add(1000);	//Coste energia
-		costeMej8.Add(50);		//Coste comp bas
+		costeMej8.Add(120);		//Coste comp bas
 		costeMej8.Add(0);		//Coste comp adv
 		costeMej8.Add(0);		//Coste mat bio
 		
 		costeMej9 = new List<int>();		//Energia 2
 		costeMej9.Add(3000);	//Coste energia
-		costeMej9.Add(150);		//Coste comp bas
+		costeMej9.Add(450);		//Coste comp bas
 		costeMej9.Add(25);		//Coste comp adv
 		costeMej9.Add(0);		//Coste mat bio
 		
 		costeMej10 = new List<int>();		//Energia 3 (habs 1)
 		costeMej10.Add(4500);	//Coste energia
-		costeMej10.Add(350);	//Coste comp bas
-		costeMej10.Add(100);	//Coste comp adv
+		costeMej10.Add(550);	//Coste comp bas
+		costeMej10.Add(250);	//Coste comp adv
 		costeMej10.Add(0);		//Coste mat bio
 		
 		costeMej11 = new List<int>();		//Energia 4 (habs 2)
 		costeMej11.Add(7500);	//Coste energia
-		costeMej11.Add(500);	//Coste comp bas
-		costeMej11.Add(300);	//Coste comp adv
+		costeMej11.Add(1500);	//Coste comp bas
+		costeMej11.Add(500);	//Coste comp adv
 		costeMej11.Add(0);		//Coste mat bio
 		
 		costeMej12 = new List<int>();		//Almacen 1 (comp adv)
 		costeMej12.Add(950);	//Coste energia
-		costeMej12.Add(100);	//Coste comp bas
+		costeMej12.Add(300);	//Coste comp bas
 		costeMej12.Add(0);		//Coste comp adv
-		costeMej12.Add(0);		//Coste mat bio
+		costeMej12.Add(10);		//Coste mat bio
 		
 		costeMej13 = new List<int>();		//Almacen 2 (mat bio)
 		costeMej13.Add(900);	//Coste energia
-		costeMej13.Add(190);	//Coste comp bas
-		costeMej13.Add(70);		//Coste comp adv
+		costeMej13.Add(340);	//Coste comp bas
+		costeMej13.Add(0);		//Coste comp adv
 		costeMej13.Add(0);		//Coste mat bio
 		
 		costeMej14 = new List<int>();		//Almacen 3 (carga 1)
-		costeMej14.Add(700);	//Coste energia
-		costeMej14.Add(200);	//Coste comp bas
-		costeMej14.Add(75);		//Coste comp adv
-		costeMej14.Add(0);		//Coste mat bio
+		costeMej14.Add(800);	//Coste energia
+		costeMej14.Add(380);	//Coste comp bas
+		costeMej14.Add(70);		//Coste comp adv
+		costeMej14.Add(10);		//Coste mat bio
 		
 		costeMej15 = new List<int>();		//Almacen 4 (carga 2)
 		costeMej15.Add(2600);	//Coste energia
@@ -358,7 +358,7 @@ public class MejorasNave : MonoBehaviour {
 	
 	public void compraMejora14() {	//Mejora de almacen nivel 1
 		principal.setEnergiaMax(3500);
-		principal.setCompBasMax(500);
+		principal.setCompBasMax(1200);
 		principal.setCompAdvMax(300);
 		principal.setMatBioMax(25);
 		AlmacenT1C.GetComponent<MeshRenderer>().enabled = true;
@@ -367,7 +367,7 @@ public class MejorasNave : MonoBehaviour {
 	
 	public void compraMejora15() {	//Mejora de almacen nivel 2
 		principal.setEnergiaMax(9000);
-		principal.setCompBasMax(1500);
+		principal.setCompBasMax(2500);
 		principal.setCompAdvMax(1000);
 		principal.setMatBioMax(100);
 		AlmacenT2C.GetComponent<MeshRenderer>().enabled = true;

@@ -150,7 +150,7 @@ public class FuncTablero {
 	
 	public static Color[] suavizaPoloTex(Color[] pix) {
 		Color[] pixels = pix;
-		int lado = 2 * relTexTabAlto;				//Se suavizan dos casillas desde las inhabitables
+		int lado = 5 * relTexTabAlto;				//Se suavizan dos casillas desde las inhabitables
 		int margen = casillasPolos * relTexTabAlto;
 		//Se ponen los polos desde el origen hasta el margen (en pixeles) con la orografía deseada
 		for (int i = 0; i < margen; i++) {
