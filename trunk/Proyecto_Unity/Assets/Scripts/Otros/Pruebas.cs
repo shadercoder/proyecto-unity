@@ -116,28 +116,28 @@ public class Pruebas : MonoBehaviour {
 	private void creacionInicial() {
 		Debug.Log(FuncTablero.formateaTiempo() + ": Iniciando la creacion con textura...");
 		//Trabajar con la textura Textura_Planeta y crear el mapa lógico a la vez
-//		Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-		Texture2D texturaBase = texturaRuido;
+		Texture2D texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
+//		Texture2D texturaBase = texturaRuido;
 		
-//		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
+		Color[] pixels = new Color[texturaBase.width * texturaBase.height];
 		FuncTablero.inicializa(texturaBase);
-//		Debug.Log (FuncTablero.formateaTiempo() + ": Creando y exportando ruido...");
-//		pixels = FuncTablero.ruidoTextura();											//Se crea el ruido para la textura base y normales...
-//		texturaBase.SetPixels(pixels);
-//		texturaBase.Apply();
-//		byte[] bytes = texturaBase.EncodeToPNG();
-//		File.WriteAllBytes(Application.dataPath + "/ScreenTexturas/01TrasRuido.png", bytes);
-//		Debug.Log(FuncTablero.formateaTiempo() + ": Completado. Suavizando polos y bordes...");
-//		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);			//Se suaviza el borde lateral...
-//		texturaBase.SetPixels(pixels);
-//		texturaBase.Apply();
-//		bytes = texturaBase.EncodeToPNG();
-//		File.WriteAllBytes(Application.dataPath + "/ScreenTexturas/02TrasSuavizadoBorde.png", bytes);
-//		pixels = FuncTablero.suavizaPoloTex(pixels);									//Se suavizan los polos...
-//		texturaBase.SetPixels(pixels);
-//		texturaBase.Apply();
-//		bytes = texturaBase.EncodeToPNG();
-//		File.WriteAllBytes(Application.dataPath + "/ScreenTexturas/03TrasSuavizadoPolos.png", bytes);
+		Debug.Log (FuncTablero.formateaTiempo() + ": Creando y exportando ruido...");
+		pixels = FuncTablero.ruidoTextura();											//Se crea el ruido para la textura base y normales...
+		texturaBase.SetPixels(pixels);
+		texturaBase.Apply();
+		byte[] bytes = texturaBase.EncodeToPNG();
+		File.WriteAllBytes(Application.dataPath + "/ScreenTexturas/01TrasRuido.png", bytes);
+		Debug.Log(FuncTablero.formateaTiempo() + ": Completado. Suavizando polos y bordes...");
+		pixels = FuncTablero.suavizaBordeTex(pixels, texturaBase.width / 20);			//Se suaviza el borde lateral...
+		texturaBase.SetPixels(pixels);
+		texturaBase.Apply();
+		bytes = texturaBase.EncodeToPNG();
+		File.WriteAllBytes(Application.dataPath + "/ScreenTexturas/02TrasSuavizadoBorde.png", bytes);
+		pixels = FuncTablero.suavizaPoloTex(pixels);									//Se suavizan los polos...
+		texturaBase.SetPixels(pixels);
+		texturaBase.Apply();
+		bytes = texturaBase.EncodeToPNG();
+		File.WriteAllBytes(Application.dataPath + "/ScreenTexturas/03TrasSuavizadoPolos.png", bytes);
 		Debug.Log(FuncTablero.formateaTiempo() + ": Extruyendo vertices de la roca...");
 		float extrusion = 0.45f;
 		MeshFilter Roca = objetoRoca.GetComponent<MeshFilter>();
@@ -148,27 +148,27 @@ public class Pruebas : MonoBehaviour {
 		//Se añade el collider aqui, para que directamente tenga la mesh adecuada
        	objetoRoca.AddComponent<MeshCollider>();
         objetoRoca.GetComponent<MeshCollider>().sharedMesh = meshTemp;
-//		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Calculando y extruyendo vertices del oceano...");
-//		MeshFilter Agua = objetoOceano.GetComponent<MeshFilter>();
-//		Mesh meshAgua = Agua.mesh;
-//		meshAgua = FuncTablero.extruyeVerticesValor(meshAgua, FuncTablero.getNivelAgua(), extrusion, objetoOceano.transform.position);
-//		Agua.mesh = meshAgua;
-//		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Rellenando detalles...");
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Calculando y extruyendo vertices del oceano...");
+		MeshFilter Agua = objetoOceano.GetComponent<MeshFilter>();
+		Mesh meshAgua = Agua.mesh;
+		meshAgua = FuncTablero.extruyeVerticesValor(meshAgua, FuncTablero.getNivelAgua(), extrusion, objetoOceano.transform.position);
+		Agua.mesh = meshAgua;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completado. Rellenando detalles...");
 //		//se ajusta la propiedad de nivel de agua del shader
-//		objetoOceano.renderer.sharedMaterial.SetFloat("_nivelMar", FuncTablero.getNivelAgua());
-//		objetoOceano.renderer.sharedMaterial.SetFloat("_tamPlaya", FuncTablero.getTamanoPlaya());
+		objetoOceano.renderer.sharedMaterial.SetFloat("_nivelMar", FuncTablero.getNivelAgua());
+		objetoOceano.renderer.sharedMaterial.SetFloat("_tamPlaya", FuncTablero.getTamanoPlaya());
 		
-//		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Cargando texturas de habitats...");
+		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Cargando texturas de habitats...");
 //		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 1ª posicion.
-//		Texture2D texElems = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
-//		Texture2D texPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
-//		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
-//		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
-//		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando el tablero...");
-//		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.mesh, objetoRoca.transform.position);
-////		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.sharedMesh, objetoRoca.transform.position);
-//		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando Vida...");
-//		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
+		Texture2D texElems = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
+		Texture2D texPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
+		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
+		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
+		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando el tablero...");
+		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.mesh, objetoRoca.transform.position);
+//		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.sharedMesh, objetoRoca.transform.position);
+		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando Vida...");
+		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion de prueba.");
 	}
 	
