@@ -347,28 +347,28 @@ public class Vida //: MonoBehaviour
 		
 		if(UnityEngine.Random.Range(0,2) == 0)						//Izquierda
 		{
-			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			pos = UnityEngine.Random.Range(0.0f,0.49f);
 			x = (1-pos)*centro.x + pos*izquierdo.x;
 			y = (1-pos)*centro.y + pos*izquierdo.y;
 			z = (1-pos)*centro.z + pos*izquierdo.z;
 		}
 		else														//Derecha
 		{
-			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			pos = UnityEngine.Random.Range(0.0f,0.49f);
 			x = (1-pos)*centro.x + pos*derecho.x;
 			y = (1-pos)*centro.y + pos*derecho.y;
 			z = (1-pos)*centro.z + pos*derecho.z;			
 		}
 		if(UnityEngine.Random.Range(0,2) == 0)						//Arriba
 		{
-			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			pos = UnityEngine.Random.Range(0.0f,0.49f);
 			x = (1-pos)*x + pos*superior.x;
 			y = (1-pos)*y + pos*superior.y;
 			z = (1-pos)*z + pos*superior.z;
 		}
 		else														//Abajo
 		{
-			pos = UnityEngine.Random.Range(0.0f,0.45f);
+			pos = UnityEngine.Random.Range(0.0f,0.49f);
 			x = (1-pos)*x + pos*inferior.x;
 			y = (1-pos)*y + pos*inferior.y;
 			z = (1-pos)*z + pos*inferior.z;			
