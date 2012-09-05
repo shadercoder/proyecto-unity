@@ -824,7 +824,7 @@ public class FuncTablero {
 			}
 		}
 		//Comento esta linea para hacer una prueba
-		//tablero = mueveVertices(tablero);
+		tablero = mueveVertices(tablero);
 		//tablero = mueveVertices(tablero, texHeightmap, posicionPlaneta);
 		return tablero;
 	}
