@@ -19,10 +19,10 @@ public class MovimientoAnimales : MonoBehaviour {
 	void Update () {
 		if (enMovimiento) {
 			if (this.transform.parent.position != posObjetivo) {
-				this.transform.parent.position = Vector3.Lerp(posInicio, posObjetivo, (Time.time - tiempoInicioMov) / tiempoMovimiento);
 				Vector3 norm = this.transform.parent.position - this.transform.parent.parent.position;
 				Vector3 direccion = posObjetivo - this.transform.parent.position;
-				this.transform.parent.rotation = Quaternion.LookRotation(norm, direccion);				
+				this.transform.parent.rotation = Quaternion.LookRotation(norm, direccion);
+				this.transform.parent.position = Vector3.Lerp(posInicio, posObjetivo, (Time.time - tiempoInicioMov) / tiempoMovimiento);			
 				this.animation.Play();
 			}
 			else {
@@ -50,23 +50,21 @@ public class MovimientoAnimales : MonoBehaviour {
 			break;
 		case tipoEstadoAnimal.descansar:
 			this.animation.Play("descansar1");
-			this.transform.RotateAroundLocal(Vector3.forward, 90);
-			/*this.transform.RotateAroundLocal(Vector3.forward, 90);
-			int temp = Random.Range(0, 3);
-			switch (temp) {
-			case 0: 
-				this.animation.Play("descansar1");
-				break;
-			case 1:
-				this.animation.Play("descansar2");
-				break;
-			case 2:
-				this.animation.Play("descansar3");
-				break;
-			default:
-				this.animation.Play("descansar1");
-				break;
-			}	*/		
+//			int temp = Random.Range(0, 3);
+//			switch (temp) {
+//			case 0: 
+//				this.animation.Play("descansar1");
+//				break;
+//			case 1:
+//				this.animation.Play("descansar2");
+//				break;
+//			case 2:
+//				this.animation.Play("descansar3");
+//				break;
+//			default:
+//				this.animation.Play("descansar1");
+//				break;
+//			}		
 			break;
 		case tipoEstadoAnimal.morir:
 			this.animation.Play("morir");
