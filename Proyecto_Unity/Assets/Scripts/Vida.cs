@@ -823,7 +823,8 @@ public class Vida //: MonoBehaviour
 		Animal animal;
 		Edificio edificio;
 		int energiaEdif,compBasEdif,compAvzEdif,matBioEdif;		
-				
+		if(numTurno%10 == 0)			
+			FuncTablero.randomLista<Ser>(seres);
 		for(int i = 0; i < seres.Count; i++)
 		{
 			ser = seres[i];
@@ -853,7 +854,9 @@ public class Vida //: MonoBehaviour
 			{
 				animal = (Animal)ser;
 				if(!animal.consumirAlimento() && animal.estado != tipoEstadoAnimal.morir)
+				{
 					animal.estado = tipoEstadoAnimal.morir;
+				}
 				else if(animal.reserva > animal.especie.reservaMaxima*0.5)
 				{
 					if(animal.reproduccion() ) 
@@ -905,140 +908,14 @@ public class Vida //: MonoBehaviour
 					matBio += edificio.procesaMatBio();
 				}
 			}
-		}
-		
-		
-		//turnoActual = numTurno % numMaxTurnos;
-		//List<Ser> seresTurno = listadoSeresTurnos[turnoActual];	
-		//if(turnoActual == 0)
-			//FuncTablero.randomLista<Ser>(seresTurno);
-		/*for(int i = 0; i < seresTurno.Count; i++)
-		{
-			ser = seresTurno[i];
-			if(ser is Vegetal)
-			{
-				vegetal = (Vegetal)ser;
-				//Reproducción y muerte
-				if(vegetal.reproduccionMuerte())
-					pintaPlantasTex(vegetal.posX, vegetal.posY);
-				else
-				{					
-					eliminaVegetal(vegetal);
-					continue;
-				}
-				//Evolución
-				//if(vegetal.evolucion)
-				//	;
-				//Migración
-				if(vegetal.migracionLocal())
-					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,1);
-				if(vegetal.migracionGlobal())
-					migraVegetal(vegetal.especie,vegetal.habitabilidad,vegetal.posX,vegetal.posY,vegetal.especie.radioMigracion);
-				int turno = (turnoActual + vegetal.especie.siguienteTurno)%numMaxTurnos;
-				listadoSeresTurnos[turno].Add(vegetal);	
-				listadoSeresTurnos[turnoActual].Remove(vegetal);
-			}
-			else if(ser is Animal)
-			{
-				animal = (Animal)ser;
-				if(!animal.consumirAlimento() && animal.estado != tipoEstadoAnimal.morir)
-					animal.estado = tipoEstadoAnimal.morir;
-				else if(animal.reserva > animal.especie.reservaMaxima*0.5)
-				{
-					if(animal.reproduccion()) 
-						reproduceAnimal(animal.especie,animal.posX,animal.posY);											
-					animal.estado = tipoEstadoAnimal.descansar;
-				}
-				else
-				{
-					switch(animal.estado)
-					{
-					case tipoEstadoAnimal.buscarAlimento:
-						if(animal.aguante == 0)					
-							animal.estado = tipoEstadoAnimal.descansar;	
-						else
-							if(buscaAlimentoAnimal(animal))
-								animal.estado = tipoEstadoAnimal.comer;					
-						animal.aguante--;					
-						break;
-					case tipoEstadoAnimal.descansar:
-						animal.aguante = animal.especie.aguanteInicial;
-						animal.estado = tipoEstadoAnimal.buscarAlimento;					
-						break;
-					case tipoEstadoAnimal.comer:
-						animal.estado = tipoEstadoAnimal.buscarAlimento;
-						break;
-					case tipoEstadoAnimal.nacer:
-						animal.estado = tipoEstadoAnimal.buscarAlimento;
-						break;
-					case tipoEstadoAnimal.morir:
-						eliminaAnimal(animal);
-						continue;
-					default:break;
-					}
-				}
-				int turno = (turnoActual + animal.especie.siguienteTurno)%numMaxTurnos;
-				listadoSeresTurnos[turno].Add(animal);	
-				listadoSeresTurnos[turnoActual].Remove(animal);
-			
-			}	
-			else if(ser is Edificio)
-			{
-				edificio = (Edificio)ser;
-				int turno = (turnoActual + edificio.tipo.siguienteTurno)%numMaxTurnos;
-				listadoSeresTurnos[turno].Add(edificio);	
-				listadoSeresTurnos[turnoActual].Remove(edificio);
-			}
-		}*/		
-		
-		/*for(int i = 0; i < animales.Count; i++)
-		{
-			animal = animales[i];
-			if(!animal.consumirAlimento() && animal.estado != tipoEstadoAnimal.morir)
-				animal.estado = tipoEstadoAnimal.morir;
-			else if(animal.reserva > animal.especie.reservaMaxima*0.5)
-			{
-				if(animal.reproduccion()) 
-					reproduceAnimal(animal.especie,animal.posX,animal.posY);											
-				animal.estado = tipoEstadoAnimal.descansar;
-			}
-			else
-			{
-				switch(animal.estado)
-				{
-				case tipoEstadoAnimal.buscarAlimento:
-					if(animal.aguante == 0)					
-						animal.estado = tipoEstadoAnimal.descansar;	
-					else
-						if(buscaAlimentoAnimal(animal))
-							animal.estado = tipoEstadoAnimal.comer;					
-					animal.aguante--;					
-					break;
-				case tipoEstadoAnimal.descansar:
-					animal.aguante = animal.especie.aguanteInicial;
-					animal.estado = tipoEstadoAnimal.buscarAlimento;					
-					break;
-				case tipoEstadoAnimal.comer:
-					animal.estado = tipoEstadoAnimal.buscarAlimento;
-					break;
-				case tipoEstadoAnimal.nacer:
-					animal.estado = tipoEstadoAnimal.buscarAlimento;
-					break;
-				case tipoEstadoAnimal.morir:
-					eliminaAnimal(animal);
-					continue;
-				default:break;
-				}
-			}
-		}					
-		*/				
-		contadorPintarTexturaPlantas++;
+		}				
+		/*contadorPintarTexturaPlantas++;
 		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)
 		{
 			//texturaPlantas.Apply();
 			texturaPlantasModificado = false;
 			contadorPintarTexturaPlantas = 0;
-		}
+		}*/
 	}		
 }
 
