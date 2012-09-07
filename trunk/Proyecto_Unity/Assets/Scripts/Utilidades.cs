@@ -1181,7 +1181,8 @@ public class FuncTablero {
 		Vector3 normal = posicion - contenedor.transform.parent.position;
 		creacion.transform.localRotation = Quaternion.identity;
 		contenedor.transform.rotation = Quaternion.LookRotation(normal);
-		
+		//creacion.transform.RotateAroundLocal(Vector3.forward, UnityEngine.Random.Range(30, 270));
+		contenedor.transform.RotateAround(normal, UnityEngine.Random.Range(30, 270));
 		//creacion.transform.Rotate(0,0,UnityEngine.Random.Range(0,180),Space.Self);
 
 		return contenedor;
