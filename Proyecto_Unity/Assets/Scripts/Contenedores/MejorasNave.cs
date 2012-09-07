@@ -319,24 +319,26 @@ public class MejorasNave : MonoBehaviour {
 	//Energia --------------------------------------------------------------------------------------
 	public void compraMejora8() {	//Mejora energia nivel 1
 		principal.mejoraEnergia1();
+		principal.setEnergiaMax(3500);
 		GeneradorT1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[8] = true;
 	}
 	
 	public void compraMejora9() {	//Mejora energia nivel 2
 		principal.mejoraEnergia2();
+		principal.setEnergiaMax(7500);
 		GeneradorT2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[9] = true;
 	}
 	
 	public void compraMejora10() {	//Desbloqueo habilidades nivel 1
-		//TODO
+		principal.setEnergiaMax(10000);
 		GenHab1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[10] = true;
 	}
 	
 	public void compraMejora11() {	//Desbloqueo habilidades nivel 2
-		//TODO
+		principal.setEnergiaMax(15000);
 		GenHab2.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[11] = true;
 	}
@@ -357,7 +359,6 @@ public class MejorasNave : MonoBehaviour {
 	}
 	
 	public void compraMejora14() {	//Mejora de almacen nivel 1
-		principal.setEnergiaMax(3500);
 		principal.setCompBasMax(1200);
 		principal.setCompAdvMax(300);
 		principal.setMatBioMax(25);
@@ -366,7 +367,6 @@ public class MejorasNave : MonoBehaviour {
 	}
 	
 	public void compraMejora15() {	//Mejora de almacen nivel 2
-		principal.setEnergiaMax(9000);
 		principal.setCompBasMax(2500);
 		principal.setCompAdvMax(1000);
 		principal.setMatBioMax(100);
