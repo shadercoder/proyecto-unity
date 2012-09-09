@@ -2263,13 +2263,35 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Label (new Rect (cuantoW, cuantoH, 9 * cuantoW, cuantoH), infoSeleccion[0], "LabelReducido");	//Este texto es el nombre
 			imagenInsercionBloqueDerecho();
 			//Habitabilidad --
-			GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
+			string habitabilidad;
+			habitabilidad = (habitabilidadSeleccion[6] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+			habitabilidad = (habitabilidadSeleccion[6] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+			GUI.Box (new Rect (cuantoW * 0.95f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), habitabilidad);
+			habitabilidad = (habitabilidadSeleccion[1] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+			habitabilidad = (habitabilidadSeleccion[1] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+			GUI.Box (new Rect (cuantoW * 2.35f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), habitabilidad);
+			habitabilidad = (habitabilidadSeleccion[2] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+			habitabilidad = (habitabilidadSeleccion[2] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+			GUI.Box (new Rect (cuantoW * 3.66f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), habitabilidad);
+			habitabilidad = (habitabilidadSeleccion[0] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+			habitabilidad = (habitabilidadSeleccion[0] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+			GUI.Box (new Rect (cuantoW * 4.96f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), habitabilidad);
+			habitabilidad = (habitabilidadSeleccion[4] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+			habitabilidad = (habitabilidadSeleccion[4] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+			GUI.Box (new Rect (cuantoW * 6.26f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), habitabilidad);
+			habitabilidad = (habitabilidadSeleccion[7] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+			habitabilidad = (habitabilidadSeleccion[7] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+			GUI.Box (new Rect (cuantoW * 7.59f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), habitabilidad);
+			habitabilidad = (habitabilidadSeleccion[3] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+			habitabilidad = (habitabilidadSeleccion[3] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+			GUI.Box (new Rect (cuantoW * 9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), habitabilidad);				
+			/*GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), "LabelHabitabilidad");
 			GUI.Label (new Rect (cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), "LabelHabitabilidad");
-			GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");
+			GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");*/
 			//Habitabilidad --
 			GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");		//Titulo de la descripcion
 			GUI.Label (new Rect (cuantoW * 1, cuantoH * 14, 9 * cuantoW, 4 * cuantoH), infoSeleccion[1], "LabelDescripcionContenido");	//Este texto es la descripcion
@@ -2318,13 +2340,34 @@ public class InterfazPrincipal : MonoBehaviour
 			if (tipoSeleccion < 20) {	//Animales y plantas
 				GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoSeleccion");
 				//Habitabilidad --
-				GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
+				habitabilidad = (habitabilidadSeleccion[6] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+				habitabilidad = (habitabilidadSeleccion[6] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+				GUI.Box (new Rect (cuantoW * 0.95f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), habitabilidad);
+				habitabilidad = (habitabilidadSeleccion[1] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+				habitabilidad = (habitabilidadSeleccion[1] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+				GUI.Box (new Rect (cuantoW * 2.35f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), habitabilidad);
+				habitabilidad = (habitabilidadSeleccion[2] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+				habitabilidad = (habitabilidadSeleccion[2] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+				GUI.Box (new Rect (cuantoW * 3.66f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), habitabilidad);
+				habitabilidad = (habitabilidadSeleccion[0] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+				habitabilidad = (habitabilidadSeleccion[0] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+				GUI.Box (new Rect (cuantoW * 4.96f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), habitabilidad);
+				habitabilidad = (habitabilidadSeleccion[4] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+				habitabilidad = (habitabilidadSeleccion[4] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+				GUI.Box (new Rect (cuantoW * 6.26f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), habitabilidad);
+				habitabilidad = (habitabilidadSeleccion[7] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+				habitabilidad = (habitabilidadSeleccion[7] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+				GUI.Box (new Rect (cuantoW * 7.59f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), habitabilidad);
+				habitabilidad = (habitabilidadSeleccion[3] >= 0.0f)? "ImagenHabitable":"ImagenPocoHabitable";
+				habitabilidad = (habitabilidadSeleccion[3] == -1.0f)? "ImagenInhabitable":habitabilidad;				
+				GUI.Box (new Rect (cuantoW * 9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), habitabilidad);				
+				/*GUI.Label (new Rect (cuantoW * 0.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[6].ToString ("N1"), "Costa"), "LabelHabitabilidad");
 				GUI.Label (new Rect (cuantoW * 2.3f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[1].ToString ("N1"), "LLanura"), "LabelHabitabilidad");
 				GUI.Label (new Rect (cuantoW * 3.6f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[2].ToString ("N1"), "Colina"), "LabelHabitabilidad");
 				GUI.Label (new Rect (cuantoW * 4.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[0].ToString ("N1"), "Monta\u00f1a"), "LabelHabitabilidad");
 				GUI.Label (new Rect (cuantoW * 6.2f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[4].ToString ("N1"), "Volcanico"), "LabelHabitabilidad");
 				GUI.Label (new Rect (cuantoW * 7.5f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[7].ToString ("N1"), "Tundra"), "LabelHabitabilidad");
-				GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");
+				GUI.Label (new Rect (cuantoW * 8.9f, 11 * cuantoH, 1 * cuantoW, 1 * cuantoH), new GUIContent (habitabilidadSeleccion[3].ToString ("N1"), "Desierto"), "LabelHabitabilidad");*/
 				//Habitabilidad --
 				GUI.Label (new Rect (cuantoW * 1, cuantoH * 13, 9 * cuantoW, 1 * cuantoH), "DESCRIPCION:", "LabelDescripcionTitulo");
 				//Titulo de la descripcion
