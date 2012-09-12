@@ -43,17 +43,17 @@ public class MejorasNave : MonoBehaviour {
 	private string descripcionMejAlm1			= "Mejorando los algoritmos de ordenacion de los contenedores de la nave se obtiene un incremento en la capacidad de almacenaje. Viene con un contenedor gratis. \n(Mejora la Capazidad de Almacenamiento)";
 	private string descripcionMejAlm2			= "Añadiendo contenedores de cada clase se amplia enormemente el espacio de almacenaje. (Mejora la Capacidad de Carga)";
 	private string descripcionMejEner1			= "Añade un condensador con receptores de microondas para almacenar el excedente de energia producido por las centrales planetarias. \n(Aumenta la Energia Maxima disponible)";
-	private string descripcionMejEner2			= "Añade un condensador en forma de anillo que aumenta la capacidad energetica de forma considerable. Ademas sirve de soporte para otras piezas. \n(Aumenta la Energia MAxima disponible y desbloquea otras mejoras)";
+	private string descripcionMejEner2			= "Añade un condensador en forma de anillo que aumenta la capacidad energetica de forma considerable. Ademas sirve de soporte para otras piezas. \n(Aumenta la Energia Maxima disponible y desbloquea otras mejoras)";
 	private string descripcionMejHab1			= "Un array de paneles solares capta la energia de la estrella durante el dia, y la almacena para su posterior uso. (Habilita el Foco Solar)";
-	private string descripcionMejHab2			= "[RELLENAR]habilita skill2";
+	private string descripcionMejHab2			= "Habilita las armas y los sistemas más avanzados de la nave, incluyendo el portal para traer a nuestra especie al planeta.(Habilita Fertilizante Ecoquímico, Bomba de Implosión Controlada, Virus Selectivo Poblacional y Portal Espacio/temporal)";
 	
 	//Descripciones habilidades
 	private List<string> habilidades;			//Todas las descripciones de las habilidades
 	private string descripcionHab1				= "El Foco Solar es totalmente ecologico. Utiliza la energia captada cuando la nave esta bajo la accion directa de la radiaccion solar y la redirige a las zonas donde es interesante. Aun no se ha comprobado si este fenomeno es perjudicial para los animales, pero de momento no hemos recibido ninguna queja.";
-	private string descripcionHab2				= "[RELLENAR] Hab 2";
-	private string descripcionHab3				= "[RELLENAR] Hab 3";
-	private string descripcionHab4				= "[RELLENAR] Hab 4";
-	private string descripcionHab5				= "[RELLENAR] Hab 5";
+	private string descripcionHab2				= "El Fertilizante Ecoquímico estimula biológicamente a los seres vivos de una zona incrementando asombrosamente su capacidad reproductiva.";
+	private string descripcionHab3				= "La Bomba de Implosión Controlada destruye todo ser y edificio de una determinada zona. Utilizar con mucha precaución!";
+	private string descripcionHab4				= "El Virus Selectivo Poblacional elimina selectivamente a una especie de animal o vegetal en una posición determinada.";
+	private string descripcionHab5				= "El Portal Espacio/temporal se habilita cuando tu tarea ha terminado y al usarlo abre un portal que comunica con tu planeta. Una vez desplegado tu misión en este planeta habrá terminado.";
 	
 	//Costes
 	private List<List<int>> costesMejoras;
