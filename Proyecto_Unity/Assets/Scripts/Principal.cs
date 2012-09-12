@@ -7,7 +7,8 @@ using System.Collections.Generic;
 public class Principal : MonoBehaviour {
 
 	//Variables ---------------------------------------------------------------------------------------------------------------------------
-	
+	private InterfazPrincipal interfaz;
+	private float escalaTiempoAntesMenu;
 	//Trucos
 	public bool developerMode					= true;					//Mientras este a true, maximo de recursos en todo momento
 	
@@ -17,7 +18,7 @@ public class Principal : MonoBehaviour {
 	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
 //	private Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	private GameObject contenedor;										//El contenedor de las texturas de la primera escena
-	
+		
 	//Recursos
 	public int energia = 1000;											//Cantidad de energia almacenada en la nave
 	public int energiaDif = 10;											//Incremento o decremento por turno de energia
@@ -111,6 +112,29 @@ public class Principal : MonoBehaviour {
 			setEscalaTiempo(2.0f);	
 		if(Input.GetKeyDown(KeyCode.Alpha4)) 
 			setEscalaTiempo(5.0f);	
+		if(Input.GetKeyDown(KeyCode.Escape)) 
+		{
+			interfaz = gameObject.GetComponent<InterfazPrincipal>();
+			if(interfaz.accion == InterfazPrincipal.taccion.mostrarMenu)
+			{
+				if(interfaz.accionMenu == InterfazPrincipal.taccionMenu.mostrarMenu)
+				{
+					interfaz.accion = InterfazPrincipal.taccion.ninguna;
+					escalaTiempo = escalaTiempoAntesMenu;
+				}		
+				else
+					interfaz.accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
+			}
+			else
+			{
+				interfaz.accion = InterfazPrincipal.taccion.mostrarMenu;
+				interfaz.accionMenu = InterfazPrincipal.taccionMenu.mostrarMenu;
+				escalaTiempoAntesMenu = escalaTiempo;
+				escalaTiempo = 0;
+			}			
+		}
+		
+		//Velocidad extra rapida para debug
 		if(Input.GetKeyDown(KeyCode.Alpha5)) 
 			setEscalaTiempo(50.0f);
 		
