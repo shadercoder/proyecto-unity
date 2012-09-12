@@ -62,7 +62,7 @@ public class InterfazPrincipal : MonoBehaviour
 	}
 	private taspectRatio aspectRatio;
 
-	private enum taccion
+	public enum taccion
 	{
 		//Acción que se esta realizando en el momento actual
 		ninguna,
@@ -75,10 +75,10 @@ public class InterfazPrincipal : MonoBehaviour
 		mostrarInfoDetallada,
 		mostrarMenu
 	}
-	private taccion accion = taccion.ninguna;
+	public taccion accion = taccion.ninguna;
 	private taccion accionAnterior = taccion.ninguna;
 
-	private enum taccionMenu
+	public enum taccionMenu
 	{
 		//Acción que se esta realizando en el menu
 		mostrarMenu,
@@ -87,7 +87,7 @@ public class InterfazPrincipal : MonoBehaviour
 		mostrarSalirMenuPrincipal,
 		mostrarSalirJuego
 	}
-	private taccionMenu accionMenu = taccionMenu.mostrarMenu;
+	public taccionMenu accionMenu = taccionMenu.mostrarMenu;
 
 	/*private enum tcategoriaSeleccion						//Desactivado indica que no hay seleccion en curso, otro valor indica la categoria de la seleccion
 		{desactivada,animal,vegetal,edificio,mejoras,habilidades}
