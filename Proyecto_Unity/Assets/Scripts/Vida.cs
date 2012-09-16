@@ -53,10 +53,6 @@ public class Vida //: MonoBehaviour
 	public bool texturaPlantasModificado = false;
 	
 	public List<Tupla<int,int>> posicionesColindantes;
-	public int[,] matrizRadio3Circular;
-	public int[,] matrizRadio4Circular;
-	public int[,] matrizRadio5Circular;
-	public int[,] matrizRadio6Circular;
 	
 	private const float	tiempoTurno = 3.0f;
 	
