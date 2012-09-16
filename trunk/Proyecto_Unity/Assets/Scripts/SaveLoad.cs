@@ -77,10 +77,6 @@ public class VidaSerializable {
 	public bool texturaPlantasModificado;
 	
 	public List<Tupla<int,int>> posicionesColindantes;
-	public int[,] matrizRadio3Circular;
-	public int[,] matrizRadio4Circular;
-	public int[,] matrizRadio5Circular;
-	public int[,] matrizRadio6Circular;
 	
 	public VidaSerializable() {}
 }
@@ -514,38 +510,7 @@ public class SaveLoad {
 			Tupla<int,int> tupla = new Tupla<int, int>(vida.posicionesColindantes[i].e1, vida.posicionesColindantes[i].e2);
 			vidaSerializable.posicionesColindantes.Add(tupla);
 		}
-		if (vida.matrizRadio3Circular != null) {
-			vidaSerializable.matrizRadio3Circular = new int[vida.matrizRadio3Circular.GetLength(0), vida.matrizRadio3Circular.GetLength(1)];
-			for (int i = 0; i < vida.matrizRadio3Circular.GetLength(0); i++) {
-				for (int j = 0; j < vida.matrizRadio3Circular.GetLength(1); j++) {
-					vidaSerializable.matrizRadio3Circular[i,j] = vida.matrizRadio3Circular[i,j];
-				}
-			}
-		}
-		if (vida.matrizRadio4Circular != null) {
-			vidaSerializable.matrizRadio4Circular = new int[vida.matrizRadio4Circular.GetLength(0), vida.matrizRadio4Circular.GetLength(1)];
-			for (int i = 0; i < vida.matrizRadio4Circular.GetLength(0); i++) {
-				for (int j = 0; j < vida.matrizRadio4Circular.GetLength(1); j++) {
-					vidaSerializable.matrizRadio4Circular[i,j] = vida.matrizRadio4Circular[i,j];
-				}
-			}
-		}
-		if (vida.matrizRadio5Circular != null) {
-			vidaSerializable.matrizRadio5Circular = new int[vida.matrizRadio5Circular.GetLength(0), vida.matrizRadio5Circular.GetLength(1)];
-			for (int i = 0; i < vida.matrizRadio5Circular.GetLength(0); i++) {
-				for (int j = 0; j < vida.matrizRadio5Circular.GetLength(1); j++) {
-					vidaSerializable.matrizRadio5Circular[i,j] = vida.matrizRadio5Circular[i,j];
-				}
-			}
-		}
-		if (vida.matrizRadio6Circular != null) {
-			vidaSerializable.matrizRadio6Circular = new int[vida.matrizRadio6Circular.GetLength(0), vida.matrizRadio6Circular.GetLength(1)];
-			for (int i = 0; i < vida.matrizRadio6Circular.GetLength(0); i++) {
-				for (int j = 0; j < vida.matrizRadio6Circular.GetLength(1); j++) {
-					vidaSerializable.matrizRadio6Circular[i,j] = vida.matrizRadio6Circular[i,j];
-				}
-			}
-		}
+		
 		generarTableroSerializable(vida.tablero, ref vidaSerializable.tablero);
 	}
 	
@@ -553,32 +518,6 @@ public class SaveLoad {
 	 * unos datos serializables.
 	 */
 	private static void rehacerVida(ref Vida vida, VidaSerializable vidaSerializable) {
-		//TODO Seguramente esta parte hay que hacerla despues de crear todo lo demás, para que las 
-		//especies estén ya introducidas
-//		//Variables de Vida
-//		vida.animales = new List<Animal>();
-//		for (int i = 0; i < vidaSerializable.animales.Count; i++) {
-//			vida.animales.Add(getAnimalNoSerializable(vidaSerializable.animales[i]));
-//		}
-//		vida.vegetales = new List<Vegetal>();
-//		for (int i = 0; i < vidaSerializable.vegetales.Count; i++) {
-//			vida.vegetales.Add(getVegetalNoSerializable(vidaSerializable.vegetales[i]));
-//		}
-//		vida.edificios = new List<Edificio>();
-//		for (int i = 0; i < vidaSerializable.edificios.Count; i++) {
-//			vida.edificios.Add(getEdificioNoSerializable(vidaSerializable.edificios[i]));
-//		}
-//		vida.seres = new List<Ser>();
-//		//Rehacer metiendole todos los demas seres ya cargados
-//		for (int i = 0; i < vida.edificios.Count; i++) {
-//			vida.seres.Add(vida.edificios[i]);
-//		}
-//		for (int i = 0; i < vida.vegetales.Count; i++) {
-//			vida.seres.Add(vida.vegetales[i]);
-//		}
-//		for (int i = 0; i < vida.animales.Count; i++) {
-//			vida.seres.Add(vida.animales[i]);
-//		}
 		vida.contadorPintarTexturaPlantas = vidaSerializable.contadorPintarTexturaPlantas;
 		vida.idActualAnimal = vidaSerializable.idActualAnimal;
 		vida.idActualEdificio = vidaSerializable.idActualEdificio;
@@ -590,41 +529,7 @@ public class SaveLoad {
 			Tupla<int,int> tupla = new Tupla<int, int>(vidaSerializable.posicionesColindantes[i].e1, vidaSerializable.posicionesColindantes[i].e2);
 			vida.posicionesColindantes.Add(tupla);
 		}
-		if (vidaSerializable.matrizRadio3Circular != null) {
-			vida.matrizRadio3Circular = new int[vidaSerializable.matrizRadio3Circular.GetLength(0), vidaSerializable.matrizRadio3Circular.GetLength(1)];
-			for (int i = 0; i < vidaSerializable.matrizRadio3Circular.GetLength(0); i++) {
-				for (int j = 0; j < vidaSerializable.matrizRadio3Circular.GetLength(1); j++) {
-					vida.matrizRadio3Circular[i,j] = vidaSerializable.matrizRadio3Circular[i,j];
-				}
-			}
-		}
-		if (vidaSerializable.matrizRadio4Circular != null) {
-			vida.matrizRadio4Circular = new int[vidaSerializable.matrizRadio4Circular.GetLength(0), vidaSerializable.matrizRadio4Circular.GetLength(1)];
-			for (int i = 0; i < vidaSerializable.matrizRadio4Circular.GetLength(0); i++) {
-				for (int j = 0; j < vidaSerializable.matrizRadio4Circular.GetLength(1); j++) {
-					vida.matrizRadio4Circular[i,j] = vidaSerializable.matrizRadio4Circular[i,j];
-				}
-			}
-		}
-		if (vidaSerializable.matrizRadio5Circular != null) {
-			vida.matrizRadio5Circular = new int[vidaSerializable.matrizRadio5Circular.GetLength(0), vidaSerializable.matrizRadio5Circular.GetLength(1)];
-			for (int i = 0; i < vidaSerializable.matrizRadio5Circular.GetLength(0); i++) {
-				for (int j = 0; j < vidaSerializable.matrizRadio5Circular.GetLength(1); j++) {
-					vida.matrizRadio5Circular[i,j] = vidaSerializable.matrizRadio5Circular[i,j];
-				}
-			}
-		}
-		if (vidaSerializable.matrizRadio6Circular != null) {
-			vida.matrizRadio6Circular = new int[vidaSerializable.matrizRadio6Circular.GetLength(0), vidaSerializable.matrizRadio6Circular.GetLength(1)];
-			for (int i = 0; i < vidaSerializable.matrizRadio6Circular.GetLength(0); i++) {
-				for (int j = 0; j < vidaSerializable.matrizRadio6Circular.GetLength(1); j++) {
-					vida.matrizRadio6Circular[i,j] = vidaSerializable.matrizRadio6Circular[i,j];
-				}
-			}
-		}
 		rehacerTablero(vidaSerializable.tablero, ref vida.tablero);
-		//TODO Como arriba, habria que hacerlo seguramente después
-//		recolocarSeresTablero(vida.seres, ref vida.tablero);
 	}
 	
 	public static void colocarSeresTablero(ref Vida vida, VidaSerializable vidaSerializable) {

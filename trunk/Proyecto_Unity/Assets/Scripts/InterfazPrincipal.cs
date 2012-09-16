@@ -1751,7 +1751,7 @@ public class InterfazPrincipal : MonoBehaviour
 								forzarTooltip = true;
 								mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
 							}
-						} else {
+						} else {							
 							forzarTooltip = true;
 							mensajeForzarTooltip = "No hay recursos suficientes";
 						}
@@ -1821,11 +1821,18 @@ public class InterfazPrincipal : MonoBehaviour
 								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion, hit.point)) {
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
 								} else {
+									//[Beta] Sustituir el mensajeNoRecursos por el mensaje apropiado (No se puede construir ahi)
+									GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeNoRecursos;
+									Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+									Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 									efectos.playNumber (Random.Range (1, 3));
 									//Sonidos de error son el 1 y 2
 								}
 							} else {
+								GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeNoRecursos;
+								Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+								Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 								Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 								efectos.playNumber (Random.Range (1, 3));
 								//Sonidos de error son el 1 y 2
@@ -1837,35 +1844,52 @@ public class InterfazPrincipal : MonoBehaviour
 						} else if (tipo >= 5 && tipo < 15) {
 							tipo -= 5;
 							EspecieVegetal especie = (EspecieVegetal)principal.vida.especies[tipo];
-							//principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX);
-							if (principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX, hit.point)) {
-								TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-								List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(especie));
-								principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
-								elementoInsercion = telementoInsercion.ninguno;
-								accion = taccion.ninguna;
+							TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+							List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(especie));
+							if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+								if (principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX, hit.point)) {
+									
+									
+									principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
+									elementoInsercion = telementoInsercion.ninguno;
+									accion = taccion.ninguna;
+								}
+								else {	//No se puede ahi
+									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+									efectos.playNumber (Random.Range (1, 3));
+								}
 							}
-							else {
+							else {	//Sin recursos
+								GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeNoRecursos;
+								Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+								Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 								Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 								efectos.playNumber (Random.Range (1, 3));
-								//Sonidos de error son el 1 y 2
 							}
 							//Animal (herbivoro o carnivoro)
 						} else if (tipo >= 15 && tipo < 25) {
 							tipo -= 5;
 							EspecieAnimal especie = (EspecieAnimal)principal.vida.especies[tipo];
-							//principal.vida.anadeAnimal (especie, posY, posX);
-							if (principal.vida.anadeAnimal (especie, posY, posX,hit.point)) {
-								TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-								List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(especie));
-								principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
-								elementoInsercion = telementoInsercion.ninguno;
-								accion = taccion.ninguna;
+							TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
+							List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(especie));
+							if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+								if (principal.vida.anadeAnimal (especie, posY, posX,hit.point)) {
+									principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
+									elementoInsercion = telementoInsercion.ninguno;
+									accion = taccion.ninguna;
+								}
+								else {
+									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+									efectos.playNumber (Random.Range (1, 3));
+									//Sonidos de error son el 1 y 2
+								}
 							}
-							else {
+							else {	//No hay recursos suficientes
+								GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeNoRecursos;
+								Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+								Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 								Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 								efectos.playNumber (Random.Range (1, 3));
-								//Sonidos de error son el 1 y 2
 							}
 						}
 						Destroy (modeloInsercion);
