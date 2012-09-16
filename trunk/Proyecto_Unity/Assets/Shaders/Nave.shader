@@ -8,6 +8,8 @@ _Emision("_Emision", Float) = 0.5
 _Luces2("_Luces2", 2D) = "black" {}
 _Emision2("_Emision2", Float) = 0
 _Bump("_Bump", 2D) = "black" {}
+_TexRecorte("_TexRecorte", 2D) = "black" {}
+_recorte("_recorte", Range(0,1) ) = 0.5
 
 	}
 	
@@ -41,6 +43,8 @@ float _Emision;
 sampler2D _Luces2;
 float _Emision2;
 sampler2D _Bump;
+sampler2D _TexRecorte;
+float _recorte;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
