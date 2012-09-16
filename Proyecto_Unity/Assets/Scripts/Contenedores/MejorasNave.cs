@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 	
@@ -73,10 +73,20 @@ public class MejorasNave : MonoBehaviour {
 	private List<int> costeMej13;
 	private List<int> costeMej14;
 	private List<int> costeMej15;
+	public List<int> costeHab0;
+	public List<int> costeHab1;
+	public List<int> costeHab2;
+	public List<int> costeHab3;
+	public List<int> costeHab4;
+	public List<int> costeHab5;
+	public List<int> costeHab6;
+	public List<int> costeHab7;
+	public List<int> costeHab8;
 	
 	//Variables de control
 	public bool[] mejorasCompradas;
-	
+	//public bool[] habilidadesActivadas;
+		
 	//Cache
 	private Principal principal;
 	private Controles controles;
@@ -178,6 +188,65 @@ public class MejorasNave : MonoBehaviour {
 		costeMej15.Add(450);	//Coste comp bas
 		costeMej15.Add(250);	//Coste comp adv
 		costeMej15.Add(25);		//Coste mat bio
+		
+		//habilidadesActivadas = new bool[9];
+		//for(int i = 0; i < 9; i++)
+		//	habilidadesActivadas[i] = false;		
+		
+		costeHab0 = new List<int>();		//Filtro recursos
+		costeHab0.Add(10);	//Coste energia
+		costeHab0.Add(0);	//Coste comp bas
+		costeHab0.Add(0);	//Coste comp adv
+		costeHab0.Add(0);	//Coste mat bio
+		
+		costeHab1 = new List<int>();		//Filtro habitats
+		costeHab1.Add(10);	//Coste energia
+		costeHab1.Add(0);	//Coste comp bas
+		costeHab1.Add(0);	//Coste comp adv
+		costeHab1.Add(0);	//Coste mat bio
+		
+		costeHab2 = new List<int>();		//Filtro vegetales
+		costeHab2.Add(15);	//Coste energia
+		costeHab2.Add(0);	//Coste comp bas
+		costeHab2.Add(0);	//Coste comp adv
+		costeHab2.Add(0);	//Coste mat bio
+		
+		costeHab3 = new List<int>();		//Filtro animales
+		costeHab3.Add(15);	//Coste energia
+		costeHab3.Add(0);	//Coste comp bas
+		costeHab3.Add(0);	//Coste comp adv
+		costeHab3.Add(0);	//Coste mat bio
+		
+		costeHab4 = new List<int>();		//Foco solar
+		costeHab4.Add(25);	//Coste energia
+		costeHab4.Add(0);	//Coste comp bas
+		costeHab4.Add(0);	//Coste comp adv
+		costeHab4.Add(0);	//Coste mat bio
+		
+		costeHab5 = new List<int>();		//Fertilizante
+		costeHab5.Add(50);	//Coste energia
+		costeHab5.Add(50);	//Coste comp bas
+		costeHab5.Add(0);	//Coste comp adv
+		costeHab5.Add(10);	//Coste mat bio
+		
+		costeHab6 = new List<int>();		//Bomba implosión
+		costeHab6.Add(200);	//Coste energia
+		costeHab6.Add(100);	//Coste comp bas
+		costeHab6.Add(25);	//Coste comp adv
+		costeHab6.Add(0);	//Coste mat bio
+		
+		costeHab7 = new List<int>();		//Virus selectivo
+		costeHab7.Add(250);	//Coste energia
+		costeHab7.Add(100);	//Coste comp bas
+		costeHab7.Add(25);	//Coste comp adv
+		costeHab7.Add(25);	//Coste mat bio
+		
+		costeHab8 = new List<int>();		//Portal espacio/temporal
+		costeMej8.Add(15000);	//Coste energia
+		costeMej8.Add(2500);	//Coste comp bas
+		costeMej8.Add(1000);	//Coste comp adv
+		costeMej8.Add(100);		//Coste mat bio
+
 	}
 	
 	void Start() {
