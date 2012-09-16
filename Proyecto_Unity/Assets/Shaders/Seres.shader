@@ -10,6 +10,8 @@ _Luces("_Luces", 2D) = "black" {}
 _Emision("_Emision", Float) = 1
 _frec("_frec", Range(0.1,10) ) = 0.5
 _Ramp("_Ramp", 2D) = "black" {}
+_recorte("_recorte", Range(0,1) ) = 0
+_texturaLadrillos("_texturaLadrillos", 2D) = "black" {}
 
 	}
 	
@@ -45,6 +47,8 @@ sampler2D _Luces;
 float _Emision;
 float _frec;
 sampler2D _Ramp;
+float _recorte;
+sampler2D _texturaLadrillos;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -87,6 +91,7 @@ return Multiply0;
 				float2 uv_Difuso;
 float2 uv_Bump;
 float2 uv_Luces;
+float2 uv_texturaLadrillos;
 
 			};
 
@@ -121,11 +126,13 @@ float4 Multiply2=_Emision.xxxx * Abs0;
 float4 Multiply1=Tex2D1 * Multiply2;
 float4 Multiply0=_Tinte * _FiltroOn.xxxx;
 float4 Add1=Multiply1 + Multiply0;
+float4 Sampled2D0=tex2D(_texturaLadrillos,IN.uv_texturaLadrillos.xy);
+float4 Subtract0=Sampled2D0 - _recorte.xxxx;
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-float4 Master0_6_NoInput = float4(1,1,1,1);
+clip( Subtract0 );
 o.Albedo = Tex2D0;
 o.Normal = UnpackNormal0;
 o.Emission = Add1;
