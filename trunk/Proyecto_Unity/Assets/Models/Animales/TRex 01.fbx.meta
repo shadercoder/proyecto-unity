@@ -1,5 +1,5 @@
 fileFormatVersion: 1
-guid: 1a9cdb3dc53045c45b720668c5ca6d81
+guid: 9932c44d568b2914cac4afc88575b901
 ModelImporter:
   importerVersion: 7
   meshes:
@@ -14,7 +14,7 @@ ModelImporter:
     smoothingAngle: 60
     splitTangents: 1
   materials:
-    generation: 1
+    generation: 0
   animations:
     generation: 0
     bakeAnimations: 0
@@ -30,4 +30,4 @@ ModelImporter:
 AssetImporter:
   importerVersion: 1
   fileIDToRecycleName:
-    4300000: Tortuga02
+    4300000: TRex
