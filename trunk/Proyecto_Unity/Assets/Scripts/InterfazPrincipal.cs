@@ -441,7 +441,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW * 2.5f);
 			if (GUILayout.Button (new GUIContent ("", "Seta"), "BotonInsertarSeta")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[0].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[0]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -459,7 +459,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Flor"), "BotonInsertarFlor")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[1].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[1]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -477,7 +477,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Caña"), "BotonInsertarCana")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[2].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[2]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -495,7 +495,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Arbusto"), "BotonInsertarArbusto")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[3].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[3]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -513,7 +513,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Estromatolito"), "BotonInsertarEstromatolito")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[4].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[4]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -531,7 +531,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Cactus"), "BotonInsertarCactus")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[5].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[5]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -549,7 +549,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Palmera"), "BotonInsertarPalmera")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[6].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[6]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -567,7 +567,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Pino"), "BotonInsertarPino")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[7].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[7]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -585,7 +585,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Ciprés"), "BotonInsertarCipres")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[8].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[8]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -603,7 +603,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Pino Alto"), "BotonInsertarPinoAlto")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesVegetales[9].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesVegetales[9]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -633,7 +633,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW * 1.5f);
 			if (GUILayout.Button (new GUIContent ("", "Insertar insectos herbivoros"), "BotonInsertarHerbivoro1")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[0].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[0]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -651,7 +651,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Insertar peque\u00f1os roedores"), "BotonInsertarHerbivoro2")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[1].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[1]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -669,7 +669,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Insertar grandes vacunos"), "BotonInsertarHerbivoro3")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[2].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[2]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -687,7 +687,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Insertar herbivoros de la sabana"), "BotonInsertarHerbivoro4")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[3].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[3]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -705,7 +705,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Insertar tortuga gigante"), "BotonInsertarHerbivoro5")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[4].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[4]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -725,7 +725,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro1")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[5].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[5]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -745,7 +745,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro2"), "BotonInsertarCarnivoro2")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[6].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[6]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -763,7 +763,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro3"), "BotonInsertarCarnivoro3")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[7].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[7]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -781,7 +781,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Carnivoro4"), "BotonInsertarCarnivoro4")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[8].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[8]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -801,7 +801,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro5")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-				List<int> costes = tiposSeres.getCostes(principal.vida.especiesAnimales[9].idEspecie);
+				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[9]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
 					break;
@@ -1840,7 +1840,7 @@ public class InterfazPrincipal : MonoBehaviour
 							//principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX);
 							if (principal.vida.anadeVegetal (especie, especie.habitabilidadInicial, 0.0f, posY, posX, hit.point)) {
 								TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-								List<int> costes = tiposSeres.getCostes(especie.idEspecie);
+								List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(especie));
 								principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
 								elementoInsercion = telementoInsercion.ninguno;
 								accion = taccion.ninguna;
@@ -1857,7 +1857,7 @@ public class InterfazPrincipal : MonoBehaviour
 							//principal.vida.anadeAnimal (especie, posY, posX);
 							if (principal.vida.anadeAnimal (especie, posY, posX,hit.point)) {
 								TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
-								List<int> costes = tiposSeres.getCostes(especie.idEspecie);
+								List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(especie));
 								principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
 								elementoInsercion = telementoInsercion.ninguno;
 								accion = taccion.ninguna;
