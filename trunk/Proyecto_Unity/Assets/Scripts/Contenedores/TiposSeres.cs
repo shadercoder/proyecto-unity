@@ -525,8 +525,12 @@ public class TiposSeres : MonoBehaviour {
 		costesSeres.Add(costeCarn2);
 		costesSeres.Add(costeCarn3);
 		costesSeres.Add(costeCarn4);
-		costesSeres.Add(costeCarn5);
-		
+		costesSeres.Add(costeCarn5);		
+		anadeElementosVida();
+	}
+	
+	public void anadeElementosVida()
+	{
 		//Añadir a Vida los edificios
 		principal.anadeTipoEdificio(fabricaComBas);
 		principal.anadeTipoEdificio(energia);
@@ -559,9 +563,7 @@ public class TiposSeres : MonoBehaviour {
 		principal.anadeEspecieAnimal(carnivoro3);
 		principal.anadeEspecieAnimal(carnivoro4);
 		principal.anadeEspecieAnimal(carnivoro5);
-		
-		//principal.vida.actualizaNumTurnos();
-	}
+	}	
 	
 	public string getDescripcion(int entrada) {
 		if (entrada >= 0 && entrada < descripciones.Count)
@@ -585,5 +587,5 @@ public class TiposSeres : MonoBehaviour {
 	
 	public int getNumeroSer(TipoEdificio entrada) {
 		return entrada.idTipoEdificio + 20;
-	}
+	}	
 }

@@ -608,10 +608,6 @@ public class SaveLoad {
 		vidaSerializable.idActualAnimal = vida.idActualAnimal;
 		vidaSerializable.idActualEdificio = vida.idActualEdificio;
 		vidaSerializable.idActualVegetal = vida.idActualVegetal;
-		vidaSerializable.numEspecies = vida.numEspecies;
-		vidaSerializable.numEspeciesAnimales = vida.numEspeciesAnimales;
-		vidaSerializable.numEspeciesVegetales = vida.numEspeciesVegetales;
-		vidaSerializable.numTiposEdificios = vida.numTiposEdificios;
 		vidaSerializable.texturaPlantasModificado = vida.texturaPlantasModificado;
 		
 		vidaSerializable.posicionesColindantes = new List<Tupla<int,int>>();
@@ -689,10 +685,6 @@ public class SaveLoad {
 		vida.idActualAnimal = vidaSerializable.idActualAnimal;
 		vida.idActualEdificio = vidaSerializable.idActualEdificio;
 		vida.idActualVegetal = vidaSerializable.idActualVegetal;
-		vida.numEspecies = vidaSerializable.numEspecies;
-		vida.numEspeciesAnimales = vidaSerializable.numEspeciesAnimales;
-		vida.numEspeciesVegetales = vidaSerializable.numEspeciesVegetales;
-		vida.numTiposEdificios = vidaSerializable.numTiposEdificios;
 		vida.texturaPlantasModificado = vidaSerializable.texturaPlantasModificado;
 		
 		vida.posicionesColindantes = new List<Tupla<int,int>>();

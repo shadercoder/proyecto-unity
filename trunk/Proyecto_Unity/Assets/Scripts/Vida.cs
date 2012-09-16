@@ -44,15 +44,7 @@ public class Vida //: MonoBehaviour
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
 	public List<Edificio> edificios;								//Listado de todos los edificios	
-	//public List<Ser>[] listadoSeresTurnos;						//Listado que contiene los turnos en los que cada ser ejecuta algoritmo
-	
-	//public int numMaxTurnos;
-	//public int turnoActual;
-	public int numEspecies;
-	public int numEspeciesVegetales;
-	public int numEspeciesAnimales;
-	public int numTiposEdificios;
-	
+		
 	public int idActualVegetal;
 	public int idActualAnimal;
 	public int idActualEdificio;
@@ -81,10 +73,6 @@ public class Vida //: MonoBehaviour
 		//numMaxTurnos = 0;
 		//turnoActual = 0;
 		//listadoSeresTurnos = new List<Ser>[numMaxTurnos];
-		numEspecies = 0;
-		numEspeciesVegetales = 0;
-		numEspeciesAnimales = 0;
-		numTiposEdificios = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
 		idActualEdificio = 0;
@@ -105,9 +93,6 @@ public class Vida //: MonoBehaviour
 		//numMaxTurnos = 0;
 		//turnoActual = 0;
 		//listadoSeresTurnos = new List<Ser>[numMaxTurnos];
-		numEspecies = 0;
-		numEspeciesVegetales = 0;
-		numEspeciesAnimales = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
 		idActualEdificio = 0;
@@ -130,9 +115,6 @@ public class Vida //: MonoBehaviour
 		//numMaxTurnos = 0;
 		//turnoActual = 0;
 		//listadoSeresTurnos = new List<Ser>[numMaxTurnos];
-		numEspecies = 0;
-		numEspeciesVegetales = 0;
-		numEspeciesAnimales = 0;
 		idActualVegetal = 0;
 		idActualAnimal = 0;
 		idActualEdificio = 0;
@@ -155,10 +137,6 @@ public class Vida //: MonoBehaviour
 		//numMaxTurnos = vida.numMaxTurnos;
 		//turnoActual = vida.turnoActual;
 		//listadoSeresTurnos = vida.listadoSeresTurnos;
-		numEspecies = vida.numEspecies;
-		numEspeciesVegetales = vida.numEspeciesVegetales;
-		numEspeciesAnimales = vida.numEspeciesAnimales;
-		numTiposEdificios = vida.numTiposEdificios;
 		idActualVegetal = vida.idActualVegetal;
 		idActualAnimal = vida.idActualAnimal;
 		idActualEdificio = vida.idActualEdificio;
@@ -257,11 +235,9 @@ public class Vida //: MonoBehaviour
 	{		
 		if(especies.Contains(especie))
 			return false;
-		especie.idEspecie = numEspeciesVegetales;
+		especie.idEspecie = especiesVegetales.Count;
 		especies.Add(especie);
-		numEspecies++;
 		especiesVegetales.Add(especie);
-		numEspeciesVegetales++;
 		return true;
 	}
 	
@@ -270,11 +246,9 @@ public class Vida //: MonoBehaviour
 	{		
 		if(especies.Contains(especie))
 			return false;
-		especie.idEspecie = numEspeciesAnimales;
+		especie.idEspecie = especiesAnimales.Count;
 		especies.Add(especie);
-		numEspecies++;
 		especiesAnimales.Add(especie);
-		numEspeciesAnimales++;
 		return true;
 	}
 	
@@ -283,21 +257,18 @@ public class Vida //: MonoBehaviour
 	{			
 		if(tiposEdificios.Contains(tipoEdificio))
 			return false;
-		tipoEdificio.idTipoEdificio = numTiposEdificios;
+		tipoEdificio.idTipoEdificio = tiposEdificios.Count;
 		tiposEdificios.Add(tipoEdificio);
-		numTiposEdificios++;
 		return true;
 	}
-	
+	/*
 	//Devuelve false si la especie no existe (no se elimina) y true si se elimina correctamente
 	public bool eliminaEspecieVegetal(EspecieVegetal especie)
 	{		
 		if(!especies.Contains(especie))
 			return false;
 		especies.Remove(especie);
-		numEspecies--;
 		especiesVegetales.Remove(especie);
-		numEspeciesVegetales--;
 		return true;
 	}
 	
@@ -307,9 +278,7 @@ public class Vida //: MonoBehaviour
 		if(!especies.Contains(especie))
 			return false;
 		especies.Remove(especie);
-		numEspecies--;
 		especiesAnimales.Remove(especie);
-		numEspeciesAnimales--;
 		return true;
 	}
 	
@@ -319,10 +288,9 @@ public class Vida //: MonoBehaviour
 		if(!tiposEdificios.Contains(tipoEdificio))
 			return false;
 		tiposEdificios.Remove(tipoEdificio);
-		numTiposEdificios--;
 		return true;
 	}
-	
+	*/
 	public Vector3 posicionAleatoriaVegetal(int posX,int posY)
 	{		
 		int xIzq = posX; 

@@ -24,10 +24,12 @@ public class InterfazPrincipal : MonoBehaviour
 	private float tiempoUltimoModeloInsercion 	= 0.0f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
 	private float tiempoModeloInsercion 		= 0.1f;			//Cantidad de tiempo entre comprobaciones de inserción de un ser
 	private GameObject modeloInsercion;							//Modelo usado temporalmente para mostrar donde se insertaría un ser
-	private bool[] togglesFiltros;								//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
-	private bool[] togglesFiltrosOld;							//Toggles en los filtros antes de cambiarlos
+	public bool[] togglesFiltros;								//Toggles en los filtros: 0-3 recursos, 4-13 plantas, 14-23 animales
+	public bool[] togglesFiltrosOld;							//Toggles en los filtros antes de cambiarlos
 	private int mejoraHover						= -1;			//La mejora que se esta viendo (al hacer hover con el raton)
 	private int habilidadHover					= -1;			//La habilidad que se esta viendo (al hacer hover con el raton)
+	public bool filtroHabitats					= false;		//Si está activado el filtro de los hábitatshover con el raton)
+	public bool habilidadFoco					= false;		//Si está activado el foco de visión nocturna
 	
 	//Seleccion de seres
 	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
@@ -1375,8 +1377,10 @@ public class InterfazPrincipal : MonoBehaviour
 			if (!mejoras.mejorasCompradas[1] && !mejoras.mejorasCompradas[2] && !mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Desactiva todos los filtros"), "BotonHabilidadVisionNormal")) {
-				materiales.habitats.SetFloat ("_FiltroOn", 0.0f);
+				for(int i = 0; i < togglesFiltros.Length; i++)
+					togglesFiltros[i] = false;
 				
+				materiales.habitats.SetFloat ("_FiltroOn", 0.0f);				
 				materiales.recursos.SetFloat ("_ComunesOn", 0.0f);
 				materiales.recursos.SetFloat ("_RarosOn", 0.0f);
 				materiales.recursos.SetFloat ("_EdificiosOn", 0.0f);
@@ -1400,17 +1404,21 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[2])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidadFiltroRecursos")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa filtro de recursos"), "BotonHabilidadFiltroRecursos")) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.filtroRecursos;
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidadFiltroHabitats")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa filtro de hábitats"), "BotonHabilidadFiltroHabitats")) {
 				if (materiales.habitats.GetFloat ("_FiltroOn") == 0.0f)
+				{
+					filtroHabitats = true;
 					materiales.habitats.SetFloat ("_FiltroOn", 1.0f);
+				}
 				else {
+					filtroHabitats = false;
 					materiales.habitats.SetFloat ("_FiltroOn", 0.0f);
 				}
 			}
@@ -1418,26 +1426,32 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidadFiltroVegetales")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa filtro de vegetales"), "BotonHabilidadFiltroVegetales")) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.filtroVegetales;
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[3])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidadFiltroAnimales")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa filtro de animales"), "BotonHabilidadFiltroAnimales")) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.filtroAnimales;
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 3);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Foco Solar"), "BotonHabilidad6")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa el Foco Solar"), "BotonHabilidad6")) {
 				//TODO activar/desactivar foco solar
 				if (Camera.main.light.enabled)
+				{
+					habilidadFoco = false;
 					Camera.main.light.enabled = false;
+				}
 				else
+				{
+					habilidadFoco = true;
 					Camera.main.light.enabled=true;
+				}
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 0;
@@ -1454,7 +1468,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Foco Solar"), "BotonHabilidad7")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa el Fertilizante Ecoquímico"), "BotonHabilidad7")) {
 				//TODO Foco solar
 				if (Camera.main.light.enabled)
 					Camera.main.light.enabled = false;
@@ -1476,7 +1490,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad8")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa la Bomba de Implosión Controlada"), "BotonHabilidad8")) {
 				//TODO
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
@@ -1494,7 +1508,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad9")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa el Virus Selectivo Poblacional"), "BotonHabilidad9")) {
 				//TODO
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
@@ -1512,7 +1526,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", ""), "BotonHabilidad10")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa el Portal Espacio/temporal (finaliza la partida)"), "BotonHabilidad10")) {
 				//TODO
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
@@ -2185,15 +2199,15 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 13 * cuantoH), "", "BloqueDerechoFiltroRecursos");
 			togglesFiltros[0] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[0], new GUIContent ("", "Muestra los minerales comunes"), "BotonFiltroRecursosMineralComun");
 			//[Beta] Desactivado afiltro por no existir aun
-			GUI.enabled = false;
-			togglesFiltros[1] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[1], new GUIContent ("", "Influencia Energetica"), "BotonFiltroRecursosRadioEnergia");
-			GUI.enabled = true;
+			//GUI.enabled = false;
+			//togglesFiltros[1] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[1], new GUIContent ("", "Influencia Energetica"), "BotonFiltroRecursosRadioEnergia");
+			//GUI.enabled = true;
 			//[Beta] --------------------------------------
-			togglesFiltros[2] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[2], new GUIContent ("", "Muestra los minerales raros"), "BotonFiltroRecursosMineralRaro");
+			togglesFiltros[1] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 6, cuantoW * 2, cuantoH * 2), togglesFiltros[1], new GUIContent ("", "Muestra los minerales raros"), "BotonFiltroRecursosMineralRaro");
 			//[Beta] Desactivado afiltro por no existir aun
-			GUI.enabled = false;
-			togglesFiltros[3] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[3], new GUIContent ("", "Terreno de las Granjas"), "BotonFiltroRecursosRadioGranja");
-			GUI.enabled = true;
+			//GUI.enabled = false;
+			//togglesFiltros[3] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[3], new GUIContent ("", "Terreno de las Granjas"), "BotonFiltroRecursosRadioGranja");
+			//GUI.enabled = true;
 			//[Beta] --------------------------------------
 			GUI.EndGroup ();
 			if (GUI.Button (new Rect (79 * cuantoW, posicionBloqueH * cuantoH, cuantoW, cuantoH), "", "BotonCerrar")) {
@@ -2217,7 +2231,6 @@ public class InterfazPrincipal : MonoBehaviour
 			default:
 				break;
 			}
-
 			
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 20 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 20 * cuantoH), "", "BloqueDerechoFiltroVegetales");
@@ -2587,12 +2600,19 @@ public class InterfazPrincipal : MonoBehaviour
 							materiales.recursos.SetFloat ("_ComunesOn", 0.0f);
 						break;
 					case 1:
+						//Boton minerales raros
+						if (togglesFiltros[i])
+							materiales.recursos.SetFloat ("_RarosOn", 1.0f);
+						else
+							materiales.recursos.SetFloat ("_RarosOn", 0.0f);
+						break;
+					/*case 1:
 						//Boton radio Edificios
 						if (togglesFiltros[i])
 							materiales.recursos.SetFloat ("_EdificiosOn", 1.0f);
 						else
 							materiales.recursos.SetFloat ("_EdificiosOn", 0.0f);
-						break;
+						break;*/
 					case 2:
 						//Boton minerales raros
 						if (togglesFiltros[i])
@@ -2600,13 +2620,13 @@ public class InterfazPrincipal : MonoBehaviour
 						else
 							materiales.recursos.SetFloat ("_RarosOn", 0.0f);
 						break;
-					case 3:
+					/*case 3:
 						//boton radio Granjas
 						if (togglesFiltros[i])
 							materiales.recursos.SetFloat ("_GranjasOn", 1.0f);
 						else
 							materiales.recursos.SetFloat ("_GranjasOn", 0.0f);
-						break;
+						break;*/
 					case 4:
 						//boton plantas 1
 						if (togglesFiltros[i]) {

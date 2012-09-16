@@ -8,6 +8,7 @@ public class Principal : MonoBehaviour {
 
 	//Variables ---------------------------------------------------------------------------------------------------------------------------
 	private InterfazPrincipal interfaz;
+	private MejorasNave mejoras;
 	private float escalaTiempoAntesMenu;
 	//Trucos
 	public bool developerMode					= true;					//Mientras este a true, maximo de recursos en todo momento
@@ -20,6 +21,7 @@ public class Principal : MonoBehaviour {
 	private GameObject contenedor;										//El contenedor de las texturas de la primera escena
 		
 	//Recursos
+	public int energiaProducidaNave = 5;								//Energia que produce la nave mediante sus paneles solares (inicialmente 5)
 	public int energia = 1000;											//Cantidad de energia almacenada en la nave
 	public int energiaDif = 10;											//Incremento o decremento por turno de energia
 	public int componentesBasicos = 25;									//Cantidad de componentes basicos alojados en la nave
@@ -41,7 +43,7 @@ public class Principal : MonoBehaviour {
 	private bool algoritmoActivado				= true;					//Se encuentra activado el algoritmo de la vida?
 	private bool algoritmoPasoAPaso 			= false;
 	private const float tiempoTurno				= 3.0f;					//El tiempo que dura un turno del algoritmo
-	
+		
 	//Escala de tiempo
 	public float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	
@@ -69,9 +71,14 @@ public class Principal : MonoBehaviour {
 			creacionCarga(cont);
 			vida.setObjetoRoca(objetoRoca.transform);
 		}
-		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");		
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");			
 	}
 	
+	void Start()
+	{
+		interfaz = gameObject.GetComponent<InterfazPrincipal>();
+		mejoras = GameObject.FindGameObjectWithTag("Mejoras").GetComponent<MejorasNave>();
+	}
 	
 	void FixedUpdate() {
 		//Algoritmo de vida		
@@ -114,7 +121,6 @@ public class Principal : MonoBehaviour {
 			setEscalaTiempo(5.0f);	
 		if(Input.GetKeyDown(KeyCode.Escape)) 
 		{
-			interfaz = gameObject.GetComponent<InterfazPrincipal>();
 			if(interfaz.accion == InterfazPrincipal.taccion.mostrarMenu)
 			{
 				if(interfaz.accionMenu == InterfazPrincipal.taccionMenu.mostrarMenu)
@@ -380,10 +386,69 @@ public class Principal : MonoBehaviour {
 	public void calculaDifRecursosSigTurno(int energiaEdificios,int compBasEdificios,int compAvzEdificios,int matBioEdificios)
 	{		
 		/*calculo de costes y producciones de habilidades y mejoras*/
-		energiaDif = energiaEdificios;//+energiaMejorasHabilidades 
-		componentesBasicosDif = compBasEdificios;//+compBasMejorasHabilidades 
-		componentesAvanzadosDif = compAvzEdificios;//+compAvzMejorasHabilidades 		
-		materialBiologicoDif = matBioEdificios;//+matBioMejorasHabilidades 		
+		int energiaCosteHabilidades = 0;
+		int compBasCosteHabilidades = 0;
+		int compAvzCosteHabilidades = 0;
+		int matBioCosteHabilidades = 0;
+		
+		//Filtro recursos
+		for(int i = 0; i < 2; i++)
+		{
+			if(interfaz.togglesFiltros[i])
+			{
+				energiaCosteHabilidades += mejoras.costeHab0[0];
+				compBasCosteHabilidades += mejoras.costeHab0[1];
+				compAvzCosteHabilidades += mejoras.costeHab0[2];
+				matBioCosteHabilidades += mejoras.costeHab0[3];
+			}
+		}
+		
+		//Filtro habitats
+		if (interfaz.filtroHabitats)
+		{
+			energiaCosteHabilidades += mejoras.costeHab1[0];
+			compBasCosteHabilidades += mejoras.costeHab1[1];
+			compAvzCosteHabilidades += mejoras.costeHab1[2];
+			matBioCosteHabilidades += mejoras.costeHab1[3];			
+		}
+		
+		//Filtro Vegetales
+		for(int i = 4; i < 14; i++)
+		{
+			if(interfaz.togglesFiltros[i])
+			{
+				energiaCosteHabilidades += mejoras.costeHab2[0];
+				compBasCosteHabilidades += mejoras.costeHab2[1];
+				compAvzCosteHabilidades += mejoras.costeHab2[2];
+				matBioCosteHabilidades += mejoras.costeHab2[3];
+			}
+		}
+		
+		//Filtro Animales		
+		for(int i = 14; i < 24; i++)
+		{
+			if(interfaz.togglesFiltros[i])
+			{
+				energiaCosteHabilidades += mejoras.costeHab3[0];
+				compBasCosteHabilidades += mejoras.costeHab3[1];
+				compAvzCosteHabilidades += mejoras.costeHab3[2];
+				matBioCosteHabilidades += mejoras.costeHab3[3];
+			}
+		}
+		
+		//Habilidad Foco
+		if (interfaz.filtroHabitats)
+		{
+			energiaCosteHabilidades += mejoras.costeHab4[0];
+			compBasCosteHabilidades += mejoras.costeHab4[1];
+			compAvzCosteHabilidades += mejoras.costeHab4[2];
+			matBioCosteHabilidades += mejoras.costeHab4[3];			
+		}		
+		
+		energiaDif = energiaEdificios + energiaProducidaNave - energiaCosteHabilidades;
+		componentesBasicosDif = compBasEdificios - compBasCosteHabilidades;
+		componentesAvanzadosDif = compAvzEdificios - compAvzCosteHabilidades;
+		materialBiologicoDif = matBioEdificios - matBioCosteHabilidades;
 	}
 	
 	//Actualiza los recursos sumando o restando
@@ -490,11 +555,11 @@ public class Principal : MonoBehaviour {
 	}
 	
 	public void mejoraEnergia1() {
-		//modificaEnergiaPorTurno(3);
+		energiaProducidaNave = 15;
 	}
 	
 	public void mejoraEnergia2() {
-		//modificaEnergiaPorTurno(6);
+		energiaProducidaNave = 30;
 	}
 	
 	private void setDeveloperMode() {
