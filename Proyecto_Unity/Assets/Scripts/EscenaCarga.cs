@@ -146,7 +146,7 @@ public class EscenaCarga : MonoBehaviour {
 	
 	void OnGUI() {
 		GUI.skin = estiloGUI;
-		GUI.Box(new Rect(cuantoW * 16, cuantoH, cuantoW * 16, cuantoH * 5), "", "header_titulo"); //Header es 500x100px
+		GUI.Box(new Rect(cuantoW * 16, 0, cuantoW * 16, cuantoH * 8), "", "header_titulo"); //Header es 500x500px
 		switch (estado) {
 			case 0: 	//Menu principal
 				menuPrincipal();
