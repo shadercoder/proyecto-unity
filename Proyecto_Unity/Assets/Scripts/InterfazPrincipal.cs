@@ -722,8 +722,8 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUILayout.Space (cuantoW * 3);
 			//[Beta] Desactivado animal por no tener los modelos completados aun
-			GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro1")) {
+//			GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("", "Insertar zorro"), "BotonInsertarCarnivoro1")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
 				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[5]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
@@ -735,7 +735,7 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[5].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[5].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			GUI.enabled = true;
+//			GUI.enabled = true;
 			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
@@ -743,7 +743,7 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Carnivoro2"), "BotonInsertarCarnivoro2")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar lobo"), "BotonInsertarCarnivoro2")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
 				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[6]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
@@ -761,7 +761,7 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Carnivoro3"), "BotonInsertarCarnivoro3")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar tigre"), "BotonInsertarCarnivoro3")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
 				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[7]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
@@ -779,7 +779,7 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Carnivoro4"), "BotonInsertarCarnivoro4")) {
+			if (GUILayout.Button (new GUIContent ("", "Insertar oso"), "BotonInsertarCarnivoro4")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
 				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[8]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
@@ -798,8 +798,8 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUILayout.Space (cuantoW);
 			//[Beta] Desactivado animal por no tener los modelos completados aun
-			GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Desactivado en version Beta"), "BotonInsertarCarnivoro5")) {
+//			GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("", "Insertar tiranosaurio"), "BotonInsertarCarnivoro5")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
 				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[9]));
 				if (!principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
@@ -811,7 +811,7 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[9].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[9].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-			GUI.enabled = true;
+//			GUI.enabled = true;
 			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
@@ -1609,10 +1609,10 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.BeginVertical ();
 			GUILayout.Box (new GUIContent (), "BloqueMenu", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15));
 			//[Beta] Desactivado el boton de Guardar Partida
-			GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("Guardar partida", "Desactivado en version Beta"), "BotonGuardarPartida", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
+//			GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("Guardar partida", "En pruebas (Beta)"), "BotonGuardarPartida", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarGuardar;
-			GUI.enabled = true;
+//			GUI.enabled = true;
 			//[Beta] ----------------------------------------
 			if (GUILayout.Button (new GUIContent ("Opciones de audio", "Lleva al menu de opciones de audio"), "BotonOpcionesAudio", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarOpcionesAudio;

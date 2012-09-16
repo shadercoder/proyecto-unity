@@ -15,6 +15,7 @@ using System.Collections.Generic;
 public enum T_habitats {montana, llanura, colina, desierto, volcanico, mar, costa, tundra, inhabitable};	//Tipos de orografía
 public enum T_elementos {comunes, raros, nada};																//Se pueden añadir mas mas adelante
 
+[System.Serializable]
 public struct Tupla<T1, T2>
 {
 	public T1 e1;
@@ -26,6 +27,7 @@ public struct Tupla<T1, T2>
 	}
 }
 
+[System.Serializable]
 public struct Tupla<T1, T2, T3>
 {
 	public T1 e1;

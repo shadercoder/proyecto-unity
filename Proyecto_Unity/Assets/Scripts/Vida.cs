@@ -44,7 +44,7 @@ public class Vida //: MonoBehaviour
 	public List<Vegetal> vegetales;									//Listado de todos los vegetales
 	public List<Animal> animales;									//Listado de todos los animales
 	public List<Edificio> edificios;								//Listado de todos los edificios	
-		
+	
 	public int idActualVegetal;
 	public int idActualAnimal;
 	public int idActualEdificio;

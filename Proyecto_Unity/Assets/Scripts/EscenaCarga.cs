@@ -373,11 +373,11 @@ public class EscenaCarga : MonoBehaviour {
 			estado = 5;
 		}
 		//[Beta] Desactivado hasta que se arregle el save/load
-		GUI.enabled = false;
-		if (GUILayout.Button(new GUIContent("Cargar", "Desactivado en version Beta"), "boton_menu_2")) {
+//		GUI.enabled = false;
+		if (GUILayout.Button(new GUIContent("Cargar", "En pruebas (Beta)"), "boton_menu_2")) {
 			estado = 6;
 		}
-		GUI.enabled = true;
+//		GUI.enabled = true;
 		//[Beta] ---------------------------------------------
 		if (GUILayout.Button(new GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_3")) {
 //			Camera.main.animation.Play("AcercarsePantalla");
@@ -408,6 +408,7 @@ public class EscenaCarga : MonoBehaviour {
 				GameObject temp = GameObject.FindGameObjectWithTag("Carga");
 				ValoresCarga contenedor = temp.GetComponent<ValoresCarga>();
 				SaveLoad.rehacerScript(saveGame, ref contenedor);
+				contenedor.save = saveGame;
 				estado = 7;
 			}
 		}
