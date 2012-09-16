@@ -47,8 +47,8 @@ public class Principal : MonoBehaviour {
 	//Escala de tiempo
 	public float escalaTiempo					= 1.0f;					//La escala temporal a la que se updateará todo
 	
-	//Tipos especiales ----------------------------------------------------------------------------------------------------------------------
-	
+	//Guardar y cargar
+	private bool hechaCarga						= false;				//Indica si se ha llevado a cabo una carga
 	
 	//Update y transiciones de estados -------------------------------------------------------------------------------------------------------
 	
@@ -69,6 +69,7 @@ public class Principal : MonoBehaviour {
 			Debug.Log (FuncTablero.formateaTiempo() + ": Encontrado contenedor, cargando...");
 			ValoresCarga cont = contenedor.GetComponent<ValoresCarga>();
 			creacionCarga(cont);
+			hechaCarga = true;
 			vida.setObjetoRoca(objetoRoca.transform);
 		}
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");			
@@ -568,5 +569,12 @@ public class Principal : MonoBehaviour {
 		componentesAvanzados = 5000;
 		materialBiologico = 500;
 		
+	}
+	
+	public void completarCarga() {
+		if (hechaCarga) {
+			SaveData save = contenedor.GetComponent<ValoresCarga>().save;
+			SaveLoad.colocarSeresTablero(ref vida, save.vidaData);
+		}
 	}
 }

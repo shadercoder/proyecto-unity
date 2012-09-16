@@ -13,4 +13,5 @@ public class ValoresCarga : MonoBehaviour {
 	public Mesh agua;
 	public float nivelAgua;
 	public float tamanoPlaya;
+	public SaveData save;
 }

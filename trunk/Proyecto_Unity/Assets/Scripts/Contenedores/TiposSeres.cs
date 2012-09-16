@@ -527,6 +527,7 @@ public class TiposSeres : MonoBehaviour {
 		costesSeres.Add(costeCarn4);
 		costesSeres.Add(costeCarn5);		
 		anadeElementosVida();
+		principal.completarCarga();
 	}
 	
 	public void anadeElementosVida()
