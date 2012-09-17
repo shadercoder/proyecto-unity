@@ -721,8 +721,6 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW * 3);
-			//[Beta] Desactivado animal por no tener los modelos completados aun
-//			GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Insertar zorro"), "BotonInsertarCarnivoro1")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
 				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[5]));
@@ -735,8 +733,6 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[5].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[5].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-//			GUI.enabled = true;
-			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro1;
@@ -797,8 +793,6 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			//[Beta] Desactivado animal por no tener los modelos completados aun
-//			GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Insertar tiranosaurio"), "BotonInsertarCarnivoro5")) {
 				TiposSeres tiposSeres = GameObject.FindGameObjectWithTag ("TiposSeres").GetComponent<TiposSeres> ();
 				List<int> costes = tiposSeres.getCostes(tiposSeres.getNumeroSer(principal.vida.especiesAnimales[9]));
@@ -811,8 +805,6 @@ public class InterfazPrincipal : MonoBehaviour
 				modeloInsercion = principal.vida.especiesAnimales[9].modelos[UnityEngine.Random.Range (0, principal.vida.especiesAnimales[9].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
 			}
-//			GUI.enabled = true;
-			//[Beta] -----------------------------------------------------------
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.carnivoro5;
@@ -1278,7 +1270,7 @@ public class InterfazPrincipal : MonoBehaviour
 				mejoraHover = 12;
 				List<int> costeT = mejoras.getCosteMejora(12);
 				infoSeleccion.Clear();
-				infoSeleccion.Add("Contenedores para Componentes Avanzados");
+				infoSeleccion.Add("Contenedor avanzado");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
 				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
 				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
@@ -1303,7 +1295,7 @@ public class InterfazPrincipal : MonoBehaviour
 				mejoraHover = 13;
 				List<int> costeT = mejoras.getCosteMejora(13);
 				infoSeleccion.Clear();
-				infoSeleccion.Add("Contenedores para Material Biologico");
+				infoSeleccion.Add("Contenedor biologico");
 				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
 				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
 				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
@@ -1817,9 +1809,9 @@ public class InterfazPrincipal : MonoBehaviour
 								else if(tedif.metalesAUsar == T_elementos.raros)								
 									numMetales = principal.vida.calculaMetalesRaros(matrizRadioAccion);
 										
-								//if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion)) {
 								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion, hit.point)) {
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
+									principal.vida.tablero[posY, posX].edificio.modelo.GetComponentInChildren<Animation>().Play();
 								} else {
 									//[Beta] Sustituir el mensajeNoRecursos por el mensaje apropiado (No se puede construir ahi)
 									GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeNoRecursos;

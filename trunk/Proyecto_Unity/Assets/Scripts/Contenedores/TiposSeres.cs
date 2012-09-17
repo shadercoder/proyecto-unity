@@ -55,7 +55,7 @@ public class TiposSeres : MonoBehaviour {
 	private string descripcionHerb3				= "La familia de los vacunos se caracteriza por 2 cosas: comer mucho y moverse poco. Afortunadamente tampoco son veloces reproduciendose, o no quedaria verde sobre la faz del planeta donde habitara esta especie.";
 	private string descripcionHerb4				= "Los grandes herbivoros de la sabana, entre los que se encuentran la jirafa o la cebra, han adaptado su metabolismo para la escasez de comida, consumiendo muy poca. Tambien a la huida de depredadores, claro...";
 	private string descripcionHerb5				= "La tortuga gigante es un animal enorme que puede vivir muchos a\u00f1os. A pesar de tener un apetito insaciable, el hecho de tener una reproduccion muy lenta permite cierto control sobre sus poblaciones.";
-	private string descripcionCarn1				= "[RELLENAR] desc Rata";
+	private string descripcionCarn1				= "El zorro es un animal oportunista, que se alimenta de otros animales cuando puede aprovechando sus puntos debiles. Puede aguantar bastante sin ingerir alimento, pues no es un animal muy voraz.";
 	private string descripcionCarn2				= "El lobo es un animal voraz que se alimenta de animales mas peque\u00f1os que el. Caza normalmente en grupos, acorralando a sus presas, aunque también hay casos de especimenes solitarios. Adoran los conejos.";
 	private string descripcionCarn3				= "El tigre es uno de los felinos mas grandes conocidos. Es capaz de alimentarse de animales mas grandes que el a las que despedaza con un solo golpe de sus poderosas zarpas. Afortunadamente, no les gusta cazar mucho.";
 	private string descripcionCarn4				= "Los osos son animales sencillos que no se meten con nadie. Menos cuando tienen hambre, amenazan su territorio, son mas peque\u00f1os que ellos o estan demasiado cerca... Comenzamos. Los osos son animales sencillos.";
@@ -416,7 +416,7 @@ public class TiposSeres : MonoBehaviour {
 		listaHabs.Add(T_habitats.tundra);
 		listaHabs.Add(T_habitats.llanura);
 		listaHabs.Add(T_habitats.colina);
-		carnivoro1 = new EspecieAnimal("Rata",6,80,2400,2400,7,6,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1);
+		carnivoro1 = new EspecieAnimal("Zorro",6,80,2400,2400,7,6,tipoAlimentacionAnimal.carnivoro,listaHabs,modelosAnimales.carnivoro1);
 		costeCarn1 = new List<int>();
 		costeCarn1.Add(2000);//Coste energia
 		costeCarn1.Add(350);//Coste comp bas
