@@ -2157,6 +2157,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 							Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 							Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 							efectos.playNumber (Random.Range (1, 3));
+							Destroy (modeloInsercion);
 							//Sonidos de error son el 1 y 2
 						}
 					} else {
@@ -2165,6 +2166,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 						Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 						Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 						efectos.playNumber (Random.Range (1, 3));
+						Destroy (modeloInsercion);
 						//Sonidos de error son el 1 y 2
 					}
 					elementoInsercion = telementoInsercion.ninguno;
@@ -3518,10 +3520,24 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 	}
 	
 	private void imagenHabilidadesBloqueDerecho() {
-		switch (mejoraHover) {
-			//TODO Añadir las imagenes de las habilidades y mostrarlas en el mismo lugar todas
+		switch (habilidadHover) {
+		case 0:	
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad1");
+			break;
+		case 1:	
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad2");	
+			break;
+		case 2:	
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad3");	
+			break;
+		case 3:	
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad4");	
+			break;
+		case 4:	
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad5");	
+			break;
 		default: 
-//			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad1");
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaHabilidad1");
 			break;
 		}
 	}
