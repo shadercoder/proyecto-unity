@@ -819,17 +819,20 @@ public class Vida //: MonoBehaviour
 					matBio += edificio.procesaMatBio();
 				}
 			}
-		}				
-		/*contadorPintarTexturaPlantas++;
-		if(texturaPlantasModificado && contadorPintarTexturaPlantas > 5)
-		{
-			//texturaPlantas.Apply();
-			texturaPlantasModificado = false;
-			contadorPintarTexturaPlantas = 0;
-		}*/
+		}
 	}	
-	public void fertilizanteBioQuimico(EspecieVegetal especieVegetal,EspecieAnimal especieAnimal, float factor)		
+	public void fertilizanteBioQuimico(Vegetal v,Animal a, float factor)		
 	{
+		EspecieVegetal especieVegetal;
+		if(v == null)
+			especieVegetal = null;
+		else
+			especieVegetal = v.especie;
+		EspecieAnimal especieAnimal;
+		if(a == null)
+			especieAnimal = null;
+		else
+			especieAnimal = a.especie;
 		Vegetal vegetal;
 		Animal animal;
 		if(especieVegetal != null)
@@ -851,8 +854,13 @@ public class Vida //: MonoBehaviour
 		}
 	}
 	
-	public void virusSelectivoPoblacional(EspecieAnimal especieAnimal, float factor)
+	public void virusSelectivoPoblacional(Animal a, float factor)	
 	{
+		EspecieAnimal especieAnimal;
+		if(a == null)
+			especieAnimal = null;
+		else
+			especieAnimal = a.especie;
 		Animal animal;
 		if(especieAnimal != null)
 		{
