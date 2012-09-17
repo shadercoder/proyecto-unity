@@ -443,7 +443,7 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private void creacionParte1Interfaz() {
 		GUI.Label(new Rect(cuantoW * 2, cuantoH * 7, cuantoW * 15, cuantoH * 1), "Introduzca los parametros de busqueda para el proximo planeta a colonizar.", "label_centrada");
-		
+		GUI.Box(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 19), "");
 		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 19));
 		GUILayout.BeginVertical();
 		//Controles para alterar el tipo de terreno a crear aleatoriamente: cosas que no influyan mucho, nombre, etc. o cosas que 
@@ -564,7 +564,7 @@ public class EscenaCarga : MonoBehaviour {
 	
 	private void creacionParte2Interfaz() {
 		GUI.Label(new Rect(cuantoW * 2, cuantoH * 7, cuantoW * 15, cuantoH * 1), "Especifique los detalles de la orografia del planeta deseado.", "label_centrada");
-
+		GUI.Box(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 19), "");
 		GUILayout.BeginArea(new Rect(cuantoW, cuantoH * 9, cuantoW * 10, cuantoH * 15));
 		GUILayout.BeginVertical();
 		//Controles para alterar el tipo de terreno ya creado: tipo de planeta a escoger con la "rampa" adecuada, altura de las montañas, 
@@ -658,6 +658,7 @@ public class EscenaCarga : MonoBehaviour {
 	}
 	
 	private void creacionParte3Interfaz() {
+		GUI.Box(new Rect(cuantoW * 3, cuantoH * 11, cuantoW * 19, cuantoH * 5), "");
 		GUI.Label(new Rect(cuantoW * 5, cuantoH * 12, cuantoW * 15, cuantoH * 1), "Hemos encontrado una coincidencia con los parametros introducidos en el sistema.", "label_centrada");
 		GUI.Label(new Rect(cuantoW * 5, cuantoH * 13, cuantoW * 15, cuantoH * 1), "El planeta encontrado se llama " + nombrePlaneta + " y se encuentra orbitando la estrella " + nombreEstrella + ".", "label_centrada");
 		GUI.Label(new Rect(cuantoW * 5, cuantoH * 14, cuantoW * 15, cuantoH * 1), "Rumbo fijado. Buena suerte en su mision.", "label_centrada");
