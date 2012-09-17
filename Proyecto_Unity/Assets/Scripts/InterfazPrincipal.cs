@@ -250,12 +250,12 @@ public class InterfazPrincipal : MonoBehaviour
 		calculaInfoCasilla ();
 		
 		if (fertilizanteActivo && (turnoFertilizante + duracionFertilizante) <= principal.numPasos) {
-			principal.vida.fertilizanteBioQuimico(vegetalFertilizante.especie, animalFertilizante.especie, factorFertilizanteNeg);
+			principal.vida.fertilizanteBioQuimico(vegetalFertilizante, animalFertilizante, factorFertilizanteNeg);
 			fertilizanteActivo = false;
 		}
 		
 		if (virusActivo && (turnoVirus + duracionVirus) <= principal.numPasos) {
-			principal.vida.virusSelectivoPoblacional(animalVirus.especie, factorVirusNeg);
+			principal.vida.virusSelectivoPoblacional(animalVirus, factorVirusNeg);
 			virusActivo = false;
 		}
 		
@@ -2045,7 +2045,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 						List<int> costes = mejoras.costeHab7;
 						if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 							principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
-							principal.vida.virusSelectivoPoblacional(animalVirus.especie, factorVirusPos);
+							principal.vida.virusSelectivoPoblacional(animalVirus, factorVirusPos);
 							turnoVirus = principal.numPasos;
 							virusActivo = true;
 						}
@@ -2077,7 +2077,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 						List<int> costes = mejoras.costeHab5;
 						if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 							principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
-							principal.vida.fertilizanteBioQuimico(vegetalFertilizante.especie, animalFertilizante.especie, factorFertilizantePos);
+							principal.vida.fertilizanteBioQuimico(vegetalFertilizante, animalFertilizante, factorFertilizantePos);
 							turnoFertilizante = principal.numPasos;
 							fertilizanteActivo = true;
 						}
