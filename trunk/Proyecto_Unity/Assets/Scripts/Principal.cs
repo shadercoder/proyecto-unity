@@ -72,11 +72,12 @@ public class Principal : MonoBehaviour {
 		}
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
 		mejoras = GameObject.FindGameObjectWithTag("Mejoras").GetComponent<MejorasNave>();
+		interfaz = gameObject.GetComponent<InterfazPrincipal>();
 	}
 	
 	void Start()
 	{
-		interfaz = gameObject.GetComponent<InterfazPrincipal>();
+		
 	}
 	
 	void FixedUpdate() {
@@ -140,7 +141,7 @@ public class Principal : MonoBehaviour {
 		}
 		
 		//Velocidad extra rapida para debug
-		if(Input.GetKeyDown(KeyCode.Alpha5)) 
+		if(Input.GetKeyDown(KeyCode.Alpha5) && developerMode) 
 			setEscalaTiempo(50.0f);
 		
 		//Activar/desactivar developer mode (maximos recursos)
@@ -558,6 +559,7 @@ public class Principal : MonoBehaviour {
 		contenedor.matBio = materialBiologico;
 		
 		contenedor.mejorasCompradas = mejoras.mejorasCompradas;
+		contenedor.etapaJuego = (int)interfaz.etapaJuego;
 	}
 	
 	public void mejoraEnergia1() {
@@ -569,8 +571,8 @@ public class Principal : MonoBehaviour {
 	}
 	
 	private void setDeveloperMode() {
-		energia = 10000;
-		componentesBasicos = 5000;
+		energia = 20000;
+		componentesBasicos = 8000;
 		componentesAvanzados = 5000;
 		materialBiologico = 500;
 		
@@ -585,6 +587,7 @@ public class Principal : MonoBehaviour {
 			componentesBasicos = temp.compBas;
 			componentesAvanzados = temp.compAdv;
 			materialBiologico = temp.matBio;
+			interfaz.etapaJuego = (InterfazPrincipal.tEtapaJuego)temp.etapaJuego;			
 			for (int i = 0; i < temp.mejorasCompradas.Length; i++) {
 				if (temp.mejorasCompradas[i]) {
 					switch (i) {

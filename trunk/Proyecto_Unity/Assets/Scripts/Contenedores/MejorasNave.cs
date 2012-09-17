@@ -38,8 +38,8 @@ public class MejorasNave : MonoBehaviour {
 	private string descripcionMejMotorT2		= "Motores especialmente diseñados para la navegacion en orbitas geoestacionarias bajas. Cancelacion inercial, correccion de deriva gravitacional y un monton de tecnicismos. Estos si que si. \n(Mejora notablemente la velocidad de la nave)";
 	private string descripcionMejAislamiento	= "Un escudo magnetico propio protege de los rayos cosmicos que azotan las zonas mas inhospitas del planeta. \n(Permite transitar cerca de los polos)";
 	private string descripcionMejMotOrtbit		= "Aumenta la potencia del repulsor gravitacional y eleva la nave a una orbita superior. \n(Eleva la nave sobre el planeta)";
-	private string descripcionMejAlmAv			= "Contenedores de condiciones controladas adaptados a material delicado permiten almacenar materiales sensibles a las adversas condiciones del espacio. \n(Permite almacenar Componentes Avanzados)";
-	private string descripcionMejAlmBio			= "Para almacenar el material mas sensible obtenido de los serves vivos en condiciones higienicas e impolutas, a salvo de radiacciones, mimetizando la gravedad, temperatura y humedad de un planeta en un contenedor. \n(Permite almacenar Material Biologico)";
+	private string descripcionMejAlmAv			= "Investiga la tecnologia avanzada. Contenedores de condiciones controladas adaptados a material delicado permiten almacenar materiales sensibles a las adversas condiciones del espacio. \n(Permite almacenar Componentes Avanzados y construir fabricas y centrales avanzadas)";
+	private string descripcionMejAlmBio			= "Investiga la tecnologia genetica. Para almacenar el material mas sensible obtenido de los serves vivos en condiciones higienicas y seguras, a salvo de radiacciones, mimetizando la gravedad, temperatura y humedad de un planeta en un contenedor. \n(Permite almacenar Material Biologico y construir las granjas)";
 	private string descripcionMejAlm1			= "Mejorando los algoritmos de ordenacion de los contenedores de la nave se obtiene un incremento en la capacidad de almacenaje. Viene con un contenedor gratis. \n(Mejora la Capacidad de Almacenamiento)";
 	private string descripcionMejAlm2			= "Añadiendo contenedores de cada clase se amplia enormemente el espacio de almacenaje. (Mejora la Capacidad de Carga)";
 	private string descripcionMejEner1			= "Añade un condensador con receptores de microondas para almacenar el excedente de energia producido por las centrales planetarias. \n(Aumenta la Energia Maxima disponible)";
@@ -302,10 +302,11 @@ public class MejorasNave : MonoBehaviour {
 		descripciones.Add(descripcionMejEner2);
 		descripciones.Add(descripcionMejHab1);
 		descripciones.Add(descripcionMejHab2);
-		descripciones.Add(descripcionMejAlm1);
-		descripciones.Add(descripcionMejAlm2);
 		descripciones.Add(descripcionMejAlmAv);
 		descripciones.Add(descripcionMejAlmBio);
+		descripciones.Add(descripcionMejAlm1);
+		descripciones.Add(descripcionMejAlm2);
+		
 			//Y habilidades...
 		habilidades = new List<string>();
 		habilidades.Add(descripcionHab1);

@@ -55,6 +55,19 @@ public class InterfazPrincipal : MonoBehaviour
 	private string mensajeForzarTooltip 		= "";			//Mensaje del tooltip forzado.
 	
 	//Enumerados
+	public enum tEtapaJuego
+	{
+		inicio,
+		centralConstruida,
+		fabCompBasConstruida,
+		mejoraBiologicoComprada,
+		granjaConstruida,
+		mejoraAvanzadosComprada,
+		fabCompAdvComprada,
+		portalCOnstruido
+	};
+	public tEtapaJuego etapaJuego = tEtapaJuego.inicio;
+	
 	private enum taspectRatio
 	{
 		//Aspecto ratio con el que se pintará la ventana. Si no es ninguno de ellos se aproximará al más cercano
@@ -361,6 +374,9 @@ public class InterfazPrincipal : MonoBehaviour
 		GUILayout.BeginHorizontal ();
 		if (mostrarBloqueIzquierdo) {
 			GUILayout.BeginVertical (GUILayout.Height (cuantoH * 10), GUILayout.Width (cuantoH * 2));
+			//Si no se ha llegado a la etapa de juego apropiada, no se pueden crear animales ni plantas
+			if (etapaJuego < tEtapaJuego.mejoraBiologicoComprada)
+				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Accede al menu de insertar vegetales"), "BotonInsertarVegetales")) {
 				if (accion != taccion.seleccionarVegetal)
 					accion = taccion.seleccionarVegetal;
@@ -373,6 +389,7 @@ public class InterfazPrincipal : MonoBehaviour
 				else
 					accion = taccion.ninguna;
 			}
+			GUI.enabled = true;
 			if (GUILayout.Button (new GUIContent ("", "Accede al menu de construir edificios"), "BotonInsertarEdificios")) {
 				if (accion != taccion.seleccionarEdificio)
 					accion = taccion.seleccionarEdificio;
@@ -823,28 +840,6 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoH);
 			GUILayout.BeginHorizontal (GUILayout.Height (cuantoH * 2));
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Fábrica de componentes básicos"), "BotonInsertarFabComBas")) {
-				TipoEdificio temp = principal.vida.tiposEdificios[0];
-				int eneTemp = temp.energiaConsumidaAlCrear;
-				int compBasTemp = temp.compBasConsumidosAlCrear;
-				int compAdvTemp = temp.compAvzConsumidosAlCrear;
-				int matBioTemp = temp.matBioConsumidoAlCrear;
-				if (!principal.recursosSuficientes(eneTemp, compBasTemp, compAdvTemp, matBioTemp)) {
-					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
-					break;
-				}
-				accion = taccion.insertar;
-				elementoInsercion = telementoInsercion.fabricaCompBas;
-				modeloInsercion = principal.vida.tiposEdificios[0].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[0].modelos.Count)];
-				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
-				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
-			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
-				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
-				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.fabricaCompBas;
-				seleccionarObjetoInsercion ();
-			}
-			GUILayout.Space (cuantoW);
 			if (GUILayout.Button (new GUIContent ("", "Central de energía"), "BotonInsertarCenEn")) {
 				TipoEdificio temp = principal.vida.tiposEdificios[1];
 				int eneTemp = temp.energiaConsumidaAlCrear;
@@ -859,7 +854,6 @@ public class InterfazPrincipal : MonoBehaviour
 				elementoInsercion = telementoInsercion.centralEnergia;
 				modeloInsercion = principal.vida.tiposEdificios[1].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[1].modelos.Count)];
 				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
-				//principal.objetoRoca.renderer.sharedMaterials[3].SetFloat("_FiltroOn", 1);	
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
@@ -867,7 +861,42 @@ public class InterfazPrincipal : MonoBehaviour
 				seleccionarObjetoInsercion ();
 			}
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Granja"), "BotonInsertarGranja")) {
+			string tooltip = "";
+			if (etapaJuego < tEtapaJuego.centralConstruida) {
+				GUI.enabled = false;
+				tooltip = "Debes construir primero una central de energia!";
+			}
+			else
+				tooltip = "Fábrica de componentes básicos";
+			if (GUILayout.Button (new GUIContent ("", tooltip), "BotonInsertarFabComBas")) {
+				TipoEdificio temp = principal.vida.tiposEdificios[0];
+				int eneTemp = temp.energiaConsumidaAlCrear;
+				int compBasTemp = temp.compBasConsumidosAlCrear;
+				int compAdvTemp = temp.compAvzConsumidosAlCrear;
+				int matBioTemp = temp.matBioConsumidoAlCrear;
+				if (!principal.recursosSuficientes(eneTemp, compBasTemp, compAdvTemp, matBioTemp)) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				accion = taccion.insertar;
+				elementoInsercion = telementoInsercion.fabricaCompBas;
+				modeloInsercion = principal.vida.tiposEdificios[0].modelos[UnityEngine.Random.Range (0, principal.vida.tiposEdificios[0].modelos.Count)];
+				modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.insercion;
+				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.fabricaCompBas;
+				seleccionarObjetoInsercion ();
+			}
+			GUI.enabled = true;
+			GUILayout.Space (cuantoW);
+			if (etapaJuego < tEtapaJuego.mejoraBiologicoComprada) {
+				GUI.enabled = false;
+				tooltip = "Debes investigar esta tecnologia primero.";
+			}
+			else
+				tooltip = "Granja";
+			if (GUILayout.Button (new GUIContent ("", tooltip), "BotonInsertarGranja")) {
 				TipoEdificio temp = principal.vida.tiposEdificios[2];
 				int eneTemp = temp.energiaConsumidaAlCrear;
 				int compBasTemp = temp.compBasConsumidosAlCrear;
@@ -888,8 +917,15 @@ public class InterfazPrincipal : MonoBehaviour
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.granja;
 				seleccionarObjetoInsercion ();
 			}
+			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Fábrica de componentes avanzados"), "BotonInsertarFabComAdv")) {
+			if (etapaJuego < tEtapaJuego.mejoraAvanzadosComprada) {
+				GUI.enabled = false;
+				tooltip = "Debes investigar esta tecnologia primero.";
+			}
+			else
+				tooltip = "Fábrica de componentes avanzados";
+			if (GUILayout.Button (new GUIContent ("", tooltip), "BotonInsertarFabComAdv")) {
 				TipoEdificio temp = principal.vida.tiposEdificios[3];
 				int eneTemp = temp.energiaConsumidaAlCrear;
 				int compBasTemp = temp.compBasConsumidosAlCrear;
@@ -910,8 +946,15 @@ public class InterfazPrincipal : MonoBehaviour
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.fabricaCompAdv;
 				seleccionarObjetoInsercion ();
 			}
+			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (GUILayout.Button (new GUIContent ("", "Central de energía avanzada"), "BotonInsertarCenEnAdv")) {
+			if (etapaJuego < tEtapaJuego.mejoraAvanzadosComprada) {
+				GUI.enabled = false;
+				tooltip = "Debes investigar esta tecnologia primero.";
+			}
+			else
+				tooltip = "Central de energía avanzada";
+			if (GUILayout.Button (new GUIContent ("", tooltip), "BotonInsertarCenEnAdv")) {
 				TipoEdificio temp = principal.vida.tiposEdificios[4];
 				int eneTemp = temp.energiaConsumidaAlCrear;
 				int compBasTemp = temp.compBasConsumidosAlCrear;
@@ -932,6 +975,7 @@ public class InterfazPrincipal : MonoBehaviour
 				elementoInsercionDerecho = InterfazPrincipal.telementoInsercion.centralEnergiaAdv;
 				seleccionarObjetoInsercion ();
 			}
+			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (cuantoH);
@@ -971,7 +1015,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[1])
+			if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[1])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Deteccion de Ecosistemas"), "BotonMejoraHabitats")) {
 				List<int> costeT = mejoras.getCosteMejora(1);
@@ -996,7 +1040,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[2])
+			if (!mejoras.mejorasCompradas[0] || mejoras.mejorasCompradas[2])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Espectometro"), "BotonMejoraMetalesRaros")) {
 				List<int> costeT = mejoras.getCosteMejora(2);
@@ -1048,7 +1092,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW * 6);
 			//Motores ------------------------------------------------------
 			//Se pueden añadir mas condiciones como el coste
-			if (mejoras.mejorasCompradas[4] || mejoras.mejorasCompradas[5])
+			if (mejoras.mejorasCompradas[4])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Motores auxiliares Basicos"), "BotonMejoraMotor1")) {
 				List<int> costeT = mejoras.getCosteMejora(4);
@@ -1228,7 +1272,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[8] || !mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[10] && mejoras.mejorasCompradas[11])
+			if (!mejoras.mejorasCompradas[8] || !mejoras.mejorasCompradas[9] || !mejoras.mejorasCompradas[10] || mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Generador de Fusión"), "BotonMejoraEnergia4")) {
 				List<int> costeT = mejoras.getCosteMejora(11);
@@ -1254,34 +1298,9 @@ public class InterfazPrincipal : MonoBehaviour
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 6);
 			//Almacenamiento -----------------------------------------------
-			if (mejoras.mejorasCompradas[12])
+			if (mejoras.mejorasCompradas[13] || etapaJuego < tEtapaJuego.fabCompBasConstruida)
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Contenedores para Componentes Avanzados"), "BotonMejoraAlmacen1")) {
-				List<int> costeT = mejoras.getCosteMejora(12);
-				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
-					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
-					break;
-				}
-				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
-				mejoras.compraMejora12 ();
-			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
-				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
-				mejoraHover = 12;
-				List<int> costeT = mejoras.getCosteMejora(12);
-				infoSeleccion.Clear();
-				infoSeleccion.Add("Contenedor avanzado");
-				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
-				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
-				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
-				infoSeleccion.Add(costeT[2].ToString());	//comp adv
-				infoSeleccion.Add(costeT[3].ToString());	//mat bio
-			}
-			GUI.enabled = true;
-			GUILayout.Space (cuantoW);
-			if (mejoras.mejorasCompradas[13])
-				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Contenedores para Material Biologico"), "BotonMejoraAlmacen2")) {
+			if (GUILayout.Button (new GUIContent ("", "Tecnologia de Material Biologico"), "BotonMejoraAlmacen2")) {
 				List<int> costeT = mejoras.getCosteMejora(13);
 				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
@@ -1289,6 +1308,8 @@ public class InterfazPrincipal : MonoBehaviour
 				}
 				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
 				mejoras.compraMejora13 ();
+				if (etapaJuego == tEtapaJuego.fabCompBasConstruida)
+					etapaJuego = tEtapaJuego.mejoraBiologicoComprada;
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
@@ -1303,6 +1324,32 @@ public class InterfazPrincipal : MonoBehaviour
 				infoSeleccion.Add(costeT[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
+			GUILayout.Space (cuantoW);
+			if (mejoras.mejorasCompradas[12] || !mejoras.mejorasCompradas[13])
+				GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("", "Tecnologia de Componentes Avanzados"), "BotonMejoraAlmacen1")) {
+				List<int> costeT = mejoras.getCosteMejora(12);
+				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+					break;
+				}
+				principal.consumeRecursos(costeT[0], costeT[1], costeT[2], costeT[3]);
+				mejoras.compraMejora12 ();
+				etapaJuego = tEtapaJuego.mejoraAvanzadosComprada;
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.mejoras;
+				mejoraHover = 12;
+				List<int> costeT = mejoras.getCosteMejora(12);
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Contenedor avanzado");
+				infoSeleccion.Add(mejoras.getDescripcionMejora(mejoraHover));
+				infoSeleccion.Add(costeT[0].ToString());	//Coste ener
+				infoSeleccion.Add(costeT[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costeT[2].ToString());	//comp adv
+				infoSeleccion.Add(costeT[3].ToString());	//mat bio
+			}
+			GUI.enabled = true;			
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[12] || !mejoras.mejorasCompradas[13] || mejoras.mejorasCompradas[14])
 				GUI.enabled = false;
@@ -1600,12 +1647,8 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.BeginArea (new Rect (cuantoW * 32.5f, cuantoH * posicionBloque, cuantoW * 15, cuantoH * 18), new GUIContent ());
 			GUILayout.BeginVertical ();
 			GUILayout.Box (new GUIContent (), "BloqueMenu", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15));
-			//[Beta] Desactivado el boton de Guardar Partida
-//			GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("Guardar partida", "En pruebas (Beta)"), "BotonGuardarPartida", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
+			if (GUILayout.Button (new GUIContent ("Guardar partida", "Accede al menu para guardar tu partida"), "BotonGuardarPartida", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarGuardar;
-//			GUI.enabled = true;
-			//[Beta] ----------------------------------------
 			if (GUILayout.Button (new GUIContent ("Opciones de audio", "Lleva al menu de opciones de audio"), "BotonOpcionesAudio", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
 				accionMenu = InterfazPrincipal.taccionMenu.mostrarOpcionesAudio;
 			if (GUILayout.Button (new GUIContent ("Menu principal", "Lleva al menu principal del juego"), "BotonMenuPrincipal", GUILayout.Height (cuantoH * 3), GUILayout.Width (cuantoW * 15)))
@@ -1812,6 +1855,14 @@ public class InterfazPrincipal : MonoBehaviour
 								if (principal.vida.anadeEdificio (tedif, posY, posX, eficiencia,numMetales,matrizRadioAccion,radioAccion, hit.point)) {
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
 									principal.vida.tablero[posY, posX].edificio.modelo.GetComponentInChildren<Animation>().Play();
+									if (elementoInsercion == telementoInsercion.centralEnergia && etapaJuego == tEtapaJuego.inicio)
+										etapaJuego = InterfazPrincipal.tEtapaJuego.centralConstruida;
+									if (elementoInsercion == telementoInsercion.fabricaCompBas && etapaJuego == tEtapaJuego.centralConstruida)
+										etapaJuego = InterfazPrincipal.tEtapaJuego.fabCompBasConstruida;
+									if (elementoInsercion == telementoInsercion.granja && etapaJuego == tEtapaJuego.mejoraBiologicoComprada)
+										etapaJuego = InterfazPrincipal.tEtapaJuego.granjaConstruida;
+									if (elementoInsercion == telementoInsercion.fabricaCompAdv && etapaJuego == tEtapaJuego.mejoraAvanzadosComprada)
+										etapaJuego = InterfazPrincipal.tEtapaJuego.fabCompAdvComprada;
 								} else {
 									GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeErrorPosicion;
 									Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
@@ -2149,19 +2200,11 @@ public class InterfazPrincipal : MonoBehaviour
 
 			GUI.BeginGroup (new Rect (69 * cuantoW, posicionBloqueH * cuantoH, 11 * cuantoW, 28 * cuantoH));
 			GUI.Box (new Rect (0, 0, 11 * cuantoW, 28 * cuantoH), "", "BloqueDerechoFiltroAnimales");
-			//[Beta] Desactivado filtro por no tener los modelos completados aun
-			GUI.enabled = false;
-			togglesFiltros[19] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[19], new GUIContent ("", "Desactivado en la beta"), "BotonInsertarCarnivoro1");
-			GUI.enabled = true;
-			//[Beta] -----------------------------------------------------------
-			togglesFiltros[20] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[20], new GUIContent ("", "Filtrar la especie Carnivoro2"), "BotonInsertarCarnivoro2");
-			togglesFiltros[21] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[21], new GUIContent ("", "Filtrar la especie Carnivoro3"), "BotonInsertarCarnivoro3");
-			togglesFiltros[22] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[22], new GUIContent ("", "Filtrar la especie Carnivoro4"), "BotonInsertarCarnivoro4");
-			//[Beta] Desactivado filtro por no tener los modelos completados aun
-			GUI.enabled = false;
-			togglesFiltros[23] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[23], new GUIContent ("", "Desactivado en la beta"), "BotonInsertarCarnivoro5");
-			GUI.enabled = true;
-			//[Beta] -----------------------------------------------------------
+			togglesFiltros[19] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[19], new GUIContent ("", "Filtrar los zorros"), "BotonInsertarCarnivoro1");
+			togglesFiltros[20] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[20], new GUIContent ("", "Filtrar los lobos"), "BotonInsertarCarnivoro2");
+			togglesFiltros[21] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[21], new GUIContent ("", "Filtrar los tigres"), "BotonInsertarCarnivoro3");
+			togglesFiltros[22] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 13, cuantoW * 2, cuantoH * 2), togglesFiltros[22], new GUIContent ("", "Filtrar los osos"), "BotonInsertarCarnivoro4");
+			togglesFiltros[23] = GUI.Toggle (new Rect (cuantoW * 2, cuantoH * 16, cuantoW * 2, cuantoH * 2), togglesFiltros[23], new GUIContent ("", "Filtrar los tiranosaurios"), "BotonInsertarCarnivoro5");
 			togglesFiltros[14] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 4, cuantoW * 2, cuantoH * 2), togglesFiltros[14], new GUIContent ("", "Filtrar los insectos herbivoros."), "BotonInsertarHerbivoro1");
 			togglesFiltros[15] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 7, cuantoW * 2, cuantoH * 2), togglesFiltros[15], new GUIContent ("", "Filtrar los peque\u00f1os roedores."), "BotonInsertarHerbivoro2");
 			togglesFiltros[16] = GUI.Toggle (new Rect (cuantoW * 7, cuantoH * 10, cuantoW * 2, cuantoH * 2), togglesFiltros[16], new GUIContent ("", "Filtrar los vacunos."), "BotonInsertarHerbivoro3");
