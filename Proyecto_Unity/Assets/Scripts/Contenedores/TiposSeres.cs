@@ -124,8 +124,8 @@ public class TiposSeres : MonoBehaviour {
 		fabricaComBas = new TipoEdificio("Fábrica de componentes básicos",habsEdificios,180,30,0,0,T_elementos.comunes,10,0,0,0,0,20,0,0,modelosEdificios.fabCompBas);
 		energia = new TipoEdificio("Central de energía",habsEdificios,150,20,0,0,T_elementos.comunes,0,0,0,0,40,0,0,0,modelosEdificios.centralEnergia);
 		granja = new TipoEdificio("Granja",habsEdificios,800,280,0,0,T_elementos.nada,75,0,0,0,0,0,0,0,modelosEdificios.granja);
-		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,1000,350,0,10,T_elementos.raros,100,0,0,0,0,0,20,0,modelosEdificios.fabCompAdv);
-		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,2500,250,50,20,T_elementos.raros,0,0,0,0,2000,0,0,0,modelosEdificios.centralEnergiaAdv);
+		fabricaComAdv = new TipoEdificio("Fábrica de componentes avanzados",habsEdificiosAdv,1000,350,0,10,T_elementos.raros,100,0,0,0,0,0,40,0,modelosEdificios.fabCompAdv);
+		energiaAdv = new TipoEdificio("Central de energía avanzada",habsEdificiosAdv,2500,250,50,20,T_elementos.raros,0,0,0,0,1000,0,0,0,modelosEdificios.centralEnergiaAdv);
 		
 		/* Vegetales */
 		/*vegetal = new EspecieVegetal(nombre, numMaxSeresEspecie, numMaxVegetales, numIniVegetales, capacidadMigracionLocal, capacidadMigracionGlobal, radioMigracion, 

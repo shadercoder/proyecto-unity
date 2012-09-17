@@ -224,22 +224,22 @@ public class MejorasNave : MonoBehaviour {
 		costeHab4.Add(0);	//Coste mat bio
 		
 		costeHab5 = new List<int>();		//Fertilizante
-		costeHab5.Add(50);	//Coste energia
-		costeHab5.Add(50);	//Coste comp bas
-		costeHab5.Add(0);	//Coste comp adv
-		costeHab5.Add(10);	//Coste mat bio
+		costeHab5.Add(3500);	//Coste energia
+		costeHab5.Add(500);		//Coste comp bas
+		costeHab5.Add(0);		//Coste comp adv
+		costeHab5.Add(15);		//Coste mat bio
 		
 		costeHab6 = new List<int>();		//Bomba implosión
-		costeHab6.Add(200);	//Coste energia
-		costeHab6.Add(100);	//Coste comp bas
-		costeHab6.Add(25);	//Coste comp adv
-		costeHab6.Add(0);	//Coste mat bio
+		costeHab6.Add(8000);	//Coste energia
+		costeHab6.Add(750);		//Coste comp bas
+		costeHab6.Add(100);		//Coste comp adv
+		costeHab6.Add(0);		//Coste mat bio
 		
 		costeHab7 = new List<int>();		//Virus selectivo
-		costeHab7.Add(250);	//Coste energia
-		costeHab7.Add(100);	//Coste comp bas
-		costeHab7.Add(25);	//Coste comp adv
-		costeHab7.Add(25);	//Coste mat bio
+		costeHab7.Add(6000);	//Coste energia
+		costeHab7.Add(450);		//Coste comp bas
+		costeHab7.Add(50);		//Coste comp adv
+		costeHab7.Add(25);		//Coste mat bio
 		
 		costeHab8 = new List<int>();		//Portal espacio/temporal
 		costeMej8.Add(15000);	//Coste energia

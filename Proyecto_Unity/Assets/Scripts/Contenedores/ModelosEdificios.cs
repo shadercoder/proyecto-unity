@@ -8,4 +8,6 @@ public class ModelosEdificios : MonoBehaviour
 	public GameObject granja;							//Modelo de la granja
 	public GameObject fabCompAdv;						//Modelo de la fábrica de componentes avanzados
 	public GameObject centralEnergiaAdv;				//Modelo de la central de energía avanzada
+	
+	public GameObject portal;							//Modelo del portal dimensional
 }

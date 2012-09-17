@@ -54,6 +54,24 @@ public class InterfazPrincipal : MonoBehaviour
 	private bool forzarTooltip 					= false;		//Fuerza que se muestre un tooltip en una situación especial
 	private string mensajeForzarTooltip 		= "";			//Mensaje del tooltip forzado.
 	
+	//Habilidades
+		//Virus
+	private int turnoVirus						= 0;			//El turno en el que el virus se ha lanzado
+	private int duracionVirus					= 30;			//Los turnos que dura el virus
+	private bool virusActivo					= false;		//Si el virus está activo
+	private Animal animalVirus;									//El animal al que afecta el virus
+	private float factorVirusPos				= 2.0f;			//El factor positivo del virus
+	private float factorVirusNeg				= 0.5f;			//El factor negativo del virus
+	
+		//Fertilizante
+	private int turnoFertilizante				= 0;			//El turno en el que el fertilizante se ha lanzado
+	private int duracionFertilizante			= 30;			//Los turnos que dura el fertilizante
+	private bool fertilizanteActivo				= false;		//Si el fertilizante está activo
+	private Animal animalFertilizante;							//El animal al que ha afectado el fertilizante
+	private Vegetal vegetalFertilizante;						//El vegetal al que ha afectado el fertilizante
+	private float factorFertilizantePos			= 2.0f;			//El factor positivo del fertilizante
+	private float factorFertilizanteNeg			= 0.5f;			//El factor negativo del fertilizante
+	
 	//Enumerados
 	public enum tEtapaJuego
 	{
@@ -64,7 +82,7 @@ public class InterfazPrincipal : MonoBehaviour
 		granjaConstruida,
 		mejoraAvanzadosComprada,
 		fabCompAdvComprada,
-		portalCOnstruido
+		portalConstruido
 	};
 	public tEtapaJuego etapaJuego = tEtapaJuego.inicio;
 	
@@ -88,7 +106,11 @@ public class InterfazPrincipal : MonoBehaviour
 		seleccionarHabilidad,
 		insertar,
 		mostrarInfoDetallada,
-		mostrarMenu
+		mostrarMenu,
+		lanzarVirus,
+		lanzarBomba,
+		lanzarFertilizante,
+		insertarPortal
 	}
 	public taccion accion = taccion.ninguna;
 	private taccion accionAnterior = taccion.ninguna;
@@ -225,6 +247,20 @@ public class InterfazPrincipal : MonoBehaviour
 		}
 		controlTooltip ();
 		calculaInfoCasilla ();
+		
+		if (fertilizanteActivo && (turnoFertilizante + duracionFertilizante) <= principal.numPasos) {
+			principal.vida.fertilizanteBioQuimico(vegetalFertilizante.especie, animalFertilizante.especie, factorFertilizanteNeg);
+			fertilizanteActivo = false;
+		}
+		
+		if (virusActivo && (turnoVirus + duracionVirus) <= principal.numPasos) {
+			principal.vida.virusSelectivoPoblacional(animalVirus.especie, factorVirusNeg);
+			virusActivo = false;
+		}
+		
+		if (etapaJuego == InterfazPrincipal.tEtapaJuego.portalConstruido) {
+			Debug.Log("Juego terminado");
+		}
 	}
 
 	void OnGUI ()
@@ -265,13 +301,19 @@ public class InterfazPrincipal : MonoBehaviour
 		if (posicionFueraDeInterfaz (Input.mousePosition)) {
 			mostrarInfoCasilla = true;
 			if (accion == taccion.insertar)
-				insertarElemento (); 
+				insertarElemento ();
+			else if (accion == taccion.lanzarVirus)
+				insertarVirus();
+			else if (accion == taccion.lanzarFertilizante)
+				insertarFertilizante();
+			else if (accion == taccion.lanzarBomba)
+				insertarBomba();
+			else if (accion == taccion.insertarPortal)
+				insertarPortal();
 			else if (Input.GetMouseButtonDown (0)) {
 				//Se ha hecho click en el tablero sin insertar nada
 				if (seleccionarObjetoTablero ())
 					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.seleccion;
-//				else
-//					tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.ninguno;
 			}
 		} else
 			mostrarInfoCasilla = false;
@@ -1508,76 +1550,102 @@ public class InterfazPrincipal : MonoBehaviour
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa el Fertilizante Ecoquímico"), "BotonHabilidad7")) {
-				//TODO Foco solar
-				if (Camera.main.light.enabled)
-					Camera.main.light.enabled = false;
-				else
-					Camera.main.light.enabled=true;
+				List<int> costes = mejoras.costeHab5;
+				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					accion = InterfazPrincipal.taccion.lanzarFertilizante;
+				}
+				else {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+				}
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 1;
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
+				List<int> costes = mejoras.costeHab5;
 				infoSeleccion.Clear();
-				infoSeleccion.Add("BotonHabilidad7");
+				infoSeleccion.Add("Fertilizante Ecoquimico");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costes[0].ToString());	//Coste ener
+				infoSeleccion.Add(costes[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costes[2].ToString());	//comp adv
+				infoSeleccion.Add(costes[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa la Bomba de Implosión Controlada"), "BotonHabilidad8")) {
-				//TODO
+				List<int> costes = mejoras.costeHab6;
+				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					accion = InterfazPrincipal.taccion.lanzarBomba;
+				}
+				else {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+				}
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 2;
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
+				List<int> costes = mejoras.costeHab6;
 				infoSeleccion.Clear();
-				infoSeleccion.Add("BotonHabilidad8");
+				infoSeleccion.Add("Bomba de implosion");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costes[0].ToString());	//Coste ener
+				infoSeleccion.Add(costes[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costes[2].ToString());	//comp adv
+				infoSeleccion.Add(costes[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa el Virus Selectivo Poblacional"), "BotonHabilidad9")) {
-				//TODO
+				List<int> costes = mejoras.costeHab7;
+				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					accion = InterfazPrincipal.taccion.lanzarVirus;
+				}
+				else {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+				}
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 3;
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
+				List<int> costes = mejoras.costeHab7;
 				infoSeleccion.Clear();
-				infoSeleccion.Add("BotonHabilidad9");
+				infoSeleccion.Add("Virus pandemico");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costes[0].ToString());	//Coste ener
+				infoSeleccion.Add(costes[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costes[2].ToString());	//comp adv
+				infoSeleccion.Add(costes[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa el Portal Espacio/temporal (finaliza la partida)"), "BotonHabilidad10")) {
-				//TODO
+				List<int> costes = mejoras.costeHab8;
+				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					accion = InterfazPrincipal.taccion.insertarPortal;
+					modeloInsercion = GameObject.FindGameObjectWithTag("ModelosEdificios").GetComponent<ModelosEdificios>().portal;	
+					modeloInsercion = FuncTablero.creaMesh (new Vector3 (0, 0, 0), modeloInsercion);
+				}
+				else {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+				}
 			}
 			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
 				habilidadHover = 4;
 				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
+				List<int> costes = mejoras.costeHab8;
 				infoSeleccion.Clear();
-				infoSeleccion.Add("BotonHabilidad10");
+				infoSeleccion.Add("Portal espacio-temporal");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
-				infoSeleccion.Add("0");	//Coste ener
-				infoSeleccion.Add("0");	//Coste comp bas
-				infoSeleccion.Add("0");	//comp adv
-				infoSeleccion.Add("0");	//mat bio
+				infoSeleccion.Add(costes[0].ToString());	//Coste ener
+				infoSeleccion.Add(costes[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costes[2].ToString());	//comp adv
+				infoSeleccion.Add(costes[3].ToString());	//mat bio
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 1.5f);
@@ -1661,7 +1729,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUILayout.EndVertical ();
 			GUILayout.EndArea ();
-			if (GUI.Button (new Rect (0, 0, cuantoW * 80, cuantoH * 60), new GUIContent (), "")) {
+			if (GUI.Button (new Rect (0, 0, cuantoW * 80, cuantoH * 60), new GUIContent (), "EstiloVacio")) {
 				;
 				//CLINK -> Control para que no se pulse fuera del menú (Buena idea!)
 			}
@@ -1947,6 +2015,164 @@ public class InterfazPrincipal : MonoBehaviour
 						accion = taccion.ninguna;
 						Destroy (modeloInsercion);
 					}
+				}
+			}
+		}
+	}
+	/*
+	 * asik a fertilizante me tiene k llegar especieanimal especievegetal y factor
+rantamplan: y a bomba posx y posy
+rantamplan: y a virus
+rantamplan: especieanimal
+
+fertilizanteBioQuimico(EspecieVegetal especieVegetal,EspecieAnimal especieAnimal, float factor)
+
+
+rantamplan: virusSelectivoPoblacional(EspecieAnimal especie, float factor)
+rantamplan: public void bombaImplosion(int posX,int posy)
+*/
+	
+	private void insertarVirus ()
+	{
+		if (accion == taccion.lanzarVirus) {
+			int posX = 0;
+			int posY = 0;
+			RaycastHit hit;
+			if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY, out hit)) {
+				animalVirus = principal.vida.tablero[posY, posX].animal;
+				if (Input.GetMouseButton (0)) {
+					if (animalVirus != null) {
+						List<int> costes = mejoras.costeHab7;
+						if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+							principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
+							principal.vida.virusSelectivoPoblacional(animalVirus.especie, factorVirusPos);
+							turnoVirus = principal.numPasos;
+							virusActivo = true;
+						}
+						else {	//No hay recursos suficientes
+							
+						}
+					}
+					else {	//No hay nada en esa casilla
+						Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+						efectos.playNumber (Random.Range (1, 3));
+					}
+					accion = taccion.ninguna;
+				}
+			}
+		}
+	}
+	
+	private void insertarFertilizante ()
+	{
+		if (accion == taccion.lanzarFertilizante) {
+			int posX = 0;
+			int posY = 0;
+			RaycastHit hit;
+			if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY, out hit)) {
+				vegetalFertilizante = principal.vida.tablero[posY, posX].vegetal;
+				animalFertilizante = principal.vida.tablero[posY, posX].animal;
+				if (Input.GetMouseButton (0)) {
+					if (vegetalFertilizante != null || animalFertilizante != null) {
+						List<int> costes = mejoras.costeHab5;
+						if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+							principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
+							principal.vida.fertilizanteBioQuimico(vegetalFertilizante.especie, animalFertilizante.especie, factorFertilizantePos);
+							turnoFertilizante = principal.numPasos;
+							fertilizanteActivo = true;
+						}
+					}
+					else {
+						Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+						efectos.playNumber (Random.Range (1, 3));
+					}
+					accion = taccion.ninguna;
+				}
+			}
+		}
+	}
+	
+	private void insertarBomba ()
+	{
+		if (accion == taccion.lanzarFertilizante) {
+			int posX = 0;
+			int posY = 0;
+			RaycastHit hit;
+			if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY, out hit)) {
+				if (Input.GetMouseButton (0)) {
+					List<int> costes = mejoras.costeHab6;
+					if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+						principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
+						principal.vida.bombaImplosion(posY, posX);
+						accion = taccion.ninguna;
+					}
+					
+					else {
+						Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+						efectos.playNumber (Random.Range (1, 3));
+					}
+				}
+			}
+		}
+	}
+	
+	private void insertarPortal ()
+	{
+		if (accion == taccion.insertarPortal && etapaJuego < tEtapaJuego.portalConstruido) {
+			int posX = 0;
+			int posY = 0;
+			RaycastHit hit;
+			if (principal.raycastRoca (Input.mousePosition, ref posX, ref posY, out hit)) {
+				//Mover la malla
+				modeloInsercion.transform.position = hit.point;
+				Vector3 normal = modeloInsercion.transform.position - modeloInsercion.transform.parent.position;
+				modeloInsercion.transform.rotation = Quaternion.LookRotation (normal);
+				modeloInsercion.GetComponentInChildren<Renderer>().material.SetFloat ("_FiltroOn", 1.0f);
+				modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.red);
+				List<int> costes = mejoras.costeHab8;
+				Casilla temp = principal.vida.tablero[posY, posX];
+				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					if (temp.habitat == T_habitats.llanura && temp.edificio == null)
+						modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.green);
+					else {
+						forzarTooltip = true;
+						mensajeForzarTooltip = "Habitat incompatible o ya ocupado";
+					}
+				} else {							
+					forzarTooltip = true;
+					mensajeForzarTooltip = "No hay recursos suficientes";
+				}
+				//Probamos inserción
+				if (Input.GetMouseButton (0)) {						
+					if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+						if (temp.habitat == T_habitats.llanura && temp.edificio == null) {
+							principal.consumeRecursos (costes[0], costes[1], costes[2], costes[3]);
+							modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.white);
+							modeloInsercion.GetComponentInChildren<Animation>().Play();
+							etapaJuego = InterfazPrincipal.tEtapaJuego.portalConstruido;
+						} else {
+							GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeErrorPosicion;
+							Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+							Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
+							Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+							efectos.playNumber (Random.Range (1, 3));
+							//Sonidos de error son el 1 y 2
+						}
+					} else {
+						GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeNoRecursos;
+						Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+						Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
+						Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
+						efectos.playNumber (Random.Range (1, 3));
+						//Sonidos de error son el 1 y 2
+					}
+					elementoInsercion = telementoInsercion.ninguno;
+					accion = taccion.ninguna;
+					
+				} else if (Input.GetMouseButton (1)) {
+					elementoInsercion = telementoInsercion.ninguno;
+					accion = taccion.ninguna;
+					Destroy (modeloInsercion);
 				}
 			}
 		}
