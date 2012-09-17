@@ -3428,10 +3428,10 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 	private void imagenSeleccionBloqueDerecho() {
 		switch (tipoSeleccion) {
 		case 20:		//fabricaCompBas
-			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio1");
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio1"); 
 			break;
 		case 21: 	//central energia
-			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio2");
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio2"); 
 			break;
 		case 22: 	//granja
 			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio3");
