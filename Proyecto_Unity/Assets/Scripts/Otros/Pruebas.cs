@@ -368,7 +368,6 @@ public class Pruebas : MonoBehaviour {
 		contenedor.texturaElementos = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
 		contenedor.texturaHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
 		contenedor.texturaHabsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
-		contenedor.texturaPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
 		contenedor.vida = vida;
 		contenedor.roca = objetoRoca.GetComponent<MeshFilter>().mesh;
 		contenedor.agua = objetoOceano.GetComponent<MeshFilter>().mesh;

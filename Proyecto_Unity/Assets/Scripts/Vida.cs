@@ -21,7 +21,7 @@ public class Casilla {
 		vegetal = null;
 		animal = null;
 		edificio = null;
-		coordsVert = vert;
+		coordsVert = vert; 
 	}
 	
 	public Casilla() {}
@@ -30,8 +30,6 @@ public class Casilla {
 [System.Serializable] 
 public class Vida //: MonoBehaviour
 {
-	//Referencia a la textura de las plantas
-	public Texture2D texturaPlantas;
 	//Transform del objeto roca, para mover los meshes
 	public Transform objetoRoca;
 	//Estructuras
@@ -48,10 +46,7 @@ public class Vida //: MonoBehaviour
 	public int idActualVegetal;
 	public int idActualAnimal;
 	public int idActualEdificio;
-	
-	public int contadorPintarTexturaPlantas = 0;
-	public bool texturaPlantasModificado = false;
-	
+		
 	public List<Tupla<int,int>> posicionesColindantes;
 	
 	private const float	tiempoTurno = 3.0f;
@@ -92,12 +87,11 @@ public class Vida //: MonoBehaviour
 		idActualVegetal = 0;
 		idActualAnimal = 0;
 		idActualEdificio = 0;
-		texturaPlantas = texPlantas;
 		objetoRoca = objeto;
 		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}
 	
-	public Vida(Casilla[,] tablero, Texture2D texPlantas)
+	public Vida(Casilla[,] tablero)
 	{
 		this.tablero = tablero;
 		especies = new List<Especie>();
@@ -108,13 +102,9 @@ public class Vida //: MonoBehaviour
 		vegetales = new List<Vegetal>();
 		animales = new List<Animal>();
 		edificios = new List<Edificio>();
-		//numMaxTurnos = 0;
-		//turnoActual = 0;
-		//listadoSeresTurnos = new List<Ser>[numMaxTurnos];
 		idActualVegetal = 0;
 		idActualAnimal = 0;
 		idActualEdificio = 0;
-		texturaPlantas = texPlantas;
 		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}
 	
@@ -136,7 +126,6 @@ public class Vida //: MonoBehaviour
 		idActualVegetal = vida.idActualVegetal;
 		idActualAnimal = vida.idActualAnimal;
 		idActualEdificio = vida.idActualEdificio;
-		texturaPlantas = vida.texturaPlantas;
 		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}
 	
@@ -163,49 +152,6 @@ public class Vida //: MonoBehaviour
 	//Necesario para cuando se crea Vida desde la escena inicial, donde el objeto roca no está creado aun
 	public void setObjetoRoca(Transform objeto) {
 		objetoRoca = objeto;
-	}
-	
-	private void pintaPlantasTex(int posX,int posY) {
-		Vegetal veg = tablero[posX,posY].vegetal;
-		texturaPlantasModificado = true;
-		if (veg != null && veg.numVegetales > 0) {
-			int temp = (int)Mathf.Lerp(0.0f, 4.0f, veg.numVegetales / veg.especie.numMaxVegetales);
-			if (tablero[posX,posY].pinceladas != null) {
-				if (tablero[posX,posY].pinceladas.Length < temp) {
-					Vector2[] arrayPos = new Vector2[temp];
-					for (int j = 0; j < tablero[posX,posY].pinceladas.Length; j++) {
-						arrayPos[j] = tablero[posX,posY].pinceladas[j];
-					}
-					for (int i = tablero[posX,posY].pinceladas.Length; i < temp; i++) {
-						int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()+1));
-						int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()+1));
-						Vector2 posTemp = new Vector2(tempX, tempY);
-						arrayPos[i] = posTemp;
-						FuncTablero.pintaPlantas(texturaPlantas, posTemp, veg.especie.idTextura, true);
-					}
-					tablero[posX,posY].pinceladas = arrayPos;
-				}
-				else if (tablero[posX,posY].pinceladas.Length > temp) {
-					Vector2[] arrayPos = new Vector2[temp];
-					for (int j = 0; j < temp; j++) {
-						arrayPos[j] = tablero[posX,posY].pinceladas[j];
-					}
-					for (int i = temp; i < tablero[posX,posY].pinceladas.Length; i++) {
-						FuncTablero.pintaPlantas(texturaPlantas, tablero[posX,posY].pinceladas[i], veg.especie.idTextura, false);
-					}
-					tablero[posX,posY].pinceladas = arrayPos;
-				}
-			}
-			else {
-				tablero[posX,posY].pinceladas = new Vector2[temp];
-				for (int i = 0; i < temp; i++) {
-					int tempX = (int)(tablero[posX,posY].coordsTex.x + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAncho()+1));
-					int tempY =  (int)(tablero[posX,posY].coordsTex.y + UnityEngine.Random.Range(0, FuncTablero.getRelTexTabAlto()+1));
-					tablero[posX,posY].pinceladas[i] = new Vector2(tempX, tempY);
-					FuncTablero.pintaPlantas(texturaPlantas, tablero[posX,posY].pinceladas[i], veg.especie.idTextura, true);
-				}
-			}
-		}
 	}
 	
 	//Devuelve true si hay un vegetal en la casilla [x,y] y false si no lo hay
@@ -364,7 +310,7 @@ public class Vida //: MonoBehaviour
 		vegetales.Add(vegetal);
 		tablero[posX,posY].vegetal = vegetal;
 		especie.numSeresEspecie++;
-		pintaPlantasTex(posX,posY);
+//		pintaPlantasTex(posX,posY);
 		return true;	
 	}
 	
@@ -385,7 +331,7 @@ public class Vida //: MonoBehaviour
 		vegetales.Add(vegetal);
 		tablero[posX,posY].vegetal = vegetal;
 		especie.numSeresEspecie++;
-		pintaPlantasTex(posX,posY);
+//		pintaPlantasTex(posX,posY);
 		return true;	
 	}
 	
@@ -796,8 +742,9 @@ public class Vida //: MonoBehaviour
 			{
 				vegetal = (Vegetal)ser;
 				//Reproducción y muerte
-				if(vegetal.reproduccionMuerte())
-					pintaPlantasTex(vegetal.posX, vegetal.posY);
+				if(vegetal.reproduccionMuerte()) {
+//					pintaPlantasTex(vegetal.posX, vegetal.posY);
+				}
 				else
 				{					
 					eliminaVegetal(vegetal);

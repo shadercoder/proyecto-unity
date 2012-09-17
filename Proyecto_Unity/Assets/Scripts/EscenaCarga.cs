@@ -36,7 +36,6 @@ public class EscenaCarga : MonoBehaviour {
 	
 		//Tercera fase
 	public Texture2D texElems;									//Textura donde se representan los elementos del terreno
-	public Texture2D texPlantas;								//Textura donde se pintan las plantas del planeta
 	public Texture2D texHabitatsEstetica;						//Textura donde se pintan los habitats a mostrar
 	public Texture2D texHabitats;								//Textura donde se pintan los habitats para filtros
 	private Vida vida;											//El algoritmo de vida
@@ -163,7 +162,6 @@ public class EscenaCarga : MonoBehaviour {
 				temp.texturaElementos = texElems;
 				temp.texturaHabitats = texHabitats;
 				temp.texturaHabsEstetica = texHabitatsEstetica;
-				temp.texturaPlantas = texPlantas;
 				temp.vida = vida;
 				temp.energia = 200;
 				temp.compBas = 50;
@@ -335,7 +333,7 @@ public class EscenaCarga : MonoBehaviour {
 		progreso = 0.7f;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Creando la vida...");
 		yield return new WaitForSeconds(0.01f);
-		vida = new Vida(tablero, texPlantas);
+		vida = new Vida(tablero);
 		progreso = 1.0f;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completado creacionParte3().");
 		yield return new WaitForSeconds(0.01f);

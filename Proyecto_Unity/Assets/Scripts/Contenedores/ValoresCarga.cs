@@ -5,7 +5,6 @@ public class ValoresCarga : MonoBehaviour {
 
 	public Texture2D texturaBase;
 	public Texture2D texturaElementos;
-	public Texture2D texturaPlantas;
 	public Texture2D texturaHabsEstetica;
 	public Texture2D texturaHabitats;
 	public Vida vida;

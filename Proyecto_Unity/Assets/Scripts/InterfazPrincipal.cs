@@ -320,7 +320,7 @@ public class InterfazPrincipal : MonoBehaviour
 			mostrarInfoCasilla = false;
 		
 		if (forzarTooltip)
-			GUI.Box (new Rect (Input.mousePosition.x - cuantoW, Screen.height - Input.mousePosition.y - cuantoH, cuantoW * 2, cuantoH * 2), new GUIContent ("", mensajeForzarTooltip), "");
+			GUI.Box (new Rect (Input.mousePosition.x - cuantoW, Screen.height - Input.mousePosition.y - cuantoH, cuantoW * 2, cuantoH * 2), new GUIContent ("", mensajeForzarTooltip), "LabelReducido");
 		if (activarTooltip)
 			mostrarToolTip ();
 		
@@ -1520,10 +1520,9 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW * 3);
-			if (!mejoras.mejorasCompradas[10])
+			if (!mejoras.mejorasCompradas[8])
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa el Foco Solar"), "BotonHabilidad6")) {
-				//TODO activar/desactivar foco solar
 				if (Camera.main.light.enabled)
 				{
 					habilidadFoco = false;
@@ -1575,31 +1574,6 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[10])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Activa la Bomba de Implosión Controlada"), "BotonHabilidad8")) {
-				List<int> costes = mejoras.costeHab6;
-				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
-					accion = InterfazPrincipal.taccion.lanzarBomba;
-				}
-				else {
-					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
-				}
-			}
-			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
-				habilidadHover = 2;
-				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
-				List<int> costes = mejoras.costeHab6;
-				infoSeleccion.Clear();
-				infoSeleccion.Add("Bomba de implosion");
-				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
-				infoSeleccion.Add(costes[0].ToString());	//Coste ener
-				infoSeleccion.Add(costes[1].ToString());	//Coste comp bas
-				infoSeleccion.Add(costes[2].ToString());	//comp adv
-				infoSeleccion.Add(costes[3].ToString());	//mat bio
-			}
-			GUI.enabled = true;
-			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[11])
-				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa el Virus Selectivo Poblacional"), "BotonHabilidad9")) {
 				List<int> costes = mejoras.costeHab7;
 				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
@@ -1615,6 +1589,31 @@ public class InterfazPrincipal : MonoBehaviour
 				List<int> costes = mejoras.costeHab7;
 				infoSeleccion.Clear();
 				infoSeleccion.Add("Virus pandemico");
+				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
+				infoSeleccion.Add(costes[0].ToString());	//Coste ener
+				infoSeleccion.Add(costes[1].ToString());	//Coste comp bas
+				infoSeleccion.Add(costes[2].ToString());	//comp adv
+				infoSeleccion.Add(costes[3].ToString());	//mat bio
+			}
+			GUI.enabled = true;
+			GUILayout.Space (cuantoW);
+			if (!mejoras.mejorasCompradas[11])
+				GUI.enabled = false;
+			if (GUILayout.Button (new GUIContent ("", "Activa la Bomba de Implosión Controlada"), "BotonHabilidad8")) {
+				List<int> costes = mejoras.costeHab6;
+				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
+					accion = InterfazPrincipal.taccion.lanzarBomba;
+				}
+				else {
+					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
+				}
+			}
+			if (Event.current.type == EventType.Repaint && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition)) {
+				habilidadHover = 2;
+				tipoMenuDerecho = InterfazPrincipal.tMenuDerecho.habilidades;
+				List<int> costes = mejoras.costeHab6;
+				infoSeleccion.Clear();
+				infoSeleccion.Add("Bomba de implosion");
 				infoSeleccion.Add(mejoras.getDescripcionHabilidad(habilidadHover));
 				infoSeleccion.Add(costes[0].ToString());	//Coste ener
 				infoSeleccion.Add(costes[1].ToString());	//Coste comp bas
