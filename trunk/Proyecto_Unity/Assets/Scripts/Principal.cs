@@ -144,7 +144,7 @@ public class Principal : MonoBehaviour {
 		}
 		
 		//Velocidad extra rapida para debug
-		if(Input.GetKeyDown(KeyCode.Alpha5))// && developerMode) 
+		if(Input.GetKeyDown(KeyCode.Alpha5) && developerMode) 
 			setEscalaTiempo(50.0f);
 		
 		//Activar/desactivar developer mode (maximos recursos)
@@ -501,7 +501,7 @@ public class Principal : MonoBehaviour {
 				
 		if(desactivarEdificios && desactivarHabilidades)
 		{
-			GUI.changed = true;
+			interfaz.filtrosModificados = true;
 			//MENSAJE: "Algunos edificios y habilidades han sido desactivados por falta de energía"
 			
 		}
@@ -512,7 +512,7 @@ public class Principal : MonoBehaviour {
 		}
 		else if(desactivarHabilidades)
 		{
-			GUI.changed = true;
+			interfaz.filtrosModificados = true;
 			//MENSAJE: "Algunas habilidades han sido desactivadas por falta de energía"
 		}
 
