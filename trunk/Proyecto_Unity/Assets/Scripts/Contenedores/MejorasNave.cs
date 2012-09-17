@@ -42,10 +42,10 @@ public class MejorasNave : MonoBehaviour {
 	private string descripcionMejAlmBio			= "Investiga la tecnologia genetica. Para almacenar el material mas sensible obtenido de los serves vivos en condiciones higienicas y seguras, a salvo de radiacciones, mimetizando la gravedad, temperatura y humedad de un planeta en un contenedor. \n(Permite almacenar Material Biologico y construir las granjas)";
 	private string descripcionMejAlm1			= "Mejorando los algoritmos de ordenacion de los contenedores de la nave se obtiene un incremento en la capacidad de almacenaje. Viene con un contenedor gratis. \n(Mejora la Capacidad de Almacenamiento)";
 	private string descripcionMejAlm2			= "Añadiendo contenedores de cada clase se amplia enormemente el espacio de almacenaje. (Mejora la Capacidad de Carga)";
-	private string descripcionMejEner1			= "Añade un condensador con receptores de microondas para almacenar el excedente de energia producido por las centrales planetarias. \n(Aumenta la Energia Maxima disponible)";
+	private string descripcionMejEner1			= "Un array de paneles solares capta la energia de la estrella durante el dia, y la almacena para su posterior uso. (Habilita el Foco Solar)";
 	private string descripcionMejEner2			= "Añade un condensador en forma de anillo que aumenta la capacidad energetica de forma considerable. Ademas sirve de soporte para otras piezas. \n(Aumenta la Energia Maxima disponible y desbloquea otras mejoras)";
-	private string descripcionMejHab1			= "Un array de paneles solares capta la energia de la estrella durante el dia, y la almacena para su posterior uso. (Habilita el Foco Solar)";
-	private string descripcionMejHab2			= "Habilita las armas y los sistemas más avanzados de la nave, incluyendo el portal para traer a nuestra especie al planeta.(Habilita Fertilizante Ecoquímico, Bomba de Implosión Controlada, Virus Selectivo Poblacional y Portal Espacio/temporal)";
+	private string descripcionMejHab1			= "Añade un condensador con receptores de microondas para almacenar el excedente de energia producido por las centrales planetarias, permitiendo a la nave mucha mas potencia. \n(Habilita el Fertilizante Ecoquimico y el Virus Selectivo)";
+	private string descripcionMejHab2			= "Habilita las armas y los sistemas más avanzados de la nave, incluyendo el portal para traer a nuestra especie al planeta.(Habilita Bomba de Implosión Controlada y Portal Espacio/temporal)";
 	
 	//Descripciones habilidades
 	private List<string> habilidades;			//Todas las descripciones de las habilidades
@@ -242,10 +242,10 @@ public class MejorasNave : MonoBehaviour {
 		costeHab7.Add(25);		//Coste mat bio
 		
 		costeHab8 = new List<int>();		//Portal espacio/temporal
-		costeMej8.Add(15000);	//Coste energia
-		costeMej8.Add(2500);	//Coste comp bas
-		costeMej8.Add(1000);	//Coste comp adv
-		costeMej8.Add(100);		//Coste mat bio
+		costeHab8.Add(15000);	//Coste energia
+		costeHab8.Add(2500);	//Coste comp bas
+		costeHab8.Add(1000);	//Coste comp adv
+		costeHab8.Add(100);		//Coste mat bio
 
 	}
 	
@@ -402,6 +402,7 @@ public class MejorasNave : MonoBehaviour {
 	}
 	
 	public void compraMejora10() {	//Desbloqueo habilidades nivel 1
+		principal.mejoraEnergia3();
 		principal.setEnergiaMax(10000);
 		GenHab1.GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[10] = true;

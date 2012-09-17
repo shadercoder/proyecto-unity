@@ -25,10 +25,6 @@ public class SaveData {
 	public int elementosW;
 	public int elementosH;
 	public float[] elementosData;
-	//Textura plantas
-	public int plantasW;
-	public int plantasH;
-	public float[] plantasData;
 	//Textura habitats
 	public int habitatsW;
 	public int habitatsH;
@@ -278,17 +274,6 @@ public class SaveLoad {
 			resultado.elementosData[i * 4 + 2] = temp2[i].b;
 			resultado.elementosData[i * 4 + 3] = temp2[i].a;
 		}
-		//Textura plantas (Textura_planta)
-		resultado.plantasW = contenedor.texturaPlantas.width;
-		resultado.plantasH = contenedor.texturaPlantas.height;
-		Color[] temp3 = contenedor.texturaPlantas.GetPixels();
-		resultado.plantasData = new float[temp3.Length * 4];
-		for (int i = 0; i < temp3.Length; i++) {
-			resultado.plantasData[i * 4] = temp3[i].r;
-			resultado.plantasData[i * 4 + 1] = temp3[i].g;
-			resultado.plantasData[i * 4 + 2] = temp3[i].b;
-			resultado.plantasData[i * 4 + 3] = temp3[i].a;
-		}
 		//Textura habitats (Textura_Habitats)
 		resultado.habitatsW = contenedor.texturaHabitats.width;
 		resultado.habitatsH = contenedor.texturaHabitats.height;
@@ -405,26 +390,14 @@ public class SaveLoad {
 		temp2.SetPixels(temp2a);
 		temp2.Apply();
 		contenedor.texturaElementos = temp2;
-		//Textura plantas (Textura_planta)
-		Texture2D temp3 = new Texture2D(save.plantasW, save.plantasH);
-		Color[] temp3a = new Color[save.plantasData.Length / 4];
-		for (int i = 0; i < temp3a.Length; i++) {
-			temp3a[i].r = save.plantasData[i * 4];
-			temp3a[i].g = save.plantasData[i * 4 + 1];
-			temp3a[i].b = save.plantasData[i * 4 + 2];
-			temp3a[i].a = save.plantasData[i * 4 + 3];
-		}
-		temp3.SetPixels(temp3a);
-		temp3.Apply();
-		contenedor.texturaPlantas = temp3;
 		//Textura habitats (Textura_Habitats)		
 		Texture2D temp4 = new Texture2D(save.habitatsW, save.habitatsH);
 		Color[] temp4a = new Color[save.habitatsData.Length / 4];
 		for (int i = 0; i < temp4a.Length; i++) {
-			temp4a[i].r = save.plantasData[i * 4];
-			temp4a[i].g = save.plantasData[i * 4 + 1];
-			temp4a[i].b = save.plantasData[i * 4 + 2];
-			temp4a[i].a = save.plantasData[i * 4 + 3];
+			temp4a[i].r = save.habitatsData[i * 4];
+			temp4a[i].g = save.habitatsData[i * 4 + 1];
+			temp4a[i].b = save.habitatsData[i * 4 + 2];
+			temp4a[i].a = save.habitatsData[i * 4 + 3];
 		}
 		temp4.SetPixels(temp4a);
 		temp4.Apply();
@@ -443,7 +416,6 @@ public class SaveLoad {
 		contenedor.texturaHabsEstetica = temp5;
 		//Clase Vida
 		rehacerVida(ref contenedor.vida, save.vidaData);
-		contenedor.vida.texturaPlantas = temp3;
 		//Mesh Roca
 		Mesh temp6 = new Mesh();
 		Vector3[] temp6v = new Vector3[save.rocaVertices.Length / 3];
@@ -529,11 +501,9 @@ public class SaveLoad {
 		for (int i = 0; i < vida.edificios.Count; i++) {
 			vidaSerializable.edificios.Add(getEdificioSerializable(vida.edificios[i]));
 		}
-		vidaSerializable.contadorPintarTexturaPlantas = vida.contadorPintarTexturaPlantas;
 		vidaSerializable.idActualAnimal = vida.idActualAnimal;
 		vidaSerializable.idActualEdificio = vida.idActualEdificio;
 		vidaSerializable.idActualVegetal = vida.idActualVegetal;
-		vidaSerializable.texturaPlantasModificado = vida.texturaPlantasModificado;
 		
 		vidaSerializable.posicionesColindantes = new List<Tupla<int,int>>();
 		for (int i = 0; i < vida.posicionesColindantes.Count; i++) {
@@ -548,11 +518,9 @@ public class SaveLoad {
 	 * unos datos serializables.
 	 */
 	private static void rehacerVida(ref Vida vida, VidaSerializable vidaSerializable) {
-		vida.contadorPintarTexturaPlantas = vidaSerializable.contadorPintarTexturaPlantas;
 		vida.idActualAnimal = vidaSerializable.idActualAnimal;
 		vida.idActualEdificio = vidaSerializable.idActualEdificio;
 		vida.idActualVegetal = vidaSerializable.idActualVegetal;
-		vida.texturaPlantasModificado = vidaSerializable.texturaPlantasModificado;
 		
 		vida.posicionesColindantes = new List<Tupla<int,int>>();
 		for (int i = 0; i < vidaSerializable.posicionesColindantes.Count; i++) {
