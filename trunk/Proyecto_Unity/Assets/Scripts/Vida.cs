@@ -70,7 +70,7 @@ public class Vida //: MonoBehaviour
 		posicionesColindantes = FuncTablero.calculaPosicionesColindantes();
 	}	
 	
-	public Vida(Casilla[,] tablero, Texture2D texPlantas, Transform objeto)
+	public Vida(Casilla[,] tablero, Transform objeto)
 	{
 		this.tablero = tablero;
 		especies = new List<Especie>();
