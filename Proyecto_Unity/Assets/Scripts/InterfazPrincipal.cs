@@ -30,7 +30,7 @@ public class InterfazPrincipal : MonoBehaviour
 	private int habilidadHover					= -1;			//La habilidad que se esta viendo (al hacer hover con el raton)
 	public bool filtroHabitats					= false;		//Si está activado el filtro de los hábitatshover con el raton)
 	public bool habilidadFoco					= false;		//Si está activado el foco de visión nocturna
-	//public bool filtrosModificados				= false;		//Indica si se han modificado los filtros y por tanto se tiene que comprobar si tienen que estar activados visualmente o no
+	public bool filtrosModificados				= false;		//Indica si se han modificado los filtros y por tanto se tiene que comprobar si tienen que estar activados visualmente o no
 	
 	//Seleccion de seres
 	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion
@@ -1343,7 +1343,7 @@ public class InterfazPrincipal : MonoBehaviour
 			//Almacenamiento -----------------------------------------------
 			if (mejoras.mejorasCompradas[13] || etapaJuego < tEtapaJuego.fabCompBasConstruida)
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Tecnologia de Material Biologico"), "BotonMejoraAlmacen2")) {
+			if (GUILayout.Button (new GUIContent ("", "Tecnologia de Material Biologico"), "BotonMejoraAlmacen1")) {
 				List<int> costeT = mejoras.getCosteMejora(13);
 				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
@@ -1370,7 +1370,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (mejoras.mejorasCompradas[12] || !mejoras.mejorasCompradas[13])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Tecnologia de Componentes Avanzados"), "BotonMejoraAlmacen1")) {
+			if (GUILayout.Button (new GUIContent ("", "Tecnologia de Componentes Avanzados"), "BotonMejoraAlmacen2")) {
 				List<int> costeT = mejoras.getCosteMejora(12);
 				if (!principal.recursosSuficientes(costeT[0], costeT[1], costeT[2], costeT[3])) {
 					sonidoFX.GetComponent<Audio_SoundFX>().playNumber(2);
@@ -2870,7 +2870,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 			break;
 		}
 		//Fin switch
-		if (GUI.changed) {
+		if (GUI.changed || filtrosModificados) {
 			//TODO [Maf] Faltan los botones para desactivar carnivoros y herbivoros del tiron, que no los he encontrado. 
 			//Solo que se desactiven los ya puestos o un toggle ke se activen en rojo los carnivoros y en verde los herbivoros y sino se desactiven? Lo hablamos.
 						/*En todo caso seria algo asi desactivarlos
