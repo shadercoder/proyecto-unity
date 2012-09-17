@@ -880,7 +880,75 @@ public class Vida //: MonoBehaviour
 			texturaPlantasModificado = false;
 			contadorPintarTexturaPlantas = 0;
 		}*/
-	}		
+	}	
+	public void fertilizanteBioQuimico(EspecieVegetal especieVegetal,EspecieAnimal especieAnimal, float factor)		
+	{
+		Vegetal vegetal;
+		Animal animal;
+		if(especieVegetal != null)
+			for(int i = 0; i < vegetales.Count; i++)
+			{
+				vegetal = vegetales[i];
+				if(vegetal.especie == especieVegetal)			
+					vegetal.habitabilidad[vegetal.indiceHabitat] *= factor;
+			}		
+		if(especieAnimal != null)
+		{
+			for(int i = 0; i < animales.Count; i++)
+			{
+				animal = animales[i];
+				if(animal.especie == especieAnimal)			
+					animal.turnosParaReproduccion = (int)((float)animal.turnosParaReproduccion/factor);
+			}
+			especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].reproductibilidad = (int)((float)especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].reproductibilidad / factor);
+		}
+	}
+	
+	public void virusSelectivoPoblacional(EspecieAnimal especieAnimal, float factor)
+	{
+		Animal animal;
+		if(especieAnimal != null)
+		{
+			for(int i = 0; i < animales.Count; i++)
+			{
+				animal = animales[i];
+				if(animal.especie == especieAnimal)
+				{				
+					animal.turnosParaReproduccion = (int)((float)animal.turnosParaReproduccion*factor);
+					animal.aguante = (int)((float)animal.aguante/factor);				
+				}
+			}		
+			especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].alimentoMaxTurno = (int)((float)especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].alimentoMaxTurno / factor);		
+			especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].consumo = (int)((float)especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].consumo * factor);		
+			especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].reproductibilidad = (int)((float)especiesAnimales[especiesAnimales.IndexOf(especieAnimal)].reproductibilidad * factor);		
+		}
+	}
+	
+	public void bombaImplosion(int posX,int posY)
+	{
+		List<Tupla<int,int,bool>> posiciones = FuncTablero.calculaMatrizRadio3Circular(posX,posY);
+		Animal animal;
+		Vegetal vegetal;
+		Edificio edificio;
+		int x,y;
+		for(int i = 0; i < posiciones.Count; i++)
+		{
+			if(posiciones[i].e3 == true)
+			{
+				x = posiciones[i].e1;
+				y = posiciones[i].e2;				
+				animal = tablero[x,y].animal;
+				vegetal = tablero[x,y].vegetal;
+				edificio = tablero[x,y].edificio;
+				if(animal != null)
+					eliminaAnimal(animal);
+				if(vegetal != null)
+					eliminaVegetal(vegetal);
+				if(edificio != null)
+					eliminaEdificio(edificio);
+			}			
+		}		
+	}	
 }
 
 [System.Serializable]

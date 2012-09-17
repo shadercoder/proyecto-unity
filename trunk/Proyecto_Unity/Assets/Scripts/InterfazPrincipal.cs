@@ -30,6 +30,7 @@ public class InterfazPrincipal : MonoBehaviour
 	private int habilidadHover					= -1;			//La habilidad que se esta viendo (al hacer hover con el raton)
 	public bool filtroHabitats					= false;		//Si está activado el filtro de los hábitatshover con el raton)
 	public bool habilidadFoco					= false;		//Si está activado el foco de visión nocturna
+	//public bool filtrosModificados				= false;		//Indica si se han modificado los filtros y por tanto se tiene que comprobar si tienen que estar activados visualmente o no
 	
 	//Seleccion de seres
 	private List<string> infoSeleccion;							//Contiene la informacion que se mostrará en el bloque derecho concerniente a la seleccion

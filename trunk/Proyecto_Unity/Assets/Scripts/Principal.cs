@@ -9,7 +9,9 @@ public class Principal : MonoBehaviour {
 	//Variables ---------------------------------------------------------------------------------------------------------------------------
 	private InterfazPrincipal interfaz;
 	private MejorasNave mejoras;
+	private Materiales materiales;	
 	private float escalaTiempoAntesMenu;
+	
 	//Trucos
 	public bool developerMode					= true;					//Mientras este a true, maximo de recursos en todo momento
 	
@@ -73,6 +75,7 @@ public class Principal : MonoBehaviour {
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
 		mejoras = GameObject.FindGameObjectWithTag("Mejoras").GetComponent<MejorasNave>();
 		interfaz = gameObject.GetComponent<InterfazPrincipal>();
+		materiales = GameObject.FindGameObjectWithTag ("Materiales").GetComponent<Materiales> ();		
 	}
 	
 	void Start()
@@ -386,69 +389,17 @@ public class Principal : MonoBehaviour {
 	public void calculaDifRecursosSigTurno(int energiaEdificios,int compBasEdificios,int compAvzEdificios,int matBioEdificios)
 	{		
 		/*calculo de costes y producciones de habilidades y mejoras*/
-		int energiaCosteHabilidades = 0;
+		/*int energiaCosteHabilidades = 0;
 		int compBasCosteHabilidades = 0;
 		int compAvzCosteHabilidades = 0;
-		int matBioCosteHabilidades = 0;
+		int matBioCosteHabilidades = 0;*/
+		bool desactivarEdificios = false;
+		bool desactivarHabilidades = false;
 		
-		//Filtro recursos
-		for(int i = 0; i < 2; i++)
-		{
-			if(interfaz.togglesFiltros[i])
-			{
-				energiaCosteHabilidades += mejoras.costeHab0[0];
-				compBasCosteHabilidades += mejoras.costeHab0[1];
-				compAvzCosteHabilidades += mejoras.costeHab0[2];
-				matBioCosteHabilidades += mejoras.costeHab0[3];
-			}
-		}
-		
-		//Filtro habitats
-		if (interfaz.filtroHabitats)
-		{
-			energiaCosteHabilidades += mejoras.costeHab1[0];
-			compBasCosteHabilidades += mejoras.costeHab1[1];
-			compAvzCosteHabilidades += mejoras.costeHab1[2];
-			matBioCosteHabilidades += mejoras.costeHab1[3];			
-		}
-		
-		//Filtro Vegetales
-		for(int i = 4; i < 14; i++)
-		{
-			if(interfaz.togglesFiltros[i])
-			{
-				energiaCosteHabilidades += mejoras.costeHab2[0];
-				compBasCosteHabilidades += mejoras.costeHab2[1];
-				compAvzCosteHabilidades += mejoras.costeHab2[2];
-				matBioCosteHabilidades += mejoras.costeHab2[3];
-			}
-		}
-		
-		//Filtro Animales		
-		for(int i = 14; i < 24; i++)
-		{
-			if(interfaz.togglesFiltros[i])
-			{
-				energiaCosteHabilidades += mejoras.costeHab3[0];
-				compBasCosteHabilidades += mejoras.costeHab3[1];
-				compAvzCosteHabilidades += mejoras.costeHab3[2];
-				matBioCosteHabilidades += mejoras.costeHab3[3];
-			}
-		}
-		
-		//Habilidad Foco
-		if (interfaz.filtroHabitats)
-		{
-			energiaCosteHabilidades += mejoras.costeHab4[0];
-			compBasCosteHabilidades += mejoras.costeHab4[1];
-			compAvzCosteHabilidades += mejoras.costeHab4[2];
-			matBioCosteHabilidades += mejoras.costeHab4[3];			
-		}		
-		
-		energiaDif = energiaEdificios + energiaProducidaNave - energiaCosteHabilidades;
-		componentesBasicosDif = compBasEdificios - compBasCosteHabilidades;
-		componentesAvanzadosDif = compAvzEdificios - compAvzCosteHabilidades;
-		materialBiologicoDif = matBioEdificios - matBioCosteHabilidades;
+		energiaDif = energiaEdificios + energiaProducidaNave;
+		componentesBasicosDif = compBasEdificios;
+		componentesAvanzadosDif = compAvzEdificios;
+		materialBiologicoDif = matBioEdificios;
 		
 		int k = 0;
 		Edificio edif;
@@ -461,10 +412,111 @@ public class Principal : MonoBehaviour {
 				componentesBasicosDif = componentesBasicosDif + edif.compBasConsumidosPorTurno - edif.compBasProducidosPorTurno;
 				componentesAvanzadosDif = componentesAvanzadosDif + edif.compAvzConsumidosPorTurno - edif.compAvzProducidosPorTurno;
 				materialBiologicoDif = materialBiologicoDif + edif.matBioConsumidoPorTurno - edif.matBioProducidoPorTurno;
-				edif.modificaEficiencia(0,0,new List<Tupla<int, int, bool>>(),0);			
+				edif.modificaEficiencia(0,0,new List<Tupla<int, int, bool>>(),0);
+				desactivarEdificios = true;
 			}
 			k++;
 		}
+		
+		//Filtro recursos normales
+		if(interfaz.togglesFiltros[0])
+		{
+			if(energia + energiaDif - mejoras.costeHab0[0] < 0)
+			{				
+				materiales.recursos.SetFloat ("_ComunesOn", 0.0f);
+				interfaz.togglesFiltros[0] = false;		
+				desactivarHabilidades = true;
+			}
+			else
+				energiaDif -= mejoras.costeHab0[0];
+		}
+		
+		//Filtro recursos raros
+		if(interfaz.togglesFiltros[1])
+		{
+			if(energia + energiaDif - mejoras.costeHab0[0] < 0)
+			{				
+				materiales.recursos.SetFloat ("_RarosOn", 0.0f);			
+				interfaz.togglesFiltros[1] = false;	
+				desactivarHabilidades = true;
+			}
+			else
+				energiaDif -= mejoras.costeHab0[0];
+		}		
+		
+		//Filtro habitats
+		if (interfaz.filtroHabitats)
+		{
+			if(energia + energiaDif - mejoras.costeHab1[0] < 0)
+			{				
+				materiales.habitats.SetFloat ("_FiltroOn", 0.0f);			
+				interfaz.filtroHabitats = false;	
+				desactivarHabilidades = true;
+			}
+			else
+				energiaDif -= mejoras.costeHab1[0];		
+		}
+		
+		//Filtro Vegetales
+		for(int i = 4; i < 14; i++)
+		{
+			if(interfaz.togglesFiltros[i])
+			{
+				if(energia + energiaDif - mejoras.costeHab2[0] < 0)
+				{				
+					interfaz.togglesFiltros[i] = false;
+					desactivarHabilidades = true;
+				}
+				else
+					energiaDif -= mejoras.costeHab2[0];		
+			}
+		}
+		
+		//Filtro Animales		
+		for(int i = 14; i < 24; i++)
+		{
+			if(interfaz.togglesFiltros[i])
+			{
+				if(energia + energiaDif - mejoras.costeHab3[0] < 0)
+				{				
+					interfaz.togglesFiltros[i] = false;
+					desactivarHabilidades = true;
+				}
+				else
+					energiaDif -= mejoras.costeHab3[0];		
+			}
+		}
+		
+		//Habilidad Foco
+		if (interfaz.habilidadFoco)
+		{
+			if(energia + energiaDif - mejoras.costeHab4[0] < 0)
+				{				
+					interfaz.habilidadFoco = false;				
+					Camera.main.light.enabled = false;
+					desactivarHabilidades = true;
+				}
+				else
+					energiaDif -= mejoras.costeHab4[0];	
+		}		
+				
+		if(desactivarEdificios && desactivarHabilidades)
+		{
+			GUI.changed = true;
+			//MENSAJE: "Algunos edificios y habilidades han sido desactivados por falta de energía"
+			
+		}
+		else if(desactivarEdificios)
+		{
+			//MENSAJE: "Algunos edificios han sido desactivados por falta de energía"
+			
+		}
+		else if(desactivarHabilidades)
+		{
+			GUI.changed = true;
+			//MENSAJE: "Algunas habilidades han sido desactivadas por falta de energía"
+		}
+
 	}
 	
 	//Actualiza los recursos sumando o restando
