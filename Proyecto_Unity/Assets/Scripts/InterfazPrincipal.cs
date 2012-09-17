@@ -199,13 +199,13 @@ public class InterfazPrincipal : MonoBehaviour
 	void Update ()
 	{
 		if (principal.developerMode) {
-			mostrarInfoCasilla = true;
+			mejoraInfoCasilla = true;
 			mostrarInfoHabitat = true;
 			mostrarInfoMetalesRaros = true;
 			mostrarInfoSeres = true;
 		}
 		else {
-			mostrarInfoCasilla = mejoras.mejorasCompradas[0];
+			mejoraInfoCasilla = mejoras.mejorasCompradas[0];
 			mostrarInfoHabitat = mejoras.mejorasCompradas[1];
 			mostrarInfoMetalesRaros = mejoras.mejorasCompradas[2];
 			mostrarInfoSeres = mejoras.mejorasCompradas[3];

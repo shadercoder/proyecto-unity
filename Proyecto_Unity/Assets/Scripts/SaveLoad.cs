@@ -52,6 +52,13 @@ public class SaveData {
 	//Variables de control del planeta
 	public float nivelAgua;
 	public float tamanoPlaya;
+	//Variables de juego
+	public int energia;
+	public int compBas;
+	public int compAdv;
+	public int matBio;
+	
+	public bool[] mejorasCompradas;
 
 
   	public SaveData () {}
@@ -198,6 +205,7 @@ public class SaveLoad {
 	public static ModelosAnimales modelosAnimales;
 	public static ModelosEdificios modelosEdificios;
 	public static ModelosVegetales modelosVegetales;
+	public static GameObject objetoRoca;
 	public static string currentFileName = "SaveGame.hur";						
 	public static string currentFilePath = Application.persistentDataPath + "/Saves/";
 	
@@ -354,6 +362,15 @@ public class SaveLoad {
 		//Otras variables
 		resultado.nivelAgua = contenedor.nivelAgua;
 		resultado.tamanoPlaya = contenedor.tamanoPlaya;
+
+		resultado.energia = contenedor.energia;
+		resultado.compBas = contenedor.compBas;
+		resultado.compAdv = contenedor.compAdv;
+		resultado.matBio = contenedor.matBio;
+		resultado.mejorasCompradas = new bool[contenedor.mejorasCompradas.Length];
+		for (int i = 0; i < contenedor.mejorasCompradas.Length; i++) {
+			resultado.mejorasCompradas[i] = contenedor.mejorasCompradas[i];
+		}
 		//Fin
 		return resultado;
 	}
@@ -479,6 +496,15 @@ public class SaveLoad {
 		//Otras variables
 		contenedor.nivelAgua = save.nivelAgua;
 		contenedor.tamanoPlaya = save.tamanoPlaya;
+		
+		contenedor.energia = save.energia;
+		contenedor.compBas = save.compBas;
+		contenedor.compAdv = save.compAdv;
+		contenedor.matBio = save.matBio;
+		contenedor.mejorasCompradas = new bool[save.mejorasCompradas.Length];
+		for (int i = 0; i < save.mejorasCompradas.Length; i++) {
+			contenedor.mejorasCompradas[i] = save.mejorasCompradas[i];
+		}
 		//Fin
 	}
 	
@@ -774,7 +800,7 @@ public class SaveLoad {
 	}
 	
 	private static GameObject getModeloNoSerializableReal(int referencia, Vector3 pos) {
-		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null) {
+		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null || objetoRoca == null) {
 			if (!iniciaVariablesEstaticas()) {
 				Debug.LogError("Error al iniciar variables estaticas. Puede estar en una escena incorrecta?");
 				return null;
@@ -783,60 +809,111 @@ public class SaveLoad {
 		//[Debug] -----------------
 //		Vector3 pos = Vector3.zero;
 		// ------------------------
+		GameObject resultado;
 		switch (referencia) {
 			//Edificios [20-24]
 		case 20:		//Fabrica componentes basicos
-			return FuncTablero.creaMesh(pos, modelosEdificios.fabCompBas);
+			resultado = FuncTablero.creaMesh(pos, modelosEdificios.fabCompBas);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 21:		//Central de energia
-			return FuncTablero.creaMesh(pos, modelosEdificios.centralEnergia) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosEdificios.centralEnergia);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 22:		//Granja
-			return FuncTablero.creaMesh(pos, modelosEdificios.granja) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosEdificios.granja);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 23:		//Fabrica componentes avanzados
-			return FuncTablero.creaMesh(pos, modelosEdificios.fabCompAdv) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosEdificios.fabCompAdv);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 24:		//Central energia avanzada
-			return FuncTablero.creaMesh(pos, modelosEdificios.centralEnergiaAdv) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosEdificios.centralEnergiaAdv);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		//Animales [10-19]
 		case 10:		//Conejo
-			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.herbivoro1[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 11:		//Camello
-			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.herbivoro2[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 12:		//Tortuga
-			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.herbivoro3[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 13:		//Ciervo
-			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.herbivoro4[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 14:		//Salamandra
-			return FuncTablero.creaMesh(pos, modelosAnimales.herbivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.herbivoro5[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 15:		//Zorro
-			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro1[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.carnivoro1[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 16:		//Lobo
-			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro2[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.carnivoro2[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 17:		//Serpiente
-			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro3[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.carnivoro3[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 18:		//Tigre
-			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro4[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.carnivoro4[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 19:		//Velociraptor
-			return FuncTablero.creaMesh(pos, modelosAnimales.carnivoro5[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosAnimales.carnivoro5[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		//Vegetales [0-9]
 		case 0:	//Seta
-			return FuncTablero.creaMesh(pos, modelosVegetales.setas[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.setas[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 1:	//Flor
-			return FuncTablero.creaMesh(pos, modelosVegetales.flores[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.flores[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 2:	//Caña
-			return FuncTablero.creaMesh(pos, modelosVegetales.canas[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.canas[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 3:	//Arbusto
-			return FuncTablero.creaMesh(pos, modelosVegetales.arbustos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.arbustos[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 4:	//Estromatolito
-			return FuncTablero.creaMesh(pos, modelosVegetales.estromatolitos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.estromatolitos[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 5:	//Cactus
-			return FuncTablero.creaMesh(pos, modelosVegetales.cactus[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.cactus[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 6:	//Palmera
-			return FuncTablero.creaMesh(pos, modelosVegetales.palmeras[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.palmeras[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 7:	//Pino
-			return FuncTablero.creaMesh(pos, modelosVegetales.pinos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.pinos[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 8:	//Cipres
-			return FuncTablero.creaMesh(pos, modelosVegetales.cipreses[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.cipreses[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		case 9:	//Pino alto
-			return FuncTablero.creaMesh(pos, modelosVegetales.pinosAltos[UnityEngine.Random.Range(0,4)]) as GameObject;
+			resultado = FuncTablero.creaMesh(pos, modelosVegetales.pinosAltos[UnityEngine.Random.Range(0,4)]);
+			resultado.transform.position = objetoRoca.transform.TransformPoint(resultado.transform.position);
+			return resultado;
 		default:
 			Debug.LogError("La referencia de entrada al metodo getModeloNoSerializableReal(int, Vector3) no es valida! Num = " + referencia.ToString());
 			return GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -844,7 +921,7 @@ public class SaveLoad {
 	}
 	
 	private static GameObject getModeloNoSerializableReferencia(int referencia, int numero) {
-		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null) {
+		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null || objetoRoca == null) {
 			if (!iniciaVariablesEstaticas()) {
 				Debug.LogError("Error al iniciar variables estaticas. Puede estar en una escena incorrecta?");
 				return null;
@@ -929,7 +1006,8 @@ public class SaveLoad {
 		modelosVegetales = temp.GetComponent<ModelosVegetales>();
 		temp = GameObject.FindGameObjectWithTag("ModelosEdificios");
 		modelosEdificios = temp.GetComponent<ModelosEdificios>();
-		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null)
+		objetoRoca = GameObject.FindGameObjectWithTag("Planeta");
+		if (modelosAnimales == null || modelosEdificios == null || modelosVegetales == null || objetoRoca == null)
 			return false;
 		else 
 			return true;
