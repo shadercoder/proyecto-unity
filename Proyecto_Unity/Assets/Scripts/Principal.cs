@@ -198,14 +198,14 @@ public class Principal : MonoBehaviour {
 		
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Cargando texturas de habitats...");
 		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 1ª posicion.
-		Texture2D texElems = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
-		Texture2D texPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
+		Texture2D texElems = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
+		//Texture2D texPlantas = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
 		Texture2D texHabitatsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
 		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando el tablero...");
 		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.mesh, objetoRoca.transform.position);
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando Vida...");
-		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
+		vida = new Vida(tablero, objetoRoca.transform);				
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
 	}
 	
