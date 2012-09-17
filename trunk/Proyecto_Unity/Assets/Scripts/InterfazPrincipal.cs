@@ -2148,6 +2148,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 						if (temp.habitat == T_habitats.llanura && temp.edificio == null) {
 							principal.consumeRecursos (costes[0], costes[1], costes[2], costes[3]);
 							modeloInsercion.GetComponentInChildren<Renderer>().material.SetColor ("_Tinte", Color.white);
+							modeloInsercion.GetComponentInChildren<Renderer>().material.SetFloat ("_FiltroOn", 0.0f);
 							modeloInsercion.GetComponentInChildren<Animation>().Play();
 							etapaJuego = InterfazPrincipal.tEtapaJuego.portalConstruido;
 						} else {
