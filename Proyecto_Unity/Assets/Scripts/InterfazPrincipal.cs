@@ -257,15 +257,12 @@ public class InterfazPrincipal : MonoBehaviour
 		if (virusActivo && (turnoVirus + duracionVirus) <= principal.numPasos) {
 			principal.vida.virusSelectivoPoblacional(animalVirus, factorVirusNeg);
 			virusActivo = false;
-		}
+		}		
 		
-		if (etapaJuego == InterfazPrincipal.tEtapaJuego.portalConstruido) {
-			Debug.Log("Juego terminado");
-		}
 	}
 
 	void OnGUI ()
-	{
+	{		
 		if (accionAnterior != accion) {
 			forzarTooltip = false;
 			actualizarEstilosBotones ();
@@ -274,6 +271,9 @@ public class InterfazPrincipal : MonoBehaviour
 			accionAnterior = accion;
 		}
 		GUI.skin = estilo;
+		if (etapaJuego == InterfazPrincipal.tEtapaJuego.portalConstruido) {
+			menuFinalizar();
+		}
 		aspectRatioNumerico = (float)Screen.width / (float)Screen.height;
 		//16:9
 		if (aspectRatioNumerico >= 1.69) {
@@ -324,6 +324,37 @@ public class InterfazPrincipal : MonoBehaviour
 		if (activarTooltip)
 			mostrarToolTip ();
 		
+		
+		
+	}
+	
+	private void menuFinalizar() {
+		principal.setEscalaTiempo (0);
+		float posicionBloque = 0;
+		switch (aspectRatio) {
+		case taspectRatio.aspectRatio16_9:	//45
+			posicionBloque = 20f;
+			break;
+		case taspectRatio.aspectRatio16_10: //50
+			posicionBloque = 22.5f;
+			break;
+		case taspectRatio.aspectRatio4_3:	//60
+			posicionBloque = 27.5f;
+			break;
+		default:
+			break;
+		}
+		GUI.Box(new Rect(cuantoW * 30, cuantoH * posicionBloque, cuantoW * 20, cuantoH * 5), "");
+		GUI.Label(new Rect(cuantoW * 31, cuantoH * (posicionBloque + 1), cuantoW * 18, cuantoH * 1), "¡Enhorabuena! ¡Ha completado la terraformacion!");
+		GUI.Label(new Rect(cuantoW * 31, cuantoH * (posicionBloque + 2), cuantoW * 18, cuantoH * 1), "Puede seguir colonizando otros planetas, si lo desea.");
+		if (GUI.Button(new Rect(cuantoW * 31, cuantoH * (posicionBloque + 3), cuantoW * 18, cuantoH * 1), "Continuar")) {
+			FuncTablero.quitaPerlin ();
+			principal.setEscalaTiempo (1);
+			Application.LoadLevel ("Escena_Inicial");
+		}
+		if (GUI.Button(new Rect(0, 0, cuantoW * 80, cuantoH * 60), "", "EstiloVacio")){
+			Debug.Log("Click fuera de ventana");
+		}
 	}
 
 	//Dibuja el bloque superior de la ventana que contiene: tiempo, control velocidad, conteo de recursos y menu principal
@@ -1547,7 +1578,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[10])
+			if (!mejoras.mejorasCompradas[10] && !fertilizanteActivo)
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa el Fertilizante Ecoquímico"), "BotonHabilidad7")) {
 				List<int> costes = mejoras.costeHab5;
@@ -1572,7 +1603,7 @@ public class InterfazPrincipal : MonoBehaviour
 			}
 			GUI.enabled = true;
 			GUILayout.Space (cuantoW);
-			if (!mejoras.mejorasCompradas[10])
+			if (!mejoras.mejorasCompradas[10] && !virusActivo)
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("", "Activa el Virus Selectivo Poblacional"), "BotonHabilidad9")) {
 				List<int> costes = mejoras.costeHab7;
