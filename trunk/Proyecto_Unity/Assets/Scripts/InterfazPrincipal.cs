@@ -3327,7 +3327,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 				infoSeleccion.Add("" + (edificio.energiaProducidaPorTurnoMax - edificio.energiaConsumidaPorTurnoMax));		//Produccion de energia
 				infoSeleccion.Add("" + (edificio.compBasProducidosPorTurnoMax - edificio.compBasConsumidosPorTurnoMax));	//Produccion en comp bas
 				infoSeleccion.Add("" + (edificio.compAvzProducidosPorTurnoMax - edificio.compAvzConsumidosPorTurnoMax));	//Produccion en comp adv
-				if (edificio.nombre == "Granja") 
+				if (edificio.idTipoEdificio == 2) 
 					infoSeleccion.Add("?");
 				else
 					infoSeleccion.Add("" + (edificio.matBioProducidoPorTurnoMax - edificio.matBioConsumidoPorTurnoMax));		//Produccion en mat bio
@@ -3343,14 +3343,19 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 	private void imagenInsercionBloqueDerecho() {
 		switch ((int)elementoInsercionDerecho) {
 		case 1:		//fabricaCompBas
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio1");
 			break;
 		case 2: 	//central energia
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio2");
 			break;
 		case 3: 	//granja
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio3");
 			break;
 		case 4: 	//fab comp adv
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio4");
 			break;
 		case 5: 	//energia adv
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio5");
 			break;
 		case 6: 	//seta
 			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta1");
@@ -3420,14 +3425,19 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 	private void imagenSeleccionBloqueDerecho() {
 		switch (tipoSeleccion) {
 		case 20:		//fabricaCompBas
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio1");
 			break;
 		case 21: 	//central energia
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio2");
 			break;
 		case 22: 	//granja
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio3");
 			break;
 		case 23: 	//fab comp adv
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio4");
 			break;
 		case 24: 	//energia adv
+			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaEdificio5");
 			break;
 		case 0: 	//seta
 			GUI.Box (new Rect (cuantoW, 3 * cuantoH, 9 * cuantoW, 4 * cuantoH), "", "MiniaturaPlanta1");
