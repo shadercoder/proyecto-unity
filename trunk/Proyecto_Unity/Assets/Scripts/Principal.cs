@@ -141,7 +141,7 @@ public class Principal : MonoBehaviour {
 		}
 		
 		//Velocidad extra rapida para debug
-		if(Input.GetKeyDown(KeyCode.Alpha5) && developerMode) 
+		if(Input.GetKeyDown(KeyCode.Alpha5))// && developerMode) 
 			setEscalaTiempo(50.0f);
 		
 		//Activar/desactivar developer mode (maximos recursos)
@@ -449,6 +449,22 @@ public class Principal : MonoBehaviour {
 		componentesBasicosDif = compBasEdificios - compBasCosteHabilidades;
 		componentesAvanzadosDif = compAvzEdificios - compAvzCosteHabilidades;
 		materialBiologicoDif = matBioEdificios - matBioCosteHabilidades;
+		
+		int k = 0;
+		Edificio edif;
+		while((energia + energiaDif < 0) && k <= vida.edificios.Count)
+		{		
+			edif = vida.edificios[k];
+			if(edif.tipo.idTipoEdificio != 1 && edif.tipo.idTipoEdificio != 4)
+			{
+				energiaDif = energiaDif + edif.energiaConsumidaPorTurno - edif.energiaProducidaPorTurno;
+				componentesBasicosDif = componentesBasicosDif + edif.compBasConsumidosPorTurno - edif.compBasProducidosPorTurno;
+				componentesAvanzadosDif = componentesAvanzadosDif + edif.compAvzConsumidosPorTurno - edif.compAvzProducidosPorTurno;
+				materialBiologicoDif = materialBiologicoDif + edif.matBioConsumidoPorTurno - edif.matBioProducidoPorTurno;
+				edif.modificaEficiencia(0,0,new List<Tupla<int, int, bool>>(),0);			
+			}
+			k++;
+		}
 	}
 	
 	//Actualiza los recursos sumando o restando
