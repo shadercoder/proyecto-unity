@@ -812,7 +812,7 @@ public class Vida //: MonoBehaviour
 				compBas += compBasEdif;
 				compAvz += compAvzEdif;
 				matBio += matBioEdif;
-				if(edificio.tipo.nombre == "Granja")					
+				if(edificio.tipo.idTipoEdificio == 2)		//Granja (cambiado desde comprobacion por nombre == "Granja")			
 				{
 					int matBioSinProcesar = recolectaAnimalesVegetales(edificio.matrizRadioAccion,edificio.eficiencia);	
 					edificio.ingresaMatBioSinProcesar(matBioSinProcesar);
