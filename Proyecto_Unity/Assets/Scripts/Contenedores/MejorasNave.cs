@@ -19,7 +19,7 @@ public class MejorasNave : MonoBehaviour {
 	public GameObject GeneradorT1;			//Mejora de energia nivel 1
 	public GameObject GeneradorT2;			//Mejora de energia nivel 2
 	public GameObject GenHab1;				//Desbloqueo de habilidades 1
-	public GameObject GenHab2;				//Desbloqueo de habilidades 2
+	public List<GameObject> GenHab2;		//Desbloqueo de habilidades 2
 	//Almacen
 	public GameObject AlmacenT1C;			//Mejora de almacen 1 Com
 	public GameObject AlmacenT1A;			//Mejora de almacen 1 Adv
@@ -409,7 +409,8 @@ public class MejorasNave : MonoBehaviour {
 	
 	public void compraMejora11() {	//Desbloqueo habilidades nivel 2
 		principal.setEnergiaMax(15000);
-		GenHab2.GetComponent<MeshRenderer>().enabled = true;
+		for(int i = 0; i < GenHab2.Count; i++)
+		    GenHab2[i].GetComponent<MeshRenderer>().enabled = true;
 		mejorasCompradas[11] = true;
 	}
 	
