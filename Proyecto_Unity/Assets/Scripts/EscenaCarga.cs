@@ -376,13 +376,9 @@ public class EscenaCarga : MonoBehaviour {
 			Camera.main.animation.Play("AcercarseHolograma");
 			estado = 5;
 		}
-		//[Beta] Desactivado hasta que se arregle el save/load
-//		GUI.enabled = false;
-		if (GUILayout.Button(new GUIContent("Cargar", "En pruebas (Beta)"), "boton_menu_2")) {
+		if (GUILayout.Button(new GUIContent("Cargar", "Acceder a las partidas guardadas"), "boton_menu_2")) {
 			estado = 6;
 		}
-//		GUI.enabled = true;
-		//[Beta] ---------------------------------------------
 		if (GUILayout.Button(new GUIContent("Opciones", "Acceder a las opciones"), "boton_menu_3")) {
 //			Camera.main.animation.Play("AcercarsePantalla");
 			estado = 2;
@@ -435,7 +431,6 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.EndArea();
 		if (GUI.Button(new Rect(cuantoW * 42, cuantoH * 26, cuantoW * 4, cuantoH * 2), new GUIContent("Volver", "Volver al men\u00fa"), "boton_atras")) {
 			PlayerPrefs.Save();
-//			Camera.main.animation.Play("AlejarsePantalla");
 			estado = 0;
 		}
 	}
@@ -533,7 +528,7 @@ public class EscenaCarga : MonoBehaviour {
 			GUILayout.Label("Muy irregular");
 		}
 				
-		if (GUILayout.Button(new GUIContent("Buscar", "Busca un planeta con esos parametros."))) {	
+		if (GUILayout.Button(new GUIContent("Buscar", "Busca un planeta con esos parametros."), GUILayout.Height(cuantoH * 1.5f))) {	
 			FuncTablero.setEscala(escalaInit);
 			FuncTablero.setGanancia(gananciaInit);
 			FuncTablero.setLacunaridad(lacunaridadInit);
@@ -546,7 +541,7 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.EndArea();
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
 		GUILayout.BeginHorizontal();
-		if (GUILayout.Button(new GUIContent("Volver", "Volver al men\u00fa principal"))) {
+		if (GUILayout.Button(new GUIContent("Volver", "Volver al men\u00fa principal"), GUILayout.Height(cuantoH))) {
 			faseCreacion = 0;
 			estado = 0;
 //			objetoRoca.renderer.enabled = false;
@@ -559,7 +554,7 @@ public class EscenaCarga : MonoBehaviour {
 			tooltipTemp	= "Generar un planeta primero";
 			GUI.enabled = false;
 		}
-		if (GUILayout.Button(new GUIContent("Siguiente", tooltipTemp))) {
+		if (GUILayout.Button(new GUIContent("Siguiente", tooltipTemp), GUILayout.Height(cuantoH))) {
 			faseCreacion = 1;	
 		}
 		GUI.enabled = true;
@@ -649,11 +644,11 @@ public class EscenaCarga : MonoBehaviour {
 		GUILayout.EndArea();
 		GUILayout.BeginArea(new Rect(cuantoW * 12, cuantoH * 28, cuantoW * 35, cuantoH * 2));
 		GUILayout.BeginHorizontal();
-		if (GUILayout.Button(new GUIContent("Volver", "Volver a la primera fase"))) {
+		if (GUILayout.Button(new GUIContent("Volver", "Volver a la primera fase"), GUILayout.Height(cuantoH))) {
 			faseCreacion = 0;
 		}
 		GUILayout.Space(cuantoW * 28);
-		if (GUILayout.Button(new GUIContent("Siguiente", "Pasar a la tercera fase"))) {
+		if (GUILayout.Button(new GUIContent("Siguiente", "Pasar a la tercera fase"), GUILayout.Height(cuantoH))) {
 			FuncTablero.setNivelAgua(nivelAguaInit);
 			FuncTablero.setTemperatura(temperaturaInit);
 			FuncTablero.setTamanoPlaya(tamanoPlayasInit);
@@ -674,7 +669,7 @@ public class EscenaCarga : MonoBehaviour {
 		}
 		GUILayout.Space(cuantoW * 28);
 		//Mejor si solo pulsando el boton de comenzar empiezas directamente
-		if (GUILayout.Button(new GUIContent("Comenzar", "Empezar el juego"))) {
+		if (GUILayout.Button(new GUIContent("Comenzar", "Empezar el juego"), GUILayout.Height(cuantoH))) {
 			StartCoroutine(creacionParte3());
 		}
 		GUILayout.EndHorizontal();
