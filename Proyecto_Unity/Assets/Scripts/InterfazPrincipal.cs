@@ -2094,7 +2094,7 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 	
 	private void insertarBomba ()
 	{
-		if (accion == taccion.lanzarFertilizante) {
+		if (accion == taccion.lanzarBomba) {
 			int posX = 0;
 			int posY = 0;
 			RaycastHit hit;
