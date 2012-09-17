@@ -1813,8 +1813,7 @@ public class InterfazPrincipal : MonoBehaviour
 									principal.consumeRecursos (tedif.energiaConsumidaAlCrear, tedif.compBasConsumidosAlCrear, tedif.compAvzConsumidosAlCrear, tedif.matBioConsumidoAlCrear);
 									principal.vida.tablero[posY, posX].edificio.modelo.GetComponentInChildren<Animation>().Play();
 								} else {
-									//[Beta] Sustituir el mensajeNoRecursos por el mensaje apropiado (No se puede construir ahi)
-									GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeNoRecursos;
+									GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeErrorPosicion;
 									Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
 									Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
@@ -1847,6 +1846,9 @@ public class InterfazPrincipal : MonoBehaviour
 									accion = taccion.ninguna;
 								}
 								else {	//No se puede ahi
+									GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeErrorPosicion;
+									Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+									Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 									efectos.playNumber (Random.Range (1, 3));
 								}
@@ -1871,6 +1873,9 @@ public class InterfazPrincipal : MonoBehaviour
 									accion = taccion.ninguna;
 								}
 								else {
+									GameObject mensaje = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().mensajeErrorPosicion;
+									Vector3 posicionMensaje = Vector3.Lerp(modeloInsercion.transform.position, Camera.main.transform.position, 0.15f);
+									Instantiate(mensaje, posicionMensaje, Quaternion.LookRotation(Camera.main.transform.forward));
 									Audio_SoundFX efectos = sonidoFX.GetComponent<Audio_SoundFX> ();
 									efectos.playNumber (Random.Range (1, 3));
 									//Sonidos de error son el 1 y 2
