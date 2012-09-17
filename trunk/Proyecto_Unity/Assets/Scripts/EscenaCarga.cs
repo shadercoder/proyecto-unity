@@ -165,6 +165,10 @@ public class EscenaCarga : MonoBehaviour {
 				temp.texturaHabsEstetica = texHabitatsEstetica;
 				temp.texturaPlantas = texPlantas;
 				temp.vida = vida;
+				temp.energia = 200;
+				temp.compBas = 50;
+				temp.compAdv = 0;
+				temp.matBio = 0;
 				Debug.Log (FuncTablero.formateaTiempo() + ": Valores cargados correctamente. Iniciando carga de nivel...");
 				Application.LoadLevel("Escena_Principal");
 				break;
@@ -579,7 +583,19 @@ public class EscenaCarga : MonoBehaviour {
 		nivelAguaInit = GUILayout.HorizontalSlider(nivelAguaInit, 0.15f, 0.45f);
 		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
-		GUILayout.Label(nivelAguaInit.ToString());
+		float nivelAguaTemp = Mathf.Lerp(0.0f, 1.0f, (nivelAguaInit - 0.15f) / (0.45f - 0.15f));
+		if (nivelAguaTemp <= 0.25f) {
+			GUILayout.Label("Muy bajo");
+		}
+		else if (nivelAguaTemp <= 0.5f) {
+			GUILayout.Label("Bajo");
+		}
+		else if (nivelAguaTemp <= 0.75f) {
+			GUILayout.Label("Alto");
+		}
+		else {
+			GUILayout.Label("Muy alto");
+		}
 		
 		if (GUI.changed) {			
 			objetoRoca.renderer.sharedMaterials[1].SetFloat("_nivelMar", nivelAguaInit);
@@ -591,7 +607,18 @@ public class EscenaCarga : MonoBehaviour {
 		temperaturaInit = GUILayout.HorizontalSlider(temperaturaInit, 0.0f, 1.0f);
 		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
-		GUILayout.Label(temperaturaInit.ToString());
+		if (temperaturaInit <= 0.25f) {
+			GUILayout.Label("Helado");
+		}
+		else if (temperaturaInit <= 0.5f) {
+			GUILayout.Label("Frio");
+		}
+		else if (temperaturaInit <= 0.75f) {
+			GUILayout.Label("Calido");
+		}
+		else {
+			GUILayout.Label("Abrasador");
+		}
 				
 		GUILayout.Label("Longitud de las playas", "label_centrada");
 		GUILayout.BeginHorizontal();
@@ -599,7 +626,20 @@ public class EscenaCarga : MonoBehaviour {
 		tamanoPlayasInit = GUILayout.HorizontalSlider(tamanoPlayasInit, 0.02f, 0.06f);
 		GUILayout.Label("Max");
 		GUILayout.EndHorizontal();
-		GUILayout.Label(tamanoPlayasInit.ToString());
+		float tamanoPlayasTemp = Mathf.Lerp(0.0f, 1.0f, (tamanoPlayasInit - 0.02f) / (0.06f - 0.02f));
+		if (tamanoPlayasTemp <= 0.25f) {
+			GUILayout.Label("Muy peque\u00f1as");
+		}
+		else if (tamanoPlayasTemp <= 0.5f) {
+			GUILayout.Label("Cortas");
+		}
+		else if (tamanoPlayasTemp <= 0.75f) {
+			GUILayout.Label("Largas");
+		}
+		else {
+			GUILayout.Label("Enormes");
+		}
+//		GUILayout.Label(tamanoPlayasInit.ToString());
 		
 		if (GUI.changed) {			
 			objetoRoca.renderer.sharedMaterials[1].SetFloat("_tamPlaya", tamanoPlayasInit);

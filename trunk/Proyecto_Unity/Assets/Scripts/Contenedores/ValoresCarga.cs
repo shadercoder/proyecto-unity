@@ -13,5 +13,13 @@ public class ValoresCarga : MonoBehaviour {
 	public Mesh agua;
 	public float nivelAgua;
 	public float tamanoPlaya;
+	
 	public SaveData save;
+	
+	public int energia;
+	public int compBas;
+	public int compAdv;
+	public int matBio;
+	
+	public bool[] mejorasCompradas;
 }

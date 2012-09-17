@@ -17,7 +17,6 @@ public class Principal : MonoBehaviour {
 	public GameObject camaraPrincipal;									//Para mostrar el mundo completo (menos escenas especiales)
 	public GameObject objetoOceano;										//El objeto que representa la esfera del oceano
 	public GameObject objetoRoca;										//El objeto que representa la esfera de la roca
-//	private Texture2D texPlantas;										//La textura donde se pintan las plantas 
 	private GameObject contenedor;										//El contenedor de las texturas de la primera escena
 		
 	//Recursos
@@ -70,15 +69,14 @@ public class Principal : MonoBehaviour {
 			ValoresCarga cont = contenedor.GetComponent<ValoresCarga>();
 			creacionCarga(cont);
 			hechaCarga = true;
-			vida.setObjetoRoca(objetoRoca.transform);
 		}
-		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");			
+		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
+		mejoras = GameObject.FindGameObjectWithTag("Mejoras").GetComponent<MejorasNave>();
 	}
 	
 	void Start()
 	{
 		interfaz = gameObject.GetComponent<InterfazPrincipal>();
-		mejoras = GameObject.FindGameObjectWithTag("Mejoras").GetComponent<MejorasNave>();
 	}
 	
 	void FixedUpdate() {
@@ -202,7 +200,6 @@ public class Principal : MonoBehaviour {
 		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando el tablero...");
 		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.mesh, objetoRoca.transform.position);
-//		Casilla[,] tablero = FuncTablero.iniciaTablero(texturaBase, texHabitats, texHabitatsEstetica, texElems, Roca.sharedMesh, objetoRoca.transform.position);
 		Debug.Log (FuncTablero.formateaTiempo() + ": Terminado. Creando Vida...");
 		vida = new Vida(tablero, texPlantas, objetoRoca.transform);				
 		Debug.Log (FuncTablero.formateaTiempo() + ": Completada la creacion del planeta.");
@@ -211,6 +208,7 @@ public class Principal : MonoBehaviour {
 	private void creacionCarga(ValoresCarga contenedor) {
 		Debug.Log (FuncTablero.formateaTiempo() + ": Iniciando el script de carga de valores...");
 		Texture2D texBase = contenedor.texturaBase;
+		FuncTablero.inicializa(texBase);
 		Mesh rocaMesh = contenedor.roca;
 		Mesh aguaMesh = contenedor.agua;
 		float nivelAgua = contenedor.nivelAgua;
@@ -553,6 +551,13 @@ public class Principal : MonoBehaviour {
 		contenedor.agua = objetoOceano.GetComponent<MeshFilter>().mesh;
 		contenedor.nivelAgua = FuncTablero.getNivelAgua();
 		contenedor.tamanoPlaya = FuncTablero.getTamanoPlaya();
+		
+		contenedor.energia = energia;
+		contenedor.compBas = componentesBasicos;
+		contenedor.compAdv = componentesAvanzados;
+		contenedor.matBio = materialBiologico;
+		
+		contenedor.mejorasCompradas = mejoras.mejorasCompradas;
 	}
 	
 	public void mejoraEnergia1() {
@@ -573,8 +578,67 @@ public class Principal : MonoBehaviour {
 	
 	public void completarCarga() {
 		if (hechaCarga) {
-			SaveData save = contenedor.GetComponent<ValoresCarga>().save;
+			ValoresCarga temp = contenedor.GetComponent<ValoresCarga>();
+			SaveData save = temp.save;
 			SaveLoad.colocarSeresTablero(ref vida, save.vidaData);
+			energia = temp.energia;
+			componentesBasicos = temp.compBas;
+			componentesAvanzados = temp.compAdv;
+			materialBiologico = temp.matBio;
+			for (int i = 0; i < temp.mejorasCompradas.Length; i++) {
+				if (temp.mejorasCompradas[i]) {
+					switch (i) {
+					case 0: 
+						mejoras.compraMejora0();
+						break;
+					case 1: 
+						mejoras.compraMejora1();
+						break;
+					case 2: 
+						mejoras.compraMejora2();
+						break;
+					case 3: 
+						mejoras.compraMejora3();
+						break;
+					case 4: 
+						mejoras.compraMejora4();
+						break;
+					case 5: 
+						mejoras.compraMejora5();
+						break;
+					case 6: 
+						mejoras.compraMejora6();
+						break;
+					case 7: 
+						mejoras.compraMejora7();
+						break;
+					case 8: 
+						mejoras.compraMejora8();
+						break;
+					case 9: 
+						mejoras.compraMejora9();
+						break;
+					case 10: 
+						mejoras.compraMejora10();
+						break;
+					case 11: 
+						mejoras.compraMejora11();
+						break;
+					case 12: 
+						mejoras.compraMejora12();
+						break;
+					case 13: 
+						mejoras.compraMejora13();
+						break;
+					case 14: 
+						mejoras.compraMejora14();
+						break;
+					case 15: 
+						mejoras.compraMejora15();
+						break;
+					}
+				}
+			}
 		}
 	}
 }
