@@ -169,6 +169,7 @@ public class EscenaCarga : MonoBehaviour {
 				temp.compBas = 50;
 				temp.compAdv = 0;
 				temp.matBio = 0;
+				temp.etapaJuego = 0;
 				Debug.Log (FuncTablero.formateaTiempo() + ": Valores cargados correctamente. Iniciando carga de nivel...");
 				Application.LoadLevel("Escena_Principal");
 				break;

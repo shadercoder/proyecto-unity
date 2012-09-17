@@ -59,6 +59,8 @@ public class SaveData {
 	public int matBio;
 	
 	public bool[] mejorasCompradas;
+	
+	public int etapaJuego;
 
 
   	public SaveData () {}
@@ -371,6 +373,7 @@ public class SaveLoad {
 		for (int i = 0; i < contenedor.mejorasCompradas.Length; i++) {
 			resultado.mejorasCompradas[i] = contenedor.mejorasCompradas[i];
 		}
+		resultado.etapaJuego = contenedor.etapaJuego;
 		//Fin
 		return resultado;
 	}
@@ -505,6 +508,7 @@ public class SaveLoad {
 		for (int i = 0; i < save.mejorasCompradas.Length; i++) {
 			contenedor.mejorasCompradas[i] = save.mejorasCompradas[i];
 		}
+		contenedor.etapaJuego = save.etapaJuego;
 		//Fin
 	}
 	

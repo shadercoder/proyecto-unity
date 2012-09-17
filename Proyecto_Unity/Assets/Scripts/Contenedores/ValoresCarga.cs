@@ -22,4 +22,6 @@ public class ValoresCarga : MonoBehaviour {
 	public int matBio;
 	
 	public bool[] mejorasCompradas;
+	
+	public int etapaJuego;
 }
