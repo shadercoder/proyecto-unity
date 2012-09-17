@@ -6,4 +6,6 @@ public class Particulas : MonoBehaviour {
 	public GameObject mensajeNoRecursos;
 	public GameObject mensajeErrorPosicion;
 	
+	public GameObject explosion;
+	
 }
