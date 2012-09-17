@@ -239,7 +239,7 @@ public class Principal : MonoBehaviour {
 		
 		Debug.Log (FuncTablero.formateaTiempo() + ": Cargando texturas de habitats...");
 		//obtener la textura de habitats del array de materiales de roca. Habitats esta en la 1ª posicion.
-		objetoRoca.renderer.sharedMaterials[3].mainTexture = contenedor.texturaElementos;
+		objetoRoca.renderer.sharedMaterials[2].mainTexture = contenedor.texturaElementos;
 		objetoRoca.renderer.sharedMaterials[1].mainTexture = contenedor.texturaHabsEstetica;
 		Texture2D texHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
 		texHabitats = contenedor.texturaHabitats;
@@ -610,7 +610,7 @@ public class Principal : MonoBehaviour {
 	
 	public void rellenaContenedor(ref ValoresCarga contenedor) {
 		contenedor.texturaBase = objetoRoca.renderer.sharedMaterial.mainTexture as Texture2D;
-		contenedor.texturaElementos = objetoRoca.renderer.sharedMaterials[3].mainTexture as Texture2D;
+		contenedor.texturaElementos = objetoRoca.renderer.sharedMaterials[2].mainTexture as Texture2D;
 		contenedor.texturaHabitats = objetoRoca.renderer.sharedMaterials[1].GetTexture("_FiltroTex") as Texture2D;
 		contenedor.texturaHabsEstetica = objetoRoca.renderer.sharedMaterials[1].mainTexture as Texture2D;
 		contenedor.vida = vida;
