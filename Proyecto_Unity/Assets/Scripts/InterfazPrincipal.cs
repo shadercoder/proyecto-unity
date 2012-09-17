@@ -1605,7 +1605,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[10] && !virusActivo)
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Activa el Virus Selectivo Poblacional"), "BotonHabilidad9")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa el Virus Selectivo Poblacional"), "BotonHabilidad8")) {
 				List<int> costes = mejoras.costeHab7;
 				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					accion = InterfazPrincipal.taccion.lanzarVirus;
@@ -1630,7 +1630,7 @@ public class InterfazPrincipal : MonoBehaviour
 			GUILayout.Space (cuantoW);
 			if (!mejoras.mejorasCompradas[11])
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("", "Activa la Bomba de Implosión Controlada"), "BotonHabilidad8")) {
+			if (GUILayout.Button (new GUIContent ("", "Activa la Bomba de Implosión Controlada"), "BotonHabilidad9")) {
 				List<int> costes = mejoras.costeHab6;
 				if (principal.recursosSuficientes(costes[0], costes[1], costes[2], costes[3])) {
 					accion = InterfazPrincipal.taccion.lanzarBomba;
@@ -2136,6 +2136,9 @@ rantamplan: public void bombaImplosion(int posX,int posy)
 						principal.consumeRecursos(costes[0], costes[1], costes[2], costes[3]);
 						principal.vida.bombaImplosion(posY, posX);
 						accion = taccion.ninguna;
+						GameObject particula = GameObject.FindGameObjectWithTag("Particulas").GetComponent<Particulas>().explosion;
+						
+						Instantiate(particula, hit.point, Quaternion.LookRotation(Camera.main.transform.up));
 					}
 					
 					else {
