@@ -12,8 +12,8 @@ public class Controles : MonoBehaviour {
 	public Transform objetivo;								//El objetivo sobre el que se mueve la nave
 	public Transform nave;									//La nave sobre la que rota la vista
 		//Para controlar las mejoras
-	public float velocidadX			= 0.3f;					//Controla la velocidad con la que se mueve horizontalmente
-	public float velocidadY			= 0.4f;					//Controla la velocidad con la que se mueve verticalmente
+	public float velocidadX			= 0.15f;					//Controla la velocidad con la que se mueve horizontalmente
+	public float velocidadY			= 0.15f;					//Controla la velocidad con la que se mueve verticalmente
 	public float distMinPolos		= 1.0f;					//La distancia minima hasta los polos
 	public float distCamaraMax		= 6.0f;					//La maxima distancia a la que estara la camara de la nave
 	
@@ -155,13 +155,13 @@ public class Controles : MonoBehaviour {
 	}
 	
 	public void mejoraVelocidad1() {
-		velocidadX = 0.4f;
-		velocidadY = 0.5f;
+		velocidadX = 0.3f;
+		velocidadY = 0.3f;
 	}
 	
 	public void mejoraVelocidad2() {
-		velocidadX = 0.95f;
-		velocidadY = 1.05f;
+		velocidadX = 0.6f;
+		velocidadY = 0.65f;
 	}
 	
 	public void mejoraAislamientoMag() {
