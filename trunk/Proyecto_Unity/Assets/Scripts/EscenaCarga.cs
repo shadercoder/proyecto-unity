@@ -49,8 +49,8 @@ public class EscenaCarga : MonoBehaviour {
 	//Variables de conveniencia
 	private Transform miObjeto;									//Guarda la posicion del objeto para ahorrar calculos
 	
-	private string cadenaCreditos = "\t Hurricane son: \n Marcos Calleja Fern\u00e1ndez\n Aris Goicoechea Lassaletta\n Pablo Pizarro Mole\u00f3n\n" + 
-											"\n\t M\u00fasica a cargo de:\n Easily Embarrased\n Frost-RAVEN";
+	private string cadenaCreditos = "\t Terraform est\u00fa desarrollado por: \n Marcos Calleja Fern\u00e1ndez\n Aris Goicoechea Lassaletta\n Pablo Pizarro Mole\u00f3n\n" + 
+		"\n\t M\u00fasica a cargo de:\n Easily Embarrased\n Frost-RAVEN\n Whitebear";  
 																//Cadena con los créditos a mostrar
 	
 	//Tooltips

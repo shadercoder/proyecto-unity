@@ -161,7 +161,7 @@ public class TiposSeres : MonoBehaviour {
 		habSeta.Add(-0.6f);//costa
 		habSeta.Add(-1.0f);//tundra
 		habSeta.Add(-1.0f);//inhabitable		
-		seta = new EspecieVegetal("Seta",50,1000,100,0.05f,0.02f,7,20,0.01f,habSeta,1,10,modelosVegetales.setas);
+		seta = new EspecieVegetal("Seta",250,1000,100,0.05f,0.02f,7,20,0.01f,habSeta,1,10,modelosVegetales.setas);
 		costeSeta = new List<int>();
 		costeSeta.Add(200);//Coste energia
 		costeSeta.Add(110);//Coste comp bas
@@ -180,7 +180,7 @@ public class TiposSeres : MonoBehaviour {
 		habFlor.Add(-1.0f);//costa
 		habFlor.Add(-1.0f);//tundra
 		habFlor.Add(-1.0f);//inhabitable		
-		flor = new EspecieVegetal("Flor",50,1200,120,0.05f,0.02f,4,10,0.01f,habFlor,2,10,modelosVegetales.flores);//0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
+		flor = new EspecieVegetal("Flor",250,1200,120,0.05f,0.02f,4,10,0.01f,habFlor,2,10,modelosVegetales.flores);//0.3f,0.2f,4,10,0.01f,habFlor,2,modelosVegetales.flores);
 		costeFlor = new List<int>();
 		costeFlor.Add(230);//Coste energia
 		costeFlor.Add(100);//Coste comp bas
@@ -199,7 +199,7 @@ public class TiposSeres : MonoBehaviour {
 		habCana.Add( 0.5f);//costa
 		habCana.Add(-1.0f);//tundra
 		habCana.Add(-1.0f);//inhabitable		
-		palo = new EspecieVegetal("Caña",50,1500,250,0.05f,0.01f,6,8,0.04f,habCana,3,10,modelosVegetales.canas);
+		palo = new EspecieVegetal("Caña",250,1500,250,0.05f,0.01f,6,8,0.04f,habCana,3,10,modelosVegetales.canas);
 		costeCana = new List<int>();
 		costeCana.Add(450);//Coste energia
 		costeCana.Add(150);//Coste comp bas
@@ -218,7 +218,7 @@ public class TiposSeres : MonoBehaviour {
 		habArbusto.Add(-1.0f);//costa
 		habArbusto.Add(-1.0f);//tundra
 		habArbusto.Add(-1.0f);//inhabitable		
-		arbusto = new EspecieVegetal("Arbusto",50,1800,220,0.04f,0.01f,3,20,0.1f,habArbusto,2,5,modelosVegetales.arbustos);
+		arbusto = new EspecieVegetal("Arbusto",250,1800,220,0.04f,0.01f,3,20,0.1f,habArbusto,2,5,modelosVegetales.arbustos);
 		costeArbusto = new List<int>();
 		costeArbusto.Add(420);//Coste energia
 		costeArbusto.Add(170);//Coste comp bas
@@ -237,7 +237,7 @@ public class TiposSeres : MonoBehaviour {
 		habEstrom.Add( 0.8f);//costa
 		habEstrom.Add(-0.4f);//tundra
 		habEstrom.Add(-1.0f);//inhabitable		
-		estrom = new EspecieVegetal("Estromatolito",50,2400,350,0.03f,0.01f,3,25,0.03f,habEstrom,4,5,modelosVegetales.estromatolitos);
+		estrom = new EspecieVegetal("Estromatolito",250,2400,350,0.03f,0.01f,3,25,0.03f,habEstrom,4,5,modelosVegetales.estromatolitos);
 		costeEstromatolito = new List<int>();
 		costeEstromatolito.Add(620);//Coste energia
 		costeEstromatolito.Add(190);//Coste comp bas
@@ -256,7 +256,7 @@ public class TiposSeres : MonoBehaviour {
 		habCactus.Add(-1.0f);//costa
 		habCactus.Add(-1.0f);//tundra
 		habCactus.Add(-1.0f);//inhabitable		
-		cactus = new EspecieVegetal("Cactus",50,2200,320,0.03f,0.03f,8,12,0.07f,habCactus,0,3,modelosVegetales.cactus);
+		cactus = new EspecieVegetal("Cactus",250,2200,320,0.03f,0.03f,8,12,0.07f,habCactus,0,3,modelosVegetales.cactus);
 		costeCactus = new List<int>();
 		costeCactus.Add(600);//Coste energia
 		costeCactus.Add(180);//Coste comp bas
@@ -275,7 +275,7 @@ public class TiposSeres : MonoBehaviour {
 		habPalm.Add( 0.9f);//costa
 		habPalm.Add(-1.0f);//tundra
 		habPalm.Add(-1.0f);//inhabitable		
-		palmera = new EspecieVegetal("Palmera",50,3000,450,0.04f,0.03f,5,15,0.1f,habPalm,3,5,modelosVegetales.palmeras);
+		palmera = new EspecieVegetal("Palmera",250,3000,450,0.04f,0.03f,5,15,0.1f,habPalm,3,5,modelosVegetales.palmeras);
 		costePalmera = new List<int>();
 		costePalmera.Add(1500);//Coste energia
 		costePalmera.Add(280);//Coste comp bas
@@ -294,7 +294,7 @@ public class TiposSeres : MonoBehaviour {
 		habPino.Add(-0.1f);//costa
 		habPino.Add(-1.0f);//tundra
 		habPino.Add(-1.0f);//inhabitable		
-		pino = new EspecieVegetal("Pino",50,3500,420,0.05f,0.02f,5,20,0.15f,habPino,4,5,modelosVegetales.pinos);
+		pino = new EspecieVegetal("Pino",250,3500,420,0.05f,0.02f,5,20,0.15f,habPino,4,5,modelosVegetales.pinos);
 		costePino = new List<int>();
 		costePino.Add(1800);//Coste energia
 		costePino.Add(300);//Coste comp bas
@@ -313,7 +313,7 @@ public class TiposSeres : MonoBehaviour {
 		habCipres.Add(-0.1f);//costa
 		habCipres.Add( 0.8f);//tundra
 		habCipres.Add(-1.0f);//inhabitable		
-		cipres = new EspecieVegetal("Ciprés",50,4000,550,0.06f,0.02f,6,10,0.2f,habCipres,4,5,modelosVegetales.cipreses);
+		cipres = new EspecieVegetal("Ciprés",250,4000,550,0.06f,0.02f,6,10,0.2f,habCipres,4,5,modelosVegetales.cipreses);
 		costeCipres = new List<int>();
 		costeCipres.Add(2500);//Coste energia
 		costeCipres.Add(420);//Coste comp bas
@@ -332,7 +332,7 @@ public class TiposSeres : MonoBehaviour {
 		habPinoAlto.Add(-0.5f);//costa
 		habPinoAlto.Add( 0.3f);//tundra
 		habPinoAlto.Add(-1.0f);//inhabitable		
-		pinoAlto = new EspecieVegetal("Pino Alto",50,5000,650,0.05f,0.02f,6,12,0.2f,habPinoAlto,1,5,modelosVegetales.pinosAltos);
+		pinoAlto = new EspecieVegetal("Pino Alto",250,5000,650,0.05f,0.02f,6,12,0.2f,habPinoAlto,1,5,modelosVegetales.pinosAltos);
 		costePinoAlto = new List<int>();
 		costePinoAlto.Add(3000);//Coste energia
 		costePinoAlto.Add(500);//Coste comp bas
