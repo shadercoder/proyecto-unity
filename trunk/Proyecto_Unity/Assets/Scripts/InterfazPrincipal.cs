@@ -1769,19 +1769,26 @@ public class InterfazPrincipal : MonoBehaviour
 		case taccionMenu.mostrarGuardar:
 			GUI.Box (new Rect (cuantoW * 31, cuantoH * posicionGuardar, cuantoW * 18, cuantoH * 14), new GUIContent (""), "BoxGuardar");
 			posicionScroll = GUI.BeginScrollView (new Rect (cuantoW * 31, cuantoH * posicionGuardar, cuantoW * 18, cuantoH * 12), posicionScroll, new Rect (0, 0, cuantoW * 18, cuantoH * 4 * numSavesExtra));
-			if (GUI.Button (new Rect (cuantoW * 4, 0, cuantoW * 10, cuantoH * 3), new GUIContent ("Nueva partida salvada", "Guardar una nueva partida"))) {
+			if (GUI.Button (new Rect (cuantoW * 3, 0, cuantoW * 12, cuantoH * 3), new GUIContent ("Nueva partida salvada", "Guardar una nueva partida"))) {
 				GameObject contenedor = GameObject.FindGameObjectWithTag ("Carga");
 				ValoresCarga temp = contenedor.GetComponent<ValoresCarga> ();
 				principal.rellenaContenedor (ref temp);
 				string fecha = System.DateTime.Now.ToString ().Replace ("\\", "").Replace ("/", "").Replace (" ", "").Replace (":", "");
 				SaveLoad.cambiaFileName ("Partida" + fecha + ".hur");
 				SaveLoad.Save (temp);
+				//Recargar los saves para actualizar estado
+				numSaves = SaveLoad.FileCount ();
+				nombresSaves = new string[numSaves];
+				nombresSaves = SaveLoad.getFileNames ();
+				numSavesExtra = numSaves - 3;
+				if (numSavesExtra < 0)
+					numSavesExtra = 0;
 				//Recuperar estado normal
 				accion = InterfazPrincipal.taccion.ninguna;
 				principal.setEscalaTiempo (escalaTiempoAntesMenu);
 			}
 			for (int i = 0; i < numSaves; i++) {
-				if (GUI.Button (new Rect (cuantoW * 5, (i + 1) * cuantoH * 3, cuantoW * 10, cuantoH * 3), new GUIContent (nombresSaves[i], "Sobreescribir partida num. " + i))) {
+				if (GUI.Button (new Rect (cuantoW * 3, (i + 1) * cuantoH * 3, cuantoW * 12, cuantoH * 3), new GUIContent (nombresSaves[i], "Sobreescribir partida num. " + i))) {
 					GameObject contenedor = GameObject.FindGameObjectWithTag ("Carga");
 					ValoresCarga temp = contenedor.GetComponent<ValoresCarga> ();
 					principal.rellenaContenedor (ref temp);
