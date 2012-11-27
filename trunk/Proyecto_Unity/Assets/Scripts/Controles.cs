@@ -12,10 +12,13 @@ public class Controles : MonoBehaviour {
 	public Transform objetivo;								//El objetivo sobre el que se mueve la nave
 	public Transform nave;									//La nave sobre la que rota la vista
 		//Para controlar las mejoras
-	public float velocidadX			= 0.15f;					//Controla la velocidad con la que se mueve horizontalmente
-	public float velocidadY			= 0.15f;					//Controla la velocidad con la que se mueve verticalmente
-	public float distMinPolos		= 1.0f;					//La distancia minima hasta los polos
-	public float distCamaraMax		= 6.0f;					//La maxima distancia a la que estara la camara de la nave
+	public float velocidadX			= 0.1f;				//Controla la velocidad con la que se mueve horizontalmente
+	public float velocidadY			= 0.15f;				//Controla la velocidad con la que se mueve verticalmente
+	public float distMinPolos		= 4.5f;					//La distancia minima hasta los polos
+	public float distCamaraMax		= 3.0f;					//La maxima distancia a la que estara la camara de la nave
+	public float orbitaIni			= 7.5f;					//La distancia al planeta al iniciar el juego
+	public float mejoraOrbita		= 2.0f;					//La distancia sumada a la orbita al mejorarla
+	public float tiempoMejora		= 3.0f;					//Tiempo en segundos en subir de orbita
 	
 	/*
 	 * Despues de experimentar con estos valores un poco, creo que un buen comienzo (el inicio del juego)
@@ -49,13 +52,14 @@ public class Controles : MonoBehaviour {
 	private float tiempoIniOrbita	= 0.0f;					//El momento exacto en el que se llama a la funcion
 	
 	
+	
 	// Use this for initialization
 	void Start () {
 		miTransform = this.transform;
 	    Vector3 angulos = miTransform.eulerAngles;
 		xObjetivo = angulos.y;
 		yObjetivo = angulos.x;
-		setOrbita(7.5f);
+		setOrbita(orbitaIni);
 	}
 	
 	// Update is called once per frame
@@ -108,6 +112,15 @@ public class Controles : MonoBehaviour {
 				miTransform.rotation = rotCamara;
 		}
 		
+		//Si se pulsa la tecla R, se rota en torno a la nave
+		if (Input.GetKey(KeyCode.R) && Camera.main.GetComponent<Principal>().developerMode) {
+			xObjetivo = miTransform.rotation.eulerAngles.y;
+			yObjetivo = miTransform.rotation.eulerAngles.x;
+			xObjetivo += 15.0f * Time.deltaTime;
+			rotCamara = Quaternion.Euler(yObjetivo, xObjetivo, 0);
+			miTransform.rotation = rotCamara;
+		}
+		
 		if (Input.GetAxis("Mouse ScrollWheel") != 0) {
 		    if (distanciaNave >= distCamaraMin && distanciaNave <= distCamaraMax){
 				distanciaNave -= Input.GetAxis("Mouse ScrollWheel");		
@@ -133,8 +146,8 @@ public class Controles : MonoBehaviour {
 		
 		//Si se ha comprado la mejora de la orbita mas alta, aplica el cambio suavemente
 		if (subiendoOrbita) {
-			orbitando = Mathf.Lerp(0.0f, 1.0f, (Time.realtimeSinceStartup - tiempoIniOrbita) / 3.0f);
-			float temp = Mathf.Lerp(6.5f, 8.5f, orbitando);
+			orbitando = Mathf.Lerp(0.0f, 1.0f, (Time.realtimeSinceStartup - tiempoIniOrbita) / tiempoMejora);
+			float temp = Mathf.Lerp(orbitaIni, orbitaIni + mejoraOrbita, orbitando);
 			setOrbita(temp);
 			if (orbitando == 1.0f) {
 				subiendoOrbita = false;
