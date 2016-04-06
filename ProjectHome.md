@@ -1,0 +1,1 @@
+Juego ambientado en el futuro, en el que la humanidad viaja por el espacio a bordo de naves espaciales muy avanzadas para colonizar otros mundos.
